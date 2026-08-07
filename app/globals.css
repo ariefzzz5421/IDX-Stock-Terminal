@@ -1,26 +1,55 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ---------------------------------------------------------------------------
+   IDX Terminal design tokens.
+
+   Single-theme by intent: a trading terminal is a lit instrument in a dark
+   room, so there is no light variant. Colour is load-bearing here —
+   amber is chrome and navigation, up/down are price direction only, cyan
+   marks a link or a tagged ticker. Nothing means two things at once.
+   --------------------------------------------------------------------------- */
+@theme {
+  --color-void: #08090c;
+  --color-panel: #0f1117;
+  --color-panel-hi: #161923;
+  --color-rule: #1b202b;
+  --color-rule-hi: #2a3140;
+
+  --color-amber: #ffa62b;
+  --color-amber-dim: #7e5719;
+  --color-up: #2bd97c;
+  --color-down: #ff4b57;
+  --color-cyan: #47a8d8;
+
+  /* Neutrals carry a slight blue bias so they sit under the amber
+     rather than fighting it. */
+  --color-ink: #c7cdd9;
+  --color-ink-hi: #edf1f7;
+  --color-dim: #626b7c;
+  --color-dimmer: #3e4552;
+
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+  --font-display: var(--font-plex-mono), var(--font-jetbrains-mono), monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-void);
+  color: var(--color-ink);
+  font-family: var(--font-mono);
+  /* Digits must line up in every table in this app. */
+  font-variant-numeric: tabular-nums;
+}
+
+::selection {
+  background: var(--color-amber);
+  color: var(--color-void);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-cyan);
+  outline-offset: 2px;
 }

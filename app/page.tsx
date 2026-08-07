@@ -1,69 +1,103 @@
-import Image from "next/image";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "IDX Terminal — build status",
+};
+
+const MILESTONES = [
+  { id: "M1", label: "Project scaffold, Prisma schema, PostgreSQL, seed data", done: true },
+  { id: "M2", label: "Auth (register / login) and profile page", done: false },
+  { id: "M3", label: "Market data adapter and static watchlist dashboard", done: false },
+  { id: "M4", label: "WebSocket relay, live prices and chart", done: false },
+  { id: "M5", label: "News aggregation and broadcast", done: false },
+  { id: "M6", label: "Pump detector and alert popup", done: false },
+  { id: "M7", label: "Bloomberg-style UI polish and command bar", done: false },
+  { id: "M8", label: "Documentation and deployment guide", done: false },
+];
+
+const REPO_URL = "https://github.com/ariefzzz5421/IDX-Stock-Terminal";
 
 export default function Home() {
+  const shipped = MILESTONES.filter((m) => m.done).length;
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
+    <main className="flex-1 flex items-center justify-center p-6">
+      <div className="w-full max-w-2xl border border-rule-hi bg-panel">
+        {/* --- title bar ------------------------------------------------ */}
+        <header className="flex items-baseline gap-3 border-b border-rule bg-panel-hi px-4 py-3">
+          <span className="font-display text-lg font-bold tracking-[0.16em] text-amber">
+            IDX
+          </span>
+          <span className="text-[10px] uppercase tracking-[0.2em] text-dim">
+            Terminal
+          </span>
+          <span className="ml-auto text-[10px] uppercase tracking-[0.14em] text-dim">
+            {shipped} / {MILESTONES.length} shipped
+          </span>
+        </header>
+
+        <div className="px-4 py-5">
+          <h1 className="mb-2 text-balance text-xl leading-snug text-ink-hi">
+            A Bloomberg-style terminal for the Indonesia Stock Exchange.
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="mb-6 max-w-prose text-[13px] leading-relaxed text-dim">
+            Live watchlist, candlestick charts, curated news and automatic pump
+            detection. This deployment is the scaffold — the terminal itself is
+            still being built.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
+
+          {/* --- milestone list ----------------------------------------- */}
+          <h2 className="mb-2 border-b border-rule pb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-amber">
+            Build progress
+          </h2>
+          <ol className="mb-6">
+            {MILESTONES.map((m) => (
+              <li
+                key={m.id}
+                className="flex items-baseline gap-3 border-b border-rule/60 py-1.5 text-[13px]"
+              >
+                <span
+                  aria-hidden="true"
+                  className={m.done ? "text-up" : "text-dimmer"}
+                >
+                  {m.done ? "▰" : "▱"}
+                </span>
+                <span
+                  className={`w-7 shrink-0 tracking-wider ${
+                    m.done ? "text-ink-hi" : "text-dim"
+                  }`}
+                >
+                  {m.id}
+                </span>
+                <span className={m.done ? "text-ink" : "text-dim"}>
+                  {m.label}
+                </span>
+                <span className="ml-auto shrink-0 pl-3 text-[10px] uppercase tracking-[0.12em] text-dimmer">
+                  {m.done ? "done" : "pending"}
+                </span>
+              </li>
+            ))}
+          </ol>
+
           <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            href={REPO_URL}
+            className="inline-block border border-amber-dim px-3 py-1.5 text-[11px] uppercase tracking-[0.14em] text-amber transition-colors hover:bg-amber hover:text-void"
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
+            Source on GitHub →
           </a>
         </div>
-      </main>
-    </div>
+
+        {/* --- status bar ----------------------------------------------- */}
+        <footer className="flex flex-wrap items-center gap-x-5 gap-y-1 border-t border-rule bg-panel-hi px-4 py-2 text-[10px] uppercase tracking-[0.1em] text-dim">
+          <span>
+            Build <span className="text-ink">scaffold</span>
+          </span>
+          <span>
+            Data <span className="text-ink">not connected</span>
+          </span>
+          <span className="ml-auto">MIT licensed</span>
+        </footer>
+      </div>
+    </main>
   );
 }
