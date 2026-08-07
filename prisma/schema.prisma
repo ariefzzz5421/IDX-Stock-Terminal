@@ -1,0 +1,116 @@
+// IDX Terminal — Prisma schema
+// Datasource URL is read from DATABASE_URL via prisma.config.ts.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/db/generated"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// Auth & profile
+// ---------------------------------------------------------------------------
+
+model User {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String   @map("password_hash")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  profile   Profile?
+  watchlist Watchlist[]
+
+  @@map("users")
+}
+
+model Profile {
+  userId      String   @id @map("user_id")
+  displayName String?  @map("display_name")
+  bio         String?
+  avatarUrl   String?  @map("avatar_url")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("profiles")
+}
+
+// ---------------------------------------------------------------------------
+// Market data
+// ---------------------------------------------------------------------------
+
+model Watchlist {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  stockCode String   @map("stock_code")
+  addedAt   DateTime @default(now()) @map("added_at")
+  sortOrder Int      @default(0) @map("sort_order")
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stock Stock @relation(fields: [stockCode], references: [code], onDelete: Cascade)
+
+  @@unique([userId, stockCode])
+  @@index([userId, sortOrder])
+  @@map("watchlists")
+}
+
+/// Latest snapshot per ticker. Prices are IDR and always whole rupiah on IDX,
+/// so Float (f64) holds them exactly; it keeps values JSON-serialisable
+/// across the server/client boundary, unlike Prisma's Decimal/BigInt.
+model Stock {
+  code          String   @id
+  name          String
+  sector        String?
+  lastPrice     Float?   @map("last_price")
+  prevClose     Float?   @map("prev_close")
+  lastChangePct Float?   @map("last_change_pct")
+  lastVolume    Float?   @map("last_volume")
+  lastValue     Float?   @map("last_value")
+  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at")
+
+  watchlists   Watchlist[]
+  priceHistory PriceHistory[]
+
+  @@index([lastChangePct])
+  @@map("stocks")
+}
+
+model PriceHistory {
+  id        Int      @id @default(autoincrement())
+  stockCode String   @map("stock_code")
+  interval  String   @default("1m")
+  timestamp DateTime
+  open      Float
+  high      Float
+  low       Float
+  close     Float
+  volume    Float
+
+  stock Stock @relation(fields: [stockCode], references: [code], onDelete: Cascade)
+
+  @@unique([stockCode, interval, timestamp])
+  @@index([stockCode, interval, timestamp(sort: Desc)])
+  @@map("price_history")
+}
+
+// ---------------------------------------------------------------------------
+// News
+// ---------------------------------------------------------------------------
+
+model News {
+  id           String   @id @default(cuid())
+  title        String
+  summary      String?
+  source       String
+  url          String   @unique
+  publishedAt  DateTime @map("published_at")
+  relatedCodes String[] @map("related_codes")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@index([publishedAt(sort: Desc)])
+  @@index([relatedCodes], type: Gin)
+  @@map("news")
+}
