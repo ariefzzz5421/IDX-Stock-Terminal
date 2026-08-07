@@ -6,10 +6,10 @@ curated news feed, and automatic alerts when a stock starts pumping.
 
 Built for personal use, open sourced under MIT.
 
-> **Status: in development.** Milestone 1 of 8 is complete (project scaffold, database
-> schema, seed data). The dashboard, auth, realtime feed and pump detector are still
-> being built — see [Roadmap](#roadmap). The app currently boots to the default
-> Next.js page.
+> **Status: in development.** Milestones 1–3 are complete, so the app is usable
+> end to end: register, sign in, and work a live-ish dashboard with charts, backed by
+> the built-in offline data provider. Realtime push, news and pump detection are
+> still to come — see [Roadmap](#roadmap).
 
 ## Interface preview
 
@@ -64,7 +64,14 @@ subscribeLive(codes, cb)    // push updates
 | [Invezgo](https://invezgo.com)    | REST      | Prices, broker summary, foreign flow              |
 
 Pick one with `MARKET_DATA_PROVIDER` in `.env`. The browser never sees a provider key —
-the internal WebSocket server is the only thing that talks to them.
+only server code touches them. If a provider is selected but its key is missing, the app
+logs a warning and falls back to `mock` rather than showing you an empty screen.
+
+> **Heads up on the three real adapters.** Their endpoint paths and response field
+> mappings are a best-effort implementation and have **not** been verified against live
+> accounts. Each one isolates the wire format in a `mapQuote` / `mapCandle` function and
+> takes a `*_BASE_URL` override, so reconciling them with the current docs is a small
+> edit rather than a rewrite. `mock` is the only provider that is known-good today.
 
 ## Prerequisites
 
@@ -146,13 +153,20 @@ Open http://localhost:3000.
 
 ## First run
 
-1. Go to `/register` and create an account — username and password only, minimum 8
-   characters. No email, no verification.
-2. You land on `/dashboard` with a starter watchlist.
-3. Add a ticker by typing its code in the command bar and pressing `<GO>`, then hitting
-   the **+** on the stock page. Remove one from the watchlist row menu.
-4. Set a display name, bio and avatar at `/profile`. Your avatar shows in the terminal
+1. Open http://localhost:3000. You'll be sent to `/register`.
+2. Create an account — username and password only, minimum 8 characters. No email, no
+   verification.
+3. You land on `/dashboard` with a starter watchlist of eight tickers across sectors,
+   plus top gainers, top losers and most-active panels.
+4. Type a ticker in the command bar and press Enter (or `<GO>`) to open it — `AMMN`,
+   `BBRI`, `GOTO`. Press `/` anywhere to jump to the command bar. On a stock page,
+   **+ Watchlist** adds it; the **×** on a watchlist row removes it.
+5. Set a display name, bio and avatar at `/profile`. Avatars are stored as data URIs in
+   Postgres, so there's no blob store to configure. Your avatar shows in the terminal
    header, top right.
+
+Quotes refresh once per page load for the tickers you follow. Continuous streaming
+arrives with Milestone 4.
 
 ## Scripts
 
@@ -204,14 +218,25 @@ lag by 10–15 minutes; none of them are a substitute for a real feed.
 The default architecture is deliberately local-first: a Postgres on your machine and a
 long-lived WebSocket process. That does not map onto serverless hosting — Vercel can host
 the Next.js app, but not the persistent socket server or the polling jobs, and it can't
-reach a database on your laptop. To deploy you need a managed Postgres and a separate
-always-on host for the realtime worker. See `docs/deployment.md` (coming with Milestone 8).
+reach a database on your laptop.
+
+Every page now requires a database, so **a Vercel deployment without a managed Postgres
+attached will show the "database not ready" screen.** To deploy properly you need:
+
+| Piece | Where it can live |
+| --- | --- |
+| Next.js app | Vercel |
+| PostgreSQL | Supabase, Neon, or any managed Postgres — set `DATABASE_URL` |
+| WebSocket relay + pollers (M4–M6) | An always-on host: Railway, Render, Fly |
+
+Alternatively deploy the whole thing to a single always-on host, which matches this
+architecture 1:1 and needs no changes. A full guide lands with Milestone 8.
 
 ## Roadmap
 
 - [x] **M1** — Project scaffold, Prisma schema, PostgreSQL, seed data
-- [ ] **M2** — Auth (register/login) and profile page
-- [ ] **M3** — Market data adapter and static watchlist dashboard
+- [x] **M2** — Auth (register/login) and profile page
+- [x] **M3** — Market data adapter and static watchlist dashboard
 - [ ] **M4** — WebSocket relay, live prices and chart
 - [ ] **M5** — News aggregation and broadcast
 - [ ] **M6** — Pump detector and alert popup
