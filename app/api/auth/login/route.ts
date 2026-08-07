@@ -3,6 +3,7 @@ import { compare } from "bcryptjs";
 import { prisma } from "@/lib/db/prisma";
 import { createSession } from "@/lib/auth/session";
 import { normalizeUsername } from "@/lib/auth/validation";
+import { routeErrorResponse } from "@/lib/db/errors";
 
 /**
  * Comparing against a throwaway hash when the user does not exist keeps the
@@ -31,23 +32,27 @@ export async function POST(request: Request) {
     );
   }
 
-  const user = await prisma.user.findUnique({
-    where: { username },
-    select: { id: true, username: true, passwordHash: true },
-  });
+  try {
+    const user = await prisma.user.findUnique({
+      where: { username },
+      select: { id: true, username: true, passwordHash: true },
+    });
 
-  const matches = await compare(password, user?.passwordHash ?? DUMMY_HASH);
+    const matches = await compare(password, user?.passwordHash ?? DUMMY_HASH);
 
-  if (!user || !matches) {
-    return NextResponse.json(
-      { error: "Wrong username or password." },
-      { status: 401 },
-    );
+    if (!user || !matches) {
+      return NextResponse.json(
+        { error: "Wrong username or password." },
+        { status: 401 },
+      );
+    }
+
+    await createSession(user.id, user.username);
+
+    return NextResponse.json({
+      user: { id: user.id, username: user.username },
+    });
+  } catch (error) {
+    return routeErrorResponse(error, "auth/login");
   }
-
-  await createSession(user.id, user.username);
-
-  return NextResponse.json({
-    user: { id: user.id, username: user.username },
-  });
 }

@@ -8,6 +8,11 @@ import {
   validatePassword,
   validateUsername,
 } from "@/lib/auth/validation";
+import {
+  UNIQUE_VIOLATION,
+  prismaErrorCode,
+  routeErrorResponse,
+} from "@/lib/db/errors";
 
 const BCRYPT_ROUNDS = 10;
 
@@ -33,25 +38,26 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: passwordCheck.error }, { status: 400 });
   }
 
-  const existing = await prisma.user.findUnique({ where: { username } });
-  if (existing) {
-    return NextResponse.json(
-      { error: "That username is taken." },
-      { status: 409 },
-    );
-  }
-
-  const passwordHash = await hash(password, BCRYPT_ROUNDS);
-
-  // Only seed watchlist rows for tickers that actually exist — the stocks table
-  // is empty until `prisma db seed` runs, and a missing row would trip the FK.
-  const seededStocks = await prisma.stock.findMany({
-    where: { code: { in: [...DEFAULT_WATCHLIST] } },
-    select: { code: true },
-  });
-  const available = new Set(seededStocks.map((s) => s.code));
-
   try {
+    const existing = await prisma.user.findUnique({ where: { username } });
+    if (existing) {
+      return NextResponse.json(
+        { error: "That username is taken." },
+        { status: 409 },
+      );
+    }
+
+    const passwordHash = await hash(password, BCRYPT_ROUNDS);
+
+    // Only seed watchlist rows for tickers that actually exist — the stocks
+    // table is empty until `prisma db seed` runs, and a missing row would trip
+    // the foreign key.
+    const seededStocks = await prisma.stock.findMany({
+      where: { code: { in: [...DEFAULT_WATCHLIST] } },
+      select: { code: true },
+    });
+    const available = new Set(seededStocks.map((s) => s.code));
+
     const user = await prisma.user.create({
       data: {
         username,
@@ -71,13 +77,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ user }, { status: 201 });
   } catch (error) {
     // Two simultaneous registrations of the same name land here.
-    if (
-      error instanceof Error &&
-      "code" in error &&
-      (error as { code?: string }).code === "P2002"
-    ) {
+    if (prismaErrorCode(error) === UNIQUE_VIOLATION) {
       return NextResponse.json({ error: "That username is taken." }, { status: 409 });
     }
-    throw error;
+    return routeErrorResponse(error, "auth/register");
   }
 }

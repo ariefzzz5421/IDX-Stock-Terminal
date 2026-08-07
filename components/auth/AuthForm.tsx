@@ -51,10 +51,16 @@ export function AuthForm({ mode }: { mode: Mode }) {
         body: JSON.stringify({ username, password }),
       });
 
-      const data = (await response.json()) as { error?: string };
+      // A crashed route can return an empty body; parsing it must not be
+      // mistaken for the network being down.
+      const data = (await response
+        .json()
+        .catch(() => ({}))) as { error?: string };
 
       if (!response.ok) {
-        setError(data.error ?? "Something went wrong. Try again.");
+        setError(
+          data.error ?? `Server error ${response.status}. Check the server logs.`,
+        );
         setBusy(false);
         return;
       }
