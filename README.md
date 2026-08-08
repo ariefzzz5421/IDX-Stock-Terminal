@@ -109,10 +109,11 @@ superuser to create the `idx` role and `idx_terminal` database. It will prompt f
 psql -U postgres -h localhost -f scripts/setup-db.sql
 ```
 
-On Windows, `psql` is usually not on your PATH — call it by full path instead:
+On Windows `psql` is usually not on your PATH, and **Windows PowerShell needs the call
+operator `&`** to run a program at a quoted path:
 
-```bash
-"/c/Program Files/PostgreSQL/18/bin/psql" -U postgres -h localhost -f scripts/setup-db.sql
+```powershell
+& "C:\Program Files\PostgreSQL\18\bin\psql.exe" -U postgres -h localhost -f "scripts\setup-db.sql"
 ```
 
 ### 3. Configure environment
@@ -134,15 +135,23 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 
 Every other variable has a working default and is documented inline in `.env.example`.
 
-### 4. Migrate and seed
+### 4. Create the tables and load the tickers
 
 ```bash
-npx prisma migrate dev
-npx prisma db seed
+npm run db:setup
+npm run db:seed
 ```
 
 The seed loads ~80 liquid IDX tickers across all 10 IDX-IC sectors. It is idempotent —
 re-running refreshes company metadata without clobbering stored prices.
+
+> Use `db:setup` (`prisma migrate deploy`) for first-time setup — it applies the
+> committed migrations and needs no special database privileges. `npm run db:migrate`
+> (`prisma migrate dev`) is for *authoring* new migrations after you change
+> `schema.prisma`; it additionally needs `CREATEDB` on the database role.
+
+**Windows PowerShell users:** `&&` is not a statement separator in Windows PowerShell
+5.1. Run each command on its own line, or join them with `;`.
 
 ### 5. Run
 
@@ -207,6 +216,17 @@ container can't bind that port — change the host side of the mapping in
 **`Authentication failed for user "idx"`**
 The role exists but the password differs from `DATABASE_URL`. Reset it:
 `psql -U postgres -c "ALTER ROLE idx PASSWORD 'idx';"`
+
+**`P3014 — Prisma Migrate could not create the shadow database`**
+`prisma migrate dev` builds a throwaway shadow database to check migrations against, so
+the role needs `CREATEDB`. First-time setup doesn't need it — run `npm run db:setup`
+instead. To grant it, as a superuser:
+`psql -U postgres -c "ALTER ROLE idx CREATEDB;"`
+
+**PowerShell: `The token '&&' is not a valid statement separator`**
+Windows PowerShell 5.1 has no `&&`. Use `;`, or one command per line. Likewise a program
+at a quoted path needs the call operator: `& "C:\path\to\psql.exe" ...` — without it
+PowerShell treats the line as a string and reports `Unexpected token`.
 
 **`DATABASE_URL is not set`**
 You skipped step 3, or `.env` is somewhere other than the project root. Prisma 7 reads

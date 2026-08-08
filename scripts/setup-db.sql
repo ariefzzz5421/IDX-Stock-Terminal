@@ -6,10 +6,15 @@
 -- Only needed if you installed PostgreSQL natively. The bundled
 -- docker-compose.yml already creates this role and database for you.
 
+-- CREATEDB is needed by `prisma migrate dev`, which builds a throwaway shadow
+-- database to check migrations against. Without it you get:
+--   P3014  Prisma Migrate could not create the shadow database
 DO $$
 BEGIN
   IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'idx') THEN
-    CREATE ROLE idx LOGIN PASSWORD 'idx';
+    CREATE ROLE idx LOGIN PASSWORD 'idx' CREATEDB;
+  ELSE
+    ALTER ROLE idx CREATEDB;
   END IF;
 END
 $$;
