@@ -1,6 +1,35 @@
 import "dotenv/config";
+import { existsSync, readFileSync } from "node:fs";
+import path from "node:path";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../lib/db/generated/client";
+import { CURATED_SECTORS } from "../lib/market-data/sectors";
+
+type ListingEntry = {
+  code: string;
+  name: string;
+  sector: string | null;
+  marketCap: number | null;
+};
+
+/**
+ * The full Jakarta board, produced by `npx tsx scripts/fetch-idx-listing.ts`.
+ * Falls back to the curated shortlist below if the file is missing, so the
+ * seed always works even without network access.
+ */
+function loadListing(): ListingEntry[] {
+  const file = path.join(process.cwd(), "prisma", "idx-listing.json");
+
+  if (!existsSync(file)) {
+    console.warn(
+      "prisma/idx-listing.json not found — seeding the curated shortlist only.\n" +
+        "Run `npx tsx scripts/fetch-idx-listing.ts` for the full board.",
+    );
+    return IDX_STOCKS.map((s) => ({ ...s, marketCap: null }));
+  }
+
+  return JSON.parse(readFileSync(file, "utf8")) as ListingEntry[];
+}
 
 /**
  * Seed the `stocks` table with a liquid slice of the IDX universe (roughly the
@@ -113,20 +142,35 @@ const prisma = new PrismaClient({
 });
 
 async function main() {
-  console.log(`Seeding ${IDX_STOCKS.length} IDX tickers...`);
+  const listing = loadListing();
+  console.log(`Seeding ${listing.length} IDX tickers...`);
 
-  for (const stock of IDX_STOCKS) {
+  let done = 0;
+
+  for (const stock of listing) {
+    const sector = stock.sector ?? CURATED_SECTORS[stock.code] ?? null;
+
     await prisma.stock.upsert({
       where: { code: stock.code },
       // Re-running the seed must not clobber prices the adapter already wrote,
       // so an existing row only gets its metadata refreshed.
-      update: { name: stock.name, sector: stock.sector },
-      create: stock,
+      update: { name: stock.name, sector, marketCap: stock.marketCap },
+      create: {
+        code: stock.code,
+        name: stock.name,
+        sector,
+        marketCap: stock.marketCap,
+      },
     });
+
+    if (++done % 200 === 0) console.log(`  ${done} / ${listing.length}`);
   }
 
   const total = await prisma.stock.count();
-  console.log(`Done. stocks table now holds ${total} rows.`);
+  const withSector = await prisma.stock.count({ where: { NOT: { sector: null } } });
+  console.log(
+    `Done. stocks table holds ${total} rows (${withSector} with a sector).`,
+  );
 }
 
 main()

@@ -22,7 +22,11 @@ All figures in the preview are synthetic sample data, not live market data.
 
 ## Features
 
+- **The whole board** — all 838 IDX-listed companies, searchable and ranked by market cap
 - **Terminal dashboard** — multi-panel grid: watchlist left, chart centre, news right
+- **Market status** — Open / Closed on the real BEI schedule, including Friday's shifted
+  session hours, pre-opening, break, pre-closing and post-trading
+- **Sections** — Dashboard, Watchlist, Top 10, Hot, Market and Account
 - **Command bar** — type `BBCA` and press `<GO>` to jump to a ticker, Bloomberg-style
 - **Realtime prices** — internal WebSocket relay pushes quote updates; cells flash on tick
 - **News curation** — RSS aggregation from Indonesian finance media, keyword-tagged to
@@ -59,7 +63,8 @@ subscribeLive(codes, cb)    // push updates
 
 | Provider                          | Transport | Notes                                            |
 | --------------------------------- | --------- | ------------------------------------------------ |
-| `mock`                            | —         | Synthetic ticks. **No API key needed** — use this to run the terminal end to end. |
+| `yahoo` **(default)**             | REST      | Real IDX prices via `TICKER.JK`. **No API key, no signup.** Delayed and unofficial. |
+| `mock`                            | —         | Synthetic ticks for working offline.              |
 | [GoAPI.io](https://goapi.io)      | REST      | IDX snapshots, free tier                          |
 | [iTick](https://itick.org)        | WebSocket | Live streaming quotes, `region=ID`, free tier     |
 | [Invezgo](https://invezgo.com)    | REST      | Prices, broker summary, foreign flow              |
@@ -142,8 +147,15 @@ npm run db:setup
 npm run db:seed
 ```
 
-The seed loads ~80 liquid IDX tickers across all 10 IDX-IC sectors. It is idempotent —
-re-running refreshes company metadata without clobbering stored prices.
+The seed loads the **entire IDX main board — 838 listed companies** — from
+`prisma/idx-listing.json`, which is committed so a fresh clone needs no network access.
+It is idempotent: re-running refreshes company metadata without clobbering stored prices.
+
+To refresh the board after new listings, delistings or ticker renames:
+
+```bash
+npx tsx scripts/fetch-idx-listing.ts
+```
 
 > Use `db:setup` (`prisma migrate deploy`) for first-time setup — it applies the
 > committed migrations and needs no special database privileges. `npm run db:migrate`

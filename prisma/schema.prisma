@@ -64,6 +64,10 @@ model Stock {
   code          String   @id
   name          String
   sector        String?
+  /// Rupiah. Used to rank the board when turnover isn't known yet.
+  marketCap     Float?   @map("market_cap")
+  /// Overrides the generated monogram tile when a real logo is available.
+  logoUrl       String?  @map("logo_url")
   lastPrice     Float?   @map("last_price")
   prevClose     Float?   @map("prev_close")
   lastChangePct Float?   @map("last_change_pct")
@@ -75,6 +79,7 @@ model Stock {
   priceHistory PriceHistory[]
 
   @@index([lastChangePct])
+  @@index([marketCap])
   @@map("stocks")
 }
 

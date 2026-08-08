@@ -16,12 +16,12 @@ export function Panel({
 }) {
   return (
     <section className={`flex min-h-0 min-w-0 flex-col bg-panel ${className}`}>
-      <header className="flex flex-none items-center gap-2 border-b border-rule bg-panel-hi px-2.5 py-1.5">
-        <h2 className="font-display text-[9.5px] font-bold uppercase tracking-[0.14em] text-amber">
+      <header className="flex flex-none items-center gap-3 border-b border-rule bg-panel-hi px-4 py-2.5">
+        <h2 className="font-display text-micro font-bold uppercase tracking-[0.16em] text-amber">
           {title}
         </h2>
         {meta && (
-          <span className="ml-auto text-[9.5px] uppercase tracking-[0.08em] text-dim">
+          <span className="ml-auto text-micro uppercase tracking-[0.1em] text-dim">
             {meta}
           </span>
         )}

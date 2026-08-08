@@ -2,6 +2,7 @@ import "server-only";
 
 import type { MarketDataProvider } from "./types";
 import { MockProvider } from "./mock";
+import { YahooProvider } from "./yahoo";
 import { GoApiProvider } from "./goapi";
 import { ItickProvider } from "./itick";
 import { InvezgoProvider } from "./invezgo";
@@ -10,6 +11,7 @@ export type { Candle, Interval, MarketDataProvider, Quote } from "./types";
 export { snapToTick, tickSize, INTERVAL_MS } from "./types";
 
 const PROVIDERS = {
+  yahoo: YahooProvider,
   mock: MockProvider,
   goapi: GoApiProvider,
   itick: ItickProvider,
@@ -19,7 +21,9 @@ const PROVIDERS = {
 export type ProviderName = keyof typeof PROVIDERS;
 
 function build(): MarketDataProvider {
-  const requested = (process.env.MARKET_DATA_PROVIDER ?? "mock").toLowerCase();
+  // Yahoo needs no credentials and returns real IDX prices, so it is the
+  // sensible default; `mock` stays available for working offline.
+  const requested = (process.env.MARKET_DATA_PROVIDER ?? "yahoo").toLowerCase();
   const Provider = PROVIDERS[requested as ProviderName];
 
   if (!Provider) {

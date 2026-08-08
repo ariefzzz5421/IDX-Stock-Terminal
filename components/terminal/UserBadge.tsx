@@ -30,7 +30,7 @@ export function UserBadge({ username, displayName, avatarUrl, guest }: Props) {
   return (
     <div className="flex shrink-0 items-center gap-2.5 px-3 py-1.5">
       <Link
-        href="/profile"
+        href="/account"
         className="flex items-center gap-2.5 hover:opacity-80"
         title="Edit profile"
       >
@@ -52,8 +52,8 @@ export function UserBadge({ username, displayName, avatarUrl, guest }: Props) {
           </span>
         )}
         <span className="hidden flex-col leading-tight sm:flex">
-          <span className="text-[11px] text-ink-hi">{label}</span>
-          <span className="text-[9px] uppercase tracking-[0.1em] text-dim">
+          <span className="text-xs text-ink-hi">{label}</span>
+          <span className="text-micro uppercase tracking-[0.1em] text-dim">
             {guest ? "Shared account" : displayName ? username : "Session active"}
           </span>
         </span>

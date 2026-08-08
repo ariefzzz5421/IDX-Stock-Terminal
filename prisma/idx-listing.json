@@ -1,0 +1,5030 @@
+[
+  {
+    "code": "AADI",
+    "name": "Adaro Andalan Indonesia Tbk.",
+    "sector": null,
+    "marketCap": 71444734148608
+  },
+  {
+    "code": "AALI",
+    "name": "PT Astra Agro Lestari Tbk",
+    "sector": "Consumer Non-Cyclicals",
+    "marketCap": 14098342346752
+  },
+  {
+    "code": "ABDA",
+    "name": "PT Asuransi Bina Dana Arta Tbk",
+    "sector": null,
+    "marketCap": 2377689595904
+  },
+  {
+    "code": "ABMM",
+    "name": "PT ABM Investama Tbk",
+    "sector": null,
+    "marketCap": 7378482233344
+  },
+  {
+    "code": "ACES",
+    "name": "PT Aspirasi Hidup Indonesia Tbk",
+    "sector": "Consumer Cyclicals",
+    "marketCap": 6129099735040
+  },
+  {
+    "code": "ACRO",
+    "name": "Samcro Hyosung Adilestari Tbk.",
+    "sector": null,
+    "marketCap": 215099424768
+  },
+  {
+    "code": "ACST",
+    "name": "PT Acset Indonusa Tbk",
+    "sector": null,
+    "marketCap": 1484713361408
+  },
+  {
+    "code": "ADES",
+    "name": "PT Akasha Wira International Tbk",
+    "sector": null,
+    "marketCap": 20646390136832
+  },
+  {
+    "code": "ADHI",
+    "name": "PT Adhi Karya (Persero) Tbk",
+    "sector": "Infrastructures",
+    "marketCap": 1252733747200
+  },
+  {
+    "code": "ADMF",
+    "name": "PT Adira Dinamika Multi Finance Tbk",
+    "sector": "Financials",
+    "marketCap": 10696735588352
+  },
+  {
+    "code": "ADMG",
+    "name": "PT. Polychem Indonesia Tbk",
+    "sector": null,
+    "marketCap": 941181501440
+  },
+  {
+    "code": "ADMR",
+    "name": "PT Alamtri Minerals Indonesia Tbk",
+    "sector": null,
+    "marketCap": 66229377171456
+  },
+  {
+    "code": "ADRO",
+    "name": "PT Alamtri Resources Indonesia Tbk",
+    "sector": "Energy",
+    "marketCap": 73153250328576
+  },
+  {
+    "code": "AEGS",
+    "name": "PT. Anugerah Spareparts Sejahtera Tbk",
+    "sector": null,
+    "marketCap": 42255388672
+  },
+  {
+    "code": "AGAR",
+    "name": "PT Asia Sejahtera Mina Tbk",
+    "sector": null,
+    "marketCap": 999999995904
+  },
+  {
+    "code": "AGII",
+    "name": "PT Samator Indo Gas Tbk",
+    "sector": null,
+    "marketCap": 8923980496896
+  },
+  {
+    "code": "AGRO",
+    "name": "PT Bank Raya Indonesia Tbk",
+    "sector": null,
+    "marketCap": 3774442373120
+  },
+  {
+    "code": "AGRS",
+    "name": "PT Bank IBK Indonesia Tbk",
+    "sector": null,
+    "marketCap": 2919727628288
+  },
+  {
+    "code": "AHAP",
+    "name": "PT Asuransi Harta Aman Pratama Tbk",
+    "sector": null,
+    "marketCap": 460599984128
+  },
+  {
+    "code": "AIMS",
+    "name": "PT Artha Mahiya Investama Tbk",
+    "sector": null,
+    "marketCap": 91520000000
+  },
+  {
+    "code": "AISA",
+    "name": "PT FKS Food Sejahtera Tbk",
+    "sector": null,
+    "marketCap": 445269245952
+  },
+  {
+    "code": "AKPI",
+    "name": "PT Argha Karya Prima Industry Tbk",
+    "sector": null,
+    "marketCap": 309185249280
+  },
+  {
+    "code": "AKRA",
+    "name": "PT AKR Corporindo Tbk",
+    "sector": "Energy",
+    "marketCap": 28115671711744
+  },
+  {
+    "code": "AKSI",
+    "name": "PT Mineral Sumberdaya Mandiri Tbk",
+    "sector": null,
+    "marketCap": 167039991808
+  },
+  {
+    "code": "ALDO",
+    "name": "PT Alkindo Naratama Tbk",
+    "sector": null,
+    "marketCap": 2210241183744
+  },
+  {
+    "code": "ALII",
+    "name": "Ancara Logistics Indonesia Tbk.",
+    "sector": null,
+    "marketCap": 12423252672512
+  },
+  {
+    "code": "ALKA",
+    "name": "PT Alakasa Industrindo Tbk",
+    "sector": null,
+    "marketCap": 1050866679808
+  },
+  {
+    "code": "AMAG",
+    "name": "PT Asuransi Multi Artha Guna Tbk",
+    "sector": null,
+    "marketCap": 1928841134080
+  },
+  {
+    "code": "AMAN",
+    "name": "PT Makmur Berkah Amanda Tbk",
+    "sector": null,
+    "marketCap": 952880988160
+  },
+  {
+    "code": "AMAR",
+    "name": "PT Bank Amar Indonesia Tbk",
+    "sector": null,
+    "marketCap": 3963008057344
+  },
+  {
+    "code": "AMFG",
+    "name": "PT Asahimas Flat Glass Tbk",
+    "sector": null,
+    "marketCap": 1453900038144
+  },
+  {
+    "code": "AMIN",
+    "name": "PT Ateliers Mecaniques D'Indonesie Tbk",
+    "sector": null,
+    "marketCap": 267839995904
+  },
+  {
+    "code": "AMMN",
+    "name": "PT Amman Mineral Internasional Tbk",
+    "sector": "Basic Materials",
+    "marketCap": 318614632660992
+  },
+  {
+    "code": "AMMS",
+    "name": "PT Agung Menjangan Mas Tbk",
+    "sector": null,
+    "marketCap": 254400004096
+  },
+  {
+    "code": "AMOR",
+    "name": "PT Ashmore Asset Management Indonesia Tbk",
+    "sector": null,
+    "marketCap": 790107848704
+  },
+  {
+    "code": "AMRT",
+    "name": "PT Sumber Alfaria Trijaya Tbk",
+    "sector": "Consumer Non-Cyclicals",
+    "marketCap": 58350402273280
+  },
+  {
+    "code": "ANDI",
+    "name": "PT Andira Agro, Tbk",
+    "sector": null,
+    "marketCap": 168299986944
+  },
+  {
+    "code": "ANJT",
+    "name": "PT Austindo Nusantara Jaya Tbk",
+    "sector": null,
+    "marketCap": 5014491758592
+  },
+  {
+    "code": "ANTM",
+    "name": "PT Antam (Persero) Tbk",
+    "sector": "Basic Materials",
+    "marketCap": 75937219608576
+  },
+  {
+    "code": "APEX",
+    "name": "PT Apexindo Pratama Duta Tbk",
+    "sector": null,
+    "marketCap": 631271063552
+  },
+  {
+    "code": "APIC",
+    "name": "PT Pacific Strategic Financial Tbk",
+    "sector": null,
+    "marketCap": 6942125195264
+  },
+  {
+    "code": "APII",
+    "name": "PT Arita Prima Indonesia Tbk",
+    "sector": null,
+    "marketCap": 204394397696
+  },
+  {
+    "code": "APLI",
+    "name": "PT Asiaplast Industries Tbk",
+    "sector": null,
+    "marketCap": 351569215488
+  },
+  {
+    "code": "APLN",
+    "name": "PT Agung Podomoro Land Tbk",
+    "sector": "Properties & Real Estate",
+    "marketCap": 2973611851776
+  },
+  {
+    "code": "ARCI",
+    "name": "PT Archi Indonesia Tbk",
+    "sector": "Basic Materials",
+    "marketCap": 31165224321024
+  },
+  {
+    "code": "AREA",
+    "name": "Dunia Virtual Online Tbk.",
+    "sector": null,
+    "marketCap": 690771460096
+  },
+  {
+    "code": "ARGO",
+    "name": "PT Argo Pantes Tbk",
+    "sector": null,
+    "marketCap": 3793335091200
+  },
+  {
+    "code": "ARII",
+    "name": "PT Atlas Resources Tbk",
+    "sector": null,
+    "marketCap": 1042500026368
+  },
+  {
+    "code": "ARKO",
+    "name": "PT Arkora Hydro Tbk",
+    "sector": null,
+    "marketCap": 13266082332672
+  },
+  {
+    "code": "ARNA",
+    "name": "PT Arwana Citramulia Tbk",
+    "sector": "Industrials",
+    "marketCap": 3514988494848
+  },
+  {
+    "code": "ARTA",
+    "name": "PT Arthavest Tbk",
+    "sector": null,
+    "marketCap": 1054151081984
+  },
+  {
+    "code": "ARTO",
+    "name": "PT Bank Jago Tbk",
+    "sector": "Financials",
+    "marketCap": 18089037004800
+  },
+  {
+    "code": "ASBI",
+    "name": "PT Asuransi Bintang Tbk",
+    "sector": null,
+    "marketCap": 149806186496
+  },
+  {
+    "code": "ASDM",
+    "name": "PT Asuransi Dayin Mitra Tbk",
+    "sector": null,
+    "marketCap": 199680000000
+  },
+  {
+    "code": "ASGR",
+    "name": "PT Astra Graphia Tbk",
+    "sector": null,
+    "marketCap": 2407573225472
+  },
+  {
+    "code": "ASHA",
+    "name": "PT Cilacap Samudera Fishing Industry Tbk",
+    "sector": null,
+    "marketCap": 299999985664
+  },
+  {
+    "code": "ASII",
+    "name": "PT Astra International Tbk",
+    "sector": "Industrials",
+    "marketCap": 203592321466368
+  },
+  {
+    "code": "ASJT",
+    "name": "PT Asuransi Jasa Tania Tbk",
+    "sector": null,
+    "marketCap": 214199992320
+  },
+  {
+    "code": "ASLC",
+    "name": "PT Autopedia Sukses Lestari Tbk",
+    "sector": null,
+    "marketCap": 803020341248
+  },
+  {
+    "code": "ASLI",
+    "name": "Asri Karya Lestari Tbk.",
+    "sector": null,
+    "marketCap": 1243749941248
+  },
+  {
+    "code": "ASMI",
+    "name": "PT Asuransi Maximus Graha Persada Tbk",
+    "sector": null,
+    "marketCap": 143334080512
+  },
+  {
+    "code": "ASPI",
+    "name": "PT Andalan Sakti Primaindo Tbk",
+    "sector": null,
+    "marketCap": 291303391232
+  },
+  {
+    "code": "ASPR",
+    "name": "Asia Pramulia Tbk.",
+    "sector": null,
+    "marketCap": 401375985664
+  },
+  {
+    "code": "ASRI",
+    "name": "PT Alam Sutera Realty Tbk",
+    "sector": "Consumer Cyclicals",
+    "marketCap": 2456176295936
+  },
+  {
+    "code": "ASRM",
+    "name": "PT Asuransi Ramayana Tbk",
+    "sector": null,
+    "marketCap": 345057853440
+  },
+  {
+    "code": "ASSA",
+    "name": "PT Adi Sarana Armada Tbk",
+    "sector": "Transportation & Logistic",
+    "marketCap": 2343872233472
+  },
+  {
+    "code": "ATAP",
+    "name": "PT Trimitra Prawara Goldland Tbk",
+    "sector": null,
+    "marketCap": 718750023680
+  },
+  {
+    "code": "ATIC",
+    "name": "PT Anabatic Technologies Tbk",
+    "sector": null,
+    "marketCap": 1360274784256
+  },
+  {
+    "code": "ATLA",
+    "name": "Atlantis Subsea Indonesia Tbk.",
+    "sector": null,
+    "marketCap": 309978890240
+  },
+  {
+    "code": "AUTO",
+    "name": "PT Astra Otoparts Tbk",
+    "sector": "Industrials",
+    "marketCap": 13447055015936
+  },
+  {
+    "code": "AVIA",
+    "name": "PT Avia Avian Tbk",
+    "sector": "Basic Materials",
+    "marketCap": 19393148878848
+  },
+  {
+    "code": "AWAN",
+    "name": "PT Era Digital Media Tbk",
+    "sector": null,
+    "marketCap": 528990011392
+  },
+  {
+    "code": "AXIO",
+    "name": "PT Tera Data Indonusa Tbk",
+    "sector": null,
+    "marketCap": 665774391296
+  },
+  {
+    "code": "AYAM",
+    "name": "Janu Putra Sejahtera Tbk.",
+    "sector": null,
+    "marketCap": 1832000028672
+  },
+  {
+    "code": "AYLS",
+    "name": "PT Arkayana Lestari Grup Tbk",
+    "sector": null,
+    "marketCap": 139107991552
+  },
+  {
+    "code": "BABP",
+    "name": "PT Bank MNC Internasional Tbk",
+    "sector": null,
+    "marketCap": 2222949662720
+  },
+  {
+    "code": "BABY",
+    "name": "PT Multitrend Indo Tbk",
+    "sector": null,
+    "marketCap": 536707366912
+  },
+  {
+    "code": "BACA",
+    "name": "PT Bank Capital Indonesia Tbk",
+    "sector": null,
+    "marketCap": 2394363002880
+  },
+  {
+    "code": "BACH",
+    "name": "Bach Multi Global Tbk.",
+    "sector": null,
+    "marketCap": 2328125243392
+  },
+  {
+    "code": "BAIK",
+    "name": "Bersama Mencapai Puncak Tbk.",
+    "sector": null,
+    "marketCap": 868173152256
+  },
+  {
+    "code": "BAJA",
+    "name": "PT Saranacentral Bajatama Tbk",
+    "sector": null,
+    "marketCap": 651600003072
+  },
+  {
+    "code": "BALI",
+    "name": "PT Bali Towerindo Sentra Tbk",
+    "sector": null,
+    "marketCap": 4760856952832
+  },
+  {
+    "code": "BANK",
+    "name": "PT Bank Aladin Syariah Tbk",
+    "sector": null,
+    "marketCap": 3804227436544
+  },
+  {
+    "code": "BAPA",
+    "name": "PT Bekasi Asri Pemula Tbk",
+    "sector": null,
+    "marketCap": 102576603136
+  },
+  {
+    "code": "BAPI",
+    "name": "PT Bhakti Agung Propertindo Tbk",
+    "sector": null,
+    "marketCap": 106247618560
+  },
+  {
+    "code": "BATR",
+    "name": "Benteng Api Technic Tbk.",
+    "sector": null,
+    "marketCap": 276757741568
+  },
+  {
+    "code": "BAUT",
+    "name": "PT Mitra Angkasa Sejahtera Tbk",
+    "sector": null,
+    "marketCap": 172806586368
+  },
+  {
+    "code": "BAYU",
+    "name": "PT Bayu Buana Tbk",
+    "sector": null,
+    "marketCap": 411502182400
+  },
+  {
+    "code": "BBCA",
+    "name": "PT Bank Central Asia Tbk",
+    "sector": "Financials",
+    "marketCap": 783116151029760
+  },
+  {
+    "code": "BBHI",
+    "name": "PT Allo Bank Indonesia Tbk",
+    "sector": null,
+    "marketCap": 19671747133440
+  },
+  {
+    "code": "BBKP",
+    "name": "PT Bank KB Indonesia Tbk",
+    "sector": "Financials",
+    "marketCap": 10333813997568
+  },
+  {
+    "code": "BBLD",
+    "name": "PT Buana Finance Tbk",
+    "sector": null,
+    "marketCap": 1003935629312
+  },
+  {
+    "code": "BBMD",
+    "name": "PT Bank Mestika Dharma Tbk",
+    "sector": null,
+    "marketCap": 8058249412608
+  },
+  {
+    "code": "BBNI",
+    "name": "PT Bank Negara Indonesia (Persero) Tbk",
+    "sector": "Financials",
+    "marketCap": 135242178363392
+  },
+  {
+    "code": "BBRI",
+    "name": "PT Bank Rakyat Indonesia (Persero) Tbk",
+    "sector": "Financials",
+    "marketCap": 471299512074240
+  },
+  {
+    "code": "BBRM",
+    "name": "PT Pelayaran Nasional Bina Buana Raya Tbk",
+    "sector": null,
+    "marketCap": 1009059364864
+  },
+  {
+    "code": "BBSI",
+    "name": "PT Krom Bank Indonesia Tbk",
+    "sector": null,
+    "marketCap": 17087463424000
+  },
+  {
+    "code": "BBSS",
+    "name": "PT Bumi Benowo Sukses Sejahtera Tbk",
+    "sector": null,
+    "marketCap": 470401548288
+  },
+  {
+    "code": "BBTN",
+    "name": "PT Bank Tabungan Negara (Persero) Tbk",
+    "sector": "Financials",
+    "marketCap": 17262366949376
+  },
+  {
+    "code": "BBYB",
+    "name": "PT Bank Neo Commerce Tbk",
+    "sector": null,
+    "marketCap": 3604630208512
+  },
+  {
+    "code": "BCAP",
+    "name": "PT MNC Kapital Indonesia Tbk",
+    "sector": null,
+    "marketCap": 2130942623744
+  },
+  {
+    "code": "BCIC",
+    "name": "PT Bank JTrust Indonesia Tbk",
+    "sector": null,
+    "marketCap": 2281850011648
+  },
+  {
+    "code": "BCIP",
+    "name": "PT Bumi Citra Permai Tbk",
+    "sector": null,
+    "marketCap": 91514593280
+  },
+  {
+    "code": "BDKR",
+    "name": "PT Berdikari Pondasi Perkasa Tbk",
+    "sector": null,
+    "marketCap": 726032973824
+  },
+  {
+    "code": "BDMN",
+    "name": "PT Bank Danamon Indonesia Tbk",
+    "sector": null,
+    "marketCap": 43492311040000
+  },
+  {
+    "code": "BEEF",
+    "name": "PT Estika Tata Tiara Tbk",
+    "sector": null,
+    "marketCap": 3507947831296
+  },
+  {
+    "code": "BEER",
+    "name": "PT Jobubu Jarum Minahasa Tbk",
+    "sector": null,
+    "marketCap": 295999995904
+  },
+  {
+    "code": "BEKS",
+    "name": "PT. Bank Pembangunan Daerah Banten, Tbk",
+    "sector": null,
+    "marketCap": 1141149663232
+  },
+  {
+    "code": "BELI",
+    "name": "PT Global Digital Niaga Tbk",
+    "sector": null,
+    "marketCap": 35402496868352
+  },
+  {
+    "code": "BELL",
+    "name": "PT Trisula Textile Industries Tbk",
+    "sector": null,
+    "marketCap": 851066814464
+  },
+  {
+    "code": "BESS",
+    "name": "PT Batulicin Nusantara Maritim Tbk",
+    "sector": null,
+    "marketCap": 3148016779264
+  },
+  {
+    "code": "BEST",
+    "name": "PT Bekasi Fajar Industrial Estate Tbk",
+    "sector": "Properties & Real Estate",
+    "marketCap": 1061204197376
+  },
+  {
+    "code": "BFIN",
+    "name": "PT BFI Finance Indonesia Tbk",
+    "sector": "Financials",
+    "marketCap": 13348192124928
+  },
+  {
+    "code": "BGTG",
+    "name": "PT Bank Ganesha Tbk",
+    "sector": null,
+    "marketCap": 2732693651456
+  },
+  {
+    "code": "BHIT",
+    "name": "PT MNC Asia Holding Tbk",
+    "sector": null,
+    "marketCap": 2255654223872
+  },
+  {
+    "code": "BINA",
+    "name": "PT Bank Ina Perdana Tbk",
+    "sector": null,
+    "marketCap": 24538865729536
+  },
+  {
+    "code": "BINO",
+    "name": "PT Perma Plasindo Tbk",
+    "sector": null,
+    "marketCap": 257110736896
+  },
+  {
+    "code": "BIPI",
+    "name": "PT Astrindo Nusantara Infrastruktur Tbk",
+    "sector": null,
+    "marketCap": 10129921540096
+  },
+  {
+    "code": "BIPP",
+    "name": "PT Bhuwanatala Indah Permai Tbk",
+    "sector": null,
+    "marketCap": 362064183296
+  },
+  {
+    "code": "BIRD",
+    "name": "PT Blue Bird Tbk",
+    "sector": "Transportation & Logistic",
+    "marketCap": 4015870443520
+  },
+  {
+    "code": "BISI",
+    "name": "PT BISI International Tbk",
+    "sector": null,
+    "marketCap": 2070000041984
+  },
+  {
+    "code": "BJBR",
+    "name": "PT Bank Pembangunan Daerah Jawa Barat dan Banten Tbk",
+    "sector": "Financials",
+    "marketCap": 8311940317184
+  },
+  {
+    "code": "BJTM",
+    "name": "PT Bank Pembangunan Daerah Jawa Timur Tbk",
+    "sector": "Financials",
+    "marketCap": 7808058654720
+  },
+  {
+    "code": "BKSL",
+    "name": "PT Sentul City Tbk",
+    "sector": null,
+    "marketCap": 12745876439040
+  },
+  {
+    "code": "BKSW",
+    "name": "PT Bank QNB Indonesia Tbk",
+    "sector": null,
+    "marketCap": 1828218470400
+  },
+  {
+    "code": "BLES",
+    "name": "Superior Prima Sukses Tbk.",
+    "sector": null,
+    "marketCap": 1938064932864
+  },
+  {
+    "code": "BLOG",
+    "name": "Trimitra Trans Persada Tbk.",
+    "sector": null,
+    "marketCap": 1277446193152
+  },
+  {
+    "code": "BLTA",
+    "name": "PT Berlian Laju Tanker Tbk",
+    "sector": null,
+    "marketCap": 855002251264
+  },
+  {
+    "code": "BLUE",
+    "name": "PT Berkah Prima Perkasa Tbk",
+    "sector": null,
+    "marketCap": 1032459976704
+  },
+  {
+    "code": "BMAS",
+    "name": "PT Bank Kasikorn Indonesia Tbk",
+    "sector": null,
+    "marketCap": 9051331100672
+  },
+  {
+    "code": "BMBL",
+    "name": "PT Lavender Bina Cendikia Tbk",
+    "sector": null,
+    "marketCap": 32962592768
+  },
+  {
+    "code": "BMHS",
+    "name": "PT Bundamedik Tbk",
+    "sector": null,
+    "marketCap": 1651855982592
+  },
+  {
+    "code": "BMRI",
+    "name": "PT Bank Mandiri (Persero) Tbk",
+    "sector": "Financials",
+    "marketCap": 394206929485824
+  },
+  {
+    "code": "BMSR",
+    "name": "PT Bintang Mitra Semestaraya Tbk",
+    "sector": null,
+    "marketCap": 357033607168
+  },
+  {
+    "code": "BMTR",
+    "name": "PT Global Mediacom Tbk",
+    "sector": null,
+    "marketCap": 1913243959296
+  },
+  {
+    "code": "BNBA",
+    "name": "PT Bank Bumi Arta Tbk",
+    "sector": null,
+    "marketCap": 2507120050176
+  },
+  {
+    "code": "BNBR",
+    "name": "PT Bakrie & Brothers Tbk",
+    "sector": null,
+    "marketCap": 46293816705024
+  },
+  {
+    "code": "BNGA",
+    "name": "PT Bank CIMB Niaga Tbk",
+    "sector": "Financials",
+    "marketCap": 41720859328512
+  },
+  {
+    "code": "BNII",
+    "name": "PT Bank Maybank Indonesia Tbk",
+    "sector": null,
+    "marketCap": 14785747877888
+  },
+  {
+    "code": "BNLI",
+    "name": "PT Bank Permata Tbk",
+    "sector": "Financials",
+    "marketCap": 79237071503360
+  },
+  {
+    "code": "BOAT",
+    "name": "Newport Marine Services Tbk.",
+    "sector": null,
+    "marketCap": 469225144320
+  },
+  {
+    "code": "BOBA",
+    "name": "PT Formosa Ingredient Factory Tbk",
+    "sector": null,
+    "marketCap": 249642008576
+  },
+  {
+    "code": "BOGA",
+    "name": "PT Apollo Global Interactive Tbk",
+    "sector": null,
+    "marketCap": 6199747543040
+  },
+  {
+    "code": "BOLA",
+    "name": "PT Bali Bintang Sejahtera Tbk",
+    "sector": null,
+    "marketCap": 941999980544
+  },
+  {
+    "code": "BOLT",
+    "name": "PT Garuda Metalindo Tbk",
+    "sector": null,
+    "marketCap": 1886718656512
+  },
+  {
+    "code": "BPFI",
+    "name": "PT Woori Finance Indonesia Tbk",
+    "sector": null,
+    "marketCap": 711282720768
+  },
+  {
+    "code": "BPII",
+    "name": "PT Batavia Prosperindo Internasional Tbk",
+    "sector": null,
+    "marketCap": 4388563976192
+  },
+  {
+    "code": "BPTR",
+    "name": "PT Batavia Prosperindo Trans Tbk",
+    "sector": null,
+    "marketCap": 272118005760
+  },
+  {
+    "code": "BRAM",
+    "name": "PT Indo Kordsa Tbk",
+    "sector": null,
+    "marketCap": 2070262185984
+  },
+  {
+    "code": "BREN",
+    "name": "PT Barito Renewables Energy Tbk",
+    "sector": "Energy",
+    "marketCap": 469566123671552
+  },
+  {
+    "code": "BRIS",
+    "name": "PT Bank Syariah Indonesia Tbk",
+    "sector": "Financials",
+    "marketCap": 83955252461568
+  },
+  {
+    "code": "BRMS",
+    "name": "PT Bumi Resources Minerals Tbk",
+    "sector": null,
+    "marketCap": 87197181018112
+  },
+  {
+    "code": "BRNA",
+    "name": "PT Berlina Tbk",
+    "sector": null,
+    "marketCap": 631525933056
+  },
+  {
+    "code": "BRPT",
+    "name": "PT Barito Pacific Tbk",
+    "sector": "Basic Materials",
+    "marketCap": 180863673303040
+  },
+  {
+    "code": "BRRC",
+    "name": "Raja Roti Cemerlang Tbk.",
+    "sector": null,
+    "marketCap": 57320673280
+  },
+  {
+    "code": "BSBK",
+    "name": "PT Wulandari Bangun Laksana Tbk",
+    "sector": null,
+    "marketCap": 1329869750272
+  },
+  {
+    "code": "BSDE",
+    "name": "PT Bumi Serpong Damai Tbk",
+    "sector": "Properties & Real Estate",
+    "marketCap": 12548037410816
+  },
+  {
+    "code": "BSIM",
+    "name": "PT Bank Sinarmas Tbk",
+    "sector": null,
+    "marketCap": 13899894095872
+  },
+  {
+    "code": "BSML",
+    "name": "PT Bintang Samudera Mandiri Lines Tbk",
+    "sector": null,
+    "marketCap": 952865914880
+  },
+  {
+    "code": "BSSR",
+    "name": "PT Baramulti Suksessarana Tbk",
+    "sector": null,
+    "marketCap": 11329445298176
+  },
+  {
+    "code": "BSWD",
+    "name": "PT Bank of India Indonesia Tbk",
+    "sector": null,
+    "marketCap": 4149975187456
+  },
+  {
+    "code": "BTEK",
+    "name": "PT Bumi Teknokultura Unggul Tbk",
+    "sector": null,
+    "marketCap": 509052452864
+  },
+  {
+    "code": "BTON",
+    "name": "PT Betonjaya Manunggal Tbk",
+    "sector": null,
+    "marketCap": 264960000000
+  },
+  {
+    "code": "BTPN",
+    "name": "PT Bank SMBC Indonesia Tbk",
+    "sector": null,
+    "marketCap": 22995242319872
+  },
+  {
+    "code": "BTPS",
+    "name": "PT Bank BTPN Syariah Tbk",
+    "sector": "Financials",
+    "marketCap": 7626662871040
+  },
+  {
+    "code": "BUAH",
+    "name": "PT Segar Kumala Indonesia Tbk",
+    "sector": null,
+    "marketCap": 1020000010240
+  },
+  {
+    "code": "BUDI",
+    "name": "PT Budi Starch & Sweetener Tbk",
+    "sector": null,
+    "marketCap": 970115776512
+  },
+  {
+    "code": "BUKA",
+    "name": "PT Bukalapak.com Tbk.",
+    "sector": "Technology",
+    "marketCap": 10836371308544
+  },
+  {
+    "code": "BUKK",
+    "name": "PT Bukaka Teknik Utama Tbk.",
+    "sector": null,
+    "marketCap": 2666856710144
+  },
+  {
+    "code": "BULL",
+    "name": "PT Buana Lintas Lautan Tbk",
+    "sector": null,
+    "marketCap": 7065463422976
+  },
+  {
+    "code": "BUMI",
+    "name": "PT Bumi Resources Tbk",
+    "sector": "Energy",
+    "marketCap": 69439718424576
+  },
+  {
+    "code": "BUVA",
+    "name": "PT Bukit Uluwatu Villa Tbk",
+    "sector": null,
+    "marketCap": 19324387459072
+  },
+  {
+    "code": "BVIC",
+    "name": "PT Bank Victoria International Tbk",
+    "sector": null,
+    "marketCap": 1713005920256
+  },
+  {
+    "code": "BWPT",
+    "name": "PT Eagle High Plantations Tbk",
+    "sector": null,
+    "marketCap": 2863257878528
+  },
+  {
+    "code": "BYAN",
+    "name": "PT Bayan Resources Tbk.",
+    "sector": "Energy",
+    "marketCap": 403333332336640
+  },
+  {
+    "code": "CAKK",
+    "name": "PT Cahayaputra Asa Keramik Tbk",
+    "sector": null,
+    "marketCap": 169665331200
+  },
+  {
+    "code": "CAMP",
+    "name": "PT Campina Ice Cream Industry, Tbk.",
+    "sector": null,
+    "marketCap": 1006335033344
+  },
+  {
+    "code": "CARE",
+    "name": "PT Metro Healthcare Indonesia Tbk",
+    "sector": null,
+    "marketCap": 14098000510976
+  },
+  {
+    "code": "CARS",
+    "name": "PT Industri dan Perdagangan Bintraco Dharma Tbk",
+    "sector": null,
+    "marketCap": 1350000050176
+  },
+  {
+    "code": "CASA",
+    "name": "PT Capital Financial Indonesia Tbk",
+    "sector": null,
+    "marketCap": 98057291038720
+  },
+  {
+    "code": "CASH",
+    "name": "PT Cashlez Worldwide Indonesia Tbk",
+    "sector": null,
+    "marketCap": 553538879488
+  },
+  {
+    "code": "CASS",
+    "name": "PT Cahaya Aero Services Tbk",
+    "sector": null,
+    "marketCap": 3965205086208
+  },
+  {
+    "code": "CBDK",
+    "name": "Bangun Kosambi Sukses Tbk.",
+    "sector": null,
+    "marketCap": 21556524744704
+  },
+  {
+    "code": "CBPE",
+    "name": "PT Citra Buana Prasida Tbk",
+    "sector": null,
+    "marketCap": 766281252864
+  },
+  {
+    "code": "CBRE",
+    "name": "PT Cakra Buana Resources Energi Tbk",
+    "sector": null,
+    "marketCap": 3108576165888
+  },
+  {
+    "code": "CBUT",
+    "name": "PT Citra Borneo Utama Tbk",
+    "sector": null,
+    "marketCap": 2640625008640
+  },
+  {
+    "code": "CCSI",
+    "name": "PT Communication Cable Systems Indonesia Tbk",
+    "sector": null,
+    "marketCap": 328000012288
+  },
+  {
+    "code": "CDIA",
+    "name": "Chandra Daya Investasi Tbk.",
+    "sector": null,
+    "marketCap": 88572384247808
+  },
+  {
+    "code": "CEKA",
+    "name": "PT Wilmar Cahaya Indonesia Tbk.",
+    "sector": null,
+    "marketCap": 1320899969024
+  },
+  {
+    "code": "CENT",
+    "name": "PT Centratama Telekomunikasi Indonesia Tbk",
+    "sector": null,
+    "marketCap": 2525860724736
+  },
+  {
+    "code": "CFIN",
+    "name": "PT. Clipan Finance Indonesia Tbk",
+    "sector": null,
+    "marketCap": 1418489233408
+  },
+  {
+    "code": "CGAS",
+    "name": "Citra Nusantara Gemilang Tbk.",
+    "sector": null,
+    "marketCap": 272814948352
+  },
+  {
+    "code": "CHEK",
+    "name": "Diastika Biotekindo Tbk.",
+    "sector": null,
+    "marketCap": 555299766272
+  },
+  {
+    "code": "CHEM",
+    "name": "PT Chemstar Indonesia Tbk",
+    "sector": null,
+    "marketCap": 113902198784
+  },
+  {
+    "code": "CHIP",
+    "name": "PT Pelita Teknologi Global Tbk",
+    "sector": null,
+    "marketCap": 729430032384
+  },
+  {
+    "code": "CINT",
+    "name": "PT Chitose Internasional Tbk",
+    "sector": null,
+    "marketCap": 177000005632
+  },
+  {
+    "code": "CITA",
+    "name": "PT Cita Mineral Investindo Tbk",
+    "sector": null,
+    "marketCap": 12910777597952
+  },
+  {
+    "code": "CITY",
+    "name": "PT Natura City Developments Tbk",
+    "sector": null,
+    "marketCap": 940502876160
+  },
+  {
+    "code": "CLAY",
+    "name": "PT Citra Putra Realty Tbk",
+    "sector": null,
+    "marketCap": 7093199831040
+  },
+  {
+    "code": "CLEO",
+    "name": "PT Sariguna Primatirta Tbk",
+    "sector": "Consumer Non-Cyclicals",
+    "marketCap": 9264000139264
+  },
+  {
+    "code": "CLPI",
+    "name": "PT Colorpak Indonesia Tbk",
+    "sector": null,
+    "marketCap": 494255210496
+  },
+  {
+    "code": "CMNP",
+    "name": "PT Citra Marga Nusaphala Persada Tbk",
+    "sector": null,
+    "marketCap": 9207487135744
+  },
+  {
+    "code": "CMNT",
+    "name": "PT Cemindo Gemilang Tbk",
+    "sector": null,
+    "marketCap": 13700403560448
+  },
+  {
+    "code": "CMRY",
+    "name": "PT Cisarua Mountain Dairy Tbk",
+    "sector": null,
+    "marketCap": 37689743114240
+  },
+  {
+    "code": "CNMA",
+    "name": "PT Nusantara Sejahtera Raya Tbk",
+    "sector": null,
+    "marketCap": 7994872430592
+  },
+  {
+    "code": "COAL",
+    "name": "PT Black Diamond Resources Tbk",
+    "sector": null,
+    "marketCap": 156249997312
+  },
+  {
+    "code": "COCO",
+    "name": "PT Wahana Interfood Nusantara Tbk",
+    "sector": null,
+    "marketCap": 1537684930560
+  },
+  {
+    "code": "COIN",
+    "name": "Indokripto Koin Semesta Tbk.",
+    "sector": null,
+    "marketCap": 10588235235328
+  },
+  {
+    "code": "CPIN",
+    "name": "PT Charoen Pokphand Indonesia Tbk",
+    "sector": "Consumer Non-Cyclicals",
+    "marketCap": 51489720500224
+  },
+  {
+    "code": "CPRO",
+    "name": "PT Central Proteina Prima Tbk",
+    "sector": null,
+    "marketCap": 3038191550464
+  },
+  {
+    "code": "CRSN",
+    "name": "PT Carsurin Tbk",
+    "sector": null,
+    "marketCap": 332579995648
+  },
+  {
+    "code": "CSAP",
+    "name": "PT Catur Sentosa Adiprana Tbk",
+    "sector": "Consumer Cyclicals",
+    "marketCap": 1648120692736
+  },
+  {
+    "code": "CSIS",
+    "name": "PT Cahayasakti Investindo Sukses Tbk",
+    "sector": null,
+    "marketCap": 365960560640
+  },
+  {
+    "code": "CSMI",
+    "name": "PT Cipta Selera Murni Tbk",
+    "sector": null,
+    "marketCap": 64468856832
+  },
+  {
+    "code": "CSRA",
+    "name": "PT Cisadane Sawit Raya Tbk",
+    "sector": null,
+    "marketCap": 1537499987968
+  },
+  {
+    "code": "CTBN",
+    "name": "PT Citra Tubindo Tbk",
+    "sector": null,
+    "marketCap": 3201486028800
+  },
+  {
+    "code": "CTRA",
+    "name": "PT Ciputra Development Tbk",
+    "sector": "Properties & Real Estate",
+    "marketCap": 11584809205760
+  },
+  {
+    "code": "CTTH",
+    "name": "PT Citatah Tbk",
+    "sector": null,
+    "marketCap": 164932534272
+  },
+  {
+    "code": "CUAN",
+    "name": "PT Petrindo Jaya Kreasi Tbk",
+    "sector": "Energy",
+    "marketCap": 83175405518848
+  },
+  {
+    "code": "CYBR",
+    "name": "PT ITSEC Asia Tbk",
+    "sector": null,
+    "marketCap": 7818952835072
+  },
+  {
+    "code": "DAAZ",
+    "name": "Daaz Bara Lestari Tbk.",
+    "sector": null,
+    "marketCap": 3185215012864
+  },
+  {
+    "code": "DADA",
+    "name": "PT Diamond Citra Propertindo Tbk",
+    "sector": null,
+    "marketCap": 371576537088
+  },
+  {
+    "code": "DART",
+    "name": "PT Duta Anggada Realty Tbk.",
+    "sector": null,
+    "marketCap": 439794728960
+  },
+  {
+    "code": "DATA",
+    "name": "Remala Abadi Tbk.",
+    "sector": null,
+    "marketCap": 2701875216384
+  },
+  {
+    "code": "DAYA",
+    "name": "PT Duta Intidaya Tbk",
+    "sector": null,
+    "marketCap": 2372136075264
+  },
+  {
+    "code": "DCII",
+    "name": "PT DCI Indonesia Tbk",
+    "sector": "Technology",
+    "marketCap": 489978962378752
+  },
+  {
+    "code": "DEFI",
+    "name": "PT Danasupra Erapacific Tbk",
+    "sector": null,
+    "marketCap": 73684000768
+  },
+  {
+    "code": "DEPO",
+    "name": "PT Caturkarda Depo Bangunan Tbk",
+    "sector": null,
+    "marketCap": 1629600088064
+  },
+  {
+    "code": "DEWA",
+    "name": "PT Darma Henwa Tbk",
+    "sector": null,
+    "marketCap": 19448593383424
+  },
+  {
+    "code": "DEWI",
+    "name": "PT Dewi Shri Farmindo Tbk.",
+    "sector": null,
+    "marketCap": 251999993856
+  },
+  {
+    "code": "DFAM",
+    "name": "PT Dafam Property Indonesia Tbk",
+    "sector": null,
+    "marketCap": 155787935744
+  },
+  {
+    "code": "DGIK",
+    "name": "PT Nusa Konstruksi Enjiniring Tbk",
+    "sector": null,
+    "marketCap": 663182639104
+  },
+  {
+    "code": "DGNS",
+    "name": "PT Diagnos Laboratorium Utama Tbk",
+    "sector": null,
+    "marketCap": 324500029440
+  },
+  {
+    "code": "DGWG",
+    "name": "Delta Giri Wacana Tbk.",
+    "sector": null,
+    "marketCap": 1847058890752
+  },
+  {
+    "code": "DILD",
+    "name": "PT Intiland Development Tbk",
+    "sector": null,
+    "marketCap": 1212804890624
+  },
+  {
+    "code": "DIVA",
+    "name": "PT Distribusi Voucher Nusantara Tbk",
+    "sector": null,
+    "marketCap": 195998269440
+  },
+  {
+    "code": "DKFT",
+    "name": "PT Central Omega Resources Tbk",
+    "sector": null,
+    "marketCap": 3776737705984
+  },
+  {
+    "code": "DKHH",
+    "name": "Cipta Sarana Medika Tbk.",
+    "sector": null,
+    "marketCap": 165755125760
+  },
+  {
+    "code": "DLTA",
+    "name": "PT Delta Djakarta Tbk",
+    "sector": null,
+    "marketCap": 1429176451072
+  },
+  {
+    "code": "DMAS",
+    "name": "PT Puradelta Lestari Tbk",
+    "sector": "Properties & Real Estate",
+    "marketCap": 7181518766080
+  },
+  {
+    "code": "DMMX",
+    "name": "PT Digital Mediatama Maxima Tbk",
+    "sector": null,
+    "marketCap": 1444627611648
+  },
+  {
+    "code": "DMND",
+    "name": "PT Diamond Food Indonesia Tbk",
+    "sector": null,
+    "marketCap": 5965065748480
+  },
+  {
+    "code": "DNAR",
+    "name": "PT Bank Oke Indonesia Tbk",
+    "sector": null,
+    "marketCap": 2094656520192
+  },
+  {
+    "code": "DNET",
+    "name": "PT Indoritel Makmur Internasional Tbk.",
+    "sector": null,
+    "marketCap": 138648599134208
+  },
+  {
+    "code": "DOID",
+    "name": "PT Buma Internasional Grup Tbk",
+    "sector": "Energy",
+    "marketCap": 1603863052288
+  },
+  {
+    "code": "DOOH",
+    "name": "PT Era Media Sejahtera Tbk",
+    "sector": null,
+    "marketCap": 2089500672000
+  },
+  {
+    "code": "DOSS",
+    "name": "Global Sukses Digital Tbk.",
+    "sector": null,
+    "marketCap": 308774993920
+  },
+  {
+    "code": "DPUM",
+    "name": "PT Dua Putra Utama Makmur Tbk",
+    "sector": null,
+    "marketCap": 412289466368
+  },
+  {
+    "code": "DRMA",
+    "name": "PT Dharma Polimetal Tbk",
+    "sector": null,
+    "marketCap": 4517647089664
+  },
+  {
+    "code": "DSFI",
+    "name": "PT Dharma Samudera Fishing Industries Tbk",
+    "sector": null,
+    "marketCap": 152285102080
+  },
+  {
+    "code": "DSNG",
+    "name": "PT Dharma Satya Nusantara Tbk",
+    "sector": "Consumer Non-Cyclicals",
+    "marketCap": 14627783049216
+  },
+  {
+    "code": "DSSA",
+    "name": "PT Dian Swastatika Sentosa Tbk",
+    "sector": "Energy",
+    "marketCap": 150863813279744
+  },
+  {
+    "code": "DUTI",
+    "name": "PT Duta Pertiwi Tbk",
+    "sector": null,
+    "marketCap": 7936499777536
+  },
+  {
+    "code": "DVLA",
+    "name": "PT Darya-Varia Laboratoria Tbk",
+    "sector": null,
+    "marketCap": 1775199977472
+  },
+  {
+    "code": "DWGL",
+    "name": "PT Dwi Guna Laksana Tbk",
+    "sector": null,
+    "marketCap": 3664117235712
+  },
+  {
+    "code": "DYAN",
+    "name": "PT Dyandra Media International Tbk",
+    "sector": null,
+    "marketCap": 367474933760
+  },
+  {
+    "code": "EAST",
+    "name": "PT Eastparc Hotel Tbk",
+    "sector": null,
+    "marketCap": 383755714560
+  },
+  {
+    "code": "ECII",
+    "name": "PT Electronic City Indonesia Tbk",
+    "sector": null,
+    "marketCap": 195595960320
+  },
+  {
+    "code": "EKAD",
+    "name": "PT Ekadharma International Tbk",
+    "sector": null,
+    "marketCap": 625403625472
+  },
+  {
+    "code": "ELIT",
+    "name": "PT Data Sinergitama Jaya Tbk",
+    "sector": null,
+    "marketCap": 353493090304
+  },
+  {
+    "code": "ELPI",
+    "name": "PT Pelayaran Nasional Ekalya Purnamasari Tbk",
+    "sector": null,
+    "marketCap": 7095692820480
+  },
+  {
+    "code": "ELSA",
+    "name": "PT Elnusa Tbk",
+    "sector": "Energy",
+    "marketCap": 5181935190016
+  },
+  {
+    "code": "ELTY",
+    "name": "PT Bakrieland Development Tbk",
+    "sector": null,
+    "marketCap": 1827920281600
+  },
+  {
+    "code": "EMAS",
+    "name": "PT Merdeka Gold Resources Tbk",
+    "sector": null,
+    "marketCap": 110116963614720
+  },
+  {
+    "code": "EMDE",
+    "name": "PT Megapolitan Developments Tbk",
+    "sector": null,
+    "marketCap": 271350005760
+  },
+  {
+    "code": "EMMI",
+    "name": "Esa Medika Mandiri Tbk.",
+    "sector": null,
+    "marketCap": null
+  },
+  {
+    "code": "EMTK",
+    "name": "PT Elang Mahkota Teknologi Tbk",
+    "sector": "Technology",
+    "marketCap": 32426728357888
+  },
+  {
+    "code": "ENAK",
+    "name": "PT Champ Resto Indonesia Tbk",
+    "sector": null,
+    "marketCap": 518275137536
+  },
+  {
+    "code": "ENRG",
+    "name": "PT Energi Mega Persada Tbk",
+    "sector": null,
+    "marketCap": 35065199329280
+  },
+  {
+    "code": "ENZO",
+    "name": "PT Morenzo Abadi Perkasa Tbk",
+    "sector": null,
+    "marketCap": 175166324736
+  },
+  {
+    "code": "EPAC",
+    "name": "PT Megalestari Epack Sentosaraya Tbk",
+    "sector": null,
+    "marketCap": 194900590592
+  },
+  {
+    "code": "EPMT",
+    "name": "PT Enseval Putera Megatrading Tbk.",
+    "sector": null,
+    "marketCap": 6419476643840
+  },
+  {
+    "code": "ERAA",
+    "name": "PT Erajaya Swasembada Tbk",
+    "sector": "Consumer Cyclicals",
+    "marketCap": 7258026016768
+  },
+  {
+    "code": "ERAL",
+    "name": "PT Sinar Eka Selaras Tbk",
+    "sector": null,
+    "marketCap": 1618499993600
+  },
+  {
+    "code": "ERTX",
+    "name": "PT Eratex Djaja Tbk",
+    "sector": null,
+    "marketCap": 248302174208
+  },
+  {
+    "code": "ESIP",
+    "name": "PT Sinergi Inti Plastindo Tbk",
+    "sector": null,
+    "marketCap": 142074085376
+  },
+  {
+    "code": "ESSA",
+    "name": "PT ESSA Industries Indonesia Tbk.",
+    "sector": "Basic Materials",
+    "marketCap": 10939129659392
+  },
+  {
+    "code": "ESTA",
+    "name": "PT Esta Multi Usaha Tbk",
+    "sector": null,
+    "marketCap": 441414483968
+  },
+  {
+    "code": "ESTI",
+    "name": "PT Ever Shine Tex Tbk",
+    "sector": null,
+    "marketCap": 354676736000
+  },
+  {
+    "code": "EURO",
+    "name": "PT Estee Gold Feet Tbk",
+    "sector": null,
+    "marketCap": 4842770137088
+  },
+  {
+    "code": "EXCL",
+    "name": "PT XLSMART Telecom Sejahtera Tbk",
+    "sector": "Infrastructures",
+    "marketCap": 46409650798592
+  },
+  {
+    "code": "FAPA",
+    "name": "PT FAP Agri Tbk",
+    "sector": null,
+    "marketCap": 25701799428096
+  },
+  {
+    "code": "FAST",
+    "name": "PT Fast Food Indonesia Tbk",
+    "sector": "Consumer Cyclicals",
+    "marketCap": 1654467330048
+  },
+  {
+    "code": "FILM",
+    "name": "PT.MD Entertainment Tbk",
+    "sector": null,
+    "marketCap": 10778690191360
+  },
+  {
+    "code": "FIRE",
+    "name": "PT Alfa Energi Investama Tbk",
+    "sector": null,
+    "marketCap": 162289958912
+  },
+  {
+    "code": "FISH",
+    "name": "PT FKS Multi Agro Tbk",
+    "sector": null,
+    "marketCap": 2904000036864
+  },
+  {
+    "code": "FITT",
+    "name": "PT Hotel Fitra International Tbk",
+    "sector": null,
+    "marketCap": 461712293888
+  },
+  {
+    "code": "FLMC",
+    "name": "PT Falmaco Nonwoven Industri Tbk",
+    "sector": null,
+    "marketCap": 58593746944
+  },
+  {
+    "code": "FMII",
+    "name": "PT Fortune Mate Indonesia Tbk",
+    "sector": null,
+    "marketCap": 1587200000000
+  },
+  {
+    "code": "FOLK",
+    "name": "PT Multi Garam Utama Tbk",
+    "sector": null,
+    "marketCap": 883733233664
+  },
+  {
+    "code": "FORE",
+    "name": "PT Fore Kopi Indonesia Tbk",
+    "sector": null,
+    "marketCap": 7090095521792
+  },
+  {
+    "code": "FORU",
+    "name": "PT Fortune Indonesia Tbk",
+    "sector": null,
+    "marketCap": 1116537618432
+  },
+  {
+    "code": "FPNI",
+    "name": "PT Lotte Chemical Titan Tbk",
+    "sector": null,
+    "marketCap": 2371292233728
+  },
+  {
+    "code": "FUJI",
+    "name": "PT Fuji Finance Indonesia Tbk",
+    "sector": null,
+    "marketCap": 270399995904
+  },
+  {
+    "code": "FUTR",
+    "name": "PT Futura Energi Global Tbk",
+    "sector": null,
+    "marketCap": 2322443010048
+  },
+  {
+    "code": "FWCT",
+    "name": "PT Wijaya Cahaya Timber Tbk",
+    "sector": null,
+    "marketCap": 186484998144
+  },
+  {
+    "code": "GDST",
+    "name": "PT Gunawan Dianjaya Steel Tbk",
+    "sector": null,
+    "marketCap": 1164555059200
+  },
+  {
+    "code": "GDYR",
+    "name": "PT Goodyear Indonesia Tbk",
+    "sector": null,
+    "marketCap": 451000008704
+  },
+  {
+    "code": "GEMA",
+    "name": "PT Gema Grahasarana Tbk",
+    "sector": null,
+    "marketCap": 129356996608
+  },
+  {
+    "code": "GEMS",
+    "name": "PT Golden Energy Mines Tbk",
+    "sector": "Energy",
+    "marketCap": 38823530594304
+  },
+  {
+    "code": "GGRM",
+    "name": "PT Gudang Garam Tbk",
+    "sector": "Consumer Non-Cyclicals",
+    "marketCap": 41800811151360
+  },
+  {
+    "code": "GGRP",
+    "name": "PT Gunung Raja Paksi Tbk",
+    "sector": null,
+    "marketCap": 3657635725312
+  },
+  {
+    "code": "GHON",
+    "name": "PT Gihon Telekomunikasi Indonesia Tbk",
+    "sector": null,
+    "marketCap": 882749997056
+  },
+  {
+    "code": "GIAA",
+    "name": "PT. Garuda Indonesia (Persero) Tbk",
+    "sector": "Transportation & Logistic",
+    "marketCap": 21982951243776
+  },
+  {
+    "code": "GJTL",
+    "name": "PT. Gajah Tunggal Tbk",
+    "sector": "Industrials",
+    "marketCap": 4547218505728
+  },
+  {
+    "code": "GLVA",
+    "name": "PT Galva Technologies Tbk",
+    "sector": null,
+    "marketCap": 458999988224
+  },
+  {
+    "code": "GMFI",
+    "name": "PT Garuda Maintenance Facility Aero Asia Tbk",
+    "sector": null,
+    "marketCap": 6741103738880
+  },
+  {
+    "code": "GMTD",
+    "name": "PT Gowa Makassar Tourism Development Tbk",
+    "sector": null,
+    "marketCap": 1304763301888
+  },
+  {
+    "code": "GOLD",
+    "name": "PT Merdeka Gold Resources Tbk",
+    "sector": null,
+    "marketCap": 347419082752
+  },
+  {
+    "code": "GOLF",
+    "name": "Intra Golflink Resorts Tbk.",
+    "sector": null,
+    "marketCap": 3312749379584
+  },
+  {
+    "code": "GOOD",
+    "name": "PT Garudafood Putra Putri Jaya Tbk",
+    "sector": null,
+    "marketCap": 11063281057792
+  },
+  {
+    "code": "GOTO",
+    "name": "PT GoTo Gojek Tokopedia Tbk",
+    "sector": "Technology",
+    "marketCap": 53304621006848
+  },
+  {
+    "code": "GPRA",
+    "name": "PT Perdana Gapuraprima Tbk",
+    "sector": null,
+    "marketCap": 457602138112
+  },
+  {
+    "code": "GPSO",
+    "name": "PT Geoprima Solusi Tbk",
+    "sector": null,
+    "marketCap": 203889393664
+  },
+  {
+    "code": "GRIA",
+    "name": "PT Ingria Pratama Capitalindo Tbk",
+    "sector": null,
+    "marketCap": 1047352311808
+  },
+  {
+    "code": "GRPH",
+    "name": "Griptha Putra Persada Tbk.",
+    "sector": null,
+    "marketCap": 60999999488
+  },
+  {
+    "code": "GRPM",
+    "name": "PT Graha Prima Mentari Tbk",
+    "sector": null,
+    "marketCap": 370913280000
+  },
+  {
+    "code": "GSMF",
+    "name": "PT Equity Development Investment Tbk",
+    "sector": null,
+    "marketCap": 1238044770304
+  },
+  {
+    "code": "GTRA",
+    "name": "PT Grahaprima Suksesmandiri Tbk",
+    "sector": null,
+    "marketCap": 477382508544
+  },
+  {
+    "code": "GTSI",
+    "name": "PT GTS Internasional Tbk",
+    "sector": null,
+    "marketCap": 3037275357184
+  },
+  {
+    "code": "GULA",
+    "name": "PT Aman Agrindo Tbk",
+    "sector": null,
+    "marketCap": 797420027904
+  },
+  {
+    "code": "GUNA",
+    "name": "Gunanusa Eramandiri Tbk.",
+    "sector": null,
+    "marketCap": 510000005120
+  },
+  {
+    "code": "GWSA",
+    "name": "PT Greenwood Sejahtera Tbk",
+    "sector": null,
+    "marketCap": 1053102571520
+  },
+  {
+    "code": "GZCO",
+    "name": "PT Gozco Plantations Tbk",
+    "sector": null,
+    "marketCap": 1005660995584
+  },
+  {
+    "code": "HADE",
+    "name": "PT Himalaya Energi Perkasa Tbk",
+    "sector": null,
+    "marketCap": 40279998464
+  },
+  {
+    "code": "HAIS",
+    "name": "PT Hasnur Internasional Shipping Tbk",
+    "sector": "Transportation & Logistic",
+    "marketCap": 472724996096
+  },
+  {
+    "code": "HAJJ",
+    "name": "PT Arsy Buana Travelindo Tbk",
+    "sector": null,
+    "marketCap": 271534571520
+  },
+  {
+    "code": "HALO",
+    "name": "PT Haloni Jane Tbk",
+    "sector": null,
+    "marketCap": 425511059456
+  },
+  {
+    "code": "HATM",
+    "name": "PT Habco Trans Maritima Tbk",
+    "sector": null,
+    "marketCap": 4730599768064
+  },
+  {
+    "code": "HBAT",
+    "name": "PT Minahasa Membangun Hebat Tbk",
+    "sector": null,
+    "marketCap": 233125937152
+  },
+  {
+    "code": "HDFA",
+    "name": "PT Radana Bhaskara Finance Tbk",
+    "sector": null,
+    "marketCap": 634617200640
+  },
+  {
+    "code": "HDIT",
+    "name": "PT Hensel Davest Indonesia Tbk",
+    "sector": null,
+    "marketCap": 76233998336
+  },
+  {
+    "code": "HEAL",
+    "name": "PT Medikaloka Hermina Tbk",
+    "sector": "Healthcare",
+    "marketCap": 11891645612032
+  },
+  {
+    "code": "HELI",
+    "name": "PT Jaya Trishindo Tbk",
+    "sector": null,
+    "marketCap": 159909576704
+  },
+  {
+    "code": "HERO",
+    "name": "PT DFI Retail Nusantara Tbk",
+    "sector": null,
+    "marketCap": 1405701062656
+  },
+  {
+    "code": "HEXA",
+    "name": "PT Hexindo Adiperkasa Tbk",
+    "sector": "Industrials",
+    "marketCap": 3746400043008
+  },
+  {
+    "code": "HGII",
+    "name": "Hero Global Investment Tbk.",
+    "sector": null,
+    "marketCap": 799499943936
+  },
+  {
+    "code": "HMSP",
+    "name": "PT Hanjaya Mandala Sampoerna Tbk",
+    "sector": "Consumer Non-Cyclicals",
+    "marketCap": 90728097120256
+  },
+  {
+    "code": "HOKI",
+    "name": "PT Buyung Poetra Sembada Tbk",
+    "sector": null,
+    "marketCap": 522598612992
+  },
+  {
+    "code": "HOMI",
+    "name": "PT Grand House Mulia Tbk",
+    "sector": null,
+    "marketCap": 289799995392
+  },
+  {
+    "code": "HOPE",
+    "name": "PT Harapan Duta Pertiwi Tbk",
+    "sector": null,
+    "marketCap": 477200678912
+  },
+  {
+    "code": "HRME",
+    "name": "PT Menteng Heritage Realty Tbk",
+    "sector": null,
+    "marketCap": 250267500544
+  },
+  {
+    "code": "HRTA",
+    "name": "PT Hartadinata Abadi Tbk",
+    "sector": null,
+    "marketCap": 9901314146304
+  },
+  {
+    "code": "HRUM",
+    "name": "PT Harum Energy Tbk",
+    "sector": "Energy",
+    "marketCap": 10716073426944
+  },
+  {
+    "code": "HUMI",
+    "name": "PT Humpuss Maritim Internasional Tbk",
+    "sector": null,
+    "marketCap": 2763690082304
+  },
+  {
+    "code": "HYGN",
+    "name": "Ecocare Indo Pasifik Tbk.",
+    "sector": null,
+    "marketCap": 414696275968
+  },
+  {
+    "code": "IATA",
+    "name": "PT MNC Energy Investments Tbk",
+    "sector": null,
+    "marketCap": 3596720275456
+  },
+  {
+    "code": "IBOS",
+    "name": "PT Indo Boga Sukses Tbk",
+    "sector": null,
+    "marketCap": 556539445248
+  },
+  {
+    "code": "ICBP",
+    "name": "PT Indofood CBP Sukses Makmur Tbk",
+    "sector": "Consumer Non-Cyclicals",
+    "marketCap": 90379785338880
+  },
+  {
+    "code": "ICON",
+    "name": "PT Island Concepts Indonesia Tbk",
+    "sector": null,
+    "marketCap": 125321248768
+  },
+  {
+    "code": "IDEA",
+    "name": "PT Idea Indonesia Akademi Tbk",
+    "sector": null,
+    "marketCap": 72245747712
+  },
+  {
+    "code": "IDPR",
+    "name": "PT Indonesia Pondasi Raya Tbk",
+    "sector": null,
+    "marketCap": 560840048640
+  },
+  {
+    "code": "IFII",
+    "name": "PT Indonesia Fibreboard Industry Tbk",
+    "sector": null,
+    "marketCap": 1938871943168
+  },
+  {
+    "code": "IFSH",
+    "name": "PT Ifishdeco Tbk",
+    "sector": null,
+    "marketCap": 2067383451648
+  },
+  {
+    "code": "IGAR",
+    "name": "PT Champion Pacific Indonesia Tbk",
+    "sector": null,
+    "marketCap": 411934588928
+  },
+  {
+    "code": "IKAI",
+    "name": "PT Intikeramik Alamasri Industri Tbk",
+    "sector": null,
+    "marketCap": 266115989504
+  },
+  {
+    "code": "IKAN",
+    "name": "PT Era Mandiri Cemerlang Tbk",
+    "sector": null,
+    "marketCap": 72499970048
+  },
+  {
+    "code": "IKBI",
+    "name": "PT Sumi Indo Kabel Tbk",
+    "sector": null,
+    "marketCap": 795600027648
+  },
+  {
+    "code": "IKPM",
+    "name": "Ikapharmindo Putramas Tbk.",
+    "sector": null,
+    "marketCap": 333563166720
+  },
+  {
+    "code": "IMAS",
+    "name": "PT Indomobil Sukses Internasional Tbk",
+    "sector": null,
+    "marketCap": 3435090149376
+  },
+  {
+    "code": "IMJS",
+    "name": "PT Indomobil Multi Jasa Tbk",
+    "sector": null,
+    "marketCap": 1757580492800
+  },
+  {
+    "code": "IMPC",
+    "name": "PT Impack Pratama Industri Tbk",
+    "sector": "Industrials",
+    "marketCap": 87223017930752
+  },
+  {
+    "code": "INAI",
+    "name": "PT Indal Aluminium Industry Tbk",
+    "sector": null,
+    "marketCap": 114048000000
+  },
+  {
+    "code": "INCI",
+    "name": "PT Intanwijaya Internasional Tbk",
+    "sector": null,
+    "marketCap": 140168216576
+  },
+  {
+    "code": "INCO",
+    "name": "PT Vale Indonesia Tbk",
+    "sector": "Basic Materials",
+    "marketCap": 56914834620416
+  },
+  {
+    "code": "INDF",
+    "name": "PT Indofood Sukses Makmur Tbk",
+    "sector": "Consumer Non-Cyclicals",
+    "marketCap": 65414176440320
+  },
+  {
+    "code": "INDO",
+    "name": "PT Royalindo Investa Wijaya Tbk",
+    "sector": null,
+    "marketCap": 779649089536
+  },
+  {
+    "code": "INDR",
+    "name": "PT. Indo-Rama Synthetics Tbk",
+    "sector": null,
+    "marketCap": 1531182972928
+  },
+  {
+    "code": "INDS",
+    "name": "PT Indospring Tbk",
+    "sector": null,
+    "marketCap": 1798124208128
+  },
+  {
+    "code": "INDY",
+    "name": "PT. Indika Energy Tbk",
+    "sector": "Energy",
+    "marketCap": 14047268306944
+  },
+  {
+    "code": "INET",
+    "name": "PT Sinergi Inti Andalan Prima Tbk",
+    "sector": null,
+    "marketCap": 5191021101056
+  },
+  {
+    "code": "INKP",
+    "name": "PT Indah Kiat Pulp & Paper Tbk",
+    "sector": "Basic Materials",
+    "marketCap": 45545934553088
+  },
+  {
+    "code": "INOV",
+    "name": "PT Inocycle Technology Group Tbk",
+    "sector": null,
+    "marketCap": 262192185344
+  },
+  {
+    "code": "INPC",
+    "name": "PT Bank Artha Graha Internasional Tbk",
+    "sector": null,
+    "marketCap": 2891947966464
+  },
+  {
+    "code": "INPP",
+    "name": "PT Indonesian Paradise Property Tbk",
+    "sector": null,
+    "marketCap": 8386478342144
+  },
+  {
+    "code": "INPS",
+    "name": "PT Indah Prakasa Sentosa Tbk",
+    "sector": null,
+    "marketCap": 474500005888
+  },
+  {
+    "code": "INTD",
+    "name": "PT Inter Delta Tbk",
+    "sector": null,
+    "marketCap": 168079147008
+  },
+  {
+    "code": "INTP",
+    "name": "PT Indocement Tunggal Prakarsa Tbk",
+    "sector": "Basic Materials",
+    "marketCap": 18527794757632
+  },
+  {
+    "code": "IOTF",
+    "name": "PT Sumber Sinergi Makmur Tbk",
+    "sector": null,
+    "marketCap": 280385781760
+  },
+  {
+    "code": "IPAC",
+    "name": "PT Era Graharealty Tbk",
+    "sector": null,
+    "marketCap": 163377381376
+  },
+  {
+    "code": "IPCC",
+    "name": "PT Indonesia Kendaraan Terminal Tbk",
+    "sector": "Infrastructures",
+    "marketCap": 2145693990912
+  },
+  {
+    "code": "IPCM",
+    "name": "PT Jasa Armada Indonesia Tbk",
+    "sector": "Transportation & Logistic",
+    "marketCap": 1606582665216
+  },
+  {
+    "code": "IPOL",
+    "name": "PT Indopoly Swakarsa Industry Tbk",
+    "sector": null,
+    "marketCap": 728101879808
+  },
+  {
+    "code": "IPTV",
+    "name": "PT MNC Vision Networks Tbk",
+    "sector": null,
+    "marketCap": 1265938464768
+  },
+  {
+    "code": "IRRA",
+    "name": "PT Itama Ranoraya Tbk",
+    "sector": null,
+    "marketCap": 557892435968
+  },
+  {
+    "code": "IRSX",
+    "name": "PT Folago Global Nusantara Tbk",
+    "sector": null,
+    "marketCap": 3142395101184
+  },
+  {
+    "code": "ISAP",
+    "name": "PT Isra Presisi Indonesia Tbk",
+    "sector": null,
+    "marketCap": 100508893184
+  },
+  {
+    "code": "ISAT",
+    "name": "PT Indosat Tbk",
+    "sector": "Infrastructures",
+    "marketCap": 69984256524288
+  },
+  {
+    "code": "ISEA",
+    "name": "Indo American Seafoods Tbk.",
+    "sector": null,
+    "marketCap": 112589996032
+  },
+  {
+    "code": "ISSP",
+    "name": "PT Steel Pipe Industry of Indonesia Tbk",
+    "sector": null,
+    "marketCap": 3018032939008
+  },
+  {
+    "code": "ITIC",
+    "name": "PT Indonesian Tobacco Tbk",
+    "sector": null,
+    "marketCap": 223891357696
+  },
+  {
+    "code": "ITMA",
+    "name": "PT Sumber Energi Andalan Tbk",
+    "sector": null,
+    "marketCap": 1363707559936
+  },
+  {
+    "code": "ITMG",
+    "name": "PT Indo Tambangraya Megah Tbk",
+    "sector": "Energy",
+    "marketCap": 28011839619072
+  },
+  {
+    "code": "JARR",
+    "name": "PT Jhonlin Agro Raya Tbk",
+    "sector": null,
+    "marketCap": 17676722241536
+  },
+  {
+    "code": "JAST",
+    "name": "PT. Jasnita Telekomindo Tbk",
+    "sector": null,
+    "marketCap": 92018941952
+  },
+  {
+    "code": "JATI",
+    "name": "PT Informasi Teknologi Indonesia Tbk",
+    "sector": null,
+    "marketCap": 322989490176
+  },
+  {
+    "code": "JAWA",
+    "name": "PT Jaya Agra Wattie Tbk",
+    "sector": null,
+    "marketCap": 2094050836480
+  },
+  {
+    "code": "JAYA",
+    "name": "PT Armada Berjaya Trans Tbk",
+    "sector": null,
+    "marketCap": 105003417600
+  },
+  {
+    "code": "JECC",
+    "name": "PT Jembo Cable Company Tbk",
+    "sector": null,
+    "marketCap": 483840000000
+  },
+  {
+    "code": "JECX",
+    "name": "Nitrasanata Dharma Tbk.",
+    "sector": null,
+    "marketCap": 4131592339456
+  },
+  {
+    "code": "JELI",
+    "name": "Niramas Utama Tbk.",
+    "sector": null,
+    "marketCap": 860879978496
+  },
+  {
+    "code": "JGLE",
+    "name": "PT Graha Andrasentra Propertindo Tbk",
+    "sector": null,
+    "marketCap": 2145281376256
+  },
+  {
+    "code": "JIHD",
+    "name": "PT Jakarta International Hotels & Development Tbk",
+    "sector": null,
+    "marketCap": 1015461576704
+  },
+  {
+    "code": "JKON",
+    "name": "PT Jaya Konstruksi Manggala Pratama Tbk",
+    "sector": null,
+    "marketCap": 1467766800384
+  },
+  {
+    "code": "JPFA",
+    "name": "PT Japfa Comfeed Indonesia Tbk",
+    "sector": "Consumer Non-Cyclicals",
+    "marketCap": 25580873449472
+  },
+  {
+    "code": "JRPT",
+    "name": "PT Jaya Real Property, Tbk.",
+    "sector": null,
+    "marketCap": 13784544444416
+  },
+  {
+    "code": "JSMR",
+    "name": "PT Jasa Marga (Persero) Tbk",
+    "sector": "Infrastructures",
+    "marketCap": 20249460080640
+  },
+  {
+    "code": "JSPT",
+    "name": "PT Jakarta Setiabudi Internasional Tbk",
+    "sector": null,
+    "marketCap": 3211449073664
+  },
+  {
+    "code": "JTPE",
+    "name": "PT Jasuindo Tiga Perkasa Tbk",
+    "sector": null,
+    "marketCap": 4042626433024
+  },
+  {
+    "code": "KAEF",
+    "name": "PT Kimia Farma Tbk",
+    "sector": "Healthcare",
+    "marketCap": 2560631242752
+  },
+  {
+    "code": "KAQI",
+    "name": "Jantra Grupo Indonesia Tbk.",
+    "sector": null,
+    "marketCap": 201352609792
+  },
+  {
+    "code": "KBAG",
+    "name": "PT Karya Bersama Anugerah Tbk",
+    "sector": null,
+    "marketCap": 364650135552
+  },
+  {
+    "code": "KBLI",
+    "name": "PT KMI Wire and Cable Tbk",
+    "sector": null,
+    "marketCap": 1330402033664
+  },
+  {
+    "code": "KBLM",
+    "name": "PT Kabelindo Murni Tbk",
+    "sector": null,
+    "marketCap": 344960008192
+  },
+  {
+    "code": "KBLV",
+    "name": "PT First Media Tbk",
+    "sector": null,
+    "marketCap": 273520361472
+  },
+  {
+    "code": "KDSI",
+    "name": "PT Kedawung Setia Industrial Tbk",
+    "sector": null,
+    "marketCap": 741959991296
+  },
+  {
+    "code": "KDTN",
+    "name": "PT Puri Sentul Permai Tbk",
+    "sector": null,
+    "marketCap": 535009984512
+  },
+  {
+    "code": "KEEN",
+    "name": "PT Kencana Energi Lestari Tbk",
+    "sector": null,
+    "marketCap": 3318012706816
+  },
+  {
+    "code": "KEJU",
+    "name": "PT Mulia Boga Raya Tbk",
+    "sector": null,
+    "marketCap": 3287241195520
+  },
+  {
+    "code": "KETR",
+    "name": "PT Ketrosden Triasmitra",
+    "sector": null,
+    "marketCap": 1605313495040
+  },
+  {
+    "code": "KICI",
+    "name": "PT Kedaung Indah Can Tbk",
+    "sector": null,
+    "marketCap": 53819998208
+  },
+  {
+    "code": "KIJA",
+    "name": "PT Kawasan Industri Jababeka Tbk",
+    "sector": null,
+    "marketCap": 2578807259136
+  },
+  {
+    "code": "KING",
+    "name": "PT Hoffmen Cleanindo Tbk",
+    "sector": null,
+    "marketCap": 702770053120
+  },
+  {
+    "code": "KINO",
+    "name": "PT Kino Indonesia Tbk",
+    "sector": null,
+    "marketCap": 1806252769280
+  },
+  {
+    "code": "KIOS",
+    "name": "PT Kioson Komersial Indonesia Tbk",
+    "sector": "Technology",
+    "marketCap": 106510426112
+  },
+  {
+    "code": "KJEN",
+    "name": "PT Krida Jaringan Nusantara Tbk",
+    "sector": null,
+    "marketCap": 71499997184
+  },
+  {
+    "code": "KKES",
+    "name": "PT Kusuma Kemindo Sentosa Tbk",
+    "sector": null,
+    "marketCap": 103499997184
+  },
+  {
+    "code": "KKGI",
+    "name": "PT Resource Alam Indonesia Tbk",
+    "sector": null,
+    "marketCap": 1364532133888
+  },
+  {
+    "code": "KLAS",
+    "name": "PT Pelayaran Kurnia Lautan Semesta Tbk",
+    "sector": null,
+    "marketCap": 280620040192
+  },
+  {
+    "code": "KLBF",
+    "name": "PT Kalbe Farma Tbk.",
+    "sector": "Healthcare",
+    "marketCap": 35746597568512
+  },
+  {
+    "code": "KLIN",
+    "name": "PT Klinko Karya Imaji Tbk",
+    "sector": null,
+    "marketCap": 151673520128
+  },
+  {
+    "code": "KMDS",
+    "name": "PT Kurniamitra Duta Sentosa, Tbk",
+    "sector": null,
+    "marketCap": 423999995904
+  },
+  {
+    "code": "KMTR",
+    "name": "PT Kirana Megatara Tbk",
+    "sector": null,
+    "marketCap": 1889534214144
+  },
+  {
+    "code": "KOBX",
+    "name": "PT Kobexindo Tractors Tbk",
+    "sector": null,
+    "marketCap": 386324987904
+  },
+  {
+    "code": "KOCI",
+    "name": "PT Kokoh Exa Nusantara Tbk",
+    "sector": null,
+    "marketCap": 478015979520
+  },
+  {
+    "code": "KOKA",
+    "name": "PT Koka Indonesia Tbk",
+    "sector": null,
+    "marketCap": 549375934464
+  },
+  {
+    "code": "KONI",
+    "name": "PT Perdana Bangun Pusaka Tbk",
+    "sector": null,
+    "marketCap": 742559973376
+  },
+  {
+    "code": "KOPI",
+    "name": "PT Mitra Energi Persada Tbk",
+    "sector": null,
+    "marketCap": 145031462912
+  },
+  {
+    "code": "KOTA",
+    "name": "PT DMS Propertindo Tbk",
+    "sector": null,
+    "marketCap": 1835011670016
+  },
+  {
+    "code": "KPIG",
+    "name": "PT MNC Tourism Indonesia Tbk",
+    "sector": null,
+    "marketCap": 8263088734208
+  },
+  {
+    "code": "KRAS",
+    "name": "PT Krakatau Steel (Persero) Tbk",
+    "sector": "Industrials",
+    "marketCap": 4410978598912
+  },
+  {
+    "code": "KREN",
+    "name": "PT Quantum Clovera Investama Tbk",
+    "sector": null,
+    "marketCap": 236655230976
+  },
+  {
+    "code": "KRYA",
+    "name": "PT Bangun Karya Perkasa Jaya Tbk",
+    "sector": null,
+    "marketCap": 106492379136
+  },
+  {
+    "code": "KSIX",
+    "name": "Kentanix Supra International Tb",
+    "sector": null,
+    "marketCap": 795273461760
+  },
+  {
+    "code": "KUAS",
+    "name": "PT Ace Oldfields Tbk",
+    "sector": null,
+    "marketCap": 120231165952
+  },
+  {
+    "code": "LABA",
+    "name": "PT Green Power Group Tbk",
+    "sector": null,
+    "marketCap": 105926639616
+  },
+  {
+    "code": "LABS",
+    "name": "UBC Medical Indonesia Tbk.",
+    "sector": null,
+    "marketCap": 620149997568
+  },
+  {
+    "code": "LAJU",
+    "name": "PT Jasa Berdikari Logistics Tbk",
+    "sector": null,
+    "marketCap": 146196119552
+  },
+  {
+    "code": "LAND",
+    "name": "PT Trimitra Propertindo Tbk",
+    "sector": null,
+    "marketCap": 226202222592
+  },
+  {
+    "code": "LAPD",
+    "name": "PT Leyand International Tbk",
+    "sector": null,
+    "marketCap": 261779111936
+  },
+  {
+    "code": "LEAD",
+    "name": "PT Logindo Samudramakmur Tbk.",
+    "sector": null,
+    "marketCap": 643757441024
+  },
+  {
+    "code": "LFLO",
+    "name": "PT Imago Mulia Persada Tbk",
+    "sector": null,
+    "marketCap": 635559149568
+  },
+  {
+    "code": "LIFE",
+    "name": "PT MSIG Life Insurance Indonesia Tbk",
+    "sector": null,
+    "marketCap": 12337500127232
+  },
+  {
+    "code": "LINK",
+    "name": "PT Link Net Tbk",
+    "sector": null,
+    "marketCap": 3855535308800
+  },
+  {
+    "code": "LION",
+    "name": "PT Lion Metal Works Tbk",
+    "sector": null,
+    "marketCap": 185176965120
+  },
+  {
+    "code": "LIVE",
+    "name": "Homeco Victoria Makmur Tbk.",
+    "sector": null,
+    "marketCap": 1019647098880
+  },
+  {
+    "code": "LMAX",
+    "name": "PT Lupromax Pelumas Indonesia Tbk",
+    "sector": null,
+    "marketCap": 72800985088
+  },
+  {
+    "code": "LMPI",
+    "name": "PT Langgeng Makmur Industri Tbk",
+    "sector": null,
+    "marketCap": 143209512960
+  },
+  {
+    "code": "LOPI",
+    "name": "PT Logisticsplus International Tbk",
+    "sector": null,
+    "marketCap": 84700864512
+  },
+  {
+    "code": "LPCK",
+    "name": "PT Lippo Cikarang Tbk",
+    "sector": null,
+    "marketCap": 3183505047552
+  },
+  {
+    "code": "LPGI",
+    "name": "PT Lippo General Insurance Tbk",
+    "sector": null,
+    "marketCap": 1949999955968
+  },
+  {
+    "code": "LPIN",
+    "name": "PT Multi Prima Sejahtera Tbk",
+    "sector": null,
+    "marketCap": 179349995520
+  },
+  {
+    "code": "LPKR",
+    "name": "PT Lippo Karawaci Tbk",
+    "sector": "Properties & Real Estate",
+    "marketCap": 4677903056896
+  },
+  {
+    "code": "LPLI",
+    "name": "PT Star Pacific Tbk",
+    "sector": null,
+    "marketCap": 292608180224
+  },
+  {
+    "code": "LPPF",
+    "name": "PT MDS Retailing Tbk",
+    "sector": "Consumer Cyclicals",
+    "marketCap": 1866503421952
+  },
+  {
+    "code": "LPPS",
+    "name": "PT Lenox Pasifik Investama Tbk",
+    "sector": null,
+    "marketCap": 220001255424
+  },
+  {
+    "code": "LRNA",
+    "name": "PT Eka Sari Lorena Transport Tbk",
+    "sector": null,
+    "marketCap": 64750006272
+  },
+  {
+    "code": "LSIP",
+    "name": "PT Perusahaan Perkebunan London Sumatra Indonesia Tbk",
+    "sector": "Consumer Non-Cyclicals",
+    "marketCap": 9991247364096
+  },
+  {
+    "code": "LTLS",
+    "name": "PT Lautan Luas Tbk",
+    "sector": null,
+    "marketCap": 1244985425920
+  },
+  {
+    "code": "LUCK",
+    "name": "PT Sentral Mitra Informatika Tbk",
+    "sector": null,
+    "marketCap": 82311208960
+  },
+  {
+    "code": "LUCY",
+    "name": "PT Lima Dua Lima Tiga Tbk",
+    "sector": null,
+    "marketCap": 345368461312
+  },
+  {
+    "code": "MAHA",
+    "name": "PT Mandiri Herindo Adiperkasa Tbk",
+    "sector": null,
+    "marketCap": 2393665699840
+  },
+  {
+    "code": "MAIN",
+    "name": "PT Malindo Feedmill Tbk",
+    "sector": null,
+    "marketCap": 1516738314240
+  },
+  {
+    "code": "MANG",
+    "name": "Manggung Polahraya Tbk.",
+    "sector": null,
+    "marketCap": 148691615744
+  },
+  {
+    "code": "MAPA",
+    "name": "PT Map Aktif Adiperkasa Tbk",
+    "sector": "Consumer Cyclicals",
+    "marketCap": 19240199389184
+  },
+  {
+    "code": "MAPB",
+    "name": "PT Map Boga Adiperkasa Tbk",
+    "sector": null,
+    "marketCap": 2901326430208
+  },
+  {
+    "code": "MAPI",
+    "name": "PT. Mitra Adiperkasa Tbk",
+    "sector": "Consumer Cyclicals",
+    "marketCap": 26643001245696
+  },
+  {
+    "code": "MARK",
+    "name": "PT Mark Dynamics Indonesia Tbk",
+    "sector": "Industrials",
+    "marketCap": 4180000374784
+  },
+  {
+    "code": "MASB",
+    "name": "PT Bank Multiarta Sentosa Tbk",
+    "sector": null,
+    "marketCap": 4766836457472
+  },
+  {
+    "code": "MAXI",
+    "name": "PT Maxindo Karya Anugerah Tbk",
+    "sector": null,
+    "marketCap": 480504971264
+  },
+  {
+    "code": "MAYA",
+    "name": "PT Bank Mayapada Internasional Tbk",
+    "sector": null,
+    "marketCap": 5285907267584
+  },
+  {
+    "code": "MBAP",
+    "name": "PT Mitrabara Adiperdana Tbk",
+    "sector": "Energy",
+    "marketCap": 1810226085888
+  },
+  {
+    "code": "MBMA",
+    "name": "PT Merdeka Battery Materials Tbk.",
+    "sector": "Basic Materials",
+    "marketCap": 59397480906752
+  },
+  {
+    "code": "MBSS",
+    "name": "PT Mitrabahtera Segara Sejati Tbk",
+    "sector": null,
+    "marketCap": 4970075652096
+  },
+  {
+    "code": "MBTO",
+    "name": "PT Martina Berto Tbk",
+    "sector": null,
+    "marketCap": 136960000000
+  },
+  {
+    "code": "MCAS",
+    "name": "PT M Cash Integrasi Tbk",
+    "sector": null,
+    "marketCap": 256630587392
+  },
+  {
+    "code": "MCOL",
+    "name": "PT Prima Andalan Mandiri Tbk",
+    "sector": null,
+    "marketCap": 13333349531648
+  },
+  {
+    "code": "MCOR",
+    "name": "PT Bank China Construction Bank Indonesia Tbk",
+    "sector": null,
+    "marketCap": 2616461361152
+  },
+  {
+    "code": "MDIA",
+    "name": "PT Intermedia Capital Tbk",
+    "sector": null,
+    "marketCap": 9019573927936
+  },
+  {
+    "code": "MDIY",
+    "name": "Daya Intiguna Yasa Tbk.",
+    "sector": null,
+    "marketCap": 23427064791040
+  },
+  {
+    "code": "MDKA",
+    "name": "PT Merdeka Copper Gold Tbk",
+    "sector": "Basic Materials",
+    "marketCap": 71785689120768
+  },
+  {
+    "code": "MDKI",
+    "name": "PT Emdeki Utama Tbk",
+    "sector": null,
+    "marketCap": 470607888384
+  },
+  {
+    "code": "MDLA",
+    "name": "Medela Potentia Tbk.",
+    "sector": null,
+    "marketCap": 2914667462656
+  },
+  {
+    "code": "MDLN",
+    "name": "PT Modernland Realty Tbk",
+    "sector": null,
+    "marketCap": 597365817344
+  },
+  {
+    "code": "MEDC",
+    "name": "PT Medco Energi Internasional Tbk",
+    "sector": "Energy",
+    "marketCap": 32208211410944
+  },
+  {
+    "code": "MEDS",
+    "name": "PT Hetzer Medical Indonesia Tbk",
+    "sector": null,
+    "marketCap": 115625000960
+  },
+  {
+    "code": "MEGA",
+    "name": "PT Bank Mega Tbk",
+    "sector": "Financials",
+    "marketCap": 46145350926336
+  },
+  {
+    "code": "MEJA",
+    "name": "Harta Djaya Karya Tbk.",
+    "sector": null,
+    "marketCap": 263416201216
+  },
+  {
+    "code": "MERI",
+    "name": "Merry Riana Edukasi Tbk.",
+    "sector": null,
+    "marketCap": 124215894016
+  },
+  {
+    "code": "MERK",
+    "name": "PT Merck Tbk",
+    "sector": null,
+    "marketCap": 1774079967232
+  },
+  {
+    "code": "MGLV",
+    "name": "PT NexAI Digital Infrastruktur Tbk",
+    "sector": null,
+    "marketCap": 16048643375104
+  },
+  {
+    "code": "MGNA",
+    "name": "PT Magna Investama Mandiri Tbk",
+    "sector": null,
+    "marketCap": 371810828288
+  },
+  {
+    "code": "MGRO",
+    "name": "PT Mahkota Group Tbk",
+    "sector": null,
+    "marketCap": 2337211678720
+  },
+  {
+    "code": "MHKI",
+    "name": "Multi Hanna Kreasindo Tbk.",
+    "sector": null,
+    "marketCap": 521250013184
+  },
+  {
+    "code": "MICE",
+    "name": "PT Multi Indocitra Tbk",
+    "sector": null,
+    "marketCap": 311999987712
+  },
+  {
+    "code": "MIDI",
+    "name": "PT Midi Utama Indonesia Tbk",
+    "sector": "Consumer Non-Cyclicals",
+    "marketCap": 9295011774464
+  },
+  {
+    "code": "MIKA",
+    "name": "PT Mitra Keluarga Karyasehat Tbk",
+    "sector": "Healthcare",
+    "marketCap": 26283570364416
+  },
+  {
+    "code": "MINA",
+    "name": "PT Sanurhasta Mitra Tbk",
+    "sector": null,
+    "marketCap": 2736562372608
+  },
+  {
+    "code": "MINE",
+    "name": "Sinar Terang Mandiri Tbk.",
+    "sector": null,
+    "marketCap": 955757821952
+  },
+  {
+    "code": "MIRA",
+    "name": "PT Mitra International Resources Tbk",
+    "sector": null,
+    "marketCap": 114882109440
+  },
+  {
+    "code": "MITI",
+    "name": "PT Mitra Investindo Tbk",
+    "sector": null,
+    "marketCap": 780109545472
+  },
+  {
+    "code": "MKAP",
+    "name": "Multikarya Asia Pasifik Raya Tb",
+    "sector": null,
+    "marketCap": 3802499907584
+  },
+  {
+    "code": "MKPI",
+    "name": "PT Metropolitan Kentjana Tbk",
+    "sector": null,
+    "marketCap": 20836561977344
+  },
+  {
+    "code": "MKTR",
+    "name": "PT Menthobi Karyatama Raya Tbk",
+    "sector": null,
+    "marketCap": 1459311869952
+  },
+  {
+    "code": "MLBI",
+    "name": "PT Multi Bintang Indonesia Tbk",
+    "sector": null,
+    "marketCap": 14749000531968
+  },
+  {
+    "code": "MLIA",
+    "name": "PT Mulia Industrindo Tbk",
+    "sector": null,
+    "marketCap": 1534679973888
+  },
+  {
+    "code": "MLPL",
+    "name": "PT Multipolar Tbk",
+    "sector": null,
+    "marketCap": 1576949514240
+  },
+  {
+    "code": "MLPT",
+    "name": "PT Multipolar Technology Tbk",
+    "sector": "Technology",
+    "marketCap": 75703127113728
+  },
+  {
+    "code": "MMIX",
+    "name": "PT Multi Medika Internasional Tbk",
+    "sector": null,
+    "marketCap": 3504310583296
+  },
+  {
+    "code": "MMLP",
+    "name": "PT Mega Manunggal Property Tbk",
+    "sector": null,
+    "marketCap": 2052962123776
+  },
+  {
+    "code": "MNCN",
+    "name": "PT. Media Nusantara Citra Tbk",
+    "sector": "Consumer Cyclicals",
+    "marketCap": 2671886729216
+  },
+  {
+    "code": "MOLI",
+    "name": "PT Madusari Murni Indah Tbk",
+    "sector": null,
+    "marketCap": 746386030592
+  },
+  {
+    "code": "MORA",
+    "name": "PT Mora Telematika Indonesia Tbk",
+    "sector": null,
+    "marketCap": 124145014669312
+  },
+  {
+    "code": "MPIX",
+    "name": "Mitra Pedagang Indonesia Tbk.",
+    "sector": null,
+    "marketCap": 151569711104
+  },
+  {
+    "code": "MPMX",
+    "name": "PT Mitra Pinasthika Mustika Tbk",
+    "sector": null,
+    "marketCap": 4408073519104
+  },
+  {
+    "code": "MPOW",
+    "name": "PT Megapower Makmur Tbk",
+    "sector": null,
+    "marketCap": 89052676096
+  },
+  {
+    "code": "MPPA",
+    "name": "PT Matahari Putra Prima Tbk",
+    "sector": null,
+    "marketCap": 1589956968448
+  },
+  {
+    "code": "MPRO",
+    "name": "PT Maha Properti Indonesia Tbk",
+    "sector": null,
+    "marketCap": 119807131254784
+  },
+  {
+    "code": "MPXL",
+    "name": "PT MPX Logistics International Tbk",
+    "sector": null,
+    "marketCap": 314002309120
+  },
+  {
+    "code": "MRAT",
+    "name": "PT Mustika Ratu Tbk",
+    "sector": null,
+    "marketCap": 189176004608
+  },
+  {
+    "code": "MSIE",
+    "name": "PT Multisarana Intan Eduka Tbk",
+    "sector": null,
+    "marketCap": 141620756480
+  },
+  {
+    "code": "MSIN",
+    "name": "PT MNC Digital Entertainment Tbk",
+    "sector": null,
+    "marketCap": 22814243422208
+  },
+  {
+    "code": "MSJA",
+    "name": "Multi Spunindo Jaya Tbk.",
+    "sector": null,
+    "marketCap": 2361676529664
+  },
+  {
+    "code": "MSKY",
+    "name": "PT MNC Sky Vision Tbk",
+    "sector": null,
+    "marketCap": 678085984256
+  },
+  {
+    "code": "MSTI",
+    "name": "Mastersystem Infotama Tbk.",
+    "sector": null,
+    "marketCap": 4206817968128
+  },
+  {
+    "code": "MTDL",
+    "name": "PT Metrodata Electronics Tbk",
+    "sector": "Technology",
+    "marketCap": 6261210873856
+  },
+  {
+    "code": "MTEL",
+    "name": "PT Dayamitra Telekomunikasi Tbk.",
+    "sector": null,
+    "marketCap": 34905096454144
+  },
+  {
+    "code": "MTLA",
+    "name": "PT Metropolitan Land Tbk",
+    "sector": "Properties & Real Estate",
+    "marketCap": 3980665815040
+  },
+  {
+    "code": "MTMH",
+    "name": "PT Murni Sadar Tbk",
+    "sector": null,
+    "marketCap": 1903044853760
+  },
+  {
+    "code": "MTWI",
+    "name": "PT Malacca Trust Wuwungan Insurance Tbk",
+    "sector": null,
+    "marketCap": 748668583936
+  },
+  {
+    "code": "MUTU",
+    "name": "PT Mutuagung Lestari Tbk",
+    "sector": null,
+    "marketCap": 379745173504
+  },
+  {
+    "code": "MYOH",
+    "name": "PT Samindo Resources Tbk",
+    "sector": null,
+    "marketCap": 2283533500416
+  },
+  {
+    "code": "MYOR",
+    "name": "PT Mayora Indah Tbk",
+    "sector": "Consumer Non-Cyclicals",
+    "marketCap": 37335232151552
+  },
+  {
+    "code": "NAIK",
+    "name": "Adiwarna Anugerah Abadi Tbk.",
+    "sector": null,
+    "marketCap": 292986290176
+  },
+  {
+    "code": "NANO",
+    "name": "PT Nanotech Indonesia Global Tbk",
+    "sector": null,
+    "marketCap": 124271779840
+  },
+  {
+    "code": "NASA",
+    "name": "PT Andalan Perkasa Abadi Tbk",
+    "sector": null,
+    "marketCap": 330147856384
+  },
+  {
+    "code": "NASI",
+    "name": "PT Wahana Inti Makmur Tbk",
+    "sector": null,
+    "marketCap": 109806403584
+  },
+  {
+    "code": "NATO",
+    "name": "PT Olympus Strategic Indonesia Tbk",
+    "sector": null,
+    "marketCap": 5240728322048
+  },
+  {
+    "code": "NAYZ",
+    "name": "PT Hassana Boga Sejahtera Tbk",
+    "sector": null,
+    "marketCap": 147900661760
+  },
+  {
+    "code": "NCKL",
+    "name": "PT Trimegah Bangun Persada Tbk",
+    "sector": "Basic Materials",
+    "marketCap": 59523532324864
+  },
+  {
+    "code": "NELY",
+    "name": "PT Pelayaran Nelly Dwi Putri Tbk",
+    "sector": "Transportation & Logistic",
+    "marketCap": 474700021760
+  },
+  {
+    "code": "NEST",
+    "name": "Esta Indonesia Tbk.",
+    "sector": null,
+    "marketCap": 2961000103936
+  },
+  {
+    "code": "NETV",
+    "name": "PT MDTV Media Technologies Tbk",
+    "sector": null,
+    "marketCap": 2150746947584
+  },
+  {
+    "code": "NFCX",
+    "name": "PT NFC Indonesia Tbk",
+    "sector": null,
+    "marketCap": 1006866661376
+  },
+  {
+    "code": "NICE",
+    "name": "Adhi Kartiko Pratama Tbk.",
+    "sector": null,
+    "marketCap": 1605653233664
+  },
+  {
+    "code": "NICK",
+    "name": "PT Charnic Capital Tbk",
+    "sector": null,
+    "marketCap": 1006026752000
+  },
+  {
+    "code": "NICL",
+    "name": "PT PAM Mineral Tbk",
+    "sector": null,
+    "marketCap": 5083838283776
+  },
+  {
+    "code": "NIKL",
+    "name": "PT Pelat Timah Nusantara Tbk",
+    "sector": null,
+    "marketCap": 509716692992
+  },
+  {
+    "code": "NINE",
+    "name": "PT Techno9 Indonesia Tbk",
+    "sector": null,
+    "marketCap": 153146998784
+  },
+  {
+    "code": "NIRO",
+    "name": "PT City Retail Developments Tbk",
+    "sector": null,
+    "marketCap": 3685012733952
+  },
+  {
+    "code": "NISP",
+    "name": "PT Bank OCBC NISP Tbk",
+    "sector": "Financials",
+    "marketCap": 29255253622784
+  },
+  {
+    "code": "NOBU",
+    "name": "PT Bank Nationalnobu Tbk",
+    "sector": null,
+    "marketCap": 3926183116800
+  },
+  {
+    "code": "NPGF",
+    "name": "PT Nusa Palapa Gemilang Tbk",
+    "sector": null,
+    "marketCap": 187933671424
+  },
+  {
+    "code": "NRCA",
+    "name": "PT Nusa Raya Cipta Tbk",
+    "sector": null,
+    "marketCap": 1323016912896
+  },
+  {
+    "code": "NSSS",
+    "name": "PT Nusantara Sawit Sejahtera Tbk",
+    "sector": null,
+    "marketCap": 24872640053248
+  },
+  {
+    "code": "NTBK",
+    "name": "PT Nusatama Berkah Tbk",
+    "sector": null,
+    "marketCap": 251106017280
+  },
+  {
+    "code": "NZIA",
+    "name": "PT Nusantara Almazia Tbk",
+    "sector": null,
+    "marketCap": 307655671808
+  },
+  {
+    "code": "OASA",
+    "name": "PT Maharaksa Biru Energi Tbk",
+    "sector": null,
+    "marketCap": 2183443644416
+  },
+  {
+    "code": "OBAT",
+    "name": "Brigit Biofarmaka Teknologi Tbk",
+    "sector": null,
+    "marketCap": 147599998976
+  },
+  {
+    "code": "OBMD",
+    "name": "PT OBM Drilchem Tbk",
+    "sector": null,
+    "marketCap": 164422565888
+  },
+  {
+    "code": "OILS",
+    "name": "PT Indo Oil Perkasa Tbk",
+    "sector": null,
+    "marketCap": 105341124608
+  },
+  {
+    "code": "OKAS",
+    "name": "PT Ancora Indonesia Resources Tbk",
+    "sector": null,
+    "marketCap": 282440466432
+  },
+  {
+    "code": "OLIV",
+    "name": "PT Atlas Nexus Group Tbk",
+    "sector": null,
+    "marketCap": 93103595520
+  },
+  {
+    "code": "OMED",
+    "name": "PT Jayamas Medica Industri Tbk",
+    "sector": null,
+    "marketCap": 6103835344896
+  },
+  {
+    "code": "OMRE",
+    "name": "PT Indonesia Prima Property Tbk",
+    "sector": null,
+    "marketCap": 2856854487040
+  },
+  {
+    "code": "OPMS",
+    "name": "PT Optima Prima Metal Sinergi Tbk",
+    "sector": null,
+    "marketCap": 101995134976
+  },
+  {
+    "code": "PACK",
+    "name": "PT Abadi Nusantara Hijau Investama Tbk",
+    "sector": null,
+    "marketCap": 8743350697984
+  },
+  {
+    "code": "PADA",
+    "name": "PT Personel Alih Daya Tbk",
+    "sector": null,
+    "marketCap": 604800024576
+  },
+  {
+    "code": "PADI",
+    "name": "PT Minna Padi Investama Sekuritas Tbk",
+    "sector": null,
+    "marketCap": 1004083544064
+  },
+  {
+    "code": "PALM",
+    "name": "PT Provident Investasi Bersama Tbk",
+    "sector": null,
+    "marketCap": 4593999151104
+  },
+  {
+    "code": "PAMG",
+    "name": "PT Bima Sakti Pertiwi Tbk",
+    "sector": null,
+    "marketCap": 174999994368
+  },
+  {
+    "code": "PANI",
+    "name": "PT Pantai Indah Kapuk Dua Tbk",
+    "sector": "Properties & Real Estate",
+    "marketCap": 114593863041024
+  },
+  {
+    "code": "PANR",
+    "name": "PT Panorama Sentrawisata Tbk",
+    "sector": null,
+    "marketCap": 599399989248
+  },
+  {
+    "code": "PANS",
+    "name": "PT Panin Sekuritas Tbk",
+    "sector": null,
+    "marketCap": 1099157471232
+  },
+  {
+    "code": "PART",
+    "name": "Cipta Perdana Lancar Tbk.",
+    "sector": null,
+    "marketCap": 287910002688
+  },
+  {
+    "code": "PBID",
+    "name": "PT Panca Budi Idaman Tbk",
+    "sector": null,
+    "marketCap": 4012500058112
+  },
+  {
+    "code": "PBRX",
+    "name": "PT Pan Brothers Tbk",
+    "sector": null,
+    "marketCap": 580014768128
+  },
+  {
+    "code": "PBSA",
+    "name": "PT Paramita Bangun Sarana Tbk",
+    "sector": null,
+    "marketCap": 2193891393536
+  },
+  {
+    "code": "PCAR",
+    "name": "PT Prima Cakrawala Abadi Tbk",
+    "sector": null,
+    "marketCap": 52500004864
+  },
+  {
+    "code": "PDES",
+    "name": "PT Destinasi Tirta Nusantara Tbk",
+    "sector": null,
+    "marketCap": 301730004992
+  },
+  {
+    "code": "PDPP",
+    "name": "PT Primadaya Plastisindo Tbk",
+    "sector": null,
+    "marketCap": 942893170688
+  },
+  {
+    "code": "PEGE",
+    "name": "PT Panca Global Kapital Tbk",
+    "sector": null,
+    "marketCap": 385344700416
+  },
+  {
+    "code": "PEHA",
+    "name": "PT Phapros Tbk",
+    "sector": "Healthcare",
+    "marketCap": 223439994880
+  },
+  {
+    "code": "PEVE",
+    "name": "PT. Penta Valent Tbk",
+    "sector": null,
+    "marketCap": 600312512512
+  },
+  {
+    "code": "PGAS",
+    "name": "PT Perusahaan Gas Negara (Persero) Tbk",
+    "sector": "Energy",
+    "marketCap": 36604676669440
+  },
+  {
+    "code": "PGEO",
+    "name": "PT Pertamina Geothermal Energy Tbk",
+    "sector": "Infrastructures",
+    "marketCap": 46508485378048
+  },
+  {
+    "code": "PGJO",
+    "name": "PT Bahtera Bumi Raya Tbk",
+    "sector": null,
+    "marketCap": 612811472896
+  },
+  {
+    "code": "PGLI",
+    "name": "PT Pembangunan Graha Lestari Indah Tbk",
+    "sector": null,
+    "marketCap": 101504000000
+  },
+  {
+    "code": "PGUN",
+    "name": "PT Pradiksi Gunatama Tbk",
+    "sector": null,
+    "marketCap": 43033865224192
+  },
+  {
+    "code": "PICO",
+    "name": "PT Pelangi Indah Canindo Tbk",
+    "sector": null,
+    "marketCap": 74457120768
+  },
+  {
+    "code": "PIPA",
+    "name": "PT. Multi Makmur Lemindo",
+    "sector": null,
+    "marketCap": 417983856640
+  },
+  {
+    "code": "PJAA",
+    "name": "PT Pembangunan Jaya Ancol Tbk",
+    "sector": null,
+    "marketCap": 742400000000
+  },
+  {
+    "code": "PJHB",
+    "name": "Pelayaran Jaya Hidup Baru Tbk.",
+    "sector": null,
+    "marketCap": 338038358016
+  },
+  {
+    "code": "PKPK",
+    "name": "PT Paragon Karya Perkasa Tbk",
+    "sector": null,
+    "marketCap": 4692000112640
+  },
+  {
+    "code": "PLAN",
+    "name": "PT Planet Properindo Jaya Tbk",
+    "sector": null,
+    "marketCap": 34074963968
+  },
+  {
+    "code": "PMJS",
+    "name": "PT Putra Mandiri Jembar Tbk",
+    "sector": null,
+    "marketCap": 1636916396032
+  },
+  {
+    "code": "PMUI",
+    "name": "Prima Multi Usaha Indonesia Tbk",
+    "sector": null,
+    "marketCap": 568400019456
+  },
+  {
+    "code": "PNBN",
+    "name": "PT Bank Pan Indonesia Tbk",
+    "sector": "Financials",
+    "marketCap": 21664685359104
+  },
+  {
+    "code": "PNBS",
+    "name": "PT Bank Panin Dubai Syariah Tbk",
+    "sector": null,
+    "marketCap": 1940682178560
+  },
+  {
+    "code": "PNGO",
+    "name": "PT PINAGO UTAMA Tbk",
+    "sector": null,
+    "marketCap": 2773437382656
+  },
+  {
+    "code": "PNIN",
+    "name": "PT Paninvest Tbk",
+    "sector": null,
+    "marketCap": 2847826771968
+  },
+  {
+    "code": "PNLF",
+    "name": "PT Panin Financial Tbk",
+    "sector": "Financials",
+    "marketCap": 7301032837120
+  },
+  {
+    "code": "PNSE",
+    "name": "PT Pudjiadi and Sons Tbk",
+    "sector": null,
+    "marketCap": 394119872512
+  },
+  {
+    "code": "POLA",
+    "name": "PT Pool Advista Finance Tbk",
+    "sector": null,
+    "marketCap": 194362376192
+  },
+  {
+    "code": "POLI",
+    "name": "PT Pollux Hotels Group Tbk",
+    "sector": null,
+    "marketCap": 1507894886400
+  },
+  {
+    "code": "POLU",
+    "name": "PT Golden Flower Tbk",
+    "sector": null,
+    "marketCap": 8756249755648
+  },
+  {
+    "code": "PORT",
+    "name": "PT Nusantara Pelabuhan Handal Tbk",
+    "sector": null,
+    "marketCap": 2434059730944
+  },
+  {
+    "code": "POWR",
+    "name": "PT Cikarang Listrindo Tbk",
+    "sector": null,
+    "marketCap": 11650851667968
+  },
+  {
+    "code": "PPGL",
+    "name": "PT Prima Globalindo Logistik Tbk",
+    "sector": null,
+    "marketCap": 155777957888
+  },
+  {
+    "code": "PPRE",
+    "name": "PT PP Presisi Tbk",
+    "sector": null,
+    "marketCap": 1073548492800
+  },
+  {
+    "code": "PPRI",
+    "name": "PT Paperocks Indonesia Tbk",
+    "sector": null,
+    "marketCap": 158029021184
+  },
+  {
+    "code": "PPRO",
+    "name": "PT Pembangunan Perumahan Properti Tbk",
+    "sector": null,
+    "marketCap": 1048486412288
+  },
+  {
+    "code": "PRAY",
+    "name": "PT Famon Awal Bros Sedaya Tbk",
+    "sector": null,
+    "marketCap": 10329972015104
+  },
+  {
+    "code": "PRDA",
+    "name": "PT Prodia Widyahusada Tbk",
+    "sector": "Healthcare",
+    "marketCap": 2126563377152
+  },
+  {
+    "code": "PRDL",
+    "name": "Prodia Diagnostic Line Tbk.",
+    "sector": null,
+    "marketCap": null
+  },
+  {
+    "code": "PRIM",
+    "name": "PT Royal Prima Tbk",
+    "sector": null,
+    "marketCap": 371615203328
+  },
+  {
+    "code": "PSAB",
+    "name": "PT J Resources Asia Pasifik Tbk",
+    "sector": "Basic Materials",
+    "marketCap": 12224520257536
+  },
+  {
+    "code": "PSAT",
+    "name": "Pancaran Samudera Transport Tbk",
+    "sector": null,
+    "marketCap": 1348941250560
+  },
+  {
+    "code": "PSDN",
+    "name": "PT Prasidha Aneka Niaga Tbk",
+    "sector": null,
+    "marketCap": 195840000000
+  },
+  {
+    "code": "PSGO",
+    "name": "PT Palma Serasih Tbk",
+    "sector": null,
+    "marketCap": 3694600126464
+  },
+  {
+    "code": "PSKT",
+    "name": "PT Red Planet Indonesia Tbk",
+    "sector": null,
+    "marketCap": 2422188277760
+  },
+  {
+    "code": "PSSI",
+    "name": "PT IMC Pelita Logistik Tbk",
+    "sector": null,
+    "marketCap": 1679750070272
+  },
+  {
+    "code": "PTBA",
+    "name": "PT Bukit Asam (Persero) Tbk",
+    "sector": "Energy",
+    "marketCap": 27289024724992
+  },
+  {
+    "code": "PTIS",
+    "name": "PT Indo Straits Tbk",
+    "sector": null,
+    "marketCap": 148544634880
+  },
+  {
+    "code": "PTMP",
+    "name": "PT Mitra Pack Tbk",
+    "sector": null,
+    "marketCap": 212336410624
+  },
+  {
+    "code": "PTPP",
+    "name": "PT PP (Persero) Tbk",
+    "sector": "Infrastructures",
+    "marketCap": 1237068283904
+  },
+  {
+    "code": "PTPS",
+    "name": "PT Pulau Subur Tbk",
+    "sector": null,
+    "marketCap": 329462251520
+  },
+  {
+    "code": "PTPW",
+    "name": "PT Pratama Widya Tbk",
+    "sector": null,
+    "marketCap": 1049434062848
+  },
+  {
+    "code": "PTRO",
+    "name": "PT Petrosea Tbk",
+    "sector": "Energy",
+    "marketCap": 51691005149184
+  },
+  {
+    "code": "PTSN",
+    "name": "PT Sat Nusapersada Tbk",
+    "sector": null,
+    "marketCap": 1477387616256
+  },
+  {
+    "code": "PTSP",
+    "name": "PT Pioneerindo Gourmet International Tbk",
+    "sector": null,
+    "marketCap": 214183755776
+  },
+  {
+    "code": "PUDP",
+    "name": "PT Pudjiadi Prestige Tbk",
+    "sector": null,
+    "marketCap": 203008966656
+  },
+  {
+    "code": "PURA",
+    "name": "PT Putra Rajawali Kencana Tbk",
+    "sector": null,
+    "marketCap": 207963717632
+  },
+  {
+    "code": "PURI",
+    "name": "PT Puri Global Sukses Tbk",
+    "sector": null,
+    "marketCap": 140000002048
+  },
+  {
+    "code": "PWON",
+    "name": "PT Pakuwon Jati Tbk",
+    "sector": "Properties & Real Estate",
+    "marketCap": 12714134994944
+  },
+  {
+    "code": "PYFA",
+    "name": "PT Pyridam Farma Tbk",
+    "sector": null,
+    "marketCap": 2449611685888
+  },
+  {
+    "code": "PZZA",
+    "name": "PT Sarimelati Kencana Tbk",
+    "sector": "Consumer Cyclicals",
+    "marketCap": 546999304192
+  },
+  {
+    "code": "RAAM",
+    "name": "PT Tripar Multivision Plus Tbk",
+    "sector": null,
+    "marketCap": 1342283186176
+  },
+  {
+    "code": "RAJA",
+    "name": "PT Rukun Raharja Tbk",
+    "sector": "Energy",
+    "marketCap": 19127548772352
+  },
+  {
+    "code": "RALS",
+    "name": "PT Ramayana Lestari Sentosa Tbk",
+    "sector": "Consumer Cyclicals",
+    "marketCap": 2355754434560
+  },
+  {
+    "code": "RANC",
+    "name": "PT Supra Boga Lestari Tbk",
+    "sector": null,
+    "marketCap": 813533495296
+  },
+  {
+    "code": "RANS",
+    "name": "Rans Entertainmen Indonesia Tbk",
+    "sector": null,
+    "marketCap": 2673161011200
+  },
+  {
+    "code": "RATU",
+    "name": "Raharja Energi Cepu Tbk.",
+    "sector": null,
+    "marketCap": 13982527127552
+  },
+  {
+    "code": "RBMS",
+    "name": "PT Ristia Bintang Mahkotasejati Tbk",
+    "sector": null,
+    "marketCap": 177966252032
+  },
+  {
+    "code": "RCCC",
+    "name": "PT Utama Radar Cahaya Tbk",
+    "sector": null,
+    "marketCap": 80325001216
+  },
+  {
+    "code": "RDTX",
+    "name": "PT Roda Vivatex Tbk",
+    "sector": null,
+    "marketCap": 3722879959040
+  },
+  {
+    "code": "REAL",
+    "name": "PT Repower Asia Indonesia Tbk",
+    "sector": null,
+    "marketCap": 344947720192
+  },
+  {
+    "code": "RELF",
+    "name": "PT Graha Mitra Asia Tbk",
+    "sector": null,
+    "marketCap": 200474116096
+  },
+  {
+    "code": "RELI",
+    "name": "PT Reliance Sekuritas Indonesia Tbk",
+    "sector": null,
+    "marketCap": 864000016384
+  },
+  {
+    "code": "RICY",
+    "name": "PT Ricky Putra Globalindo Tbk",
+    "sector": null,
+    "marketCap": 51337400320
+  },
+  {
+    "code": "RIGS",
+    "name": "PT Rig Tenders Indonesia Tbk",
+    "sector": null,
+    "marketCap": 408117084160
+  },
+  {
+    "code": "RISE",
+    "name": "PT Jaya Sukses Makmur Sentosa Tbk",
+    "sector": null,
+    "marketCap": 15469662699520
+  },
+  {
+    "code": "RLCO",
+    "name": "Abadi Lestari Indonesia Tbk.",
+    "sector": null,
+    "marketCap": 15703125000192
+  },
+  {
+    "code": "RMKE",
+    "name": "PT RMK Energy Tbk",
+    "sector": null,
+    "marketCap": 9231249965056
+  },
+  {
+    "code": "RMKO",
+    "name": "PT Royaltama Mulia Kontraktorindo Tbk",
+    "sector": null,
+    "marketCap": 460402425856
+  },
+  {
+    "code": "ROCK",
+    "name": "PT Rockfields Properti Indonesia Tbk.",
+    "sector": null,
+    "marketCap": 2690972123136
+  },
+  {
+    "code": "RODA",
+    "name": "PT Pikko Land Development Tbk",
+    "sector": null,
+    "marketCap": 1005817495552
+  },
+  {
+    "code": "RONY",
+    "name": "PT Aesler Grup Internasional Tbk",
+    "sector": null,
+    "marketCap": 1568750043136
+  },
+  {
+    "code": "ROTI",
+    "name": "PT Nippon Indosari Corpindo Tbk",
+    "sector": "Consumer Non-Cyclicals",
+    "marketCap": 3317142650880
+  },
+  {
+    "code": "RSCH",
+    "name": "PT Charlie Hospital Semarang Tbk",
+    "sector": null,
+    "marketCap": 821499985920
+  },
+  {
+    "code": "RSGK",
+    "name": "PT Kedoya Adyaraya Tbk",
+    "sector": null,
+    "marketCap": 864597770240
+  },
+  {
+    "code": "RUIS",
+    "name": "PT Radiant Utama Interinsco Tbk",
+    "sector": null,
+    "marketCap": 163240001536
+  },
+  {
+    "code": "RUNS",
+    "name": "PT Global Sukses Solusi Tbk",
+    "sector": null,
+    "marketCap": 60813901824
+  },
+  {
+    "code": "SAFE",
+    "name": "PT Steady Safe Tbk",
+    "sector": null,
+    "marketCap": 323555753984
+  },
+  {
+    "code": "SAGE",
+    "name": "PT Saptausaha Gemilangindah Tbk",
+    "sector": null,
+    "marketCap": 257072873472
+  },
+  {
+    "code": "SAME",
+    "name": "PT Sarana Meditama Metropolitan Tbk",
+    "sector": "Healthcare",
+    "marketCap": 5115060158464
+  },
+  {
+    "code": "SAMF",
+    "name": "PT Saraswanti Anugerah Makmur, Tbk",
+    "sector": null,
+    "marketCap": 2870000222208
+  },
+  {
+    "code": "SAPX",
+    "name": "PT Satria Antaran Prima Tbk",
+    "sector": null,
+    "marketCap": 183333322752
+  },
+  {
+    "code": "SATU",
+    "name": "PT Kota Satu Properti Tbk",
+    "sector": null,
+    "marketCap": 357500026880
+  },
+  {
+    "code": "SBMA",
+    "name": "PT Surya Biru Murni Acetylene Tbk",
+    "sector": null,
+    "marketCap": 101361967104
+  },
+  {
+    "code": "SCCO",
+    "name": "PT Supreme Cable Manufacturing & Commerce Tbk",
+    "sector": null,
+    "marketCap": 1891367256064
+  },
+  {
+    "code": "SCMA",
+    "name": "PT Surya Citra Media Tbk",
+    "sector": "Consumer Cyclicals",
+    "marketCap": 12954959347712
+  },
+  {
+    "code": "SCNP",
+    "name": "PT Selaras Citra Nusantara Perkasa Tbk",
+    "sector": null,
+    "marketCap": 366918762496
+  },
+  {
+    "code": "SDMU",
+    "name": "PT Sidomulyo Selaras Tbk",
+    "sector": null,
+    "marketCap": 96494125056
+  },
+  {
+    "code": "SDPC",
+    "name": "PT Millennium Pharmacon International Tbk",
+    "sector": null,
+    "marketCap": 234415996928
+  },
+  {
+    "code": "SDRA",
+    "name": "PT Bank Woori Saudara Indonesia 1906 Tbk",
+    "sector": null,
+    "marketCap": 3291050672128
+  },
+  {
+    "code": "SEMA",
+    "name": "PT Semacom Integrated Tbk",
+    "sector": null,
+    "marketCap": 134725885952
+  },
+  {
+    "code": "SFAN",
+    "name": "PT Surya Fajar Capital Tbk",
+    "sector": null,
+    "marketCap": 2699469258752
+  },
+  {
+    "code": "SGER",
+    "name": "PT Sumber Global Energy Tbk",
+    "sector": null,
+    "marketCap": 7388195192832
+  },
+  {
+    "code": "SGRO",
+    "name": "PT Prime Agri Resources Tbk",
+    "sector": null,
+    "marketCap": 7638212411392
+  },
+  {
+    "code": "SHID",
+    "name": "PT Hotel Sahid Jaya International Tbk",
+    "sector": null,
+    "marketCap": 688385622016
+  },
+  {
+    "code": "SHIP",
+    "name": "PT Sillo Maritime Perdana Tbk",
+    "sector": null,
+    "marketCap": 5711559393280
+  },
+  {
+    "code": "SICO",
+    "name": "PT Sigma Energy Compressindo Tbk",
+    "sector": null,
+    "marketCap": 99198476288
+  },
+  {
+    "code": "SIDO",
+    "name": "PT Industri Jamu dan Farmasi Sido Muncul Tbk",
+    "sector": "Healthcare",
+    "marketCap": 10361190219776
+  },
+  {
+    "code": "SILO",
+    "name": "PT Siloam International Hospitals Tbk",
+    "sector": "Healthcare",
+    "marketCap": 30910258872320
+  },
+  {
+    "code": "SIMP",
+    "name": "PT Salim Ivomas Pratama Tbk",
+    "sector": null,
+    "marketCap": 9378292826112
+  },
+  {
+    "code": "SINI",
+    "name": "PT Singaraja Putra Tbk",
+    "sector": null,
+    "marketCap": 8778249928704
+  },
+  {
+    "code": "SIPD",
+    "name": "PT Sreeya Sewu Indonesia Tbk",
+    "sector": null,
+    "marketCap": 1259784896512
+  },
+  {
+    "code": "SKBM",
+    "name": "PT Sekar Bumi Tbk",
+    "sector": null,
+    "marketCap": 934255722496
+  },
+  {
+    "code": "SKLT",
+    "name": "PT Sekar Laut Tbk",
+    "sector": null,
+    "marketCap": 1247607128064
+  },
+  {
+    "code": "SKRN",
+    "name": "PT Superkrane Mitra Utama Tbk",
+    "sector": null,
+    "marketCap": 2889907961856
+  },
+  {
+    "code": "SLIS",
+    "name": "PT Gaya Abadi Sempurna Tbk",
+    "sector": null,
+    "marketCap": 194606071808
+  },
+  {
+    "code": "SMAR",
+    "name": "PT Sinar Mas Agro Resources and Technology Tbk",
+    "sector": null,
+    "marketCap": 16371502022656
+  },
+  {
+    "code": "SMBR",
+    "name": "PT Semen Baturaja (Persero) Tbk",
+    "sector": "Basic Materials",
+    "marketCap": 1688530976768
+  },
+  {
+    "code": "SMDM",
+    "name": "PT Suryamas Dutamakmur Tbk",
+    "sector": null,
+    "marketCap": 2696257994752
+  },
+  {
+    "code": "SMDR",
+    "name": "PT Samudera Indonesia Tbk",
+    "sector": "Transportation & Logistic",
+    "marketCap": 5043684638720
+  },
+  {
+    "code": "SMGA",
+    "name": "Sumber Mineral Global Abadi Tbk",
+    "sector": null,
+    "marketCap": 665000017920
+  },
+  {
+    "code": "SMGR",
+    "name": "PT Semen Indonesia (Persero) Tbk",
+    "sector": "Basic Materials",
+    "marketCap": 10911581470720
+  },
+  {
+    "code": "SMIL",
+    "name": "PT Sarana Mitra Luas Tbk",
+    "sector": null,
+    "marketCap": 3710319067136
+  },
+  {
+    "code": "SMKL",
+    "name": "PT Satyamitra Kemas Lestari Tbk",
+    "sector": null,
+    "marketCap": 509294706688
+  },
+  {
+    "code": "SMKM",
+    "name": "PT Sumber Mas Konstruksi Tbk",
+    "sector": null,
+    "marketCap": 92721995776
+  },
+  {
+    "code": "SMLE",
+    "name": "Sinergi Multi Lestarindo Tbk.",
+    "sector": null,
+    "marketCap": 381817094144
+  },
+  {
+    "code": "SMMA",
+    "name": "PT Sinar Mas Multiartha Tbk",
+    "sector": null,
+    "marketCap": 125761373601792
+  },
+  {
+    "code": "SMMT",
+    "name": "PT Golden Eagle Energy Tbk",
+    "sector": null,
+    "marketCap": 6319124774912
+  },
+  {
+    "code": "SMRA",
+    "name": "PT Summarecon Agung Tbk",
+    "sector": "Properties & Real Estate",
+    "marketCap": 5480844886016
+  },
+  {
+    "code": "SMSM",
+    "name": "PT Selamat Sempurna Tbk",
+    "sector": "Industrials",
+    "marketCap": 9876128399360
+  },
+  {
+    "code": "SNLK",
+    "name": "PT Sunter Lakeside Hotel Tbk",
+    "sector": null,
+    "marketCap": 106199998464
+  },
+  {
+    "code": "SOCI",
+    "name": "PT Soechi Lines Tbk",
+    "sector": null,
+    "marketCap": 3564794806272
+  },
+  {
+    "code": "SOFA",
+    "name": "PT Solusi Environment Asia Tbk",
+    "sector": null,
+    "marketCap": 410086473728
+  },
+  {
+    "code": "SOHO",
+    "name": "PT Soho Global Health Tbk",
+    "sector": null,
+    "marketCap": 15230019043328
+  },
+  {
+    "code": "SOLA",
+    "name": "Xolare RCR Energy Tbk.",
+    "sector": null,
+    "marketCap": 305725898752
+  },
+  {
+    "code": "SONA",
+    "name": "PT Sona Topas Tourism Industry Tbk",
+    "sector": null,
+    "marketCap": 1569888010240
+  },
+  {
+    "code": "SOSS",
+    "name": "PT Shield On Service Tbk",
+    "sector": null,
+    "marketCap": 847837396992
+  },
+  {
+    "code": "SOTS",
+    "name": "PT Satria Mega Kencana Tbk",
+    "sector": null,
+    "marketCap": 610002403328
+  },
+  {
+    "code": "SPMA",
+    "name": "PT Suparma Tbk",
+    "sector": null,
+    "marketCap": 874187259904
+  },
+  {
+    "code": "SPRE",
+    "name": "Soraya Berjaya Indonesia Tbk.",
+    "sector": null,
+    "marketCap": 71199997952
+  },
+  {
+    "code": "SPTO",
+    "name": "PT Surya Pertiwi Tbk",
+    "sector": null,
+    "marketCap": 1619999981568
+  },
+  {
+    "code": "SQMI",
+    "name": "PT Wilton Makmur Indonesia Tbk.",
+    "sector": null,
+    "marketCap": 978868240384
+  },
+  {
+    "code": "SRAJ",
+    "name": "PT Sejahteraraya Anugrahjaya Tbk",
+    "sector": null,
+    "marketCap": 159412442365952
+  },
+  {
+    "code": "SRSN",
+    "name": "PT Indo Acidatama Tbk",
+    "sector": null,
+    "marketCap": 439459971072
+  },
+  {
+    "code": "SRTG",
+    "name": "PT Saratoga Investama Sedaya Tbk",
+    "sector": "Financials",
+    "marketCap": 24660695580672
+  },
+  {
+    "code": "SSIA",
+    "name": "PT Surya Semesta Internusa Tbk",
+    "sector": null,
+    "marketCap": 7857766400000
+  },
+  {
+    "code": "SSMS",
+    "name": "PT Sawit Sumbermas Sarana Tbk.",
+    "sector": "Consumer Non-Cyclicals",
+    "marketCap": 8762999963648
+  },
+  {
+    "code": "SSTM",
+    "name": "PT Sunson Textile Manufacturer Tbk",
+    "sector": null,
+    "marketCap": 501149138944
+  },
+  {
+    "code": "STAA",
+    "name": "PT Sumber Tani Agung Resources Tbk",
+    "sector": null,
+    "marketCap": 11719035322368
+  },
+  {
+    "code": "STAR",
+    "name": "PT Buana Artha Anugerah Tbk",
+    "sector": null,
+    "marketCap": 1276800139264
+  },
+  {
+    "code": "STRK",
+    "name": "PT Lovina Beach Brewery Tbk",
+    "sector": null,
+    "marketCap": 654031978496
+  },
+  {
+    "code": "STTP",
+    "name": "PT Siantar Top Tbk",
+    "sector": null,
+    "marketCap": 12772499783680
+  },
+  {
+    "code": "SULI",
+    "name": "PT SLJ Global Tbk",
+    "sector": null,
+    "marketCap": 568869912576
+  },
+  {
+    "code": "SUNI",
+    "name": "PT Sunindo Pratama Tbk",
+    "sector": null,
+    "marketCap": 1756672032768
+  },
+  {
+    "code": "SUPA",
+    "name": "PT Super Bank Indonesia Tbk",
+    "sector": null,
+    "marketCap": 19999240486912
+  },
+  {
+    "code": "SURE",
+    "name": "PT Super Energy Tbk",
+    "sector": null,
+    "marketCap": 4163263528960
+  },
+  {
+    "code": "SURI",
+    "name": "Maja Agung Latexindo Tbk.",
+    "sector": null,
+    "marketCap": 456074985472
+  },
+  {
+    "code": "SWID",
+    "name": "PT Saraswanti Indoland Development Tbk",
+    "sector": null,
+    "marketCap": 565427044352
+  },
+  {
+    "code": "TALF",
+    "name": "PT Tunas Alfin Tbk",
+    "sector": null,
+    "marketCap": 1184255574016
+  },
+  {
+    "code": "TAMA",
+    "name": "PT Lancartama Sejati Tbk",
+    "sector": null,
+    "marketCap": 292800167936
+  },
+  {
+    "code": "TAMU",
+    "name": "PT Pelayaran Tamarin Samudra Tbk",
+    "sector": null,
+    "marketCap": 862499962880
+  },
+  {
+    "code": "TAPG",
+    "name": "PT Triputra Agro Persada Tbk",
+    "sector": null,
+    "marketCap": 36727200677888
+  },
+  {
+    "code": "TARA",
+    "name": "PT Agung Semesta Sejahtera Tbk",
+    "sector": null,
+    "marketCap": 302089371648
+  },
+  {
+    "code": "TAXI",
+    "name": "PT Express Transindo Utama Tbk",
+    "sector": null,
+    "marketCap": 143131049984
+  },
+  {
+    "code": "TBIG",
+    "name": "PT Tower Bersama Infrastructure Tbk",
+    "sector": "Infrastructures",
+    "marketCap": 31855399141376
+  },
+  {
+    "code": "TBLA",
+    "name": "PT Tunas Baru Lampung Tbk",
+    "sector": "Consumer Non-Cyclicals",
+    "marketCap": 3782615236608
+  },
+  {
+    "code": "TBMS",
+    "name": "PT Tembaga Mulia Semanan Tbk",
+    "sector": null,
+    "marketCap": 892636168192
+  },
+  {
+    "code": "TCID",
+    "name": "PT. Mandom Indonesia Tbk",
+    "sector": null,
+    "marketCap": 1105866653696
+  },
+  {
+    "code": "TCPI",
+    "name": "PT Transcoal Pacific Tbk",
+    "sector": null,
+    "marketCap": 19699999965184
+  },
+  {
+    "code": "TEBE",
+    "name": "PT Dana Brata Luhur Tbk",
+    "sector": null,
+    "marketCap": 1426349883392
+  },
+  {
+    "code": "TFAS",
+    "name": "PT Telefast Indonesia Tbk",
+    "sector": null,
+    "marketCap": 323183869952
+  },
+  {
+    "code": "TFCO",
+    "name": "PT Tifico Fiber Indonesia Tbk",
+    "sector": null,
+    "marketCap": 3930807336960
+  },
+  {
+    "code": "TGKA",
+    "name": "PT Tigaraksa Satria Tbk",
+    "sector": null,
+    "marketCap": 4555724029952
+  },
+  {
+    "code": "TGUK",
+    "name": "PT Platinum Wahab Nusantara Tbk",
+    "sector": null,
+    "marketCap": 400002613248
+  },
+  {
+    "code": "TIFA",
+    "name": "PT KDB Tifa Finance Tbk",
+    "sector": null,
+    "marketCap": 1193543598080
+  },
+  {
+    "code": "TINS",
+    "name": "PT TIMAH Tbk",
+    "sector": "Basic Materials",
+    "marketCap": 28748327944192
+  },
+  {
+    "code": "TIRA",
+    "name": "PT Tira Austenite Tbk",
+    "sector": null,
+    "marketCap": 262248005632
+  },
+  {
+    "code": "TKIM",
+    "name": "PT Pabrik Kertas Tjiwi Kimia Tbk",
+    "sector": "Basic Materials",
+    "marketCap": 22493041524736
+  },
+  {
+    "code": "TLDN",
+    "name": "PT Teladan Prima Agro Tbk",
+    "sector": null,
+    "marketCap": 7508987478016
+  },
+  {
+    "code": "TLKM",
+    "name": "Perusahaan Perseroan (Persero) PT Telekomunikasi Indonesia Tbk",
+    "sector": "Infrastructures",
+    "marketCap": 267154347786240
+  },
+  {
+    "code": "TMAS",
+    "name": "PT Temas Tbk.",
+    "sector": "Transportation & Logistic",
+    "marketCap": 7051738087424
+  },
+  {
+    "code": "TMPO",
+    "name": "PT Tempo Inti Media Tbk",
+    "sector": null,
+    "marketCap": 157691658240
+  },
+  {
+    "code": "TNCA",
+    "name": "PT Trimuda Nuansa Citra Tbk",
+    "sector": null,
+    "marketCap": 68727316480
+  },
+  {
+    "code": "TOBA",
+    "name": "PT TBS Energi Utama Tbk",
+    "sector": "Energy",
+    "marketCap": 4330914316288
+  },
+  {
+    "code": "TOOL",
+    "name": "PT Rohartindo Nusantara Luas Tbk",
+    "sector": null,
+    "marketCap": 141451411456
+  },
+  {
+    "code": "TOSK",
+    "name": "Topindo Solusi Komunika Tbk.",
+    "sector": "Technology",
+    "marketCap": 301894107136
+  },
+  {
+    "code": "TOTL",
+    "name": "PT Total Bangun Persada Tbk",
+    "sector": null,
+    "marketCap": 4432999743488
+  },
+  {
+    "code": "TOTO",
+    "name": "PT Surya Toto Indonesia Tbk",
+    "sector": null,
+    "marketCap": 2414879965184
+  },
+  {
+    "code": "TOWR",
+    "name": "PT Sarana Menara Nusantara Tbk.",
+    "sector": "Infrastructures",
+    "marketCap": 23517479305216
+  },
+  {
+    "code": "TPIA",
+    "name": "PT Chandra Asri Pacific Tbk",
+    "sector": "Basic Materials",
+    "marketCap": 192815829090304
+  },
+  {
+    "code": "TPMA",
+    "name": "PT Trans Power Marine Tbk",
+    "sector": null,
+    "marketCap": 1629359833088
+  },
+  {
+    "code": "TRGU",
+    "name": "PT Cerestar Indonesia Tbk",
+    "sector": null,
+    "marketCap": 1326883930112
+  },
+  {
+    "code": "TRIM",
+    "name": "PT Trimegah Sekuritas Indonesia Tbk",
+    "sector": null,
+    "marketCap": 4265580167168
+  },
+  {
+    "code": "TRIN",
+    "name": "PT Perintis Triniti Properti Tbk",
+    "sector": null,
+    "marketCap": 1446234292224
+  },
+  {
+    "code": "TRIS",
+    "name": "PT Trisula International Tbk",
+    "sector": null,
+    "marketCap": 532032356352
+  },
+  {
+    "code": "TRJA",
+    "name": "PT Transkon Jaya Tbk",
+    "sector": null,
+    "marketCap": 167632207872
+  },
+  {
+    "code": "TRON",
+    "name": "PT Teknologi Karya Digital Nusa Tbk",
+    "sector": null,
+    "marketCap": 303986835456
+  },
+  {
+    "code": "TRST",
+    "name": "PT Trias Sentosa Tbk",
+    "sector": null,
+    "marketCap": 1274831962112
+  },
+  {
+    "code": "TRUK",
+    "name": "PT Guna Timur Raya Tbk",
+    "sector": null,
+    "marketCap": 313199984640
+  },
+  {
+    "code": "TRUS",
+    "name": "PT Trust Finance Indonesia Tbk",
+    "sector": null,
+    "marketCap": 329600008192
+  },
+  {
+    "code": "TSPC",
+    "name": "PT Tempo Scan Pacific Tbk",
+    "sector": null,
+    "marketCap": 12853113257984
+  },
+  {
+    "code": "TUGU",
+    "name": "PT Asuransi Tugu Pratama Indonesia Tbk",
+    "sector": null,
+    "marketCap": 4373358051328
+  },
+  {
+    "code": "TYRE",
+    "name": "PT King Tire Indonesia Tbk",
+    "sector": null,
+    "marketCap": 399972302848
+  },
+  {
+    "code": "UANG",
+    "name": "PT Pakuan Tbk",
+    "sector": null,
+    "marketCap": 3000800116736
+  },
+  {
+    "code": "UCID",
+    "name": "PT Uni-Charm Indonesia Tbk",
+    "sector": null,
+    "marketCap": 1820578676736
+  },
+  {
+    "code": "UDNG",
+    "name": "Agro Bahari Nusantara Tbk.",
+    "sector": null,
+    "marketCap": 2406304972800
+  },
+  {
+    "code": "UFOE",
+    "name": "PT Damai Sejahtera Abadi Tbk",
+    "sector": null,
+    "marketCap": 402858377216
+  },
+  {
+    "code": "ULTJ",
+    "name": "PT Ultrajaya Milk Industry & Trading Company Tbk",
+    "sector": "Consumer Non-Cyclicals",
+    "marketCap": 15597262864384
+  },
+  {
+    "code": "UNIC",
+    "name": "PT Unggul Indah Cahaya Tbk",
+    "sector": null,
+    "marketCap": 5778720161792
+  },
+  {
+    "code": "UNIQ",
+    "name": "PT Ulima Nitra Tbk",
+    "sector": null,
+    "marketCap": 367260991488
+  },
+  {
+    "code": "UNTD",
+    "name": "Terang Dunia Internusa Tbk.",
+    "sector": null,
+    "marketCap": 546666643456
+  },
+  {
+    "code": "UNTR",
+    "name": "PT United Tractors Tbk",
+    "sector": "Industrials",
+    "marketCap": 82698991304704
+  },
+  {
+    "code": "UNVR",
+    "name": "PT Unilever Indonesia Tbk",
+    "sector": "Consumer Non-Cyclicals",
+    "marketCap": 69125846073344
+  },
+  {
+    "code": "URBN",
+    "name": "PT Urban Jakarta Propertindo Tbk.",
+    "sector": null,
+    "marketCap": 648876392448
+  },
+  {
+    "code": "UVCR",
+    "name": "PT Trimegah Karya Pratama Tbk",
+    "sector": null,
+    "marketCap": 316022882304
+  },
+  {
+    "code": "VAST",
+    "name": "PT Vastland Indonesia Tbk",
+    "sector": null,
+    "marketCap": 351409766400
+  },
+  {
+    "code": "VERN",
+    "name": "Verona Indah Pictures Tbk.",
+    "sector": null,
+    "marketCap": 962660990976
+  },
+  {
+    "code": "VICI",
+    "name": "PT Victoria Care Indonesia Tbk",
+    "sector": null,
+    "marketCap": 3957719826432
+  },
+  {
+    "code": "VICO",
+    "name": "PT Victoria Investama Tbk",
+    "sector": null,
+    "marketCap": 2145607614464
+  },
+  {
+    "code": "VINS",
+    "name": "PT Victoria Insurance Tbk",
+    "sector": null,
+    "marketCap": 208862019584
+  },
+  {
+    "code": "VISI",
+    "name": "Satu Visi Putra Tbk.",
+    "sector": null,
+    "marketCap": 2905875152896
+  },
+  {
+    "code": "VIVA",
+    "name": "PT Visi Media Asia Tbk",
+    "sector": null,
+    "marketCap": 872606334976
+  },
+  {
+    "code": "VKTR",
+    "name": "PT VKTR Teknologi Mobilitas Tbk",
+    "sector": null,
+    "marketCap": 38718748491776
+  },
+  {
+    "code": "VOKS",
+    "name": "PT Voksel Electric Tbk",
+    "sector": null,
+    "marketCap": 1122012758016
+  },
+  {
+    "code": "VRNA",
+    "name": "PT Mizuho Leasing Indonesia Tbk",
+    "sector": null,
+    "marketCap": 420864196608
+  },
+  {
+    "code": "VTNY",
+    "name": "PT Venteny Fortuna International Tbk",
+    "sector": null,
+    "marketCap": 419767975936
+  },
+  {
+    "code": "WAPO",
+    "name": "PT Wahana Pronatural Tbk",
+    "sector": null,
+    "marketCap": 152633540608
+  },
+  {
+    "code": "WBSA",
+    "name": "BSA Logistics Indonesia Tbk.",
+    "sector": null,
+    "marketCap": 5812250476544
+  },
+  {
+    "code": "WEGE",
+    "name": "PT Wijaya Karya Bangunan Gedung Tbk",
+    "sector": null,
+    "marketCap": 478599970816
+  },
+  {
+    "code": "WEHA",
+    "name": "PT WEHA Transportasi Indonesia Tbk",
+    "sector": null,
+    "marketCap": 162121596928
+  },
+  {
+    "code": "WGSH",
+    "name": "PT Wira Global Solusi Tbk",
+    "sector": null,
+    "marketCap": 360704999424
+  },
+  {
+    "code": "WIDI",
+    "name": "PT Widiant Jaya Krenindo Tbk",
+    "sector": null,
+    "marketCap": 41600827392
+  },
+  {
+    "code": "WIFI",
+    "name": "PT Solusi Sinergi Digital Tbk",
+    "sector": "Technology",
+    "marketCap": 10723268755456
+  },
+  {
+    "code": "WIIM",
+    "name": "PT Wismilak Inti Makmur Tbk",
+    "sector": null,
+    "marketCap": 3798164832256
+  },
+  {
+    "code": "WINE",
+    "name": "PT HATTEN BALI Tbk",
+    "sector": null,
+    "marketCap": 371270025216
+  },
+  {
+    "code": "WINR",
+    "name": "PT Winner Nusantara Jaya Tbk",
+    "sector": null,
+    "marketCap": 109941637120
+  },
+  {
+    "code": "WINS",
+    "name": "PT Wintermar Offshore Marine Tbk",
+    "sector": null,
+    "marketCap": 2234892419072
+  },
+  {
+    "code": "WIRG",
+    "name": "PT WIR ASIA Tbk",
+    "sector": null,
+    "marketCap": 752133210112
+  },
+  {
+    "code": "WMPP",
+    "name": "PT Widodo Makmur Perkasa Tbk",
+    "sector": null,
+    "marketCap": 1000246018048
+  },
+  {
+    "code": "WMUU",
+    "name": "PT Widodo Makmur Unggas Tbk",
+    "sector": null,
+    "marketCap": 737647067136
+  },
+  {
+    "code": "WOMF",
+    "name": "PT Wahana Ottomitra Multiartha Tbk",
+    "sector": null,
+    "marketCap": 912148135936
+  },
+  {
+    "code": "WOOD",
+    "name": "PT Integra Indocabinet Tbk",
+    "sector": null,
+    "marketCap": 1353014706176
+  },
+  {
+    "code": "WOWS",
+    "name": "PT Ginting Jaya Energi Tbk",
+    "sector": null,
+    "marketCap": 148543193088
+  },
+  {
+    "code": "WTON",
+    "name": "PT Wijaya Karya Beton Tbk",
+    "sector": "Infrastructures",
+    "marketCap": 644944560128
+  },
+  {
+    "code": "YELO",
+    "name": "PT Yelooo Integra Datanet Tbk",
+    "sector": null,
+    "marketCap": 177888018432
+  },
+  {
+    "code": "YOII",
+    "name": "PT Asuransi Digital Bersama TBK",
+    "sector": null,
+    "marketCap": 329866575872
+  },
+  {
+    "code": "YPAS",
+    "name": "PT Yanaprima Hastapersada Tbk",
+    "sector": null,
+    "marketCap": 420840046592
+  },
+  {
+    "code": "YULE",
+    "name": "PT Yulie Sekuritas Indonesia Tbk",
+    "sector": null,
+    "marketCap": 5555503497216
+  },
+  {
+    "code": "YUPI",
+    "name": "Yupi Indo Jelly Gum Tbk.",
+    "sector": null,
+    "marketCap": 11150557184000
+  },
+  {
+    "code": "ZATA",
+    "name": "PT Bersama Zatta Jaya Tbk",
+    "sector": null,
+    "marketCap": 653057982464
+  },
+  {
+    "code": "ZONE",
+    "name": "PT Mega Perintis Tbk",
+    "sector": null,
+    "marketCap": 635225178112
+  },
+  {
+    "code": "ZYRX",
+    "name": "PT Zyrexindo Mandiri Buana Tbk",
+    "sector": null,
+    "marketCap": 168000143360
+  }
+]

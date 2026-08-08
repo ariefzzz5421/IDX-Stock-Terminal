@@ -52,7 +52,7 @@ export function CommandBar({ knownCodes }: { knownCodes: string[] }) {
       onSubmit={handleSubmit}
       className="flex min-w-0 flex-1 items-center gap-2 border-x border-rule px-3"
     >
-      <span className="shrink-0 font-display font-bold tracking-[0.1em] text-amber">
+      <span className="shrink-0 font-display text-sm font-bold tracking-[0.1em] text-amber">
         IDX&gt;
       </span>
       <input
@@ -63,20 +63,20 @@ export function CommandBar({ knownCodes }: { knownCodes: string[] }) {
         aria-label="Command bar: type a ticker and press Enter"
         autoComplete="off"
         spellCheck={false}
-        className="min-w-0 flex-1 bg-transparent py-2.5 text-[13px] uppercase tracking-[0.14em] text-ink-hi outline-none placeholder:tracking-[0.1em] placeholder:text-dimmer"
+        className="min-w-0 flex-1 bg-transparent py-3 text-sm uppercase tracking-[0.14em] text-ink-hi outline-none placeholder:tracking-[0.1em] placeholder:text-dimmer"
       />
       {error ? (
-        <span className="shrink-0 text-[10px] uppercase tracking-[0.1em] text-down">
+        <span className="shrink-0 text-micro uppercase tracking-[0.1em] text-down">
           {error}
         </span>
       ) : (
-        <span className="hidden shrink-0 text-[10px] uppercase tracking-[0.1em] text-dimmer sm:inline">
+        <span className="hidden shrink-0 text-micro uppercase tracking-[0.1em] text-dimmer sm:inline">
           Press / to focus
         </span>
       )}
       <button
         type="submit"
-        className="shrink-0 bg-amber px-2 py-1 font-display text-[10px] font-bold tracking-[0.12em] text-void transition-colors hover:bg-ink-hi"
+        className="shrink-0 bg-amber px-2.5 py-1.5 font-display text-micro font-bold tracking-[0.12em] text-void transition-colors hover:bg-ink-hi"
       >
         &lt;GO&gt;
       </button>

@@ -6,6 +6,7 @@ import { marketData } from "@/lib/market-data";
 import { refreshQuotes } from "@/lib/market-data/sync";
 import { Panel } from "@/components/terminal/Panel";
 import { Chart } from "@/components/terminal/Chart";
+import { CompanyLogo } from "@/components/terminal/CompanyLogo";
 import { WatchlistToggle } from "@/components/terminal/WatchlistToggle";
 import {
   directionClass,
@@ -54,35 +55,35 @@ export default async function StockPage({ params }: PageProps<"/stock/[code]">) 
 
   return (
     <div className="grid min-h-0 flex-1 gap-px lg:grid-rows-[auto_minmax(0,1fr)]">
-      {/* ---- quote header ---- */}
-      <section className="flex flex-wrap items-end gap-x-8 gap-y-3 bg-panel px-3.5 py-3">
-        <div className="flex flex-col gap-0.5">
-          <h1 className="font-display text-2xl font-bold leading-none tracking-[0.1em] text-amber">
-            {fresh.code}
-          </h1>
-          <p className="text-[10.5px] text-dim">
-            {fresh.name}
-            {fresh.sector ? ` · ${fresh.sector}` : ""}
-          </p>
+      <section className="flex flex-wrap items-end gap-x-10 gap-y-4 bg-panel px-5 py-4">
+        <div className="flex items-center gap-3.5">
+          <CompanyLogo code={fresh.code} logoUrl={fresh.logoUrl} size="lg" />
+          <div className="flex flex-col gap-1">
+            <h1 className="font-display text-xl font-bold leading-none tracking-[0.08em] text-amber">
+              {fresh.code}
+            </h1>
+            <p className="max-w-[28rem] text-xs leading-snug text-dim">
+              {fresh.name}
+              {fresh.sector ? ` · ${fresh.sector}` : ""}
+            </p>
+          </div>
         </div>
 
         <div>
           <div className="text-2xl font-bold leading-none text-ink-hi">
             {formatPrice(fresh.lastPrice)}
           </div>
-          <div className={`mt-1 text-[11.5px] ${directionClass(change)}`}>
+          <div className={`mt-1.5 text-sm font-medium ${directionClass(change)}`}>
             {formatChange(change)} &nbsp; {formatPct(fresh.lastChangePct)}
           </div>
         </div>
 
-        <dl className="grid grid-cols-2 gap-x-6 gap-y-1 sm:grid-cols-4">
+        <dl className="grid grid-cols-2 gap-x-8 gap-y-2.5 sm:grid-cols-3 lg:grid-cols-5">
           <Stat k="Prev close" v={formatPrice(fresh.prevClose)} />
           <Stat k="Volume" v={formatVolume(fresh.lastVolume)} />
-          <Stat k="Value" v={formatValue(fresh.lastValue)} />
-          <Stat
-            k="Updated"
-            v={fresh.updatedAt.toISOString().slice(11, 19) + " UTC"}
-          />
+          <Stat k="Turnover" v={formatValue(fresh.lastValue)} />
+          <Stat k="Market cap" v={formatValue(fresh.marketCap)} />
+          <Stat k="Updated" v={`${fresh.updatedAt.toISOString().slice(11, 19)} UTC`} />
         </dl>
 
         <div className="ml-auto">
@@ -90,11 +91,10 @@ export default async function StockPage({ params }: PageProps<"/stock/[code]">) 
         </div>
       </section>
 
-      {/* ---- chart ---- */}
       <Panel
         title="Chart"
         meta={`5m · ${candles.length} bars · ${marketData.name}`}
-        bodyClassName="min-h-[320px]"
+        bodyClassName="min-h-[24rem]"
       >
         <Chart candles={candles} />
       </Panel>
@@ -105,8 +105,8 @@ export default async function StockPage({ params }: PageProps<"/stock/[code]">) 
 function Stat({ k, v }: { k: string; v: string }) {
   return (
     <div className="flex flex-col gap-0.5">
-      <dt className="text-[9.5px] uppercase tracking-[0.1em] text-dim">{k}</dt>
-      <dd className="text-[11.5px] text-ink">{v}</dd>
+      <dt className="text-micro uppercase tracking-[0.12em] text-dim">{k}</dt>
+      <dd className="text-sm text-ink">{v}</dd>
     </div>
   );
 }
