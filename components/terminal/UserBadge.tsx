@@ -9,9 +9,11 @@ type Props = {
   username: string;
   displayName: string | null;
   avatarUrl: string | null;
+  /** Browsing the shared account — offer a way in rather than a way out. */
+  guest?: boolean;
 };
 
-export function UserBadge({ username, displayName, avatarUrl }: Props) {
+export function UserBadge({ username, displayName, avatarUrl, guest }: Props) {
   const router = useRouter();
   const [signingOut, setSigningOut] = useState(false);
 
@@ -52,19 +54,28 @@ export function UserBadge({ username, displayName, avatarUrl }: Props) {
         <span className="hidden flex-col leading-tight sm:flex">
           <span className="text-[11px] text-ink-hi">{label}</span>
           <span className="text-[9px] uppercase tracking-[0.1em] text-dim">
-            {displayName ? username : "Session active"}
+            {guest ? "Shared account" : displayName ? username : "Session active"}
           </span>
         </span>
       </Link>
 
-      <button
-        type="button"
-        onClick={signOut}
-        disabled={signingOut}
-        className="border border-rule-hi px-2 py-1 text-[9px] uppercase tracking-[0.1em] text-dim transition-colors hover:border-down hover:text-down disabled:opacity-50"
-      >
-        {signingOut ? "…" : "Exit"}
-      </button>
+      {guest ? (
+        <Link
+          href="/login"
+          className="border border-rule-hi px-2 py-1 text-[9px] uppercase tracking-[0.1em] text-dim transition-colors hover:border-amber hover:text-amber"
+        >
+          Sign in
+        </Link>
+      ) : (
+        <button
+          type="button"
+          onClick={signOut}
+          disabled={signingOut}
+          className="border border-rule-hi px-2 py-1 text-[9px] uppercase tracking-[0.1em] text-dim transition-colors hover:border-down hover:text-down disabled:opacity-50"
+        >
+          {signingOut ? "…" : "Exit"}
+        </button>
+      )}
     </div>
   );
 }

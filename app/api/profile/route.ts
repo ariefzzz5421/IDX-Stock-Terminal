@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
-import { getCurrentUser } from "@/lib/auth/session";
+import { getViewer } from "@/lib/auth/session";
 
 const MAX_DISPLAY_NAME = 40;
 const MAX_BIO = 280;
@@ -8,7 +8,7 @@ const MAX_BIO = 280;
 const MAX_AVATAR_BYTES = 512 * 1024;
 
 export async function PUT(request: Request) {
-  const user = await getCurrentUser();
+  const user = await getViewer();
   if (!user) return NextResponse.json({ error: "Not signed in." }, { status: 401 });
 
   let body: { displayName?: string; bio?: string; avatarUrl?: string | null };

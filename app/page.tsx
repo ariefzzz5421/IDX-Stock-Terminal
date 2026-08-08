@@ -1,13 +1,12 @@
 import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
 /**
- * The terminal has no marketing page — `/` just routes you to wherever you
- * should actually be.
+ * The terminal has no marketing page. With auth off the dashboard renders for
+ * the shared guest account, so this always lands somewhere useful; if
+ * AUTH_REQUIRED is on, the dashboard itself bounces to /login.
  */
-export default async function Home() {
-  const user = await getCurrentUser();
-  redirect(user ? "/dashboard" : "/login");
+export default function Home() {
+  redirect("/dashboard");
 }

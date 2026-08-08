@@ -2,6 +2,12 @@ import { cookies } from "next/headers";
 import { getIronSession, type IronSession } from "iron-session";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db/prisma";
+import {
+  GUEST_USERNAME,
+  USER_SELECT,
+  authRequired,
+  getOrCreateGuestUser,
+} from "./guest";
 
 export type SessionData = {
   userId?: string;
@@ -38,21 +44,17 @@ export async function getSession(): Promise<IronSession<SessionData>> {
   return getIronSession<SessionData>(await cookies(), sessionOptions());
 }
 
-/** The signed-in user, or null. Does not redirect. */
+/**
+ * The user who actually signed in, or null. Never falls back to guest — use
+ * this to decide whether to *offer* signing in, not to load data.
+ */
 export async function getCurrentUser() {
   const session = await getSession();
   if (!session.userId) return null;
 
   const user = await prisma.user.findUnique({
     where: { id: session.userId },
-    select: {
-      id: true,
-      username: true,
-      createdAt: true,
-      profile: {
-        select: { displayName: true, bio: true, avatarUrl: true },
-      },
-    },
+    select: USER_SELECT,
   });
 
   // The cookie outlives the row if the user was deleted — treat that as signed out.
@@ -66,9 +68,27 @@ export async function getCurrentUser() {
 
 export type CurrentUser = NonNullable<Awaited<ReturnType<typeof getCurrentUser>>>;
 
-/** For protected pages: returns the user or redirects to /login. */
-export async function requireUser(): Promise<CurrentUser> {
+/**
+ * Whoever the page should render for: the signed-in user, or the shared guest
+ * account when auth is off. Use this to load and mutate data.
+ */
+export async function getViewer(): Promise<CurrentUser | null> {
   const user = await getCurrentUser();
+  if (user) return user;
+  if (authRequired()) return null;
+  return getOrCreateGuestUser();
+}
+
+export function isGuest(user: { username: string }): boolean {
+  return user.username === GUEST_USERNAME;
+}
+
+/**
+ * For pages that need a user. With auth off this always succeeds, so the
+ * dashboard opens without a login step; with AUTH_REQUIRED=true it redirects.
+ */
+export async function requireUser(): Promise<CurrentUser> {
+  const user = await getViewer();
   if (!user) redirect("/login");
   return user;
 }

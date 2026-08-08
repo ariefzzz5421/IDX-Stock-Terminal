@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { hash } from "bcryptjs";
 import { prisma } from "@/lib/db/prisma";
 import { createSession } from "@/lib/auth/session";
-import { DEFAULT_WATCHLIST } from "@/lib/auth/defaults";
+import { buildDefaultWatchlist } from "@/lib/auth/defaults";
 import {
   normalizeUsername,
   validatePassword,
@@ -49,25 +49,12 @@ export async function POST(request: Request) {
 
     const passwordHash = await hash(password, BCRYPT_ROUNDS);
 
-    // Only seed watchlist rows for tickers that actually exist — the stocks
-    // table is empty until `prisma db seed` runs, and a missing row would trip
-    // the foreign key.
-    const seededStocks = await prisma.stock.findMany({
-      where: { code: { in: [...DEFAULT_WATCHLIST] } },
-      select: { code: true },
-    });
-    const available = new Set(seededStocks.map((s) => s.code));
-
     const user = await prisma.user.create({
       data: {
         username,
         passwordHash,
         profile: { create: { displayName: username } },
-        watchlist: {
-          create: DEFAULT_WATCHLIST.filter((code) => available.has(code)).map(
-            (code, index) => ({ stockCode: code, sortOrder: index }),
-          ),
-        },
+        watchlist: { create: await buildDefaultWatchlist() },
       },
       select: { id: true, username: true },
     });

@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
-import { getCurrentUser } from "@/lib/auth/session";
+import { getViewer } from "@/lib/auth/session";
 
 export async function GET() {
-  const user = await getCurrentUser();
+  const user = await getViewer();
   if (!user) return NextResponse.json({ error: "Not signed in." }, { status: 401 });
 
   const rows = await prisma.watchlist.findMany({
@@ -16,7 +16,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const user = await getCurrentUser();
+  const user = await getViewer();
   if (!user) return NextResponse.json({ error: "Not signed in." }, { status: 401 });
 
   let body: { code?: string };
@@ -60,7 +60,7 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const user = await getCurrentUser();
+  const user = await getViewer();
   if (!user) return NextResponse.json({ error: "Not signed in." }, { status: 401 });
 
   const code = new URL(request.url).searchParams.get("code")?.toUpperCase();

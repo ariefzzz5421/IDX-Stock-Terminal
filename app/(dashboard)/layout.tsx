@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db/prisma";
-import { requireUser } from "@/lib/auth/session";
+import { isGuest, requireUser } from "@/lib/auth/session";
 import { marketData } from "@/lib/market-data";
 import { CommandBar } from "@/components/terminal/CommandBar";
 import { UserBadge } from "@/components/terminal/UserBadge";
@@ -40,6 +40,7 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
             username={user.username}
             displayName={user.profile?.displayName ?? null}
             avatarUrl={user.profile?.avatarUrl ?? null}
+            guest={isGuest(user)}
           />
         </div>
       </header>

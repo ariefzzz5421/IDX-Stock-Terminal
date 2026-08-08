@@ -30,6 +30,7 @@ All figures in the preview are synthetic sample data, not live market data.
 - **Pump detection** — rolling baseline on price and volume; crossing a threshold fires
   a clickable alert that routes to the stock's detail page
 - **Swappable data providers** — one adapter interface, several backends (see below)
+- **Open by default** — the dashboard loads with no login step; accounts are opt-in
 - **Simple auth** — username + password, bcrypt, no email or OTP
 - **Profiles** — display name, bio, avatar
 
@@ -153,17 +154,32 @@ Open http://localhost:3000.
 
 ## First run
 
-1. Open http://localhost:3000. You'll be sent to `/register`.
-2. Create an account — username and password only, minimum 8 characters. No email, no
-   verification.
-3. You land on `/dashboard` with a starter watchlist of eight tickers across sectors,
-   plus top gainers, top losers and most-active panels.
-4. Type a ticker in the command bar and press Enter (or `<GO>`) to open it — `AMMN`,
+1. Open http://localhost:3000. The dashboard opens immediately — **no login step** —
+   with a starter watchlist of eight tickers across sectors, plus top gainers, top
+   losers and most-active panels.
+2. Type a ticker in the command bar and press Enter (or `<GO>`) to open it — `AMMN`,
    `BBRI`, `GOTO`. Press `/` anywhere to jump to the command bar. On a stock page,
    **+ Watchlist** adds it; the **×** on a watchlist row removes it.
-5. Set a display name, bio and avatar at `/profile`. Avatars are stored as data URIs in
+3. Set a display name, bio and avatar at `/profile`. Avatars are stored as data URIs in
    Postgres, so there's no blob store to configure. Your avatar shows in the terminal
    header, top right.
+
+### Accounts
+
+By default the terminal runs open: everything hangs off a shared `guest` account,
+created automatically on first visit. That keeps it a one-click personal tool.
+
+Accounts still exist — `/register` and `/login` work, and signing in switches you to
+your own watchlist and profile. To require an account before anything is visible:
+
+```bash
+AUTH_REQUIRED="true"
+```
+
+Then `/` and `/dashboard` redirect to the login page and the APIs return 401.
+
+Registration is username + password only, minimum 8 characters. No email, no
+verification.
 
 Quotes refresh once per page load for the tickers you follow. Continuous streaming
 arrives with Milestone 4.
