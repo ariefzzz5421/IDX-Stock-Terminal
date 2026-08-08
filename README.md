@@ -22,11 +22,14 @@ All figures in the preview are synthetic sample data, not live market data.
 
 ## Features
 
-- **The whole board** — all 838 IDX-listed companies, searchable and ranked by market cap
+- **The whole board** — 978 active IDX equity securities from KSEI's latest master file
+- **Company logos** — 973 issuer/share-class logos with a deterministic monogram fallback for five legacy securities
+- **Ticker detail** — chart, delayed best bid/offer, company profile, key ratios and dated holder percentages
+- **Foreign flow** — Top Net Buy and Top Net Sell, using IDX EOD data with an authenticated Invezgo fallback
 - **Terminal dashboard** — multi-panel grid: watchlist left, chart centre, news right
 - **Market status** — Open / Closed on the real BEI schedule, including Friday's shifted
   session hours, pre-opening, break, pre-closing and post-trading
-- **Sections** — Dashboard, Watchlist, Top 10, Hot, Market and Account
+- **Sections** — Dashboard, Watchlist, Top 10, Foreign Flow, Hot, Market and Account
 - **Command bar** — type `BBCA` and press `<GO>` to jump to a ticker, Bloomberg-style
 - **Realtime prices** — internal WebSocket relay pushes quote updates; cells flash on tick
 - **News curation** — RSS aggregation from Indonesian finance media, keyword-tagged to
@@ -147,14 +150,16 @@ npm run db:setup
 npm run db:seed
 ```
 
-The seed loads the **entire IDX main board — 838 listed companies** — from
-`prisma/idx-listing.json`, which is committed so a fresh clone needs no network access.
+The seed loads **978 active IDX equity securities** from the latest monthly KSEI
+master snapshot into `prisma/idx-listing.json`, which is committed so a fresh clone
+needs no network access. The catalogue also stores dated local/foreign ownership,
+listing metadata, and available company logos.
 It is idempotent: re-running refreshes company metadata without clobbering stored prices.
 
 To refresh the board after new listings, delistings or ticker renames:
 
 ```bash
-npx tsx scripts/fetch-idx-listing.ts
+npm run catalog:refresh
 ```
 
 > Use `db:setup` (`prisma migrate deploy`) for first-time setup — it applies the
@@ -214,6 +219,7 @@ arrives with Milestone 4.
 | `npm start`         | Serve the production build                         |
 | `npm run db:migrate`| `prisma migrate dev`                               |
 | `npm run db:seed`   | Load the IDX ticker universe                       |
+| `npm run catalog:refresh` | Refresh KSEI securities, holder snapshots and logos |
 | `npm run db:studio` | Prisma Studio, a GUI over the database             |
 | `npm run db:reset`  | Drop, re-migrate and re-seed. **Destroys data.**   |
 

@@ -6,9 +6,11 @@ import { CommandBar } from "@/components/terminal/CommandBar";
 import { UserBadge } from "@/components/terminal/UserBadge";
 import { MarketStatusBadge } from "@/components/terminal/MarketStatusBadge";
 import { Nav } from "@/components/terminal/Nav";
+import { ensureStockCatalog } from "@/lib/stocks";
 
 export default async function DashboardLayout({ children }: LayoutProps<"/">) {
   const user = await requireUser();
+  await ensureStockCatalog();
 
   const stocks = await prisma.stock.findMany({
     select: { code: true },

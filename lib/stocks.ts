@@ -3,6 +3,7 @@ import "server-only";
 import { prisma } from "@/lib/db/prisma";
 import { refreshQuotes } from "@/lib/market-data/sync";
 import type { StockRow } from "@/components/terminal/StockTable";
+import { COMPANY_CATALOG } from "@/lib/company-catalog";
 
 export const STOCK_SELECT = {
   code: true,
@@ -22,6 +23,36 @@ export const STOCK_SELECT = {
  * a free endpoint and take far too long.
  */
 const BOARD_SIZE = 40;
+
+const globalForCatalog = globalThis as unknown as {
+  stockCatalogPromise?: Promise<void>;
+};
+
+/** Add newly listed securities to databases created from an older snapshot. */
+export function ensureStockCatalog(): Promise<void> {
+  globalForCatalog.stockCatalogPromise ??= (async () => {
+    const present = await prisma.stock.count({
+      where: { code: { in: COMPANY_CATALOG.map((stock) => stock.code) } },
+    });
+    if (present === COMPANY_CATALOG.length) return;
+
+    await prisma.stock.createMany({
+      data: COMPANY_CATALOG.map((stock) => ({
+        code: stock.code,
+        name: stock.name,
+        sector: stock.sector,
+        logoUrl: stock.logoUrl,
+        marketCap: stock.marketCap,
+      })),
+      skipDuplicates: true,
+    });
+  })().catch((error) => {
+    globalForCatalog.stockCatalogPromise = undefined;
+    throw error;
+  });
+
+  return globalForCatalog.stockCatalogPromise;
+}
 
 /** The tickers a signed-in viewer follows. */
 export async function watchlistRows(userId: string): Promise<StockRow[]> {

@@ -1,12 +1,5 @@
-/**
- * A logo tile for a ticker.
- *
- * There is no free, reliable logo source covering 800+ IDX issuers, and a
- * broken image in every row would be worse than none. So the default is a
- * monogram whose colour is derived from the ticker itself — stable across
- * reloads, distinct enough to recognise a row by shape, and it never 404s.
- * If `stocks.logo_url` is set, that wins.
- */
+import Image from "next/image";
+import { getCompanyLogoUrl } from "@/lib/company-catalog";
 
 const PALETTE = [
   { bg: "#1d3a5c", fg: "#7cc0f5" },
@@ -23,8 +16,8 @@ const PALETTE = [
 
 function paletteFor(code: string) {
   let hash = 2166136261;
-  for (let i = 0; i < code.length; i++) {
-    hash ^= code.charCodeAt(i);
+  for (let index = 0; index < code.length; index++) {
+    hash ^= code.charCodeAt(index);
     hash = Math.imul(hash, 16777619);
   }
   return PALETTE[(hash >>> 0) % PALETTE.length];
@@ -32,10 +25,10 @@ function paletteFor(code: string) {
 
 type Size = "sm" | "md" | "lg";
 
-const SIZES: Record<Size, { box: string; text: string }> = {
-  sm: { box: "h-6 w-6", text: "text-[9px]" },
-  md: { box: "h-8 w-8", text: "text-[11px]" },
-  lg: { box: "h-12 w-12", text: "text-base" },
+const SIZES: Record<Size, { box: string; text: string; pixels: number }> = {
+  sm: { box: "h-6 w-6", text: "text-[9px]", pixels: 24 },
+  md: { box: "h-8 w-8", text: "text-[11px]", pixels: 32 },
+  lg: { box: "h-12 w-12", text: "text-base", pixels: 48 },
 };
 
 export function CompanyLogo({
@@ -47,18 +40,20 @@ export function CompanyLogo({
   logoUrl?: string | null;
   size?: Size;
 }) {
-  const { box, text } = SIZES[size];
+  const { box, text, pixels } = SIZES[size];
+  const officialLogoUrl = getCompanyLogoUrl(code) ?? logoUrl;
 
-  if (logoUrl) {
+  if (
+    officialLogoUrl?.startsWith("https://s3-symbol-logo.tradingview.com/") ||
+    officialLogoUrl?.startsWith("https://storage.invezgo.com/icon/")
+  ) {
     return (
-      // Arbitrary remote hosts, so plain <img> rather than next/image —
-      // no remotePatterns config to keep in sync with the database.
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src={logoUrl}
-        alt=""
-        className={`${box} shrink-0 border border-rule object-contain bg-void`}
-        loading="lazy"
+      <Image
+        src={officialLogoUrl}
+        alt={`${code} company logo`}
+        width={pixels}
+        height={pixels}
+        className={`${box} shrink-0 border border-rule bg-white object-contain p-0.5`}
       />
     );
   }

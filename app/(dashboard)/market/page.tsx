@@ -54,9 +54,9 @@ export default async function MarketPage({
       <div className="border-b border-rule bg-panel-hi px-4 py-3">
         <BoardSearch initialQuery={query} />
         <p className="mt-2 text-micro text-dimmer">
-          Every equity listed on the IDX main board, ranked by market
-          capitalisation. Prices are fetched for your watchlist and the largest
-          names, so smaller listings may show no quote until you follow them.
+          Active IDX equity securities from the latest KSEI master snapshot,
+          ranked by market capitalisation. Prices are fetched for your watchlist
+          and the largest names, so illiquid or suspended securities may have no quote.
         </p>
       </div>
 
