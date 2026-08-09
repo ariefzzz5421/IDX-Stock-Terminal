@@ -7,6 +7,7 @@ const TABS = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/watchlist", label: "Watchlist" },
   { href: "/top10", label: "Top 10" },
+  { href: "/foreign-flow", label: "Foreign Flow" },
   { href: "/hot", label: "Hot" },
   { href: "/market", label: "Market" },
   { href: "/account", label: "Account" },

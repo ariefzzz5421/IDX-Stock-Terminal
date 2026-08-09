@@ -10,6 +10,7 @@ type ListingEntry = {
   name: string;
   sector: string | null;
   marketCap: number | null;
+  logoUrl: string | null;
 };
 
 /**
@@ -25,7 +26,7 @@ function loadListing(): ListingEntry[] {
       "prisma/idx-listing.json not found — seeding the curated shortlist only.\n" +
         "Run `npx tsx scripts/fetch-idx-listing.ts` for the full board.",
     );
-    return IDX_STOCKS.map((s) => ({ ...s, marketCap: null }));
+    return IDX_STOCKS.map((s) => ({ ...s, marketCap: null, logoUrl: null }));
   }
 
   return JSON.parse(readFileSync(file, "utf8")) as ListingEntry[];
@@ -154,12 +155,18 @@ async function main() {
       where: { code: stock.code },
       // Re-running the seed must not clobber prices the adapter already wrote,
       // so an existing row only gets its metadata refreshed.
-      update: { name: stock.name, sector, marketCap: stock.marketCap },
+      update: {
+        name: stock.name,
+        sector,
+        marketCap: stock.marketCap,
+        logoUrl: stock.logoUrl,
+      },
       create: {
         code: stock.code,
         name: stock.name,
         sector,
         marketCap: stock.marketCap,
+        logoUrl: stock.logoUrl,
       },
     });
 
