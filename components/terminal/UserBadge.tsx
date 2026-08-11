@@ -60,18 +60,28 @@ export function UserBadge({ username, displayName, avatarUrl, guest }: Props) {
       </Link>
 
       {guest ? (
-        <Link
-          href="/login"
-          className="border border-rule-hi px-2 py-1 text-[9px] uppercase tracking-[0.1em] text-dim transition-colors hover:border-amber hover:text-amber"
-        >
-          Sign in
-        </Link>
+        // Sign-up is the action we actually want a guest to take, so it gets
+        // the emphasis and "Sign in" stays secondary.
+        <span className="flex items-center gap-1.5">
+          <Link
+            href="/login"
+            className="border border-rule-hi px-2.5 py-1.5 text-micro uppercase tracking-[0.1em] text-dim transition-colors hover:border-amber hover:text-amber"
+          >
+            Sign in
+          </Link>
+          <Link
+            href="/register"
+            className="bg-amber px-2.5 py-1.5 text-micro font-bold uppercase tracking-[0.1em] text-void transition-colors hover:bg-ink-hi"
+          >
+            Sign up
+          </Link>
+        </span>
       ) : (
         <button
           type="button"
           onClick={signOut}
           disabled={signingOut}
-          className="border border-rule-hi px-2 py-1 text-[9px] uppercase tracking-[0.1em] text-dim transition-colors hover:border-down hover:text-down disabled:opacity-50"
+          className="border border-rule-hi px-2.5 py-1.5 text-micro uppercase tracking-[0.1em] text-dim transition-colors hover:border-down hover:text-down disabled:opacity-50"
         >
           {signingOut ? "…" : "Exit"}
         </button>

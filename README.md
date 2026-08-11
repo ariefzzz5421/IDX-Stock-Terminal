@@ -190,13 +190,33 @@ Open http://localhost:3000.
    Postgres, so there's no blob store to configure. Your avatar shows in the terminal
    header, top right.
 
+### Pages
+
+| Route | What it is |
+| --- | --- |
+| `/` | Public landing page — what the terminal is, live movers, sign-up |
+| `/dashboard` | Watchlist, top gainers, top losers, most active |
+| `/watchlist` | Everything you follow, with up/down counts |
+| `/top10` | Top 10 gainers, losers and turnover |
+| `/foreign-flow` | Net foreign accumulation and distribution |
+| `/hot` | Biggest moves among actively traded names |
+| `/market` | The full board, searchable and paged |
+| `/account` | Display name, bio, avatar, session info |
+| `/stock/[code]` | Quote, chart, best bid/offer, company profile |
+
 ### Accounts
 
 By default the terminal runs open: everything hangs off a shared `guest` account,
 created automatically on first visit. That keeps it a one-click personal tool.
 
-Accounts still exist — `/register` and `/login` work, and signing in switches you to
-your own watchlist and profile. To require an account before anything is visible:
+**Anyone can sign up for their own account** from the landing page, the **Sign up**
+button in the terminal header, or `/register` directly — username and password only,
+minimum 8 characters, no email and no verification. Passwords are hashed with bcrypt
+and the account, watchlist and profile are written to the PostgreSQL running on your
+own machine. Nothing is sent anywhere else.
+
+Signing in switches you from the shared guest watchlist to your own; signing out
+switches back. To require an account before anything is visible:
 
 ```bash
 AUTH_REQUIRED="true"
