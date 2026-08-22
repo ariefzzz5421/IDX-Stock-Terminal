@@ -13,7 +13,9 @@
     "db:seed": "prisma db seed",
     "catalog:refresh": "tsx scripts/fetch-idx-listing.ts",
     "db:studio": "prisma studio",
-    "db:reset": "prisma migrate reset"
+    "db:reset": "prisma migrate reset",
+    "logos:sync": "tsx scripts/logos-sync.ts",
+    "logos:check": "tsx scripts/logos-check.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.9.1",

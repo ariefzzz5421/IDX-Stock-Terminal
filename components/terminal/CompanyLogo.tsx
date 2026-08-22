@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { getCompanyLogoUrl } from "@/lib/company-catalog";
+import { resolveLogo } from "@/lib/logos";
 
 const PALETTE = [
   { bg: "#1d3a5c", fg: "#7cc0f5" },
@@ -31,6 +31,14 @@ const SIZES: Record<Size, { box: string; text: string; pixels: number }> = {
   lg: { box: "h-12 w-12", text: "text-base", pixels: 48 },
 };
 
+/**
+ * The logo tile that sits beside a ticker everywhere in the terminal.
+ *
+ * Order of preference: a manual override from data/logo-overrides.json, then
+ * the bundled catalogue, then a monogram coloured from the ticker itself. The
+ * monogram means a missing logo still reads as a distinct row rather than a
+ * broken image, and it never 404s.
+ */
 export function CompanyLogo({
   code,
   logoUrl,
@@ -41,19 +49,30 @@ export function CompanyLogo({
   size?: Size;
 }) {
   const { box, text, pixels } = SIZES[size];
-  const officialLogoUrl = getCompanyLogoUrl(code) ?? logoUrl;
+  const logo = resolveLogo(code, logoUrl);
 
-  if (
-    officialLogoUrl?.startsWith("https://s3-symbol-logo.tradingview.com/") ||
-    officialLogoUrl?.startsWith("https://storage.invezgo.com/icon/")
-  ) {
-    return (
+  if (logo) {
+    const className = `${box} shrink-0 border border-rule bg-white object-contain p-0.5`;
+
+    // Arbitrary hosts skip next/image so a URL pasted into the overrides file
+    // works immediately, with no next.config change required.
+    return logo.optimised ? (
       <Image
-        src={officialLogoUrl}
+        src={logo.url}
         alt={`${code} company logo`}
         width={pixels}
         height={pixels}
-        className={`${box} shrink-0 border border-rule bg-white object-contain p-0.5`}
+        className={className}
+      />
+    ) : (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={logo.url}
+        alt={`${code} company logo`}
+        width={pixels}
+        height={pixels}
+        loading="lazy"
+        className={className}
       />
     );
   }

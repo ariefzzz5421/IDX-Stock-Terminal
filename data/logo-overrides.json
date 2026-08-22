@@ -1,0 +1,3 @@
+{
+  "_comment": "Manual logo overrides. Key = IDX ticker, value = a /logos/<file> path or any https URL. This file beats the bundled catalogue in prisma/idx-listing.json. Drop images into public/logos/ and run `npm run logos:sync`, or add a remote URL here by hand. See docs/LOGOS.md."
+}

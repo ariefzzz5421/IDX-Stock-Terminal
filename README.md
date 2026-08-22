@@ -204,6 +204,22 @@ Open http://localhost:3000.
 | `/account` | Display name, bio, avatar, session info |
 | `/stock/[code]` | Quote, chart, best bid/offer, company profile |
 
+### Company logos
+
+Every ticker shows a logo beside its code, in tables and on its stock page.
+973 of 978 come bundled; the rest render as a coloured monogram built from the
+ticker, which never breaks and stays visually stable.
+
+To see what's missing, and to add your own:
+
+```bash
+npm run logos:check
+```
+
+Drop an image into `public/logos/<TICKER>.png` and run `npm run logos:sync`, or
+add a URL straight into `data/logo-overrides.json`. Your entries always beat the
+bundled catalogue. Full guide: **[docs/LOGOS.md](docs/LOGOS.md)**.
+
 ### Accounts
 
 By default the terminal runs open: everything hangs off a shared `guest` account,
