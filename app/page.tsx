@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { prisma } from "@/lib/db/prisma";
 import { getCurrentUser } from "@/lib/auth/session";
+import { missingSettings } from "@/lib/config";
 import { MarketStatusBadge } from "@/components/terminal/MarketStatusBadge";
 import { CompanyLogo } from "@/components/terminal/CompanyLogo";
 import { directionClass, formatPct, formatPrice } from "@/lib/format";
@@ -25,9 +26,9 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 /**
- * The landing page is the only public surface, so it must survive an empty or
- * unreachable database — someone hitting a fresh clone should still see what
- * the project is, not a crash.
+ * The landing page is the public surface, so it must survive an empty or
+ * unreachable database — someone hitting a fresh deployment should still see
+ * the product and can open the database-free preview.
  */
 async function loadPreview() {
   try {
@@ -86,13 +87,23 @@ const FEATURES = [
 ];
 
 export default async function LandingPage() {
-  const [{ listed, movers }, user] = await Promise.all([
-    loadPreview(),
-    getCurrentUser(),
-  ]);
+  const previewMode = missingSettings().length > 0;
+  const { listed, movers } = previewMode
+    ? { listed: 0, movers: [] }
+    : await loadPreview();
+  const user = previewMode ? null : await getCurrentUser();
 
   return (
     <div className="flex min-h-full flex-1 flex-col">
+      {previewMode && (
+        <div className="border-b border-amber-dim bg-amber/10 px-5 py-2 text-center text-xs text-dim">
+          <span className="font-bold uppercase tracking-[0.12em] text-amber">
+            Preview mode
+          </span>{" "}
+          · Database setup can wait. The public site and a static terminal preview are available now.
+        </div>
+      )}
+
       {/* ---------- header ---------- */}
       <header className="sticky top-0 z-30 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-rule bg-void/95 px-5 py-3 backdrop-blur">
         <Link href="/" className="flex items-baseline gap-2.5">
@@ -115,6 +126,13 @@ export default async function LandingPage() {
               className="bg-amber px-4 py-2 text-micro font-bold uppercase tracking-[0.12em] text-void transition-colors hover:bg-ink-hi"
             >
               Open terminal
+            </Link>
+          ) : previewMode ? (
+            <Link
+              href="/preview"
+              className="bg-amber px-4 py-2 text-micro font-bold uppercase tracking-[0.12em] text-void transition-colors hover:bg-ink-hi"
+            >
+              Preview terminal
             </Link>
           ) : (
             <>
@@ -165,13 +183,13 @@ export default async function LandingPage() {
 
         <div className="mt-9 flex flex-wrap items-center gap-3">
           <Link
-            href="/dashboard"
+            href={previewMode ? "/preview" : "/dashboard"}
             className="inline-flex items-center gap-2 bg-amber px-6 py-3 text-sm font-bold uppercase tracking-[0.1em] text-void transition-colors hover:bg-ink-hi"
           >
             <TerminalSquare aria-hidden="true" className="h-4 w-4" />
-            Open the terminal
+            {previewMode ? "Preview the terminal" : "Open the terminal"}
           </Link>
-          {!user && (
+          {!user && !previewMode && (
             <Link
               href="/register"
               className="inline-flex items-center gap-2 border border-rule-hi px-6 py-3 text-sm uppercase tracking-[0.1em] text-ink transition-colors hover:border-amber hover:text-amber"
@@ -182,9 +200,11 @@ export default async function LandingPage() {
         </div>
 
         <p className="mt-4 text-xs text-dimmer">
-          {user
-            ? `Signed in as ${user.username}.`
-            : "You can look around without an account — sign up to keep your own watchlist."}
+          {previewMode
+            ? "Preview data is static and clearly labelled. Connect PostgreSQL later to enable accounts, watchlists, price history and the real dashboard."
+            : user
+              ? `Signed in as ${user.username}.`
+              : "You can look around without an account — sign up to keep your own watchlist."}
         </p>
       </section>
 
@@ -235,8 +255,9 @@ export default async function LandingPage() {
           What&rsquo;s inside
         </h2>
         <p className="mb-8 max-w-2xl text-sm text-dim">
-          Everything runs against your own PostgreSQL, with market data from a
-          swappable provider.
+          {previewMode
+            ? "Explore the interface with sample data now. Database-backed features switch on after you add PostgreSQL and the session secret."
+            : "Everything runs against your own PostgreSQL, with market data from a swappable provider."}
         </p>
 
         <div className="grid gap-px bg-rule md:grid-cols-2 lg:grid-cols-3">
@@ -251,7 +272,7 @@ export default async function LandingPage() {
       </section>
 
       {/* ---------- account CTA ---------- */}
-      {!user && (
+      {!user && !previewMode && (
         <section className="border-t border-rule bg-panel">
           <div className="mx-auto w-full max-w-6xl px-5 py-14">
             <div className="flex flex-wrap items-center gap-x-10 gap-y-6">
@@ -299,7 +320,8 @@ export default async function LandingPage() {
             Source on GitHub
           </a>
           <span className="ml-auto normal-case tracking-normal">
-            Delayed third-party data. Not investment advice.
+            {previewMode ? "Preview data only. " : "Delayed third-party data. "}
+            Not investment advice.
           </span>
         </div>
       </footer>

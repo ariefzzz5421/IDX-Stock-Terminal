@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono, IBM_Plex_Mono } from "next/font/google";
-import { missingSettings } from "@/lib/config";
-import { SetupRequired } from "@/components/SetupRequired";
 import "./globals.css";
 
 const jetbrainsMono = JetBrains_Mono({
@@ -26,18 +24,12 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
-  // Every route needs a database and a session key, so an unconfigured
-  // deployment is answered once here rather than crashing per route.
-  const missing = missingSettings();
-
   return (
     <html
       lang="en"
       className={`${jetbrainsMono.variable} ${plexMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
-        {missing.length > 0 ? <SetupRequired missing={missing} /> : children}
-      </body>
+      <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
 }

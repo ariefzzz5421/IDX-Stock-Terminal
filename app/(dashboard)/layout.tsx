@@ -7,8 +7,13 @@ import { UserBadge } from "@/components/terminal/UserBadge";
 import { MarketStatusBadge } from "@/components/terminal/MarketStatusBadge";
 import { Nav } from "@/components/terminal/Nav";
 import { ensureStockCatalog } from "@/lib/stocks";
+import { missingSettings } from "@/lib/config";
+import { SetupRequired } from "@/components/SetupRequired";
 
 export default async function DashboardLayout({ children }: LayoutProps<"/">) {
+  const missing = missingSettings();
+  if (missing.length > 0) return <SetupRequired missing={missing} />;
+
   const user = await requireUser();
   await ensureStockCatalog();
 
