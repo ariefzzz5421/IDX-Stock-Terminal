@@ -1,15 +1,15 @@
 # IDX Terminal
 
 A Bloomberg-style terminal for the Indonesia Stock Exchange (IDX/BEI). Dark, dense,
-monospace, multi-panel — a watchlist that ticks in real time, a candlestick chart, a
-curated news feed, and automatic alerts when a stock starts pumping.
+monospace, multi-panel — the whole IDX board, a live watchlist, candlestick charts and
+company fundamentals, on your own machine.
 
 Built for personal use, open sourced under MIT.
 
-> **Status: in development.** Milestones 1–3 are complete, so the app is usable
-> end to end: register, sign in, and work a live-ish dashboard with charts, backed by
-> the built-in offline data provider. Realtime push, news and pump detection are
-> still to come — see [Roadmap](#roadmap).
+> **Status: in development.** The app is usable end to end today — browse all 978
+> listed securities, follow a watchlist, and read charts and fundamentals, with real
+> prices from Yahoo Finance and no API key required. Streaming push, news and pump
+> detection are **not built yet** — see [Roadmap](#roadmap).
 
 ## Interface preview
 
@@ -25,21 +25,27 @@ All figures in the preview are synthetic sample data, not live market data.
 - **The whole board** — 978 active IDX equity securities from KSEI's latest master file
 - **Company logos** — 973 issuer/share-class logos with a deterministic monogram fallback for five legacy securities
 - **Ticker detail** — chart, delayed best bid/offer, company profile, key ratios and dated holder percentages
-- **Foreign flow** — Top Net Buy and Top Net Sell, using IDX EOD data with an authenticated Invezgo fallback
-- **Terminal dashboard** — multi-panel grid: watchlist left, chart centre, news right
+- **Foreign flow** — Top Net Buy and Top Net Sell. Needs `INVEZGO_KEY`: IDX's own
+  endpoint sits behind Cloudflare and returns 403 to servers, so without a key this
+  panel explains itself rather than showing data
+- **Terminal dashboard** — multi-panel grid: watchlist, top gainers, top losers, turnover
 - **Market status** — Open / Closed on the real BEI schedule, including Friday's shifted
   session hours, pre-opening, break, pre-closing and post-trading
 - **Sections** — Dashboard, Watchlist, Top 10, Foreign Flow, Hot, Market and Account
 - **Command bar** — type `BBCA` and press `<GO>` to jump to a ticker, Bloomberg-style
-- **Realtime prices** — internal WebSocket relay pushes quote updates; cells flash on tick
-- **News curation** — RSS aggregation from Indonesian finance media, keyword-tagged to
-  ticker codes, cached so you can scroll back through history
-- **Pump detection** — rolling baseline on price and volume; crossing a threshold fires
-  a clickable alert that routes to the stock's detail page
 - **Swappable data providers** — one adapter interface, several backends (see below)
 - **Open by default** — the dashboard loads with no login step; accounts are opt-in
 - **Simple auth** — username + password, bcrypt, no email or OTP
 - **Profiles** — display name, bio, avatar
+
+### Not built yet
+
+These are planned, not shipped. There is no code behind them today:
+
+- **Streaming prices** — an internal WebSocket relay pushing ticks, instead of the
+  current per-request snapshot
+- **News curation** — RSS aggregation from Indonesian finance media, tagged to tickers
+- **Pump detection** — rolling price/volume baseline firing a clickable alert
 
 ## Tech stack
 
@@ -48,7 +54,7 @@ All figures in the preview are synthetic sample data, not live market data.
 | Framework  | Next.js 16 (App Router), React 19, TypeScript              |
 | Styling    | Tailwind CSS v4, JetBrains Mono                            |
 | Database   | PostgreSQL 18 + Prisma 7 (via `@prisma/adapter-pg`)        |
-| Realtime   | `ws` — an internal relay server, so provider keys stay server-side |
+| Realtime   | *(planned)* `ws` relay — today quotes refresh per request          |
 | Auth       | `iron-session` + bcrypt                                    |
 | State      | Zustand                                                    |
 | Charting   | lightweight-charts (TradingView)                           |
@@ -330,7 +336,7 @@ architecture 1:1 and needs no changes. A full guide lands with Milestone 8.
 - [ ] **M4** — WebSocket relay, live prices and chart
 - [ ] **M5** — News aggregation and broadcast
 - [ ] **M6** — Pump detector and alert popup
-- [ ] **M7** — Bloomberg-style UI polish and command bar
+- [x] **M7** — Bloomberg-style UI polish and command bar
 - [ ] **M8** — Documentation and deployment guide
 
 ## Disclaimer
