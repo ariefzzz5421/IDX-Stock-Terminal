@@ -19,12 +19,11 @@ export function SetupRequired({ missing }: { missing: MissingSetting[] }) {
 
         <div className="px-4 py-5">
           <h1 className="mb-2 text-balance text-lg leading-snug text-ink-hi">
-            The terminal is deployed but not configured yet.
+            This deployment is missing required configuration.
           </h1>
           <p className="mb-5 text-[12.5px] leading-relaxed text-dim">
-            {missing.length === 1
-              ? "One required environment variable is missing:"
-              : `${missing.length} required environment variables are missing:`}
+            The database itself needs nothing — it&rsquo;s embedded SQLite with a
+            working default. This is about something else:
           </p>
 
           <dl className="mb-5 border border-rule">
@@ -50,18 +49,17 @@ export function SetupRequired({ missing }: { missing: MissingSetting[] }) {
             Running locally
           </h2>
           <p className="mb-4 text-[11.5px] leading-relaxed text-dim">
-            Copy <Code>.env.example</Code> to <Code>.env</Code>, fill in the values
-            above, then run <Code>npm run db:migrate</Code> and{" "}
-            <Code>npm run db:seed</Code>.
+            This shouldn&rsquo;t normally happen in dev — set{" "}
+            <Code>NODE_ENV=production</Code> only if you meant to run a
+            production build locally, then set the value above.
           </p>
 
           <h2 className="mb-2 text-[10px] font-bold uppercase tracking-[0.14em] text-amber">
             Running on a host
           </h2>
           <p className="text-[11.5px] leading-relaxed text-dim">
-            Add them as environment variables in your host&rsquo;s project settings
-            and redeploy. The database must be reachable from the host — a
-            PostgreSQL on your own machine is not.
+            Add it as an environment variable in your host&rsquo;s project settings
+            and redeploy.
           </p>
         </div>
       </div>

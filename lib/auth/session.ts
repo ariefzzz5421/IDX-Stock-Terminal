@@ -16,8 +16,29 @@ export type SessionData = {
 
 const SESSION_TTL_DAYS = 30;
 
+/**
+ * Never used in production -- guarded below by NODE_ENV. Exists so a fresh
+ * clone can run `npm run dev` with no .env file at all and nothing blocks it.
+ */
+const INSECURE_DEV_ONLY_SECRET =
+  "dev-only-insecure-secret-do-not-use-in-production-00000000";
+
+let warnedAboutDevSecret = false;
+
 function sessionOptions() {
-  const password = process.env.SESSION_SECRET;
+  let password = process.env.SESSION_SECRET;
+
+  if ((!password || password.length < 32) && process.env.NODE_ENV !== "production") {
+    if (!warnedAboutDevSecret) {
+      console.warn(
+        "[auth] SESSION_SECRET not set -- using an insecure development-only " +
+          "default. Fine for local use; set a real SESSION_SECRET before " +
+          "deploying anywhere.",
+      );
+      warnedAboutDevSecret = true;
+    }
+    password = INSECURE_DEV_ONLY_SECRET;
+  }
 
   if (!password || password.length < 32) {
     throw new Error(

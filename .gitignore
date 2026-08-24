@@ -44,6 +44,14 @@ next-env.d.ts
 # prisma client is generated on install, not committed
 /lib/db/generated
 
+# embedded SQLite database — created locally, one per machine, never committed
+/prisma/dev.db
+/prisma/dev.db-journal
+/prisma/dev.db-wal
+/prisma/dev.db-shm
+*.db
+*.db-journal
+
 # agent skill packs auto-installed by `prisma init` — local tooling, not project code
 /.agents/
 /.claude/

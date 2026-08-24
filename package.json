@@ -3,11 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "prisma migrate deploy",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "postinstall": "prisma generate",
+    "postinstall": "prisma generate && prisma migrate deploy && prisma db seed",
     "db:setup": "prisma migrate deploy",
     "db:migrate": "prisma migrate dev",
     "db:seed": "prisma db seed",
@@ -18,9 +19,10 @@
     "logos:check": "tsx scripts/logos-check.ts"
   },
   "dependencies": {
-    "@prisma/adapter-pg": "^7.9.1",
+    "@prisma/adapter-better-sqlite3": "^7.9.1",
     "@prisma/client": "^7.9.1",
     "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^13.0.3",
     "fast-xml-parser": "^5.10.1",
     "iron-session": "^8.0.4",
     "lightweight-charts": "^5.2.0",

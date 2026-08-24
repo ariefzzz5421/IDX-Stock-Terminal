@@ -7,7 +7,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
 }
 
 // ---------------------------------------------------------------------------
@@ -106,16 +106,18 @@ model PriceHistory {
 // ---------------------------------------------------------------------------
 
 model News {
-  id           String   @id @default(cuid())
-  title        String
-  summary      String?
-  source       String
-  url          String   @unique
-  publishedAt  DateTime @map("published_at")
-  relatedCodes String[] @map("related_codes")
+  id          String   @id @default(cuid())
+  title       String
+  summary     String?
+  source      String
+  url         String   @unique
+  publishedAt DateTime @map("published_at")
+  /// JSON-encoded array of ticker codes. SQLite has no native scalar list
+  /// type (Postgres-only), so this is stored as text and encoded/decoded
+  /// at the call site.
+  relatedCodes String  @default("[]") @map("related_codes")
   createdAt    DateTime @default(now()) @map("created_at")
 
   @@index([publishedAt(sort: Desc)])
-  @@index([relatedCodes], type: Gin)
   @@map("news")
 }

@@ -15,6 +15,7 @@ import { marketData } from "@/lib/market-data";
 import { refreshQuotes } from "@/lib/market-data/sync";
 import { getCompanyDetails } from "@/lib/market-data/company-details";
 import { Panel } from "@/components/terminal/Panel";
+import { ResizableSplit } from "@/components/terminal/ResizableSplit";
 import { Chart } from "@/components/terminal/Chart";
 import { CompanyLogo } from "@/components/terminal/CompanyLogo";
 import { WatchlistToggle } from "@/components/terminal/WatchlistToggle";
@@ -113,54 +114,62 @@ export default async function StockPage({ params }: PageProps<"/stock/[code]">) 
         </div>
       </section>
 
-      <div className="grid gap-px xl:grid-cols-[minmax(0,1fr)_22rem]">
-        <Panel
-          title="Chart"
-          meta={`5m · ${candles.length} bars · ${marketData.name}`}
-          bodyClassName="min-h-[25rem]"
-        >
-          <Chart candles={candles} />
-        </Panel>
+      <ResizableSplit
+        storageKey="stock-orderbook"
+        resizableSide="right"
+        defaultWidth={352}
+        leftLabel="orderbook"
+        left={
+          <Panel
+            title="Chart"
+            className="h-full"
+            meta={`5m · ${candles.length} bars · ${marketData.name}`}
+            bodyClassName="min-h-[25rem]"
+          >
+            <Chart candles={candles} />
+          </Panel>
+        }
+        right={
+          <Panel
+            title="Best Bid / Offer"
+            className="h-full scroll-mt-3"
+            meta={details?.orderBook.source ? `${details.orderBook.source} snapshot` : "unavailable"}
+            bodyClassName=""
+          >
+            <div id="orderbook" className="scroll-mt-28 p-4">
+              <div className="grid grid-cols-2 gap-px bg-rule">
+                <OrderSide
+                  label="Best bid"
+                  price={details?.orderBook.bid ?? null}
+                  volume={details?.orderBook.bidVolume ?? null}
+                  tone="buy"
+                />
+                <OrderSide
+                  label="Best offer"
+                  price={details?.orderBook.offer ?? null}
+                  volume={details?.orderBook.offerVolume ?? null}
+                  tone="sell"
+                />
+              </div>
+              <p className="mt-3 text-micro leading-relaxed text-dimmer">
+                This is the latest delayed best bid/offer snapshot, not full live market depth.
+                {details?.orderBook.asOf ? ` Trading date ${details.orderBook.asOf}.` : ""}
+              </p>
 
-        <Panel
-          title="Best Bid / Offer"
-          meta={details?.orderBook.source ? `${details.orderBook.source} snapshot` : "unavailable"}
-          bodyClassName=""
-          className="scroll-mt-3"
-        >
-          <div id="orderbook" className="scroll-mt-28 p-4">
-            <div className="grid grid-cols-2 gap-px bg-rule">
-              <OrderSide
-                label="Best bid"
-                price={details?.orderBook.bid ?? null}
-                volume={details?.orderBook.bidVolume ?? null}
-                tone="buy"
-              />
-              <OrderSide
-                label="Best offer"
-                price={details?.orderBook.offer ?? null}
-                volume={details?.orderBook.offerVolume ?? null}
-                tone="sell"
-              />
+              <dl className="mt-5 grid grid-cols-2 gap-x-5 gap-y-4 border-t border-rule pt-4">
+                <Stat k="Open" v={formatPrice(details?.quote.open)} />
+                <Stat k="Day high" v={formatPrice(details?.quote.high)} />
+                <Stat k="Day low" v={formatPrice(details?.quote.low)} />
+                <Stat k="52W high" v={formatPrice(details?.quote.week52High)} />
+                <Stat k="52W low" v={formatPrice(details?.quote.week52Low)} />
+                <Stat k="P/E" v={formatRatio(details?.quote.trailingPE)} />
+                <Stat k="P/B" v={formatRatio(details?.quote.priceToBook)} />
+                <Stat k="Dividend yield" v={formatOptionalPct(details?.quote.dividendYield)} />
+              </dl>
             </div>
-            <p className="mt-3 text-micro leading-relaxed text-dimmer">
-              This is the latest delayed best bid/offer snapshot, not full live market depth.
-              {details?.orderBook.asOf ? ` Trading date ${details.orderBook.asOf}.` : ""}
-            </p>
-
-            <dl className="mt-5 grid grid-cols-2 gap-x-5 gap-y-4 border-t border-rule pt-4">
-              <Stat k="Open" v={formatPrice(details?.quote.open)} />
-              <Stat k="Day high" v={formatPrice(details?.quote.high)} />
-              <Stat k="Day low" v={formatPrice(details?.quote.low)} />
-              <Stat k="52W high" v={formatPrice(details?.quote.week52High)} />
-              <Stat k="52W low" v={formatPrice(details?.quote.week52Low)} />
-              <Stat k="P/E" v={formatRatio(details?.quote.trailingPE)} />
-              <Stat k="P/B" v={formatRatio(details?.quote.priceToBook)} />
-              <Stat k="Dividend yield" v={formatOptionalPct(details?.quote.dividendYield)} />
-            </dl>
-          </div>
-        </Panel>
-      </div>
+          </Panel>
+        }
+      />
 
       <div className="grid gap-px xl:grid-cols-[minmax(0,1.25fr)_minmax(22rem,0.75fr)]">
         <Panel

@@ -8,12 +8,9 @@ export default defineConfig({
     seed: "tsx prisma/seed.ts",
   },
   datasource: {
-    // `prisma generate` runs on postinstall and only reads the schema, but the
-    // config still wants a syntactically valid URL. CI and fresh clones have no
-    // DATABASE_URL yet, so fall back to a placeholder that is never connected
-    // to — migrate/seed/studio all fail loudly if it is ever actually used.
-    url:
-      process.env["DATABASE_URL"] ??
-      "postgresql://placeholder:placeholder@localhost:5432/placeholder",
+    // Embedded SQLite, so this always resolves to something real and usable
+    // even with no .env file at all — there is no external service to fail
+    // to reach.
+    url: process.env["DATABASE_URL"] || "file:./prisma/dev.db",
   },
 });

@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
-import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import { PrismaClient } from "../lib/db/generated/client";
 import { CURATED_SECTORS } from "../lib/market-data/sectors";
 
@@ -139,7 +139,9 @@ const IDX_STOCKS: Array<{ code: string; name: string; sector: string }> = [
 ];
 
 const prisma = new PrismaClient({
-  adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+  adapter: new PrismaBetterSqlite3({
+    url: process.env.DATABASE_URL || "file:./prisma/dev.db",
+  }),
 });
 
 async function main() {

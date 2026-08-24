@@ -31,20 +31,23 @@ const globalForCatalog = globalThis as unknown as {
 /** Add newly listed securities to databases created from an older snapshot. */
 export function ensureStockCatalog(): Promise<void> {
   globalForCatalog.stockCatalogPromise ??= (async () => {
-    const present = await prisma.stock.count({
-      where: { code: { in: COMPANY_CATALOG.map((stock) => stock.code) } },
-    });
-    if (present === COMPANY_CATALOG.length) return;
+    // SQLite's createMany has no skipDuplicates, unlike Postgres — so the
+    // diff against what's already there is computed explicitly instead.
+    const existing = await prisma.stock.findMany({ select: { code: true } });
+    const existingCodes = new Set(existing.map((stock) => stock.code));
+    const missing = COMPANY_CATALOG.filter(
+      (stock) => !existingCodes.has(stock.code),
+    );
+    if (missing.length === 0) return;
 
     await prisma.stock.createMany({
-      data: COMPANY_CATALOG.map((stock) => ({
+      data: missing.map((stock) => ({
         code: stock.code,
         name: stock.name,
         sector: stock.sector,
         logoUrl: stock.logoUrl,
         marketCap: stock.marketCap,
       })),
-      skipDuplicates: true,
     });
   })().catch((error) => {
     globalForCatalog.stockCatalogPromise = undefined;

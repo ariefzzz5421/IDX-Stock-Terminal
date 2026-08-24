@@ -81,7 +81,7 @@ const FEATURES = [
   {
     icon: Eye,
     title: "Your own watchlist",
-    body: "Create an account and your watchlist and profile are stored in your own local PostgreSQL. Nothing leaves your machine.",
+    body: "Create an account and your watchlist and profile are stored in a local database on this machine. Nothing leaves your machine.",
   },
 ];
 
@@ -235,7 +235,7 @@ export default async function LandingPage() {
           What&rsquo;s inside
         </h2>
         <p className="mb-8 max-w-2xl text-sm text-dim">
-          Everything runs against your own PostgreSQL, with market data from a
+          Everything runs against an embedded local database, with market data from a
           swappable provider.
         </p>
 
@@ -262,7 +262,7 @@ export default async function LandingPage() {
                 <p className="text-sm leading-relaxed text-dim">
                   Sign up with just a username and a password — no email, no
                   verification, no third party. Your account, watchlist and profile
-                  are written to the PostgreSQL running on this computer, and
+                  are written to a database file on this computer, and
                   nothing is sent anywhere else.
                 </p>
               </div>
