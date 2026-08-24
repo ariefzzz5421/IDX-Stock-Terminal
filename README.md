@@ -29,7 +29,9 @@ actually means today. All figures in it are synthetic sample data.
   fallback for the rest, and a manual override file for filling in the gaps
 - **Ticker detail** — chart, delayed best bid/offer, company profile, key ratios and
   dated holder percentages
-- **Foreign flow** — Top Net Buy and Top Net Sell, when a data source is configured
+- **Foreign flow** — Top Net Buy and Top Net Sell. Needs `INVEZGO_KEY`: IDX's own
+  endpoint sits behind Cloudflare and returns 403 to servers, so without a key this
+  panel explains itself rather than showing data
 - **Terminal dashboard** — multi-panel grid: watchlist, top gainers, top losers, turnover
 - **Resizable panels** — drag the divider between panels to resize, click the grip to
   collapse either side to a slim rail; both persist per page

@@ -1,7 +1,12 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { missingSettings } from "@/lib/config";
+import { SetupRequired } from "@/components/SetupRequired";
 
 export default function AuthLayout({ children }: LayoutProps<"/">) {
+  const missing = missingSettings();
+  if (missing.length > 0) return <SetupRequired missing={missing} />;
+
   return (
     <div className="flex min-h-full flex-1 flex-col">
       <header className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-rule px-5 py-3">
