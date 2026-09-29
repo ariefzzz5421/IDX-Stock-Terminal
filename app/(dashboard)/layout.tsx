@@ -26,10 +26,10 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
   return (
     <div className="flex min-h-full flex-1 flex-col gap-px bg-rule">
       {/* ---- top bar ---- */}
-      <header className="flex flex-wrap items-stretch gap-px bg-rule">
+      <header className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto_auto] gap-px bg-rule lg:grid-cols-[auto_minmax(12rem,1fr)_auto_auto]">
         <Link
           href="/dashboard"
-          className="flex items-baseline gap-2.5 bg-panel px-4 py-2.5 hover:opacity-80"
+          className="flex shrink-0 items-baseline gap-2.5 bg-panel px-4 py-2.5 hover:opacity-80 max-lg:col-span-3"
         >
           <span className="font-display text-lg font-bold tracking-[0.16em] text-amber">
             IDX
@@ -39,7 +39,7 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
           </span>
         </Link>
 
-        <div className="flex min-w-0 flex-1 bg-panel">
+        <div className="flex min-w-0 bg-panel">
           <CommandBar knownCodes={codes} />
         </div>
 

@@ -2,16 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-const TABS = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/watchlist", label: "Watchlist" },
-  { href: "/top10", label: "Top 10" },
-  { href: "/foreign-flow", label: "Foreign Flow" },
-  { href: "/hot", label: "Hot" },
-  { href: "/market", label: "Market" },
-  { href: "/account", label: "Account" },
-] as const;
+import { NAV_ITEMS } from "@/lib/navigation";
 
 export function Nav() {
   const pathname = usePathname();
@@ -19,9 +10,9 @@ export function Nav() {
   return (
     <nav
       aria-label="Terminal sections"
-      className="flex items-stretch gap-px overflow-x-auto bg-rule"
+      className="terminal-nav flex min-w-0 items-stretch gap-px overflow-x-auto bg-rule"
     >
-      {TABS.map((tab) => {
+      {NAV_ITEMS.map((tab) => {
         const active =
           pathname === tab.href || pathname.startsWith(`${tab.href}/`);
 
@@ -30,13 +21,15 @@ export function Nav() {
             key={tab.href}
             href={tab.href}
             aria-current={active ? "page" : undefined}
-            className={`whitespace-nowrap px-4 py-2 text-xs uppercase tracking-[0.12em] transition-colors ${
+            className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs uppercase tracking-[0.08em] transition-colors ${
               active
                 ? "bg-panel text-amber shadow-[inset_0_-2px_0_0_var(--color-amber)]"
                 : "bg-panel-hi text-dim hover:bg-panel hover:text-ink"
             }`}
           >
-            {tab.label}
+            <tab.icon aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
+            <span className="hidden min-[1150px]:inline">{tab.label}</span>
+            <span className="min-[1150px]:hidden">{tab.shortLabel ?? tab.label}</span>
           </Link>
         );
       })}

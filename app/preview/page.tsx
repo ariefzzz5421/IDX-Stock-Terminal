@@ -4,6 +4,7 @@ import { Database, Eye, TerminalSquare } from "lucide-react";
 import { MarketStatusBadge } from "@/components/terminal/MarketStatusBadge";
 import { Panel } from "@/components/terminal/Panel";
 import { StockTable, type StockRow } from "@/components/terminal/StockTable";
+import { NAV_ITEMS } from "@/lib/navigation";
 
 export const metadata: Metadata = { title: "Preview — IDX Terminal" };
 
@@ -56,8 +57,6 @@ function row(
   };
 }
 
-const TABS = ["Dashboard", "Watchlist", "Top 10", "Foreign Flow", "Hot", "Market", "Account"];
-
 export default function PreviewPage() {
   return (
     <div className="flex min-h-full flex-1 flex-col gap-px bg-rule">
@@ -97,18 +96,19 @@ export default function PreviewPage() {
         </div>
       </header>
 
-      <nav aria-label="Preview terminal sections" className="flex items-stretch gap-px overflow-x-auto bg-rule">
-        {TABS.map((tab, index) => (
-          <span
-            key={tab}
+      <nav aria-label="Preview terminal sections" className="terminal-nav flex items-stretch gap-px overflow-x-auto bg-rule">
+        {NAV_ITEMS.map((tab, index) => (
+          <Link
+            key={tab.href}
+            href={tab.href === "/lokasi-bisnis" ? "/preview/lokasi-bisnis" : tab.href === "/dashboard" ? "/preview" : tab.href}
             className={`whitespace-nowrap px-4 py-2 text-xs uppercase tracking-[0.12em] ${
               index === 0
                 ? "bg-panel text-amber shadow-[inset_0_-2px_0_0_var(--color-amber)]"
                 : "bg-panel-hi text-dim"
             }`}
           >
-            {tab}
-          </span>
+            {tab.shortLabel ?? tab.label}
+          </Link>
         ))}
       </nav>
 
