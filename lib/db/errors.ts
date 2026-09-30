@@ -16,7 +16,7 @@ export function prismaErrorCode(error: unknown): string | undefined {
  * version, the codes don't.
  *
  * P1000 auth failed · P1001 unreachable · P1002/P1008 timeout
- * P1003 database missing · P1010 access denied · P1017 connection closed
+ * P1003 database missing · P1010 access denied · P1011 TLS failure · P1017 connection closed
  * P2021/P2022 table or column missing, i.e. migrations never ran
  */
 const CONNECTION_CODES = new Set([
@@ -26,6 +26,7 @@ const CONNECTION_CODES = new Set([
   "P1003",
   "P1008",
   "P1010",
+  "P1011",
   "P1017",
   "P2021",
   "P2022",

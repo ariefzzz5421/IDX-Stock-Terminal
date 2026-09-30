@@ -2,6 +2,7 @@ import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "./generated/client";
 import { PrismaClient as SupabasePrismaClient } from "./generated-supabase/client";
+import { SUPABASE_ROOT_CA } from "./supabase-ca";
 
 type Client = ReturnType<typeof createPrismaClient>;
 
@@ -15,8 +16,17 @@ const DEFAULT_DATABASE_URL = "file:./prisma/dev.db";
 function createPrismaClient() {
   const url = process.env.DATABASE_URL;
   if (url?.startsWith("postgresql://") || url?.startsWith("postgres://")) {
+    // node-postgres replaces an explicit ssl object if the URL includes
+    // sslmode. Use Supabase's public CA to verify the pooler's certificate.
+    const connectionUrl = new URL(url);
+    for (const key of ["sslmode", "sslcert", "sslkey", "sslrootcert"]) {
+      connectionUrl.searchParams.delete(key);
+    }
     return new SupabasePrismaClient({
-      adapter: new PrismaPg({ connectionString: url }),
+      adapter: new PrismaPg({
+        connectionString: connectionUrl.toString(),
+        ssl: { ca: SUPABASE_ROOT_CA, rejectUnauthorized: true },
+      }),
       log: process.env.NODE_ENV === "development" ? ["warn", "error"] : ["error"],
     }) as unknown as PrismaClient;
   }
