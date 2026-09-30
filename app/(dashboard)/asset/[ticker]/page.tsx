@@ -117,19 +117,19 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
 
       <Panel
         title="Price & Financial Snapshot"
-        meta={details?.financials.source ?? "Public financial data unavailable"}
+        meta={details?.financials.source ? `${details.financials.source} · ${details.financials.currency ?? "currency N/D"}` : "Public financial data unavailable"}
         bodyClassName=""
       >
         <div className="grid grid-cols-2 gap-4 p-4 sm:grid-cols-3 xl:grid-cols-6">
           <Stat k="Last price" v={formatPrice(fresh.lastPrice)} />
           <Stat k="Market cap" v={formatValue(fresh.marketCap)} />
           <Stat k="P/E (trailing)" v={formatRatio(details?.quote.trailingPE)} />
-          <Stat k="Revenue" v={financialValue(details?.financials.totalRevenue)} />
-          <Stat k="Net income" v={financialValue(details?.financials.netIncome)} />
-          <Stat k="Free cash flow" v={financialValue(details?.financials.freeCashflow)} />
+          <Stat k="Revenue" v={financialValue(details?.financials.totalRevenue, details?.financials.currency)} />
+          <Stat k="Net income" v={financialValue(details?.financials.netIncome, details?.financials.currency)} />
+          <Stat k="Free cash flow" v={financialValue(details?.financials.freeCashflow, details?.financials.currency)} />
         </div>
         <p className="border-t border-rule px-4 py-2 text-micro text-dim">
-          Financial periods vary by issuer and source. N/D means the connected public feed did not provide a verified value.
+          Figures use the issuer reporting currency shown above; periods vary by issuer. N/D means the feed did not provide a value or currency.
         </p>
       </Panel>
 
@@ -375,8 +375,14 @@ function formatRatio(value: number | null | undefined) {
   return value == null || !Number.isFinite(value) ? "—" : `${value.toFixed(2)}x`;
 }
 
-function financialValue(value: number | null | undefined) {
-  return value == null || !Number.isFinite(value) ? "N/D" : formatValue(value);
+function financialValue(value: number | null | undefined, currency: string | null | undefined) {
+  if (value == null || !Number.isFinite(value) || !currency || !/^[A-Z]{3}$/.test(currency)) return "N/D";
+  if (currency === "IDR") return formatValue(value);
+  const abs = Math.abs(value);
+  if (abs >= 1e12) return `${currency} ${(value / 1e12).toFixed(2)}T`;
+  if (abs >= 1e9) return `${currency} ${(value / 1e9).toFixed(2)}B`;
+  if (abs >= 1e6) return `${currency} ${(value / 1e6).toFixed(2)}M`;
+  return `${currency} ${new Intl.NumberFormat("en-US").format(value)}`;
 }
 
 function formatOptionalPct(value: number | null | undefined) {

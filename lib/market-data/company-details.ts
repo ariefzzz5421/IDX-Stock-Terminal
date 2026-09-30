@@ -42,6 +42,7 @@ type YahooProfile = {
   netIncome: number | null;
   ebitda: number | null;
   freeCashflow: number | null;
+  financialCurrency: string | null;
 };
 
 export type CompanyDetails = {
@@ -71,6 +72,7 @@ export type CompanyDetails = {
     netIncome: number | null;
     ebitda: number | null;
     freeCashflow: number | null;
+    currency: string | null;
     source: "Yahoo Finance" | null;
   };
   orderBook: {
@@ -152,6 +154,7 @@ async function getYahooProfile(code: string): Promise<YahooProfile | null> {
       "summaryDetail",
       "defaultKeyStatistics",
       "financialData",
+      "price",
       "majorHoldersBreakdown",
     ].join(",");
     const url = new URL(
@@ -171,7 +174,8 @@ async function getYahooProfile(code: string): Promise<YahooProfile | null> {
           assetProfile?: Record<string, unknown>;
           summaryDetail?: Record<string, RawNumber>;
           defaultKeyStatistics?: Record<string, RawNumber>;
-          financialData?: Record<string, RawNumber>;
+          financialData?: Record<string, unknown>;
+          price?: Record<string, unknown>;
           majorHoldersBreakdown?: Record<string, RawNumber>;
         }>;
       };
@@ -183,6 +187,7 @@ async function getYahooProfile(code: string): Promise<YahooProfile | null> {
       const stats = result.defaultKeyStatistics ?? {};
       const holders = result.majorHoldersBreakdown ?? {};
       const financials = result.financialData ?? {};
+      const price = result.price ?? {};
       const address = [profile.address1, profile.address2, profile.city, profile.country]
         .filter((part): part is string => typeof part === "string" && Boolean(part.trim()))
         .join(", ");
@@ -209,10 +214,13 @@ async function getYahooProfile(code: string): Promise<YahooProfile | null> {
         dividendYield: rawNumber(summary.dividendYield),
         insiderHoldingPct: rawNumber(holders.insidersPercentHeld),
         institutionHoldingPct: rawNumber(holders.institutionsPercentHeld),
-        totalRevenue: rawNumber(financials.totalRevenue),
+        totalRevenue: rawNumber(financials.totalRevenue as RawNumber),
         netIncome: rawNumber(stats.netIncomeToCommon),
-        ebitda: rawNumber(financials.ebitda),
-        freeCashflow: rawNumber(financials.freeCashflow),
+        ebitda: rawNumber(financials.ebitda as RawNumber),
+        freeCashflow: rawNumber(financials.freeCashflow as RawNumber),
+        financialCurrency: text(
+          (financials.financialCurrency ?? price.financialCurrency) as RawString,
+        ),
       };
     }
   } catch {
@@ -297,6 +305,7 @@ export async function getCompanyDetails(code: string): Promise<CompanyDetails | 
       netIncome: yahoo?.netIncome ?? null,
       ebitda: yahoo?.ebitda ?? null,
       freeCashflow: yahoo?.freeCashflow ?? null,
+      currency: yahoo?.financialCurrency ?? null,
       source: yahoo ? "Yahoo Finance" : null,
     },
     orderBook: bestOrderBook(idxQuote, yahoo, idxSummary.date),
