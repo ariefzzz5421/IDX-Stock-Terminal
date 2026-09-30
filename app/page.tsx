@@ -83,12 +83,13 @@ const FEATURES = [
   {
     icon: Eye,
     title: "Your own watchlist",
-    body: "Create an account and your watchlist and profile are stored in a local database on this machine. Nothing leaves your machine.",
+    body: "Create an account and your watchlist and profile are stored in the configured database.",
   },
 ];
 
 export default async function LandingPage() {
   const previewMode = missingSettings().length > 0;
+  const hosted = process.env.VERCEL === "1";
   const { listed, movers } = previewMode
     ? { listed: 0, movers: [] }
     : await loadPreview();
@@ -101,7 +102,7 @@ export default async function LandingPage() {
           <span className="font-bold uppercase tracking-[0.12em] text-amber">
             Preview mode
           </span>{" "}
-          · Database setup can wait. The public site and a static terminal preview are available now.
+          · Terminal configuration is pending. The public site and a static terminal preview are available now.
         </div>
       )}
 
@@ -181,7 +182,7 @@ export default async function LandingPage() {
               movers — dense, dark, and built for one operator.
             </>
           )}{" "}
-          Runs entirely on your own machine.
+          {hosted ? " Hosted on Vercel; account data uses the configured Supabase database." : " Runs entirely on your own machine."}
         </p>
 
         <div className="mt-9 flex flex-wrap items-center gap-3">
@@ -204,7 +205,7 @@ export default async function LandingPage() {
 
         <p className="mt-4 text-xs text-dimmer">
           {previewMode
-            ? "Preview data is static and clearly labelled. Set SESSION_SECRET to enable accounts, watchlists, price history and the real dashboard."
+            ? "Preview data is static and clearly labelled. Complete the server setup to enable accounts, watchlists, price history and the real dashboard."
             : user
               ? `Signed in as ${user.username}.`
               : "You can look around without an account — sign up to keep your own watchlist."}
@@ -281,13 +282,12 @@ export default async function LandingPage() {
             <div className="flex flex-wrap items-center gap-x-10 gap-y-6">
               <div className="max-w-xl">
                 <h2 className="mb-3 text-xl font-bold text-ink-hi">
-                  Your data stays on your machine.
+                  {hosted ? "Your research workspace." : "Your data stays on your machine."}
                 </h2>
                 <p className="text-sm leading-relaxed text-dim">
                   Sign up with just a username and a password — no email, no
                   verification, no third party. Your account, watchlist and profile
-                  are written to a database file on this computer, and
-                  nothing is sent anywhere else.
+                  are written to {hosted ? "the configured Supabase database." : "a database file on this computer."}
                 </p>
               </div>
               <div className="flex flex-wrap gap-3">

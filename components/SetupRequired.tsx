@@ -22,8 +22,7 @@ export function SetupRequired({ missing }: { missing: MissingSetting[] }) {
             This deployment is missing required configuration.
           </h1>
           <p className="mb-5 text-[12.5px] leading-relaxed text-dim">
-            The database itself needs nothing — it&rsquo;s embedded SQLite with a
-            working default. This is about something else:
+            The terminal needs these server-side settings before account and market pages can open. The public preview remains available.
           </p>
 
           <dl className="mb-5 border border-rule">
@@ -49,17 +48,14 @@ export function SetupRequired({ missing }: { missing: MissingSetting[] }) {
             Running locally
           </h2>
           <p className="mb-4 text-[11.5px] leading-relaxed text-dim">
-            This shouldn&rsquo;t normally happen in dev — set{" "}
-            <Code>NODE_ENV=production</Code> only if you meant to run a
-            production build locally, then set the value above.
+            Development uses embedded SQLite by default. If you run a production build locally, set <Code>SESSION_SECRET</Code> before starting it.
           </p>
 
           <h2 className="mb-2 text-[10px] font-bold uppercase tracking-[0.14em] text-amber">
             Running on a host
           </h2>
           <p className="text-[11.5px] leading-relaxed text-dim">
-            Add it as an environment variable in your host&rsquo;s project settings
-            and redeploy.
+            Add the settings in Vercel project environment variables and redeploy. Use the Supabase setup guide in the repository for database connection and migration steps.
           </p>
         </div>
       </div>
