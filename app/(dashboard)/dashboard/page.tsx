@@ -4,6 +4,7 @@ import { requireUser } from "@/lib/auth/session";
 import { Panel } from "@/components/terminal/Panel";
 import { StockTable } from "@/components/terminal/StockTable";
 import { ResizableSplit } from "@/components/terminal/ResizableSplit";
+import { BusinessHomeHeader } from "@/components/business-map/BusinessHomeHeader";
 import {
   boardCounts,
   mostActive,
@@ -29,6 +30,8 @@ export default async function DashboardPage() {
   ]);
 
   return (
+    <div className="flex min-h-0 flex-1 flex-col">
+    <BusinessHomeHeader />
     <ResizableSplit
       storageKey="dashboard"
       defaultWidth={340}
@@ -74,5 +77,6 @@ export default async function DashboardPage() {
         </div>
       }
     />
+    </div>
   );
 }

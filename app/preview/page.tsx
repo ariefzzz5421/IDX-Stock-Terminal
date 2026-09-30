@@ -5,6 +5,7 @@ import { MarketStatusBadge } from "@/components/terminal/MarketStatusBadge";
 import { Panel } from "@/components/terminal/Panel";
 import { StockTable, type StockRow } from "@/components/terminal/StockTable";
 import { NAV_ITEMS } from "@/lib/navigation";
+import { BusinessHomeHeader } from "@/components/business-map/BusinessHomeHeader";
 
 export const metadata: Metadata = { title: "Preview — IDX Terminal" };
 
@@ -111,6 +112,8 @@ export default function PreviewPage() {
           </Link>
         ))}
       </nav>
+
+      <BusinessHomeHeader preview />
 
       <main className="grid min-h-0 flex-1 gap-px xl:grid-cols-[minmax(0,26rem)_minmax(0,1fr)]">
         <Panel title="Watchlist" meta={`${WATCHLIST.length} demo issues`}>

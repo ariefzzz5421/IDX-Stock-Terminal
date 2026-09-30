@@ -16,6 +16,7 @@ import { missingSettings } from "@/lib/config";
 import { MarketStatusBadge } from "@/components/terminal/MarketStatusBadge";
 import { CompanyLogo } from "@/components/terminal/CompanyLogo";
 import { directionClass, formatPct, formatPrice } from "@/lib/format";
+import { BusinessHomeHeader } from "@/components/business-map/BusinessHomeHeader";
 
 export const metadata: Metadata = {
   title: "IDX Terminal — a Bloomberg-style terminal for the Indonesia Stock Exchange",
@@ -152,6 +153,8 @@ export default async function LandingPage() {
           )}
         </nav>
       </header>
+
+      <BusinessHomeHeader preview={previewMode} />
 
       {/* ---------- hero ---------- */}
       <section className="mx-auto w-full max-w-6xl px-5 py-16 sm:py-24">
