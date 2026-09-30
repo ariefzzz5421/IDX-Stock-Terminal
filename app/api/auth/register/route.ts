@@ -25,8 +25,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Expected a JSON body." }, { status: 400 });
   }
 
-  const username = normalizeUsername(body.username ?? "");
-  const password = body.password ?? "";
+  const username = normalizeUsername(typeof body?.username === "string" ? body.username : "");
+  const password = typeof body?.password === "string" ? body.password : "";
 
   const usernameCheck = validateUsername(username);
   if (!usernameCheck.ok) {

@@ -55,6 +55,20 @@ export function isDatabaseUnavailable(error: unknown): boolean {
 export function routeErrorResponse(error: unknown, context: string) {
   console.error(`[${context}]`, error);
 
+  if (prismaErrorCode(error) === "P1000") {
+    return NextResponse.json(
+      { error: "Login database ditolak. Periksa password pada DATABASE_URL di Vercel, lalu redeploy." },
+      { status: 503 },
+    );
+  }
+
+  if (["P2021", "P2022"].includes(prismaErrorCode(error) ?? "")) {
+    return NextResponse.json(
+      { error: "Tabel database belum siap. Jalankan migrasi Supabase terlebih dahulu." },
+      { status: 503 },
+    );
+  }
+
   if (isDatabaseUnavailable(error)) {
     return NextResponse.json(
       {
