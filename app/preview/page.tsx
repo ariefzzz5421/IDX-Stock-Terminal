@@ -6,6 +6,8 @@ import { Panel } from "@/components/terminal/Panel";
 import { StockTable, type StockRow } from "@/components/terminal/StockTable";
 import { NAV_ITEMS } from "@/lib/navigation";
 import { BusinessHomeHeader } from "@/components/business-map/BusinessHomeHeader";
+import { TrendingPopup } from "@/components/terminal/TrendingPopup";
+import type { TrendingStock } from "@/lib/market-data/trending";
 
 export const metadata: Metadata = { title: "Preview — IDX Terminal" };
 
@@ -34,6 +36,11 @@ const LOSERS: StockRow[] = [
 const ACTIVE = [...WATCHLIST, ...GAINERS.slice(0, 3)].sort(
   (a, b) => (b.lastValue ?? 0) - (a.lastValue ?? 0),
 );
+
+const PREVIEW_TRENDING: TrendingStock[] = [...ACTIVE, ...LOSERS]
+  .sort((a, b) => (b.lastValue ?? 0) - (a.lastValue ?? 0))
+  .slice(0, 10)
+  .map((stock) => ({ code: stock.code, name: stock.name, logoUrl: stock.logoUrl, lastPrice: stock.lastPrice, turnover: stock.lastValue ?? 0, changes: { day: stock.lastChangePct, week: null, month: null } }));
 
 function row(
   code: string,
@@ -114,6 +121,7 @@ export default function PreviewPage() {
       </nav>
 
       <BusinessHomeHeader preview />
+      <TrendingPopup stocks={PREVIEW_TRENDING} demo />
 
       <main className="grid min-h-0 flex-1 gap-px xl:grid-cols-[minmax(0,26rem)_minmax(0,1fr)]">
         <Panel title="Watchlist" meta={`${WATCHLIST.length} demo issues`}>

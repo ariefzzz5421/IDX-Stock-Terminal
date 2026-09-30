@@ -1,13 +1,13 @@
 // IDX Terminal — Prisma schema
-// Datasource URL is read from DATABASE_URL via prisma.config.ts.
+// Migration URL is read from DIRECT_URL via prisma.supabase.config.ts.
 
 generator client {
   provider = "prisma-client"
-  output   = "../lib/db/generated"
+  output   = "../../lib/db/generated-supabase"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 // ---------------------------------------------------------------------------

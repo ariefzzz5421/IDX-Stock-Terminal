@@ -8,9 +8,8 @@ export default defineConfig({
     seed: "tsx prisma/seed.ts",
   },
   datasource: {
-    // Embedded SQLite, so this always resolves to something real and usable
-    // even with no .env file at all — there is no external service to fail
-    // to reach.
-    url: process.env["DATABASE_URL"] || "file:./prisma/dev.db",
+    // This config is exclusively for the local SQLite path. Production
+    // Postgres migrations use prisma.supabase.config.ts and DIRECT_URL.
+    url: process.env["SQLITE_DATABASE_URL"] || "file:./prisma/dev.db",
   },
 });

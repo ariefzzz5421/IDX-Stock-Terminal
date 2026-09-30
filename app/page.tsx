@@ -34,9 +34,9 @@ export const dynamic = "force-dynamic";
 async function loadPreview() {
   try {
     const [listed, movers] = await Promise.all([
-      prisma.stock.count(),
+      prisma.stock.count({ where: { isListed: true } }),
       prisma.stock.findMany({
-        where: { lastChangePct: { not: null }, lastPrice: { not: null } },
+        where: { isListed: true, lastChangePct: { not: null }, lastPrice: { not: null } },
         orderBy: { lastValue: "desc" },
         take: 6,
         select: {
@@ -222,7 +222,7 @@ export default async function LandingPage() {
               {movers.map((stock) => (
                 <li key={stock.code}>
                   <Link
-                    href={`/stock/${stock.code}`}
+                    href={`/asset/${stock.code}`}
                     className="flex items-center gap-3 bg-panel px-4 py-3 transition-colors hover:bg-panel-hi"
                   >
                     <CompanyLogo code={stock.code} logoUrl={stock.logoUrl} />

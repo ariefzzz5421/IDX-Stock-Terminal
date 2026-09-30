@@ -2,7 +2,9 @@ import "dotenv/config";
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../lib/db/generated/client";
+import { PrismaClient as SupabasePrismaClient } from "../lib/db/generated-supabase/client";
 import { CURATED_SECTORS } from "../lib/market-data/sectors";
 
 type ListingEntry = {
@@ -138,20 +140,21 @@ const IDX_STOCKS: Array<{ code: string; name: string; sector: string }> = [
   { code: "PANI", name: "Pantai Indah Kapuk Dua Tbk.", sector: "Properties & Real Estate" },
 ];
 
-const prisma = new PrismaClient({
-  adapter: new PrismaBetterSqlite3({
-    url: process.env.DATABASE_URL || "file:./prisma/dev.db",
-  }),
-});
+const databaseUrl = process.env.DATABASE_URL;
+const prisma = (databaseUrl?.startsWith("postgresql://") || databaseUrl?.startsWith("postgres://")
+  ? new SupabasePrismaClient({ adapter: new PrismaPg({ connectionString: databaseUrl }) })
+  : new PrismaClient({ adapter: new PrismaBetterSqlite3({ url: process.env.SQLITE_DATABASE_URL || "file:./prisma/dev.db" }) })) as PrismaClient;
 
 async function main() {
   const listing = loadListing();
+  const manualLogos = JSON.parse(readFileSync(path.join(process.cwd(), "data", "logo-overrides.json"), "utf8")) as Record<string, string>;
   console.log(`Seeding ${listing.length} IDX tickers...`);
 
   let done = 0;
 
   for (const stock of listing) {
     const sector = stock.sector ?? CURATED_SECTORS[stock.code] ?? null;
+    const logoUrl = manualLogos[stock.code] ?? stock.logoUrl;
 
     await prisma.stock.upsert({
       where: { code: stock.code },
@@ -159,21 +162,30 @@ async function main() {
       // so an existing row only gets its metadata refreshed.
       update: {
         name: stock.name,
+        isListed: true,
         sector,
         marketCap: stock.marketCap,
-        logoUrl: stock.logoUrl,
+        logoUrl,
       },
       create: {
         code: stock.code,
         name: stock.name,
+        isListed: true,
         sector,
         marketCap: stock.marketCap,
-        logoUrl: stock.logoUrl,
+        logoUrl,
       },
     });
 
     if (++done % 200 === 0) console.log(`  ${done} / ${listing.length}`);
   }
+
+  // Keep existing watchlists and history for off-board securities intact,
+  // while excluding them from current listed-universe screens.
+  await prisma.stock.updateMany({
+    where: { code: { notIn: listing.map((stock) => stock.code) }, isListed: true },
+    data: { isListed: false },
+  });
 
   const total = await prisma.stock.count();
   const withSector = await prisma.stock.count({ where: { NOT: { sector: null } } });

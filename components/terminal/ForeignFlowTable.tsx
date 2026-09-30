@@ -48,7 +48,7 @@ export function ForeignFlowTable({
               </td>
               <td className="px-3 py-2">
                 <Link
-                  href={`/stock/${row.code}`}
+                  href={`/asset/${row.code}`}
                   aria-label={`Open ${row.code} stock detail`}
                   className="absolute inset-0 z-0"
                 />

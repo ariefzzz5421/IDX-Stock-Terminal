@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { prisma } from "@/lib/db/prisma";
 import { isGuest, requireUser } from "@/lib/auth/session";
 import { marketData } from "@/lib/market-data";
@@ -9,6 +10,7 @@ import { Nav } from "@/components/terminal/Nav";
 import { ensureStockCatalog } from "@/lib/stocks";
 import { missingSettings } from "@/lib/config";
 import { SetupRequired } from "@/components/SetupRequired";
+import { TrendingDock } from "@/components/terminal/TrendingDock";
 
 export default async function DashboardLayout({ children }: LayoutProps<"/">) {
   const missing = missingSettings();
@@ -18,6 +20,7 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
   await ensureStockCatalog();
 
   const stocks = await prisma.stock.findMany({
+    where: { isListed: true },
     select: { code: true },
     orderBy: { code: "asc" },
   });
@@ -58,6 +61,8 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
       </header>
 
       <Nav />
+
+      <Suspense fallback={null}><TrendingDock /></Suspense>
 
       {/* ---- panes ---- */}
       <div className="flex min-h-0 flex-1 flex-col gap-px">{children}</div>

@@ -38,16 +38,19 @@ export function ensureStockCatalog(): Promise<void> {
     const missing = COMPANY_CATALOG.filter(
       (stock) => !existingCodes.has(stock.code),
     );
-    if (missing.length === 0) return;
-
-    await prisma.stock.createMany({
+    if (missing.length > 0) await prisma.stock.createMany({
       data: missing.map((stock) => ({
         code: stock.code,
         name: stock.name,
         sector: stock.sector,
         logoUrl: stock.logoUrl,
         marketCap: stock.marketCap,
+        isListed: true,
       })),
+    });
+    await prisma.stock.updateMany({
+      where: { code: { notIn: COMPANY_CATALOG.map((stock) => stock.code) }, isListed: true },
+      data: { isListed: false },
     });
   })().catch((error) => {
     globalForCatalog.stockCatalogPromise = undefined;
@@ -80,7 +83,7 @@ export async function refreshBoard(userId: string) {
       select: { stockCode: true },
     }),
     prisma.stock.findMany({
-      where: { marketCap: { not: null } },
+      where: { isListed: true, marketCap: { not: null } },
       orderBy: { marketCap: "desc" },
       take: BOARD_SIZE,
       select: { code: true },
@@ -96,7 +99,7 @@ export async function refreshBoard(userId: string) {
 }
 
 /** Only rows that actually carry a quote — otherwise every board is all nulls. */
-const QUOTED = { lastChangePct: { not: null }, lastPrice: { not: null } };
+const QUOTED = { isListed: true, lastChangePct: { not: null }, lastPrice: { not: null } };
 
 export function topGainers(take = 10) {
   return prisma.stock.findMany({
@@ -118,7 +121,7 @@ export function topLosers(take = 10) {
 
 export function mostActive(take = 10) {
   return prisma.stock.findMany({
-    where: { lastValue: { not: null, gt: 0 } },
+    where: { isListed: true, lastValue: { not: null, gt: 0 } },
     orderBy: { lastValue: "desc" },
     take,
     select: STOCK_SELECT,
@@ -127,7 +130,7 @@ export function mostActive(take = 10) {
 
 export function largestByMarketCap(take = 20) {
   return prisma.stock.findMany({
-    where: { marketCap: { not: null } },
+    where: { isListed: true, marketCap: { not: null } },
     orderBy: { marketCap: "desc" },
     take,
     select: STOCK_SELECT,
@@ -156,7 +159,7 @@ export async function hotStocks(take = 20): Promise<StockRow[]> {
 
 export async function boardCounts() {
   const [total, quoted] = await Promise.all([
-    prisma.stock.count(),
+    prisma.stock.count({ where: { isListed: true } }),
     prisma.stock.count({ where: QUOTED }),
   ]);
   return { total, quoted };

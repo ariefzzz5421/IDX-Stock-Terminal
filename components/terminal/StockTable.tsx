@@ -48,18 +48,15 @@ export function StockTable({
     extra === "volume" ? "Volume" : extra === "value" ? "Value" : "Mkt cap";
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-[36rem] text-sm">
+    <div className="@container/stocktable min-w-0 overflow-hidden">
+      <table className="w-full table-fixed text-xs sm:text-sm">
         <thead>
           <tr className="sticky top-0 z-10 bg-panel">
-            {rank && <Th className="w-10 text-right">#</Th>}
+            {rank && <Th className="w-7 text-right @min-[32rem]/stocktable:w-10">#</Th>}
             <Th align="left">Ticker</Th>
-            <Th align="left" className="hidden md:table-cell">
-              Company
-            </Th>
-            <Th>Last</Th>
-            <Th>Chg %</Th>
-            <Th className="hidden sm:table-cell">{extraLabel}</Th>
+            <Th className="w-[4.5rem] @min-[32rem]/stocktable:w-[5.5rem]">Last</Th>
+            <Th className="w-[5rem] @min-[32rem]/stocktable:w-[6rem]">Chg %</Th>
+            <Th className="hidden w-[6.5rem] @min-[32rem]/stocktable:table-cell">{extraLabel}</Th>
             {action && (
               <Th className="w-8">
                 <span className="sr-only">Actions</span>
@@ -79,48 +76,35 @@ export function StockTable({
                 </td>
               )}
 
-              <td className="px-3 py-2">
+              <td className="min-w-0 px-2 py-2 @min-[32rem]/stocktable:px-3">
                 <Link
-                  href={`/stock/${row.code}`}
+                  href={`/asset/${row.code}`}
                   aria-label={`Open ${row.code} stock detail and orderbook`}
                   className="absolute inset-0 z-0"
                   title={row.name}
                 />
-                <span className="relative z-10 flex pointer-events-none items-center gap-2.5">
+                <span className="pointer-events-none relative z-10 flex min-w-0 items-center gap-2">
                   <CompanyLogo code={row.code} logoUrl={row.logoUrl} />
-                  <span className="flex flex-col leading-tight">
+                  <span className="flex min-w-0 flex-col leading-tight">
                     <span className="font-bold tracking-[0.05em] text-ink-hi group-hover:text-amber">
                       {row.code}
                     </span>
-                    {row.sector && (
-                      <span className="text-micro text-dimmer md:hidden">
-                        {row.sector}
-                      </span>
-                    )}
+                    <span className="truncate text-micro text-dimmer" title={row.name}>{row.name}</span>
+                    <span className="truncate text-micro text-dimmer @min-[32rem]/stocktable:hidden">{extra === "volume" ? formatVolume(row.lastVolume) : formatValue(extra === "value" ? row.lastValue : row.marketCap)} {extraLabel.toLowerCase()}</span>
                   </span>
                 </span>
               </td>
-
-              <td className="relative z-10 hidden max-w-[1px] pointer-events-none px-3 py-2 md:table-cell">
-                <span className="block truncate text-xs text-dim">{row.name}</span>
-                {row.sector && (
-                  <span className="block truncate text-micro text-dimmer">
-                    {row.sector}
-                  </span>
-                )}
-              </td>
-
-              <td className="relative z-10 pointer-events-none px-3 py-2 text-right text-ink">
+              <td className="relative z-10 pointer-events-none px-1 py-2 text-right text-ink tabular-nums @min-[32rem]/stocktable:px-3">
                 {formatPrice(row.lastPrice)}
               </td>
 
               <td
-                className={`relative z-10 pointer-events-none px-3 py-2 text-right font-medium ${directionClass(row.lastChangePct)}`}
+                className={`relative z-10 pointer-events-none px-1 py-2 text-right font-medium tabular-nums @min-[32rem]/stocktable:px-3 ${directionClass(row.lastChangePct)}`}
               >
                 {formatPct(row.lastChangePct)}
               </td>
 
-              <td className="relative z-10 hidden pointer-events-none px-3 py-2 text-right text-xs text-dim sm:table-cell">
+              <td className="relative z-10 hidden pointer-events-none px-3 py-2 text-right text-xs text-dim tabular-nums @min-[32rem]/stocktable:table-cell">
                 {extra === "volume" && formatVolume(row.lastVolume)}
                 {extra === "value" && formatValue(row.lastValue)}
                 {extra === "marketCap" && formatValue(row.marketCap)}

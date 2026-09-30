@@ -2,14 +2,15 @@
  * Refreshes the committed IDX security catalogue from two public market
  * sources:
  *
- * - KSEI is authoritative for the active IDX equity universe and the monthly
- *   local/foreign ownership snapshot.
- * - TradingView supplies the issuer logo, current IDX-IC-style sector labels,
+ * - The committed BEI company-profile snapshot defines the listed universe.
+ *   KSEI supplies the monthly local/foreign ownership snapshot.
+ * - TradingView supplies a best-effort issuer logo, current IDX-IC-style sector labels,
  *   and market capitalisation where it covers the ticker.
  * - Yahoo fills a few display names and market caps that TradingView misses.
  *
  * Run with: npm run catalog:refresh
  */
+import { readFileSync } from "node:fs";
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
 import { strFromU8, unzipSync } from "fflate";
@@ -20,6 +21,18 @@ const UA =
 const KSEI_ARCHIVE = "https://web.ksei.co.id/archive_download/master_securities";
 const TRADINGVIEW_SCANNER = "https://scanner.tradingview.com/indonesia/scan";
 const PAGE_SIZE = 250;
+// IDX's company-profile page showed these 962 listed tickers on 30 Sep 2026.
+// KSEI's active securities master includes 19 off-board codes and omits five
+// companies that are present on IDX. Refresh this snapshot from IDX when the
+// exchange changes its universe, then run catalog:refresh again.
+const IDX_LISTED = new Set(readFileSync(path.join(process.cwd(), "data", "idx-listed-codes-20260930.txt"), "utf8").trim().split(","));
+const IDX_ONLY: Record<string, { name: string; listingDate: string | null }> = {
+  AMAN: { name: "PT Makmur Berkah Amanda Tbk.", listingDate: null },
+  KOPI: { name: "PT Mitra Energi Persada Tbk", listingDate: "2015-05-04" },
+  PPRO: { name: "PT PP Properti Tbk.", listingDate: "2015-05-19" },
+  PRIM: { name: "PT Royal Prima Tbk.", listingDate: "2018-05-15" },
+  TALF: { name: "PT Tunas Alfin Tbk", listingDate: "2014-01-17" },
+};
 const SHARE_CLASS_LOGO_ALIAS: Record<string, string> = {
   CNTB: "CNTX",
   GOTOM: "GOTO",
@@ -290,6 +303,7 @@ async function main() {
   };
 
   const listing = kseiRows
+    .filter((row) => IDX_LISTED.has(row.Code.toUpperCase()))
     .map((row): ListingEntry => {
       const code = row.Code.toUpperCase();
       const tv = tradingView.get(code);
@@ -304,7 +318,9 @@ async function main() {
         name: yh?.name ?? tv?.name ?? cleanKseiName(row.Description || row.Issuer || code),
         sector: CURATED_SECTORS[code] ?? tv?.sector ?? row.Sector ?? null,
         industry: tv?.industry ?? row.Sector ?? null,
-        marketCap: tv?.marketCap ?? yh?.marketCap ?? derivedMarketCap,
+        marketCap: [tv?.marketCap, yh?.marketCap, derivedMarketCap].find(
+          (value): value is number => typeof value === "number" && value > 0,
+        ) ?? null,
         logoUrl: logoFor(code),
         listingDate: isoDate(row["Listing Date"]),
         listedShares,
@@ -314,8 +330,23 @@ async function main() {
         holdingsDate: isoDate(row.Date) ?? row.Date,
         closingPrice,
       };
-    })
-    .sort((a, b) => a.code.localeCompare(b.code));
+    });
+
+  for (const [code, company] of Object.entries(IDX_ONLY)) {
+    if (listing.some((entry) => entry.code === code)) continue;
+    const tv = tradingView.get(code);
+    listing.push({
+      code, name: company.name, sector: tv?.sector ?? null,
+      industry: tv?.industry ?? null, marketCap: tv?.marketCap && tv.marketCap > 0 ? tv.marketCap : null,
+      logoUrl: logoFor(code), listingDate: company.listingDate,
+      listedShares: null, localHoldingPct: null, foreignHoldingPct: null,
+      recordedHoldingPct: null, holdingsDate: "2026-09-30", closingPrice: null,
+    });
+  }
+  listing.sort((a, b) => a.code.localeCompare(b.code));
+  if (listing.length !== IDX_LISTED.size) {
+    throw new Error(`IDX universe mismatch: ${listing.length} catalogue rows vs ${IDX_LISTED.size} listed codes.`);
+  }
 
   const outputPath = path.join(process.cwd(), "prisma", "idx-listing.json");
   await writeFile(outputPath, `${JSON.stringify(listing, null, 2)}\n`, "utf8");

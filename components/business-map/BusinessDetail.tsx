@@ -38,6 +38,6 @@ export function BusinessDetail({ item }: { item: BusinessLocation }) {
     {item.infrastructure?.length ? <section><h3 className="mb-1 text-micro font-bold uppercase tracking-widest text-amber">Infrastructure</h3><p>{item.infrastructure.join(" · ")}</p></section> : null}
     {item.investorRelevance && <section><h3 className="mb-1 text-micro font-bold uppercase tracking-widest text-amber">Investor relevance</h3><p className="leading-relaxed">{item.investorRelevance}</p></section>}
     <section><h3 className="mb-2 text-micro font-bold uppercase tracking-widest text-amber">Sources</h3>{item.sources.map((source) => <a key={source.url} href={source.url} target="_blank" rel="noopener noreferrer" className="mb-2 block break-words text-cyan hover:underline">{source.name} ↗<span className="block text-dim">Verified {source.verified}</span></a>)}</section>
-    {item.ticker && <Link href={`/stock/${item.ticker}`} className="inline-block border border-cyan px-3 py-2 text-cyan hover:bg-cyan/10">Open stock {item.ticker} →</Link>}
+    {item.ticker && <Link href={`/asset/${item.ticker}`} className="inline-block border border-cyan px-3 py-2 text-cyan hover:bg-cyan/10">Open stock {item.ticker} →</Link>}
   </div>;
 }

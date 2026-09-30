@@ -32,7 +32,7 @@ export async function POST(request: Request) {
   }
 
   const stock = await prisma.stock.findUnique({ where: { code } });
-  if (!stock) {
+  if (!stock?.isListed) {
     return NextResponse.json(
       { error: `${code} is not in the stock universe. Run \`npm run db:seed\`?` },
       { status: 404 },

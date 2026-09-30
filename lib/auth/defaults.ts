@@ -23,7 +23,7 @@ export const DEFAULT_WATCHLIST = [
  */
 export async function buildDefaultWatchlist() {
   const seeded = await prisma.stock.findMany({
-    where: { code: { in: [...DEFAULT_WATCHLIST] } },
+    where: { isListed: true, code: { in: [...DEFAULT_WATCHLIST] } },
     select: { code: true },
   });
   const available = new Set(seeded.map((s) => s.code));

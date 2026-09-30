@@ -20,17 +20,23 @@ export default async function MarketPage({
   const params = await searchParams;
   const query = (typeof params.q === "string" ? params.q : "").trim();
   const page = Math.max(1, Number(params.page ?? 1) || 1);
+  // SQLite's LIKE is case-insensitive for ASCII by default. PostgreSQL needs
+  // Prisma's explicit mode, which is absent from the SQLite-generated type.
+  const nameFilter = process.env.DATABASE_URL?.startsWith("postgres")
+    ? { contains: query, mode: "insensitive" }
+    : { contains: query };
 
   // Codes are short and uppercase; names are long. Matching both means "BBCA"
   // and "bank central" each find the same row.
   const where = query
     ? {
+        isListed: true,
         OR: [
           { code: { contains: query.toUpperCase() } },
-          { name: { contains: query, mode: "insensitive" as const } },
+          { name: nameFilter as { contains: string } },
         ],
       }
-    : {};
+    : { isListed: true };
 
   const [rows, matching, counts] = await Promise.all([
     prisma.stock.findMany({
@@ -54,8 +60,8 @@ export default async function MarketPage({
       <div className="border-b border-rule bg-panel-hi px-4 py-3">
         <BoardSearch initialQuery={query} />
         <p className="mt-2 text-micro text-dimmer">
-          Active IDX equity securities from the latest KSEI master snapshot,
-          ranked by market capitalisation. Prices are fetched for your watchlist
+          Listed BEI equities from the 30 Sep 2026 exchange profile snapshot,
+          ranked by disclosed market capitalisation. Prices are fetched for your watchlist
           and the largest names, so illiquid or suspended securities may have no quote.
         </p>
       </div>

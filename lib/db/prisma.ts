@@ -1,5 +1,7 @@
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "./generated/client";
+import { PrismaClient as SupabasePrismaClient } from "./generated-supabase/client";
 
 type Client = ReturnType<typeof createPrismaClient>;
 
@@ -11,10 +13,16 @@ type Client = ReturnType<typeof createPrismaClient>;
 const DEFAULT_DATABASE_URL = "file:./prisma/dev.db";
 
 function createPrismaClient() {
-  const url = process.env.DATABASE_URL || DEFAULT_DATABASE_URL;
+  const url = process.env.DATABASE_URL;
+  if (url?.startsWith("postgresql://") || url?.startsWith("postgres://")) {
+    return new SupabasePrismaClient({
+      adapter: new PrismaPg({ connectionString: url }),
+      log: process.env.NODE_ENV === "development" ? ["warn", "error"] : ["error"],
+    }) as unknown as PrismaClient;
+  }
 
   return new PrismaClient({
-    adapter: new PrismaBetterSqlite3({ url }),
+    adapter: new PrismaBetterSqlite3({ url: process.env.SQLITE_DATABASE_URL || DEFAULT_DATABASE_URL }),
     log: process.env.NODE_ENV === "development" ? ["warn", "error"] : ["error"],
   });
 }

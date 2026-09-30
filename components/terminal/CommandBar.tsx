@@ -44,7 +44,7 @@ export function CommandBar({ knownCodes }: { knownCodes: string[] }) {
 
     setValue("");
     setError(null);
-    router.push(`/stock/${code}`);
+    router.push(`/asset/${code}`);
   }
 
   return (

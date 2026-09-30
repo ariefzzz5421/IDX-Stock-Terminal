@@ -7,7 +7,7 @@ company fundamentals, running entirely on your own machine.
 Built for personal use, open sourced under MIT.
 
 > **Status: in development, but usable end to end today.** Clone it, `npm install`,
-> `npm run dev` — no database to install, no login required. Browse all 978 listed
+> `npm run dev` — no database to install, no login required. Browse all 962 listed
 > securities, follow a watchlist, read charts and fundamentals, with real prices from
 > Yahoo Finance and no API key. Streaming push, news and pump detection are **not built
 > yet** — see [Roadmap](#roadmap).
@@ -24,10 +24,11 @@ actually means today. All figures in it are synthetic sample data.
 
 ## Features
 
-- **The whole board** — 978 active IDX equity securities from KSEI's latest master file
-- **Company logos** — 973 issuer/share-class logos with a deterministic monogram
-  fallback for the rest, and a manual override file for filling in the gaps
-- **Ticker detail** — chart, delayed best bid/offer, company profile, key ratios and
+- **The whole board** — 962 issuers from BEI's listed-company profile snapshot,
+  enriched with KSEI, TradingView and Yahoo data
+- **Company logos** — logo images for all 962 listed tickers from market data
+  providers or manual overrides; these are display assets, not issuer endorsements
+- **Ticker detail** — `/asset/{ticker}` chart, delayed best bid/offer, company profile, key ratios and
   dated holder percentages
 - **Foreign flow** — Top Net Buy and Top Net Sell. Needs `INVEZGO_KEY`: IDX's own
   endpoint sits behind Cloudflare and returns 403 to servers, so without a key this
@@ -42,8 +43,8 @@ actually means today. All figures in it are synthetic sample data.
 - **Swappable data providers** — one adapter interface, several backends (see below)
 - **Open by default** — the dashboard loads with no login step; accounts are opt-in
 - **Simple auth** — username + password, bcrypt, no email or OTP
-- **Zero-setup storage** — embedded SQLite, created and migrated automatically; no
-  service to install or configure
+- **Zero-setup local storage** — embedded SQLite for development; Supabase PostgreSQL
+  support for hosted deployment (see [Supabase setup](docs/SUPABASE.md))
 - **Profiles** — display name, bio, avatar
 
 ### Not built yet
@@ -61,7 +62,7 @@ These are planned, not shipped. There is no code behind them today:
 | ---------- | --------------------------------------------------------- |
 | Framework  | Next.js 16 (App Router), React 19, TypeScript              |
 | Styling    | Tailwind CSS v4, JetBrains Mono                            |
-| Database   | Embedded SQLite + Prisma 7 (via `@prisma/adapter-better-sqlite3`) — no service to run |
+| Database   | SQLite locally or Supabase PostgreSQL in production, via Prisma 7 |
 | Realtime   | *(planned)* `ws` relay — today quotes refresh per request  |
 | Auth       | `iron-session` + bcrypt                                    |
 | State      | Zustand                                                    |
@@ -112,9 +113,8 @@ npm install
 npm run dev
 ```
 
-`npm install` does everything the database needs on its own — it generates the Prisma
-client, creates `prisma/dev.db`, applies migrations, and seeds all 978 tickers from the
-catalogue committed in the repo. Nothing else to run.
+`npm install` generates both Prisma clients. `npm run dev` applies local SQLite
+migrations and seeds the 962 listed tickers from the committed catalogue.
 
 Open http://localhost:3000. The dashboard loads immediately — no account, no setup
 screen, no separate migrate/seed step.
@@ -161,13 +161,15 @@ Every variable is documented inline in `.env.example`.
 | `/hot` | Biggest moves among actively traded names |
 | `/market` | The full board, searchable and paged |
 | `/account` | Display name, bio, avatar, session info |
-| `/stock/[code]` | Quote, chart, best bid/offer, company profile |
+| `/asset/[ticker]` | Quote, chart, best bid/offer, company profile |
+| `/stock/[code]` | Redirect to the canonical asset page |
 
 ### Company logos
 
-Every ticker shows a logo beside its code, in tables and on its stock page.
-973 of 978 come bundled; the rest render as a coloured monogram built from the
-ticker, which never breaks and stays visually stable.
+Every listed ticker has a logo URL in the 30 September 2026 catalogue. Most
+come from market data providers and have not been individually checked against
+issuer brand assets. AADI and BUMI use manual issuer URLs. A monogram remains
+the fallback when no logo URL is available.
 
 To see what's missing, and to add your own:
 
@@ -187,8 +189,8 @@ created automatically on first visit. That keeps it a one-click personal tool.
 **Anyone can sign up for their own account** from the landing page, the **Sign up**
 button in the terminal header, or `/register` directly — username and password only,
 minimum 8 characters, no email and no verification. Passwords are hashed with bcrypt
-and the account, watchlist and profile are written to the SQLite database file on your
-own machine (`prisma/dev.db`). Nothing is sent anywhere else.
+and the account, watchlist and profile are written to the configured database
+(local SQLite or Supabase PostgreSQL). The browser never receives database credentials.
 
 Signing in switches you from the shared guest watchlist to your own; signing out
 switches back. To require an account before anything is visible:
@@ -218,9 +220,9 @@ not built yet — see [Not built yet](#not-built-yet).
 | `npm run dev`              | Next.js dev server (runs `predev` first, see below)         |
 | `npm run build`            | Production build                                              |
 | `npm start`                | Serve the production build                                    |
-| `npm run predev`           | `prisma migrate deploy` — runs automatically before `dev`     |
-| `npm run postinstall`      | Generate client, migrate, and seed — runs automatically after `npm install` |
-| `npm run db:setup`         | `prisma migrate deploy` — create/update tables, no data reset |
+| `npm run predev`           | Apply and seed local SQLite before `dev` |
+| `npm run postinstall`      | Generate SQLite and PostgreSQL clients |
+| `npm run db:setup`         | Apply local SQLite migrations and seed listed tickers |
 | `npm run db:migrate`       | `prisma migrate dev` — for authoring new migrations           |
 | `npm run db:seed`          | Load the IDX ticker universe                                  |
 | `npm run catalog:refresh`  | Refresh KSEI securities, holder snapshots and logos from source |
@@ -232,8 +234,8 @@ not built yet — see [Not built yet](#not-built-yet).
 ## Troubleshooting
 
 **Dashboard looks empty on first load**
-The first `npm install` seeds all 978 tickers, which takes a few seconds. If you
-interrupted it, run `npm run postinstall` again — it's idempotent.
+`npm run dev` seeds all 962 listed tickers on startup. If that step failed,
+run `npm run db:setup` again.
 
 **`@prisma/client did not initialize yet`**
 Run `npx prisma generate`. The client is generated into `lib/db/generated`, which is
@@ -271,21 +273,9 @@ defaults.
 
 ## Deployment
 
-The database being embedded SQLite changes the deployment story compared to a typical
-Postgres-backed app: there is no external database to attach, but the database file
-itself needs a **persistent, single-writer filesystem** — which serverless platforms
-like Vercel deliberately do not provide (their filesystem is read-only or ephemeral per
-request).
-
-Two real options:
-
-| Approach | What it looks like |
-| --- | --- |
-| **Single always-on host** (recommended) | Deploy the whole Next.js app to a host with a persistent disk — Railway, Render, Fly.io, a VPS. `prisma/dev.db` lives on that disk exactly like it does locally. Matches this repo's architecture with no code changes. |
-| **Hosted SQLite-compatible database** | Swap the adapter to [`@prisma/adapter-libsql`](https://www.npmjs.com/package/@prisma/adapter-libsql) pointed at a [Turso](https://turso.tech) database. Turso speaks the SQLite wire protocol over the network, so `schema.prisma` barely changes, and this is what makes a Vercel deployment viable. Not implemented in this repo yet. |
-
-Vercel can still host the Next.js app itself in either approach — it's specifically
-`prisma/dev.db` living on Vercel's own filesystem that doesn't work.
+Use Supabase PostgreSQL for Vercel. Set the server-only `DATABASE_URL` and
+`DIRECT_URL`, apply the PostgreSQL migration, and seed the listed universe.
+See [Supabase setup](docs/SUPABASE.md). SQLite remains for local development.
 
 ## Roadmap
 
