@@ -79,7 +79,7 @@ export function StockTable({
               <td className="min-w-0 px-2 py-2 @min-[32rem]/stocktable:px-3">
                 <Link
                   href={`/asset/${row.code}`}
-                  aria-label={`Open ${row.code} stock detail and orderbook`}
+                  aria-label={`Open ${row.code} stock detail and bid/offer snapshot`}
                   className="absolute inset-0 z-0"
                   title={row.name}
                 />

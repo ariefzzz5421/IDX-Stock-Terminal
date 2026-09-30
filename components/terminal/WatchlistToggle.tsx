@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { Star } from "lucide-react";
 
 export function WatchlistToggle({
   code,
@@ -41,13 +42,16 @@ export function WatchlistToggle({
       type="button"
       onClick={toggle}
       disabled={busy}
-      className={`shrink-0 border px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] transition-colors disabled:opacity-50 ${
+      aria-label={watched ? `Hapus ${code} dari watchlist` : `Tambahkan ${code} ke watchlist`}
+      aria-pressed={watched}
+      className={`inline-flex shrink-0 items-center gap-1.5 border px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.08em] transition-colors disabled:opacity-50 ${
         watched
-          ? "border-amber-dim text-amber hover:border-down hover:text-down"
-          : "border-rule-hi text-dim hover:border-amber hover:text-amber"
+          ? "border-amber bg-amber/15 text-amber hover:bg-amber/25"
+          : "border-rule-hi bg-panel-hi text-ink-hi hover:border-amber hover:text-amber"
       }`}
     >
-      {watched ? "− Watchlist" : "+ Watchlist"}
+      <Star aria-hidden="true" className="h-3.5 w-3.5" fill={watched ? "currentColor" : "none"} />
+      {watched ? "Watchlisted" : "Watchlist"}
     </button>
   );
 }

@@ -18,10 +18,17 @@ export type ChartCandle = {
   volume: number;
 };
 
-const UP = "#2bd97c";
-const DOWN = "#ff4b57";
-const GRID = "#1b202b";
-const TEXT = "#626b7c";
+function chartPalette() {
+  const styles = getComputedStyle(document.documentElement);
+  const read = (token: string) => styles.getPropertyValue(token).trim();
+  return {
+    up: read("--color-up") || "#2bd97c",
+    down: read("--color-down") || "#ff4b57",
+    grid: read("--color-rule") || "#1b202b",
+    text: read("--color-dim") || "#626b7c",
+    cyan: read("--color-cyan") || "#47a8d8",
+  };
+}
 
 export function Chart({ candles }: { candles: ChartCandle[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -32,35 +39,36 @@ export function Chart({ candles }: { candles: ChartCandle[] }) {
     if (!container) return;
 
     try {
+      const initial = chartPalette();
       const chart = createChart(container, {
         layout: {
           background: { color: "transparent" },
-          textColor: TEXT,
+          textColor: initial.text,
           fontFamily: "var(--font-mono)",
           fontSize: 10,
           attributionLogo: false,
         },
         grid: {
-          vertLines: { color: GRID },
-          horzLines: { color: GRID },
+          vertLines: { color: initial.grid },
+          horzLines: { color: initial.grid },
         },
-        rightPriceScale: { borderColor: GRID },
-        timeScale: { borderColor: GRID, timeVisible: true, secondsVisible: false },
+        rightPriceScale: { borderColor: initial.grid },
+        timeScale: { borderColor: initial.grid, timeVisible: true, secondsVisible: false },
         crosshair: {
-          vertLine: { color: "#47a8d8", labelBackgroundColor: "#47a8d8" },
-          horzLine: { color: "#47a8d8", labelBackgroundColor: "#47a8d8" },
+          vertLine: { color: initial.cyan, labelBackgroundColor: initial.cyan },
+          horzLine: { color: initial.cyan, labelBackgroundColor: initial.cyan },
         },
         autoSize: true,
       });
       chartRef.current = chart;
 
       const candleSeries = chart.addSeries(CandlestickSeries, {
-        upColor: UP,
-        downColor: DOWN,
-        borderUpColor: UP,
-        borderDownColor: DOWN,
-        wickUpColor: UP,
-        wickDownColor: DOWN,
+        upColor: initial.up,
+        downColor: initial.down,
+        borderUpColor: initial.up,
+        borderDownColor: initial.down,
+        wickUpColor: initial.up,
+        wickDownColor: initial.down,
         priceFormat: { type: "price", precision: 0, minMove: 1 },
       });
 
@@ -83,17 +91,33 @@ export function Chart({ candles }: { candles: ChartCandle[] }) {
         })),
       );
 
-      volumeSeries.setData(
-        candles.map((candle) => ({
+      function updateTheme() {
+        const colors = chartPalette();
+        chart.applyOptions({
+          layout: { textColor: colors.text },
+          grid: { vertLines: { color: colors.grid }, horzLines: { color: colors.grid } },
+          rightPriceScale: { borderColor: colors.grid },
+          timeScale: { borderColor: colors.grid },
+          crosshair: {
+            vertLine: { color: colors.cyan, labelBackgroundColor: colors.cyan },
+            horzLine: { color: colors.cyan, labelBackgroundColor: colors.cyan },
+          },
+        });
+        candleSeries.applyOptions({ upColor: colors.up, downColor: colors.down, borderUpColor: colors.up, borderDownColor: colors.down, wickUpColor: colors.up, wickDownColor: colors.down });
+        volumeSeries.setData(candles.map((candle) => ({
           time: Math.floor(candle.time / 1000) as UTCTimestamp,
           value: candle.volume,
-          color: candle.close >= candle.open ? `${UP}55` : `${DOWN}55`,
-        })),
-      );
+          color: candle.close >= candle.open ? `${colors.up}55` : `${colors.down}55`,
+        })));
+      }
+      updateTheme();
+      const themeObserver = new MutationObserver(updateTheme);
+      themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
       chart.timeScale().fitContent();
 
       return () => {
+        themeObserver.disconnect();
         chart.remove();
         chartRef.current = null;
       };

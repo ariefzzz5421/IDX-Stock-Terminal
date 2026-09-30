@@ -1,13 +1,6 @@
 @import "tailwindcss";
 
-/* ---------------------------------------------------------------------------
-   IDX Terminal design tokens.
-
-   Single-theme by intent: a trading terminal is a lit instrument in a dark
-   room, so there is no light variant. Colour is load-bearing here —
-   amber is chrome and navigation, up/down are price direction only, cyan
-   marks a link or a tagged ticker. Nothing means two things at once.
-   --------------------------------------------------------------------------- */
+/* IDX Terminal design tokens. Amber denotes selection; green/red denote price. */
 @theme {
   --color-void: #08090c;
   --color-panel: #0f1117;
@@ -49,6 +42,24 @@
 
 html {
   color-scheme: dark;
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+  --color-void: #f3f5f8;
+  --color-panel: #ffffff;
+  --color-panel-hi: #e9edf3;
+  --color-rule: #d5dce6;
+  --color-rule-hi: #abb8c9;
+  --color-amber: #a75a00;
+  --color-amber-dim: #bb8d50;
+  --color-up: #087a43;
+  --color-down: #be2537;
+  --color-cyan: #006b9c;
+  --color-ink: #263244;
+  --color-ink-hi: #101b2b;
+  --color-dim: #526174;
+  --color-dimmer: #657386;
 }
 
 body {

@@ -18,6 +18,8 @@ import { ResizableSplit } from "@/components/terminal/ResizableSplit";
 import { Chart } from "@/components/terminal/Chart";
 import { CompanyLogo } from "@/components/terminal/CompanyLogo";
 import { WatchlistToggle } from "@/components/terminal/WatchlistToggle";
+import { ShareholderList } from "@/components/terminal/ShareholderList";
+import { shareholdersFor } from "@/lib/shareholders";
 import {
   directionClass,
   formatChange,
@@ -64,6 +66,7 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
     candlesPromise,
     watchedPromise,
   ]);
+  const namedShareholders = shareholdersFor(code);
 
   const fresh = quote ? {
     ...stock,
@@ -119,7 +122,7 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
             className="inline-flex items-center gap-1.5 border border-rule-hi px-3 py-2 text-xs text-dim hover:border-amber hover:text-amber"
           >
             <BookOpen aria-hidden="true" className="h-3.5 w-3.5" />
-            Orderbook
+            Bid / Offer
           </Link>
           <WatchlistToggle code={code} initiallyWatched={Boolean(watched)} />
         </div>
@@ -147,7 +150,7 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
         storageKey="stock-orderbook"
         resizableSide="right"
         defaultWidth={352}
-        leftLabel="orderbook"
+        leftLabel="bid / offer"
         left={
           <Panel
             title="Chart"
@@ -180,9 +183,10 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
                   tone="sell"
                 />
               </div>
-              <p className="mt-3 text-micro leading-relaxed text-dimmer">
-                This is the latest delayed best bid/offer snapshot, not full live market depth.
-                {details?.orderBook.asOf ? ` Trading date ${details.orderBook.asOf}.` : ""}
+              <p className="mt-3 text-micro leading-relaxed text-dim">
+                {details?.orderBook.source
+                  ? `Best bid/offer dari ${details.orderBook.source}, data tertunda; bukan kedalaman pasar real-time.${details.orderBook.asOf ? ` Tanggal perdagangan ${details.orderBook.asOf}.` : ""}`
+                  : "Bid/offer valid tidak tersedia dari sumber terhubung. N/D berarti tidak diketahui, bukan antrean kosong."}
               </p>
 
               <dl className="mt-5 grid grid-cols-2 gap-x-5 gap-y-4 border-t border-rule pt-4">
@@ -268,26 +272,7 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
               Unrecorded includes certificates or securities outside that snapshot.
             </p>
 
-            <div className="mt-5 border-t border-rule pt-4">
-              <h3 className="text-micro font-semibold uppercase tracking-[0.12em] text-dim">
-                Major shareholders
-              </h3>
-              {details?.majorShareholders.length ? (
-                <ul className="mt-3 space-y-2">
-                  {details.majorShareholders.slice(0, 8).map((holder) => (
-                    <li key={`${holder.name}-${holder.shares}`} className="flex gap-3 text-xs">
-                      <span className="min-w-0 flex-1 truncate text-dim">{holder.name}</span>
-                      <span className="text-ink">{formatPlainPct(holder.percentage)}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="mt-3 text-xs leading-relaxed text-dimmer">
-                  The IDX shareholder-name feed is temporarily unavailable. Aggregate KSEI
-                  ownership above remains dated and visible.
-                </p>
-              )}
-            </div>
+            <ShareholderList holders={namedShareholders} />
           </div>
         </Panel>
       </div>
@@ -309,10 +294,10 @@ function OrderSide({
   return (
     <div className="bg-panel-hi p-4">
       <p className="text-micro uppercase tracking-[0.12em] text-dimmer">{label}</p>
-      <p className={`mt-2 text-xl font-bold ${tone === "buy" ? "text-up" : "text-down"}`}>
-        {formatPrice(price)}
+      <p className={`mt-2 text-xl font-bold ${price == null ? "text-dim" : tone === "buy" ? "text-up" : "text-down"}`}>
+        {price == null || price <= 0 ? "N/D" : formatPrice(price)}
       </p>
-      <p className="mt-1 text-xs text-dim">Size {formatVolume(volume)}</p>
+      <p className="mt-1 text-xs text-dim">Size {volume == null || volume <= 0 ? "N/D" : formatVolume(volume)}</p>
     </div>
   );
 }

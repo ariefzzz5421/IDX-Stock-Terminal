@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useMemo, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { avatarPresets } from "@/lib/avatar-presets";
+import { ThemeControl } from "./ThemeControl";
 
 const MAX_BIO = 280;
 const MAX_UPLOAD_BYTES = 350 * 1024;
@@ -133,8 +134,10 @@ export function ProfileForm(props: Props) {
         </div>
       </div>
 
+      <ThemeControl />
+
       <fieldset className="mb-6">
-        <legend className="mb-2 text-[10px] uppercase tracking-[0.14em] text-dim">Generated avatars</legend>
+        <legend className="mb-2 text-[10px] uppercase tracking-[0.14em] text-dim">Avatar karakter</legend>
         <div className="grid grid-cols-4 gap-2 sm:grid-cols-8">
           {presets.map((preset) => (
             <button
@@ -151,7 +154,7 @@ export function ProfileForm(props: Props) {
             </button>
           ))}
         </div>
-        <p className="mt-2 text-[10px] text-dimmer">Pilih satu lalu simpan profil. Avatar dibuat lokal dari username Anda.</p>
+        <p className="mt-2 text-[10px] text-dim">Pilih karakter lalu simpan profil. Gambar dibuat lokal tanpa layanan eksternal.</p>
       </fieldset>
 
       <Field label="Username">

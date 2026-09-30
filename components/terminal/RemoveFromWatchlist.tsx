@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { Star } from "lucide-react";
 
 export function RemoveFromWatchlist({ code }: { code: string }) {
   const router = useRouter();
@@ -23,9 +24,9 @@ export function RemoveFromWatchlist({ code }: { code: string }) {
       onClick={remove}
       disabled={busy}
       aria-label={`Remove ${code} from watchlist`}
-      className="px-2 py-1 text-dimmer opacity-0 transition-opacity hover:text-down focus-visible:opacity-100 group-hover:opacity-100 disabled:opacity-40"
+      className="relative z-30 inline-flex items-center justify-center border border-amber/50 bg-amber/10 p-1.5 text-amber transition-colors hover:border-down hover:bg-down/10 hover:text-down disabled:opacity-40"
     >
-      ×
+      <Star aria-hidden="true" className="h-3.5 w-3.5" fill="currentColor" />
     </button>
   );
 }

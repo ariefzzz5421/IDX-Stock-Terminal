@@ -15,6 +15,7 @@ import { getIhsgQuote } from "@/lib/market-data/ihsg";
 import { COMPANY_CATALOG } from "@/lib/company-catalog";
 
 const codes = COMPANY_CATALOG.map((stock) => stock.code).sort();
+const searchStocks = COMPANY_CATALOG.map(({ code, name }) => ({ code, name }));
 
 async function IhsgHeader() {
   return <IhsgQuoteBadge initial={await getIhsgQuote()} />;
@@ -44,7 +45,7 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
         </Link>
 
         <div className="col-span-2 row-start-2 flex min-w-0 bg-panel lg:col-span-1 lg:col-start-2 lg:row-start-1">
-          <CommandBar knownCodes={codes} />
+          <CommandBar stocks={searchStocks} />
         </div>
 
         <div className="col-span-2 row-start-3 flex min-w-0 items-center bg-panel sm:col-span-1 sm:col-start-1 lg:col-start-3 lg:row-start-1">

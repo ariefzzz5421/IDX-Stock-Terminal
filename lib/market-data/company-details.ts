@@ -238,22 +238,24 @@ function bestOrderBook(
   yahoo: YahooProfile | null,
   idxDate: string | null,
 ): CompanyDetails["orderBook"] {
-  if (idx && (idx.bid != null || idx.offer != null)) {
+  const validPrice = (value: number | null) => value != null && value > 0 ? value : null;
+  const validSize = (value: number | null) => value != null && value > 0 ? value : null;
+  if (idx && (validPrice(idx.bid) != null || validPrice(idx.offer) != null)) {
     return {
-      bid: idx.bid,
-      bidVolume: idx.bidVolume,
-      offer: idx.offer,
-      offerVolume: idx.offerVolume,
+      bid: validPrice(idx.bid),
+      bidVolume: validSize(idx.bidVolume),
+      offer: validPrice(idx.offer),
+      offerVolume: validSize(idx.offerVolume),
       asOf: idxDate,
       source: "IDX",
     };
   }
-  if (yahoo && (yahoo.bid != null || yahoo.offer != null)) {
+  if (yahoo && (validPrice(yahoo.bid) != null || validPrice(yahoo.offer) != null)) {
     return {
-      bid: yahoo.bid,
-      bidVolume: yahoo.bidSize,
-      offer: yahoo.offer,
-      offerVolume: yahoo.offerSize,
+      bid: validPrice(yahoo.bid),
+      bidVolume: validSize(yahoo.bidSize),
+      offer: validPrice(yahoo.offer),
+      offerVolume: validSize(yahoo.offerSize),
       asOf: null,
       source: "Yahoo",
     };
