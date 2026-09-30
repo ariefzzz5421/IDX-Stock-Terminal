@@ -36,7 +36,7 @@ export function SetupRequired({ missing }: { missing: MissingSetting[] }) {
                 </dt>
                 <dd className="text-[11.5px] leading-relaxed text-dim">
                   {setting.why}
-                  <code className="mt-1.5 block overflow-x-auto whitespace-pre border border-rule bg-void px-2 py-1.5 text-[10.5px] text-cyan">
+                  <code className="mt-1.5 block break-words border border-rule bg-void px-2 py-1.5 text-[10.5px] text-cyan [overflow-wrap:anywhere]">
                     {setting.how}
                   </code>
                 </dd>
