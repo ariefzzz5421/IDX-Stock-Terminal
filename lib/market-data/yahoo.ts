@@ -134,7 +134,8 @@ export class YahooProvider implements MarketDataProvider {
 
     const response = await fetch(url, {
       headers: { "User-Agent": UA, Accept: "application/json" },
-      cache: "no-store",
+      next: { revalidate: 60 },
+      signal: AbortSignal.timeout(4_000),
     });
 
     if (!response.ok) {

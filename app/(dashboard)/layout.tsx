@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { prisma } from "@/lib/db/prisma";
 import { isGuest, requireUser } from "@/lib/auth/session";
 import { marketData } from "@/lib/market-data";
 import { CommandBar } from "@/components/terminal/CommandBar";
@@ -13,6 +12,13 @@ import { SetupRequired } from "@/components/SetupRequired";
 import { TrendingDock } from "@/components/terminal/TrendingDock";
 import { IhsgQuoteBadge } from "@/components/terminal/IhsgQuoteBadge";
 import { getIhsgQuote } from "@/lib/market-data/ihsg";
+import { COMPANY_CATALOG } from "@/lib/company-catalog";
+
+const codes = COMPANY_CATALOG.map((stock) => stock.code).sort();
+
+async function IhsgHeader() {
+  return <IhsgQuoteBadge initial={await getIhsgQuote()} />;
+}
 
 export default async function DashboardLayout({ children }: LayoutProps<"/">) {
   const missing = missingSettings();
@@ -20,13 +26,6 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
 
   const user = await requireUser();
   await ensureStockCatalog();
-
-  const [stocks, ihsg] = await Promise.all([prisma.stock.findMany({
-    where: { isListed: true },
-    select: { code: true },
-    orderBy: { code: "asc" },
-  }), getIhsgQuote()]);
-  const codes = stocks.map((s) => s.code);
 
   return (
     <div className="flex min-h-full flex-1 flex-col gap-px bg-rule">
@@ -48,11 +47,11 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
           <CommandBar knownCodes={codes} />
         </div>
 
-        <div className="col-start-1 row-start-3 flex min-w-0 items-center bg-panel lg:col-start-3 lg:row-start-1">
-          <IhsgQuoteBadge initial={ihsg} />
+        <div className="col-span-2 row-start-3 flex min-w-0 items-center bg-panel sm:col-span-1 sm:col-start-1 lg:col-start-3 lg:row-start-1">
+          <Suspense fallback={<IhsgQuoteBadge initial={null} />}><IhsgHeader /></Suspense>
         </div>
 
-        <div className="col-start-2 row-start-3 flex min-w-0 items-center bg-panel lg:col-start-4 lg:row-start-1">
+        <div className="col-span-2 row-start-4 flex min-w-0 items-center bg-panel sm:col-span-1 sm:col-start-2 sm:row-start-3 lg:col-start-4 lg:row-start-1">
           <MarketStatusBadge />
         </div>
 
@@ -79,7 +78,7 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
           Universe <span className="text-ink">{codes.length}</span>
         </span>
         <span>
-          Provider <span className="text-ink">{marketData.name}</span>
+          Boards <span className="text-ink">TradingView</span> · Stock <span className="text-ink">{marketData.name}</span>
         </span>
         <span>
           Feed <span className="text-ink">snapshot on load</span>

@@ -12,7 +12,6 @@ import {
 import { prisma } from "@/lib/db/prisma";
 import { requireUser } from "@/lib/auth/session";
 import { marketData } from "@/lib/market-data";
-import { refreshQuotes } from "@/lib/market-data/sync";
 import { getCompanyDetails } from "@/lib/market-data/company-details";
 import { Panel } from "@/components/terminal/Panel";
 import { ResizableSplit } from "@/components/terminal/ResizableSplit";
@@ -45,7 +44,10 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
   const stock = await prisma.stock.findUnique({ where: { code } });
   if (!stock) notFound();
 
-  const refresh = refreshQuotes([code]);
+  const quotePromise = marketData.getQuote(code).catch((error) => {
+    console.error(`[stock] quote for ${code} failed:`, error);
+    return null;
+  });
   const detailsPromise = getCompanyDetails(code);
   const candlesPromise = marketData.getOHLCV(code, "5m", 120).catch((error) => {
     console.error(`[stock] OHLCV for ${code} failed:`, error);
@@ -56,14 +58,22 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
     select: { id: true },
   });
 
-  const [, details, candles, watched] = await Promise.all([
-    refresh,
+  const [quote, details, candles, watched] = await Promise.all([
+    quotePromise,
     detailsPromise,
     candlesPromise,
     watchedPromise,
   ]);
 
-  const fresh = (await prisma.stock.findUnique({ where: { code } })) ?? stock;
+  const fresh = quote ? {
+    ...stock,
+    lastPrice: quote.price,
+    prevClose: quote.prevClose,
+    lastChangePct: quote.changePct,
+    lastVolume: quote.volume,
+    lastValue: quote.value,
+    updatedAt: new Date(quote.timestamp),
+  } : stock;
   const change =
     fresh.lastPrice != null && fresh.prevClose != null
       ? fresh.lastPrice - fresh.prevClose
@@ -98,9 +108,9 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
         <dl className="grid grid-cols-2 gap-x-8 gap-y-2.5 sm:grid-cols-3 lg:grid-cols-5">
           <Stat k="Prev close" v={formatPrice(fresh.prevClose)} />
           <Stat k="Volume" v={formatVolume(fresh.lastVolume)} />
-          <Stat k="Turnover" v={formatValue(fresh.lastValue)} />
+          <Stat k={quote && marketData.name === "yahoo" ? "Turnover est." : "Turnover"} v={formatValue(fresh.lastValue)} />
           <Stat k="Market cap" v={formatValue(fresh.marketCap)} />
-          <Stat k="Updated" v={`${fresh.updatedAt.toISOString().slice(11, 19)} UTC`} />
+          <Stat k="Updated" v={`${fresh.updatedAt.toISOString().slice(11, 19)} UTC${quote ? " · delayed" : " · stored"}`} />
         </dl>
 
         <div className="ml-auto flex items-center gap-2">

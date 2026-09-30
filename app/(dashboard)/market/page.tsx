@@ -6,6 +6,8 @@ import { Panel } from "@/components/terminal/Panel";
 import { StockTable } from "@/components/terminal/StockTable";
 import { BoardSearch } from "@/components/terminal/BoardSearch";
 import { STOCK_SELECT, boardCounts } from "@/lib/stocks";
+import { getMarketActivity } from "@/lib/market-data/trending";
+import { withMarketSnapshot } from "@/lib/market-data/boards";
 
 export const metadata: Metadata = { title: "Market — IDX Terminal" };
 export const dynamic = "force-dynamic";
@@ -18,8 +20,9 @@ export default async function MarketPage({
   await requireUser();
 
   const params = await searchParams;
-  const query = (typeof params.q === "string" ? params.q : "").trim();
-  const page = Math.max(1, Number(params.page ?? 1) || 1);
+  const query = (typeof params.q === "string" ? params.q : "").trim().slice(0, 64);
+  const requestedPage = Number(params.page ?? 1);
+  const page = Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
   // SQLite's LIKE is case-insensitive for ASCII by default. PostgreSQL needs
   // Prisma's explicit mode, which is absent from the SQLite-generated type.
   const nameFilter = process.env.DATABASE_URL?.startsWith("postgres")
@@ -38,7 +41,7 @@ export default async function MarketPage({
       }
     : { isListed: true };
 
-  const [rows, matching, counts] = await Promise.all([
+  const [rows, matching, counts, activity] = await Promise.all([
     prisma.stock.findMany({
       where,
       orderBy: [{ marketCap: "desc" }, { code: "asc" }],
@@ -48,6 +51,7 @@ export default async function MarketPage({
     }),
     prisma.stock.count({ where }),
     boardCounts(),
+    getMarketActivity(),
   ]);
 
   const pages = Math.max(1, Math.ceil(matching / PAGE_SIZE));
@@ -55,22 +59,25 @@ export default async function MarketPage({
   return (
     <Panel
       title="Market"
-      meta={`${counts.total} listed · ${counts.quoted} quoted`}
+      meta={`${counts.total} listed · ${activity.allStocks.length ? `${activity.allStocks.length} in delayed snapshot` : `${counts.quoted} stored quotes`}`}
     >
       <div className="border-b border-rule bg-panel-hi px-4 py-3">
         <BoardSearch initialQuery={query} />
         <p className="mt-2 text-micro text-dimmer">
           Listed BEI equities from the 30 Sep 2026 exchange profile snapshot,
-          ranked by disclosed market capitalisation. Prices are fetched for your watchlist
-          and the largest names, so illiquid or suspended securities may have no quote.
+          ranked by disclosed market capitalisation. {activity.allStocks.length
+            ? "Prices and activity use a delayed TradingView snapshot where available."
+            : "Market feed unavailable; stored quotes may be stale."}
         </p>
       </div>
 
       <StockTable
-        rows={rows}
+        rows={withMarketSnapshot(rows, activity)}
         extra="marketCap"
         emptyMessage={
-          query
+          page > pages
+            ? "Page di luar hasil yang tersedia. Kembali ke halaman sebelumnya."
+            : query
             ? `Nothing matches “${query}”.`
             : "The board is empty — run `npm run db:seed`."
         }

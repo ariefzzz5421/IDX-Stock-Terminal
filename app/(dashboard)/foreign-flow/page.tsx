@@ -18,38 +18,31 @@ export default async function ForeignFlowPage() {
     return (
       <Panel title="Foreign Flow" meta="source unavailable">
         <div className="max-w-2xl p-6">
-          <h2 className="mb-3 text-base text-ink-hi">
-            No foreign-flow data source is reachable.
-          </h2>
+          <h2 className="mb-3 text-base text-ink-hi">Data Foreign Flow belum tersedia.</h2>
           <p className="mb-5 text-sm leading-relaxed text-dim">
-            Net foreign buy and sell are published per trading day, and this
-            terminal knows two ways to get them. Neither is available right now:
+            Data net buy dan net sell asing diambil dari sumber harian. Status
+            kedua sumber saat permintaan ini:
           </p>
 
           <dl className="mb-5 border border-rule">
             <div className="border-b border-rule px-4 py-3">
               <dt className="mb-1 text-sm text-ink-hi">IDX official summary</dt>
               <dd className="text-xs leading-relaxed text-dim">
-                <span className="text-down">Blocked.</span> idx.co.id sits behind
-                Cloudflare and returns <code className="text-cyan">403</code> to
-                non-browser clients, so the trading summary cannot be fetched from
-                a server.
+                {flow.diagnostics.idx}
               </dd>
             </div>
             <div className="px-4 py-3">
               <dt className="mb-1 text-sm text-ink-hi">Invezgo</dt>
               <dd className="text-xs leading-relaxed text-dim">
-                <span className="text-amber">Not configured.</span> Set{" "}
-                <code className="text-cyan">INVEZGO_KEY</code> in{" "}
-                <code className="text-cyan">.env</code> and restart the dev server
-                to enable this panel.
+                {flow.diagnostics.invezgo}
               </dd>
             </div>
           </dl>
 
           <p className="text-xs leading-relaxed text-dimmer">
-            Every other section of the terminal works without this — foreign flow
-            is the one feature that has no free, unauthenticated source.
+            Data ini tidak diganti dengan angka contoh. Jika kunci Invezgo perlu
+            diperbarui, simpan sebagai <code className="text-cyan">INVEZGO_KEY</code>{" "}
+            di environment Vercel dan redeploy.
           </p>
         </div>
       </Panel>
@@ -61,8 +54,9 @@ export default async function ForeignFlowPage() {
       <div className="flex flex-wrap items-center gap-3 bg-panel-hi px-4 py-3 text-xs text-dim">
         <Info aria-hidden="true" className="h-4 w-4 text-amber" />
         <p>
-          Ranked by net foreign shares (foreign buy minus foreign sell). Estimated
-          value multiplies net shares by the closing price; it is not an official cash-flow field.
+          {flow.source === "IDX"
+            ? "Peringkat berdasarkan saham bersih asing. Estimasi nilai = saham bersih × harga penutupan; bukan nilai resmi BEI."
+            : "Snapshot Invezgo akhir hari. Volume bersih dan nilai transaksi ditampilkan sesuai data penyedia."}
         </p>
         <span className="ml-auto text-micro uppercase tracking-[0.1em] text-dimmer">
           {flow.date && flow.source
@@ -81,7 +75,7 @@ export default async function ForeignFlowPage() {
             </span>
           }
         >
-          <ForeignFlowTable rows={flow.topBuy} direction="buy" />
+          <ForeignFlowTable rows={flow.topBuy} direction="buy" source={flow.source} />
         </Panel>
 
         <Panel
@@ -93,7 +87,7 @@ export default async function ForeignFlowPage() {
             </span>
           }
         >
-          <ForeignFlowTable rows={flow.topSell} direction="sell" />
+          <ForeignFlowTable rows={flow.topSell} direction="sell" source={flow.source} />
         </Panel>
       </div>
     </div>

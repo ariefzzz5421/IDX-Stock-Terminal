@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
+import { useMemo, useRef, useState, type ChangeEvent, type FormEvent } from "react";
+import { avatarPresets } from "@/lib/avatar-presets";
 
 const MAX_BIO = 280;
 const MAX_UPLOAD_BYTES = 350 * 1024;
@@ -22,6 +23,7 @@ export function ProfileForm(props: Props) {
   const [displayName, setDisplayName] = useState(props.displayName);
   const [bio, setBio] = useState(props.bio);
   const [avatarUrl, setAvatarUrl] = useState(props.avatarUrl);
+  const presets = useMemo(() => avatarPresets(props.username), [props.username]);
   const [status, setStatus] = useState<
     { kind: "error" | "ok"; text: string } | null
   >(null);
@@ -61,22 +63,24 @@ export function ProfileForm(props: Props) {
     setBusy(true);
     setStatus(null);
 
-    const response = await fetch("/api/profile", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ displayName, bio, avatarUrl }),
-    });
-
-    const data = (await response.json()) as { error?: string };
-
-    if (response.ok) {
-      setStatus({ kind: "ok", text: "Profile saved." });
-      router.refresh();
-    } else {
-      setStatus({ kind: "error", text: data.error ?? "Could not save." });
+    try {
+      const response = await fetch("/api/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ displayName, bio, avatarUrl }),
+      });
+      const data = (await response.json()) as { error?: string };
+      if (response.ok) {
+        setStatus({ kind: "ok", text: "Profile saved." });
+        router.refresh();
+      } else {
+        setStatus({ kind: "error", text: data.error ?? "Could not save." });
+      }
+    } catch {
+      setStatus({ kind: "error", text: "Connection failed. Please try again." });
+    } finally {
+      setBusy(false);
     }
-
-    setBusy(false);
   }
 
   const initials = (displayName.trim() || props.username).slice(0, 2).toUpperCase();
@@ -128,6 +132,27 @@ export function ProfileForm(props: Props) {
           />
         </div>
       </div>
+
+      <fieldset className="mb-6">
+        <legend className="mb-2 text-[10px] uppercase tracking-[0.14em] text-dim">Generated avatars</legend>
+        <div className="grid grid-cols-4 gap-2 sm:grid-cols-8">
+          {presets.map((preset) => (
+            <button
+              key={preset.name}
+              type="button"
+              title={preset.name}
+              aria-label={`Pilih avatar ${preset.name}`}
+              aria-pressed={avatarUrl === preset.url}
+              onClick={() => { setAvatarUrl(preset.url); setStatus(null); }}
+              className={`flex min-w-0 flex-col items-center gap-1 border p-1.5 text-[10px] transition-colors hover:border-amber ${avatarUrl === preset.url ? "border-amber text-amber" : "border-rule-hi text-dim"}`}
+            >
+              <Image src={preset.url} alt="" width={48} height={48} unoptimized className="h-12 w-12 max-w-full" />
+              <span className="truncate">{preset.name}</span>
+            </button>
+          ))}
+        </div>
+        <p className="mt-2 text-[10px] text-dimmer">Pilih satu lalu simpan profil. Avatar dibuat lokal dari username Anda.</p>
+      </fieldset>
 
       <Field label="Username">
         <p className="border border-rule bg-void px-3 py-2 text-[13px] text-dim">

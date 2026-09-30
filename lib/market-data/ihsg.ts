@@ -15,7 +15,7 @@ export async function getIhsgQuote(): Promise<IhsgQuote | null> {
   try {
     const response = await fetch(
       "https://query1.finance.yahoo.com/v8/finance/chart/%5EJKSE?interval=1m&range=1d",
-      { headers: { "User-Agent": "Mozilla/5.0 IDX-Terminal/1.0" }, next: { revalidate: 30 } },
+      { headers: { "User-Agent": "Mozilla/5.0 IDX-Terminal/1.0" }, next: { revalidate: 30 }, signal: AbortSignal.timeout(3_000) },
     );
     if (!response.ok) throw new Error(`Yahoo IHSG returned ${response.status}`);
     const body = (await response.json()) as { chart?: { result?: Array<{ meta?: Record<string, unknown> }> } };

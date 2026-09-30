@@ -14,7 +14,16 @@ export type ForeignFlowRow = {
   close: number | null;
 };
 
-export async function foreignFlowLeaders(limit = 10) {
+export type ForeignFlowResult =
+  | { available: true; date: string; source: "IDX" | "Invezgo"; topBuy: ForeignFlowRow[]; topSell: ForeignFlowRow[] }
+  | { available: false; date: null; source: null; topBuy: ForeignFlowRow[]; topSell: ForeignFlowRow[]; diagnostics: { idx: string; invezgo: string } };
+
+export async function foreignFlowLeaders(limit = 10): Promise<ForeignFlowResult> {
+  // Prefer the licensed provider when configured. IDX's public endpoint often
+  // rejects server traffic; trying it first adds a failed network round trip.
+  const invezgo = await invezgoForeignFlow(limit);
+  if (invezgo.value) return invezgo.value;
+
   const summary = await getLatestIdxStockSummary();
   const rows = summary.rows.flatMap((row): ForeignFlowRow[] => {
     if (row.foreignNet == null || row.foreignBuy == null || row.foreignSell == null) {
@@ -36,7 +45,7 @@ export async function foreignFlowLeaders(limit = 10) {
     ];
   });
 
-  if (summary.available && rows.length) {
+  if (summary.available && summary.date && rows.length) {
     return {
       available: true,
       date: summary.date,
@@ -52,15 +61,16 @@ export async function foreignFlowLeaders(limit = 10) {
     };
   }
 
-  const invezgo = await invezgoForeignFlow(limit);
-  if (invezgo) return invezgo;
-
   return {
     available: false,
     date: null,
     source: null,
     topBuy: [] as ForeignFlowRow[],
     topSell: [] as ForeignFlowRow[],
+    diagnostics: {
+      idx: "Ringkasan BEI belum dapat diakses dari server.",
+      invezgo: invezgo.reason,
+    },
   };
 }
 
@@ -73,9 +83,9 @@ type InvezgoFlowItem = {
   logo?: string;
 };
 
-async function invezgoForeignFlow(limit: number) {
-  const apiKey = process.env.INVEZGO_KEY;
-  if (!apiKey) return null;
+async function invezgoForeignFlow(limit: number): Promise<{ value: Extract<ForeignFlowResult, { available: true }> | null; reason: string }> {
+  const apiKey = process.env.INVEZGO_KEY?.trim();
+  if (!apiKey) return { value: null, reason: "Kunci API belum dipasang." };
 
   for (const date of recentWeekdays()) {
     try {
@@ -83,10 +93,14 @@ async function invezgoForeignFlow(limit: number) {
       url.searchParams.set("date", date);
       const response = await fetch(url, {
         headers: { Authorization: `Bearer ${apiKey}`, Accept: "application/json" },
-        cache: "no-store",
+        next: { revalidate: 300 },
+        signal: AbortSignal.timeout(3_500),
       });
       if (response.status === 204) continue;
-      if (!response.ok) return null;
+      if (response.status === 401 || response.status === 403) {
+        return { value: null, reason: "Kunci API ditolak atau paket tidak mengizinkan endpoint Foreign Flow." };
+      }
+      if (!response.ok) return { value: null, reason: `Penyedia mengembalikan HTTP ${response.status}.` };
       const body = (await response.json()) as {
         accum?: InvezgoFlowItem[];
         dist?: InvezgoFlowItem[];
@@ -94,18 +108,18 @@ async function invezgoForeignFlow(limit: number) {
       const topBuy = mapInvezgoRows(body.accum ?? [], "buy", limit);
       const topSell = mapInvezgoRows(body.dist ?? [], "sell", limit);
       if (!topBuy.length && !topSell.length) continue;
-      return {
+      return { value: {
         available: true,
         date,
         source: "Invezgo" as const,
         topBuy,
         topSell,
-      };
+      }, reason: "Tersedia." };
     } catch {
-      return null;
+      return { value: null, reason: "Permintaan ke Invezgo gagal atau melewati batas waktu." };
     }
   }
-  return null;
+  return { value: null, reason: "Belum ada data untuk enam hari kerja terakhir." };
 }
 
 function mapInvezgoRows(

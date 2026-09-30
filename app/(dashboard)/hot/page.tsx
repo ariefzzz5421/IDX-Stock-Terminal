@@ -2,22 +2,25 @@ import type { Metadata } from "next";
 import { requireUser } from "@/lib/auth/session";
 import { Panel } from "@/components/terminal/Panel";
 import { StockTable } from "@/components/terminal/StockTable";
-import { hotStocks, mostActive, refreshBoard } from "@/lib/stocks";
+import { hotStocks, mostActive } from "@/lib/stocks";
+import { getMarketActivity } from "@/lib/market-data/trending";
+import { snapshotBoards } from "@/lib/market-data/boards";
 
 export const metadata: Metadata = { title: "Hot — IDX Terminal" };
 export const dynamic = "force-dynamic";
 
 export default async function HotPage() {
-  const user = await requireUser();
-  await refreshBoard(user.id);
+  await requireUser();
 
-  const [hot, active] = await Promise.all([hotStocks(20), mostActive(15)]);
+  const [hot, active, activity] = await Promise.all([hotStocks(20), mostActive(15), getMarketActivity()]);
+  const snapshot = snapshotBoards(activity);
+  const hasSnapshot = activity.allStocks.length > 0;
 
   return (
     <div className="grid min-h-0 flex-1 gap-px xl:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]">
       <Panel
         title="Hot"
-        meta="biggest moves among actively traded names"
+        meta={hasSnapshot ? "TradingView delayed · active movers" : "Stored quotes · may be stale"}
       >
         <div className="border-b border-rule bg-panel-hi px-4 py-2.5">
           <p className="max-w-prose text-xs leading-relaxed text-dim">
@@ -27,16 +30,16 @@ export default async function HotPage() {
           </p>
         </div>
         <StockTable
-          rows={hot}
+          rows={hasSnapshot ? snapshot.hot.slice(0, 20) : hot}
           extra="value"
           rank
           emptyMessage="Nothing trading yet. Come back during market hours."
         />
       </Panel>
 
-      <Panel title="Most active" meta="by turnover">
+      <Panel title="Most active" meta={hasSnapshot ? "TradingView delayed · by turnover" : "Stored turnover · may be stale"}>
         <StockTable
-          rows={active}
+          rows={hasSnapshot ? snapshot.active.slice(0, 15) : active}
           extra="value"
           rank
           emptyMessage="No turnover recorded yet."

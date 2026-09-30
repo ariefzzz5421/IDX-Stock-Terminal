@@ -7,15 +7,16 @@ import { formatPrice, formatValue, formatVolume } from "@/lib/format";
 export function ForeignFlowTable({
   rows,
   direction,
+  source,
 }: {
   rows: ForeignFlowRow[];
   direction: "buy" | "sell";
+  source: "IDX" | "Invezgo";
 }) {
   if (!rows.length) {
     return (
       <p className="p-5 text-sm leading-relaxed text-dim">
-        Official foreign-flow data is unavailable right now. The terminal will
-        not estimate or fabricate a ranking.
+        Tidak ada data untuk sisi transaksi ini pada snapshot yang tersedia.
       </p>
     );
   }
@@ -33,7 +34,7 @@ export function ForeignFlowTable({
             <Th>Buy</Th>
             <Th>Sell</Th>
             <Th>Net shares</Th>
-            <Th>Est. net value</Th>
+            <Th>{source === "IDX" ? "Est. net value" : "Provider value"}</Th>
             <Th>Close</Th>
           </tr>
         </thead>

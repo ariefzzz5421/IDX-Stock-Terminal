@@ -6,10 +6,10 @@ import { StockTable } from "@/components/terminal/StockTable";
 import { ResizableSplit } from "@/components/terminal/ResizableSplit";
 import { BusinessHomeHeader } from "@/components/business-map/BusinessHomeHeader";
 import { getMarketActivity } from "@/lib/market-data/trending";
+import { snapshotBoards, withMarketSnapshot } from "@/lib/market-data/boards";
 import {
   boardCounts,
   mostActive,
-  refreshBoard,
   topGainers,
   topLosers,
   watchlistRows,
@@ -20,17 +20,16 @@ export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
   const user = await requireUser();
-  const activityPromise = getMarketActivity();
-  await refreshBoard(user.id);
-
   const [watchlist, gainers, losers, active, counts, activity] = await Promise.all([
     watchlistRows(user.id),
     topGainers(8),
     topLosers(8),
     mostActive(8),
     boardCounts(),
-    activityPromise,
+    getMarketActivity(),
   ]);
+  const snapshot = snapshotBoards(activity);
+  const hasSnapshot = activity.allStocks.length > 0;
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
@@ -50,28 +49,28 @@ export default async function DashboardPage() {
           }
         >
           <StockTable
-            rows={watchlist}
+            rows={withMarketSnapshot(watchlist, activity)}
             emptyMessage="Nothing followed yet. Search a ticker in the command bar and add it from its page."
           />
         </Panel>
       }
       right={
         <div className="grid min-h-0 h-full gap-px lg:grid-cols-2">
-          <Panel title="Top gainers" meta="by change %">
-            <StockTable rows={gainers} rank emptyMessage="No quotes yet." />
+          <Panel title="Top gainers" meta={hasSnapshot ? "TradingView delayed · change %" : "Stored quotes · may be stale"}>
+            <StockTable rows={hasSnapshot ? snapshot.gainers.slice(0, 8) : gainers} rank emptyMessage="No quotes yet." />
           </Panel>
 
-          <Panel title="Top losers" meta="by change %">
-            <StockTable rows={losers} rank emptyMessage="No quotes yet." />
+          <Panel title="Top losers" meta={hasSnapshot ? "TradingView delayed · change %" : "Stored quotes · may be stale"}>
+            <StockTable rows={hasSnapshot ? snapshot.losers.slice(0, 8) : losers} rank emptyMessage="No quotes yet." />
           </Panel>
 
           <Panel
             title="Most active"
-            meta={`${counts.quoted} of ${counts.total} quoted`}
+            meta={hasSnapshot ? `${snapshot.active.length} traded · TradingView delayed` : `${counts.quoted} of ${counts.total} stored quotes`}
             className="lg:col-span-2"
           >
             <StockTable
-              rows={active}
+              rows={hasSnapshot ? snapshot.active.slice(0, 8) : active}
               extra="value"
               rank
               emptyMessage="No turnover recorded yet."

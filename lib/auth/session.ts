@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { getIronSession, type IronSession } from "iron-session";
 import { redirect } from "next/navigation";
+import { cache } from "react";
 import { prisma } from "@/lib/db/prisma";
 import {
   GUEST_USERNAME,
@@ -69,7 +70,7 @@ export async function getSession(): Promise<IronSession<SessionData>> {
  * The user who actually signed in, or null. Never falls back to guest — use
  * this to decide whether to *offer* signing in, not to load data.
  */
-export async function getCurrentUser() {
+export const getCurrentUser = cache(async function getCurrentUser() {
   const session = await getSession();
   if (!session.userId) return null;
 
@@ -85,7 +86,7 @@ export async function getCurrentUser() {
   }
 
   return user;
-}
+});
 
 export type CurrentUser = NonNullable<Awaited<ReturnType<typeof getCurrentUser>>>;
 

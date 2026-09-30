@@ -48,8 +48,12 @@ export function ensureStockCatalog(): Promise<void> {
         isListed: true,
       })),
     });
-    await prisma.stock.updateMany({
-      where: { code: { notIn: COMPANY_CATALOG.map((stock) => stock.code) }, isListed: true },
+    // Reconcile only actual differences. The old unconditional UPDATE on every
+    // cold start added a write before any dashboard route could render.
+    const catalogCodes = new Set(COMPANY_CATALOG.map((company) => company.code));
+    const obsolete = existing.filter((stock) => !catalogCodes.has(stock.code));
+    if (obsolete.length) await prisma.stock.updateMany({
+      where: { code: { in: obsolete.map((stock) => stock.code) }, isListed: true },
       data: { isListed: false },
     });
   })().catch((error) => {

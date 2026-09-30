@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Expected a JSON body." }, { status: 400 });
   }
 
-  const code = (body.code ?? "").trim().toUpperCase();
+  const code = typeof body?.code === "string" ? body.code.trim().toUpperCase() : "";
   if (!code) {
     return NextResponse.json({ error: "A ticker code is required." }, { status: 400 });
   }

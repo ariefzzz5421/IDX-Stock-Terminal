@@ -120,6 +120,7 @@ async function yahooAuth(): Promise<YahooAuth> {
     const seed = await fetch("https://fc.yahoo.com", {
       headers: { "User-Agent": UA },
       cache: "no-store",
+      signal: AbortSignal.timeout(2_500),
     });
     const cookie = seed.headers
       .getSetCookie()
@@ -128,7 +129,7 @@ async function yahooAuth(): Promise<YahooAuth> {
     if (!cookie) throw new Error("Yahoo profile session unavailable.");
     const crumbResponse = await fetch(
       "https://query1.finance.yahoo.com/v1/test/getcrumb",
-      { headers: { "User-Agent": UA, Cookie: cookie }, cache: "no-store" },
+      { headers: { "User-Agent": UA, Cookie: cookie }, cache: "no-store", signal: AbortSignal.timeout(2_500) },
     );
     const crumb = (await crumbResponse.text()).trim();
     if (!crumb || crumb.includes("<")) throw new Error("Yahoo profile crumb unavailable.");
@@ -164,7 +165,8 @@ async function getYahooProfile(code: string): Promise<YahooProfile | null> {
     url.searchParams.set("crumb", auth.crumb);
     const response = await fetch(url, {
       headers: { "User-Agent": UA, Cookie: auth.cookie, Accept: "application/json" },
-      cache: "no-store",
+      next: { revalidate: 900 },
+      signal: AbortSignal.timeout(2_500),
     });
     if (!response.ok) throw new Error(`Yahoo profile returned ${response.status}`);
 

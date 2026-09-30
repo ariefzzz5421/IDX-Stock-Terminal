@@ -18,9 +18,9 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: "Expected a JSON body." }, { status: 400 });
   }
 
-  const displayName = (body.displayName ?? "").trim();
-  const bio = (body.bio ?? "").trim();
-  const avatarUrl = body.avatarUrl ?? null;
+  const displayName = typeof body?.displayName === "string" ? body.displayName.trim() : "";
+  const bio = typeof body?.bio === "string" ? body.bio.trim() : "";
+  const avatarUrl = body?.avatarUrl ?? null;
 
   if (displayName.length > MAX_DISPLAY_NAME) {
     return NextResponse.json(
@@ -37,7 +37,7 @@ export async function PUT(request: Request) {
   }
 
   if (avatarUrl !== null) {
-    if (!avatarUrl.startsWith("data:image/")) {
+    if (typeof avatarUrl !== "string" || !avatarUrl.startsWith("data:image/")) {
       return NextResponse.json(
         { error: "Avatar must be an image." },
         { status: 400 },

@@ -17,6 +17,8 @@ export type TrendingStock = {
 };
 
 export type MarketActivity = {
+  /** Full delayed scanner snapshot for server-rendered market boards. */
+  allStocks: TrendingStock[];
   byMarketCap: Record<MarketCapFilter, TrendingStock[]>;
   byVolume: TrendingStock[];
   fetchedAt: string | null;
@@ -36,6 +38,7 @@ function belongs(stock: TrendingStock, filter: MarketCapFilter) {
 
 function unavailable(): MarketActivity {
   return {
+    allStocks: [],
     byMarketCap: { all: [], gt100t: [], gt50t: [], gt10t: [], gt1t: [], under1t: [] },
     byVolume: [],
     fetchedAt: null,
@@ -57,6 +60,7 @@ export const getMarketActivity = cache(async (): Promise<MarketActivity> => {
         range: [0, 999],
       }),
       next: { revalidate: 90 },
+      signal: AbortSignal.timeout(5_000),
     });
     if (!response.ok) throw new Error(`Scanner returned ${response.status}`);
     const body = (await response.json()) as { data?: Array<{ d?: unknown[] }> };
@@ -92,7 +96,7 @@ export const getMarketActivity = cache(async (): Promise<MarketActivity> => {
     const byVolume = [...stocks].filter((stock) => stock.volume > 0)
       .sort((a, b) => b.volume - a.volume || b.turnover - a.turnover)
       .slice(0, 10);
-    return { byMarketCap, byVolume, fetchedAt: new Date().toISOString() };
+    return { allStocks: stocks, byMarketCap, byVolume, fetchedAt: new Date().toISOString() };
   } catch (error) {
     console.error("[trending] delayed market snapshot unavailable:", error);
     return unavailable();
