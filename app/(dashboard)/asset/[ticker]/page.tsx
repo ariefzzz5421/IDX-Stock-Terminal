@@ -115,6 +115,24 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
         </div>
       </section>
 
+      <Panel
+        title="Price & Financial Snapshot"
+        meta={details?.financials.source ?? "Public financial data unavailable"}
+        bodyClassName=""
+      >
+        <div className="grid grid-cols-2 gap-4 p-4 sm:grid-cols-3 xl:grid-cols-6">
+          <Stat k="Last price" v={formatPrice(fresh.lastPrice)} />
+          <Stat k="Market cap" v={formatValue(fresh.marketCap)} />
+          <Stat k="P/E (trailing)" v={formatRatio(details?.quote.trailingPE)} />
+          <Stat k="Revenue" v={financialValue(details?.financials.totalRevenue)} />
+          <Stat k="Net income" v={financialValue(details?.financials.netIncome)} />
+          <Stat k="Free cash flow" v={financialValue(details?.financials.freeCashflow)} />
+        </div>
+        <p className="border-t border-rule px-4 py-2 text-micro text-dim">
+          Financial periods vary by issuer and source. N/D means the connected public feed did not provide a verified value.
+        </p>
+      </Panel>
+
       <ResizableSplit
         storageKey="stock-orderbook"
         resizableSide="right"
@@ -355,6 +373,10 @@ function Stat({ k, v }: { k: string; v: string }) {
 
 function formatRatio(value: number | null | undefined) {
   return value == null || !Number.isFinite(value) ? "—" : `${value.toFixed(2)}x`;
+}
+
+function financialValue(value: number | null | undefined) {
+  return value == null || !Number.isFinite(value) ? "N/D" : formatValue(value);
 }
 
 function formatOptionalPct(value: number | null | undefined) {

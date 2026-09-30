@@ -5,6 +5,7 @@ import { Panel } from "@/components/terminal/Panel";
 import { StockTable } from "@/components/terminal/StockTable";
 import { ResizableSplit } from "@/components/terminal/ResizableSplit";
 import { BusinessHomeHeader } from "@/components/business-map/BusinessHomeHeader";
+import { getMarketActivity } from "@/lib/market-data/trending";
 import {
   boardCounts,
   mostActive,
@@ -19,19 +20,21 @@ export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
   const user = await requireUser();
+  const activityPromise = getMarketActivity();
   await refreshBoard(user.id);
 
-  const [watchlist, gainers, losers, active, counts] = await Promise.all([
+  const [watchlist, gainers, losers, active, counts, activity] = await Promise.all([
     watchlistRows(user.id),
     topGainers(8),
     topLosers(8),
     mostActive(8),
     boardCounts(),
+    activityPromise,
   ]);
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-    <BusinessHomeHeader />
+    <BusinessHomeHeader volumeLeaders={activity.byVolume} />
     <ResizableSplit
       storageKey="dashboard"
       defaultWidth={340}

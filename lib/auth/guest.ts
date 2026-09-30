@@ -9,11 +9,11 @@ import { UNIQUE_VIOLATION, prismaErrorCode } from "@/lib/db/errors";
 export const GUEST_USERNAME = "guest";
 
 /**
- * Auth is off by default so the terminal opens straight onto the dashboard.
- * Set AUTH_REQUIRED=true to put the login wall back.
+ * Account isolation is the default. Local single-user development can opt in
+ * to the shared guest account with AUTH_REQUIRED=false.
  */
 export function authRequired(): boolean {
-  return process.env.AUTH_REQUIRED === "true";
+  return process.env.AUTH_REQUIRED !== "false";
 }
 
 export const USER_SELECT = {

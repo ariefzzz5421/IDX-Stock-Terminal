@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { Database, Eye, TerminalSquare } from "lucide-react";
 import { MarketStatusBadge } from "@/components/terminal/MarketStatusBadge";
 import { Panel } from "@/components/terminal/Panel";
@@ -8,8 +9,10 @@ import { NAV_ITEMS } from "@/lib/navigation";
 import { BusinessHomeHeader } from "@/components/business-map/BusinessHomeHeader";
 import { TrendingPopup } from "@/components/terminal/TrendingPopup";
 import type { TrendingStock } from "@/lib/market-data/trending";
+import { missingSettings } from "@/lib/config";
 
 export const metadata: Metadata = { title: "Preview — IDX Terminal" };
+export const dynamic = "force-dynamic";
 
 const WATCHLIST: StockRow[] = [
   row("BBCA", "Bank Central Asia Tbk", "Financials", 9460, 1.18, 52_300_000, 497_000_000_000, 1_166_000_000_000_000),
@@ -40,7 +43,16 @@ const ACTIVE = [...WATCHLIST, ...GAINERS.slice(0, 3)].sort(
 const PREVIEW_TRENDING: TrendingStock[] = [...ACTIVE, ...LOSERS]
   .sort((a, b) => (b.lastValue ?? 0) - (a.lastValue ?? 0))
   .slice(0, 10)
-  .map((stock) => ({ code: stock.code, name: stock.name, logoUrl: stock.logoUrl, lastPrice: stock.lastPrice, turnover: stock.lastValue ?? 0, changes: { day: stock.lastChangePct, week: null, month: null } }));
+  .map((stock) => ({
+    code: stock.code,
+    name: stock.name,
+    logoUrl: stock.logoUrl,
+    lastPrice: stock.lastPrice,
+    turnover: stock.lastValue ?? 0,
+    volume: stock.lastVolume ?? 0,
+    marketCap: stock.marketCap,
+    changes: { day: stock.lastChangePct, week: null, month: null },
+  }));
 
 function row(
   code: string,
@@ -66,6 +78,7 @@ function row(
 }
 
 export default function PreviewPage() {
+  if (missingSettings().length === 0) redirect("/dashboard");
   return (
     <div className="flex min-h-full flex-1 flex-col gap-px bg-rule">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 bg-amber/10 px-4 py-2 text-xs text-amber">

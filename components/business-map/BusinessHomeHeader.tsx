@@ -5,6 +5,8 @@ import { COAL_GROUP_PRODUCTION } from "@/data/business-locations/coal-groups";
 import { formatMetric } from "@/lib/business-locations";
 import { BusinessHomeCompanies, type HomeCompany } from "./BusinessHomeCompanies";
 import { MARKET_CAP_AS_OF } from "@/data/business-locations/market-caps";
+import { MarketVolumeTape } from "@/components/terminal/MarketVolumeTape";
+import type { TrendingStock } from "@/lib/market-data/trending";
 
 const groups = new Set(BUSINESS_LOCATIONS.map((item) => item.ticker ?? item.company));
 const disclosed = new Set(BUSINESS_LOCATIONS.filter((item) => item.sector === "coal" && item.ticker && COAL_GROUP_PRODUCTION[item.ticker]).map((item) => item.ticker!));
@@ -17,7 +19,7 @@ for (const item of BUSINESS_LOCATIONS) {
   if (!companyGroups.has(key)) companyGroups.set(key, { key, name: item.sector === "coal" ? item.listedCompany ?? item.company : item.company, operator: item.company, ticker: item.ticker, exposure: item.sector === "data-center" && Boolean(item.ticker && item.ticker !== "DCII") });
 }
 
-export function BusinessHomeHeader({ preview = false }: { preview?: boolean }) {
+export function BusinessHomeHeader({ preview = false, volumeLeaders }: { preview?: boolean; volumeLeaders?: TrendingStock[] }) {
   return <section aria-label="Ringkasan Lokasi Bisnis" className="border-b border-rule bg-panel">
     <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2">
       <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-amber"><MapPinned aria-hidden="true" className="h-3.5 w-3.5" /> Lokasi Bisnis <span className="hidden font-normal normal-case tracking-normal text-dim sm:inline">/ Indonesia geographic intelligence</span></div>
@@ -29,7 +31,7 @@ export function BusinessHomeHeader({ preview = false }: { preview?: boolean }) {
       <HeaderMetric label="Produksi 2025 · disclosed" value={formatMetric(coalMt, "Mt")} note={`${disclosed.size} dari 10 grup batubara`} />
       <HeaderMetric label="Kapasitas fasilitas · disclosed" value={`≥${formatMetric(facilityMw, "MW")}`} note={`${facilities.length} fasilitas · bukan live load`} />
     </div>
-    <BusinessHomeCompanies items={[...companyGroups.values()]} preview={preview} />
+    {volumeLeaders ? <MarketVolumeTape stocks={volumeLeaders} /> : <BusinessHomeCompanies items={[...companyGroups.values()]} preview={preview} />}
   </section>;
 }
 

@@ -38,6 +38,10 @@ type YahooProfile = {
   dividendYield: number | null;
   insiderHoldingPct: number | null;
   institutionHoldingPct: number | null;
+  totalRevenue: number | null;
+  netIncome: number | null;
+  ebitda: number | null;
+  freeCashflow: number | null;
 };
 
 export type CompanyDetails = {
@@ -61,6 +65,13 @@ export type CompanyDetails = {
     trailingPE: number | null;
     priceToBook: number | null;
     dividendYield: number | null;
+  };
+  financials: {
+    totalRevenue: number | null;
+    netIncome: number | null;
+    ebitda: number | null;
+    freeCashflow: number | null;
+    source: "Yahoo Finance" | null;
   };
   orderBook: {
     bid: number | null;
@@ -140,6 +151,7 @@ async function getYahooProfile(code: string): Promise<YahooProfile | null> {
       "assetProfile",
       "summaryDetail",
       "defaultKeyStatistics",
+      "financialData",
       "majorHoldersBreakdown",
     ].join(",");
     const url = new URL(
@@ -159,6 +171,7 @@ async function getYahooProfile(code: string): Promise<YahooProfile | null> {
           assetProfile?: Record<string, unknown>;
           summaryDetail?: Record<string, RawNumber>;
           defaultKeyStatistics?: Record<string, RawNumber>;
+          financialData?: Record<string, RawNumber>;
           majorHoldersBreakdown?: Record<string, RawNumber>;
         }>;
       };
@@ -169,6 +182,7 @@ async function getYahooProfile(code: string): Promise<YahooProfile | null> {
       const summary = result.summaryDetail ?? {};
       const stats = result.defaultKeyStatistics ?? {};
       const holders = result.majorHoldersBreakdown ?? {};
+      const financials = result.financialData ?? {};
       const address = [profile.address1, profile.address2, profile.city, profile.country]
         .filter((part): part is string => typeof part === "string" && Boolean(part.trim()))
         .join(", ");
@@ -195,6 +209,10 @@ async function getYahooProfile(code: string): Promise<YahooProfile | null> {
         dividendYield: rawNumber(summary.dividendYield),
         insiderHoldingPct: rawNumber(holders.insidersPercentHeld),
         institutionHoldingPct: rawNumber(holders.institutionsPercentHeld),
+        totalRevenue: rawNumber(financials.totalRevenue),
+        netIncome: rawNumber(stats.netIncomeToCommon),
+        ebitda: rawNumber(financials.ebitda),
+        freeCashflow: rawNumber(financials.freeCashflow),
       };
     }
   } catch {
@@ -273,6 +291,13 @@ export async function getCompanyDetails(code: string): Promise<CompanyDetails | 
       trailingPE: yahoo?.trailingPE ?? null,
       priceToBook: yahoo?.priceToBook ?? null,
       dividendYield: yahoo?.dividendYield ?? null,
+    },
+    financials: {
+      totalRevenue: yahoo?.totalRevenue ?? null,
+      netIncome: yahoo?.netIncome ?? null,
+      ebitda: yahoo?.ebitda ?? null,
+      freeCashflow: yahoo?.freeCashflow ?? null,
+      source: yahoo ? "Yahoo Finance" : null,
     },
     orderBook: bestOrderBook(idxQuote, yahoo, idxSummary.date),
     ownership: {
