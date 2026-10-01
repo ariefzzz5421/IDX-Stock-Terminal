@@ -3,10 +3,12 @@
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
+import { useProfileLanguage } from "@/components/profile/LanguageControl";
 
 type StockOption = { code: string; name: string };
 
 export function CommandBar({ stocks }: { stocks: StockOption[] }) {
+  const language = useProfileLanguage();
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const [value, setValue] = useState("");
@@ -44,7 +46,7 @@ export function CommandBar({ stocks }: { stocks: StockOption[] }) {
   function submit(event: FormEvent) {
     event.preventDefault();
     if (matches[active]) go(matches[active].code);
-    else if (value.trim()) setError("Saham tidak ditemukan");
+    else if (value.trim()) setError(language === "id" ? "Saham tidak ditemukan" : "Stock not found");
   }
 
   function onKeyDown(event: KeyboardEvent<HTMLInputElement>) {
@@ -65,7 +67,7 @@ export function CommandBar({ stocks }: { stocks: StockOption[] }) {
         onFocus={() => setOpen(true)}
         onKeyDown={onKeyDown}
         role="combobox"
-        aria-label="Cari saham berdasarkan kode atau nama"
+        aria-label={language === "id" ? "Cari saham berdasarkan kode atau nama" : "Search stocks by ticker or name"}
         aria-expanded={open && matches.length > 0}
         aria-controls="ticker-suggestions"
         aria-activedescendant={open && matches.length ? `ticker-option-${active}` : undefined}
@@ -75,12 +77,12 @@ export function CommandBar({ stocks }: { stocks: StockOption[] }) {
       />
       {error && <span role="status" className="shrink-0 text-micro text-down">{error}</span>}
       {open && value.trim() && (
-        <div id="ticker-suggestions" role="listbox" aria-label="Hasil pencarian saham" className="absolute inset-x-0 top-full z-[100] max-h-80 overflow-y-auto border border-rule-hi bg-panel shadow-xl">
+        <div id="ticker-suggestions" role="listbox" aria-label={language === "id" ? "Hasil pencarian saham" : "Stock search results"} className="absolute inset-x-0 top-full z-[100] max-h-80 overflow-y-auto border border-rule-hi bg-panel shadow-xl">
           {matches.length ? matches.map((stock, index) => (
             <button key={stock.code} id={`ticker-option-${index}`} role="option" aria-selected={index === active} type="button" onMouseEnter={() => setActive(index)} onClick={() => go(stock.code)} className={`flex w-full min-w-0 items-center gap-3 border-b border-rule px-3 py-2 text-left text-xs hover:bg-panel-hi ${index === active ? "bg-panel-hi text-amber" : "text-ink"}`}>
               <strong className="w-12 shrink-0 text-amber">{stock.code}</strong><span className="min-w-0 truncate">{stock.name}</span>
             </button>
-          )) : <p className="px-3 py-2 text-xs text-dim">Tidak ada saham yang cocok.</p>}
+          )) : <p className="px-3 py-2 text-xs text-dim">{language === "id" ? "Tidak ada saham yang cocok." : "No matching stocks."}</p>}
         </div>
       )}
     </form>

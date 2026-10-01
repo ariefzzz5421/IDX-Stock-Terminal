@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { UiLanguage } from "@/lib/ui-language";
 import { CompanyLogo } from "./CompanyLogo";
 import {
   directionClass,
@@ -32,6 +33,7 @@ export function StockTable({
   rank = false,
   emptyMessage = "Belum ada data untuk ditampilkan.",
   action,
+  language = "id",
 }: {
   rows: StockRow[];
   extra?: Column;
@@ -39,13 +41,14 @@ export function StockTable({
   rank?: boolean;
   emptyMessage?: string;
   action?: (row: StockRow) => React.ReactNode;
+  language?: UiLanguage;
 }) {
   if (rows.length === 0) {
     return <p className="p-4 text-sm leading-relaxed text-dim">{emptyMessage}</p>;
   }
 
   const extraLabel =
-    extra === "volume" ? "Volume" : extra === "value" ? "Value" : "Mkt cap";
+    extra === "volume" ? "Volume" : extra === "value" ? language === "id" ? "Nilai" : "Value" : language === "id" ? "Kap. pasar" : "Mkt cap";
 
   return (
     <div className="@container/stocktable min-w-0 overflow-hidden">
@@ -53,13 +56,13 @@ export function StockTable({
         <thead>
           <tr className="sticky top-0 z-10 bg-panel">
             {rank && <Th className="w-7 text-right @min-[32rem]/stocktable:w-10">#</Th>}
-            <Th align="left">Ticker</Th>
-            <Th className="w-[4.5rem] @min-[32rem]/stocktable:w-[5.5rem]">Last</Th>
-            <Th className="w-[5rem] @min-[32rem]/stocktable:w-[6rem]">Chg %</Th>
+            <Th align="left">{language === "id" ? "Kode" : "Ticker"}</Th>
+            <Th className="w-[4.5rem] @min-[32rem]/stocktable:w-[5.5rem]">{language === "id" ? "Harga" : "Last"}</Th>
+            <Th className="w-[5rem] @min-[32rem]/stocktable:w-[6rem]">{language === "id" ? "Ubah %" : "Chg %"}</Th>
             <Th className="hidden w-[6.5rem] @min-[32rem]/stocktable:table-cell">{extraLabel}</Th>
             {action && (
               <Th className="w-8">
-                <span className="sr-only">Tindakan</span>
+                <span className="sr-only">{language === "id" ? "Tindakan" : "Action"}</span>
               </Th>
             )}
           </tr>
@@ -79,7 +82,7 @@ export function StockTable({
               <td className="min-w-0 px-2 py-2 @min-[32rem]/stocktable:px-3">
                 <Link
                   href={`/asset/${row.code}`}
-                  aria-label={`Buka detail saham ${row.code} dan ringkasan bid/offer`}
+                  aria-label={language === "id" ? `Buka detail saham ${row.code} dan ringkasan bid/offer` : `Open ${row.code} stock details and bid/offer summary`}
                   className="absolute inset-0 z-0"
                   title={row.name}
                 />

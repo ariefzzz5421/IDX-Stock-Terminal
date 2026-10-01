@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useProfileLanguage } from "@/components/profile/LanguageControl";
 
 type Props = {
   username: string;
@@ -12,6 +13,7 @@ type Props = {
 };
 
 export function UserBadge({ username, displayName, avatarUrl, guest }: Props) {
+  const language = useProfileLanguage();
   const label = displayName?.trim() || username;
   const initials = label.slice(0, 2).toUpperCase();
 
@@ -20,7 +22,7 @@ export function UserBadge({ username, displayName, avatarUrl, guest }: Props) {
       <Link
         href="/account"
         className="flex items-center gap-2.5 hover:opacity-80"
-        title="Buka profil"
+        title={language === "id" ? "Buka profil" : "Open profile"}
       >
         {avatarUrl ? (
           <Image
@@ -42,7 +44,7 @@ export function UserBadge({ username, displayName, avatarUrl, guest }: Props) {
         <span className="hidden flex-col leading-tight sm:flex">
           <span className="text-xs text-ink-hi">{label}</span>
           <span className="text-micro uppercase tracking-[0.1em] text-dim">
-            {guest ? "Akun bersama" : displayName ? username : "Sesi aktif"}
+            {guest ? language === "id" ? "Akun bersama" : "Shared account" : displayName ? username : language === "id" ? "Sesi aktif" : "Active session"}
           </span>
         </span>
       </Link>
@@ -55,13 +57,13 @@ export function UserBadge({ username, displayName, avatarUrl, guest }: Props) {
             href="/login"
             className="border border-rule-hi px-2.5 py-1.5 text-micro uppercase tracking-[0.1em] text-dim transition-colors hover:border-amber hover:text-amber"
           >
-            Masuk
+            {language === "id" ? "Masuk" : "Sign in"}
           </Link>
           <Link
             href="/register"
             className="bg-amber px-2.5 py-1.5 text-micro font-bold uppercase tracking-[0.1em] text-void transition-colors hover:bg-ink-hi"
           >
-            Daftar
+            {language === "id" ? "Daftar" : "Sign up"}
           </Link>
         </span>
       ) : null}

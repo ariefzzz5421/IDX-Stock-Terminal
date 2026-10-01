@@ -13,6 +13,7 @@ import { TrendingDock } from "@/components/terminal/TrendingDock";
 import { IhsgQuoteBadge } from "@/components/terminal/IhsgQuoteBadge";
 import { getIhsgQuote } from "@/lib/market-data/ihsg";
 import { COMPANY_CATALOG } from "@/lib/company-catalog";
+import { getUiLanguage } from "@/lib/ui-language";
 
 const codes = COMPANY_CATALOG.map((stock) => stock.code).sort();
 const searchStocks = COMPANY_CATALOG.map(({ code, name }) => ({ code, name }));
@@ -26,6 +27,7 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
   if (missing.length > 0) return <SetupRequired missing={missing} />;
 
   const user = await requireUser();
+  const language = await getUiLanguage();
   await ensureStockCatalog();
 
   return (
@@ -76,16 +78,16 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
       {/* ---- status bar ---- */}
       <footer className="flex flex-wrap items-center gap-x-6 gap-y-1 bg-panel-hi px-4 py-2 text-micro uppercase tracking-[0.1em] text-dim">
         <span>
-          Emiten <span className="text-ink">{codes.length}</span>
+          {language === "id" ? "Emiten" : "Listings"} <span className="text-ink">{codes.length}</span>
         </span>
         <span>
-          Papan <span className="text-ink">TradingView</span> · Saham <span className="text-ink">{marketData.name}</span>
+          {language === "id" ? "Papan" : "Board"} <span className="text-ink">TradingView</span> · {language === "id" ? "Saham" : "Stocks"} <span className="text-ink">{marketData.name}</span>
         </span>
         <span>
-          Data <span className="text-ink">snapshot saat dibuka</span>
+          Data <span className="text-ink">{language === "id" ? "snapshot saat dibuka" : "snapshot on load"}</span>
         </span>
         <span className="ml-auto text-dimmer">
-          Data tertunda · bukan rekomendasi investasi
+          {language === "id" ? "Data tertunda · bukan rekomendasi investasi" : "Delayed data · not investment advice"}
         </span>
       </footer>
     </div>

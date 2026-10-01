@@ -3,9 +3,25 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NAV_ITEMS } from "@/lib/navigation";
+import { useProfileLanguage } from "@/components/profile/LanguageControl";
+
+const INDONESIAN_LABELS: Record<string, { label: string; shortLabel?: string }> = {
+  "/dashboard": { label: "Beranda" },
+  "/watchlist": { label: "Pantauan" },
+  "/top10": { label: "Top 10" },
+  "/foreign-flow": { label: "Arus Asing", shortLabel: "Arus" },
+  "/hot": { label: "Hot" },
+  "/market": { label: "Pasar" },
+  "/sector": { label: "Sector" },
+  "/konglo": { label: "Konglo" },
+  "/lokasi-bisnis": { label: "Lokasi Bisnis", shortLabel: "Lokasi" },
+  "/ai-analyst": { label: "AI Analyst", shortLabel: "AI" },
+  "/account": { label: "Profil" },
+};
 
 export function Nav() {
   const pathname = usePathname();
+  const language = useProfileLanguage();
 
   return (
     <nav
@@ -13,6 +29,9 @@ export function Nav() {
       className="terminal-nav flex min-w-0 items-stretch gap-px overflow-x-auto bg-rule"
     >
       {NAV_ITEMS.map((tab) => {
+        const labels = language === "id" ? INDONESIAN_LABELS[tab.href] : undefined;
+        const label = labels?.label ?? tab.label;
+        const shortLabel = labels?.shortLabel ?? tab.shortLabel ?? label;
         const active =
           pathname === tab.href || pathname.startsWith(`${tab.href}/`);
 
@@ -28,8 +47,8 @@ export function Nav() {
             }`}
           >
             <tab.icon aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
-            <span className="hidden min-[1150px]:inline">{tab.label}</span>
-            <span className="min-[1150px]:hidden">{tab.shortLabel ?? tab.label}</span>
+            <span className="hidden min-[1150px]:inline">{label}</span>
+            <span className="min-[1150px]:hidden">{shortLabel}</span>
           </Link>
         );
       })}

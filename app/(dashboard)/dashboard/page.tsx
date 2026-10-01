@@ -6,6 +6,7 @@ import { StockTable } from "@/components/terminal/StockTable";
 import { ResizableSplit } from "@/components/terminal/ResizableSplit";
 import { MarketVolumeTape } from "@/components/terminal/MarketVolumeTape";
 import { getMarketActivity } from "@/lib/market-data/trending";
+import { getUiLanguage, uiCopy } from "@/lib/ui-language";
 import { snapshotBoards, withMarketSnapshot } from "@/lib/market-data/boards";
 import {
   boardCounts,
@@ -19,6 +20,8 @@ export const metadata: Metadata = { title: "Dashboard — IDX Terminal" };
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
+  const language = await getUiLanguage();
+  const copy = uiCopy[language];
   const user = await requireUser();
   const [watchlist, gainers, losers, active, counts, activity] = await Promise.all([
     watchlistRows(user.id),
@@ -42,41 +45,43 @@ export default async function DashboardPage() {
       mobileDrawerCount={watchlist.length}
       left={
         <Panel
-          title="Watchlist"
+          title={language === "id" ? "Pantauan" : "Watchlist"}
           className="h-full"
           headerClassName="pr-12"
           meta={
             <Link href="/watchlist" className="whitespace-nowrap hover:text-amber">
-              {watchlist.length} stocks
+              {watchlist.length} {copy.stocks}
             </Link>
           }
         >
           <StockTable
+            language={language}
             rows={withMarketSnapshot(watchlist, activity)}
-            emptyMessage="Belum ada saham pantauan. Cari kode saham, lalu tambahkan dari halaman saham."
+            emptyMessage={copy.watchlistEmpty}
           />
         </Panel>
       }
       right={
         <div className="grid min-h-0 h-full gap-px lg:grid-cols-2 xl:pr-8">
-          <Panel title="Top gainers" headerClassName="panel-header-gain" meta={hasSnapshot ? "TradingView delayed · change %" : "Stored quotes · may be stale"}>
-            <StockTable rows={hasSnapshot ? snapshot.gainers.slice(0, 8) : gainers} rank emptyMessage="Belum ada harga." />
+          <Panel title="Top gainers" headerClassName="panel-header-gain" meta={hasSnapshot ? `${copy.delayed} · change %` : copy.stored}>
+            <StockTable language={language} rows={hasSnapshot ? snapshot.gainers.slice(0, 8) : gainers} rank emptyMessage={copy.noPrice} />
           </Panel>
 
-          <Panel title="Top losers" headerClassName="panel-header-loss" meta={hasSnapshot ? "TradingView delayed · change %" : "Stored quotes · may be stale"}>
-            <StockTable rows={hasSnapshot ? snapshot.losers.slice(0, 8) : losers} rank emptyMessage="Belum ada harga." />
+          <Panel title="Top losers" headerClassName="panel-header-loss" meta={hasSnapshot ? `${copy.delayed} · change %` : copy.stored}>
+            <StockTable language={language} rows={hasSnapshot ? snapshot.losers.slice(0, 8) : losers} rank emptyMessage={copy.noPrice} />
           </Panel>
 
           <Panel
             title="Top volume"
-            meta={hasSnapshot ? `${snapshot.activeByVolume.length} stocks · TradingView delayed` : `${counts.quoted} of ${counts.total} stored quotes`}
+            meta={hasSnapshot ? `${snapshot.activeByVolume.length} ${copy.stocks} · ${copy.delayed}` : language === "id" ? `${counts.quoted} dari ${counts.total} harga tersimpan` : `${counts.quoted} of ${counts.total} stored quotes`}
             className="lg:col-span-2"
           >
             <StockTable
+              language={language}
               rows={hasSnapshot ? snapshot.activeByVolume.slice(0, 8) : active}
               extra="volume"
               rank
-              emptyMessage="Belum ada volume tercatat."
+              emptyMessage={copy.noVolume}
             />
           </Panel>
         </div>

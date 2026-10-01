@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { useRouter } from "next/navigation";
 
 export type ProfileLanguage = "id" | "en";
 
@@ -23,14 +24,17 @@ export function useProfileLanguage() {
 }
 
 export function LanguageControl() {
+  const router = useRouter();
   const language = useProfileLanguage();
   return (
     <div className="grid gap-2 px-4 pb-4 sm:grid-cols-2">
       {([ { code: "id", flag: "🇮🇩", label: "Bahasa Indonesia" }, { code: "en", flag: "🇬🇧", label: "Bahasa Inggris" } ] as const).map((option) => (
         <button key={option.code} type="button" onClick={() => {
           localStorage.setItem("idx-language", option.code);
+          document.cookie = `idx-language=${option.code}; Path=/; Max-Age=31536000; SameSite=Lax`;
           document.documentElement.lang = option.code;
           window.dispatchEvent(new Event("idx-language-change"));
+          router.refresh();
         }} aria-pressed={language === option.code}
           className={`flex min-h-12 items-center gap-3 border px-3 text-left text-sm transition-colors ${language === option.code ? "border-amber bg-amber/10 text-ink-hi" : "border-rule-hi text-ink hover:border-amber"}`}>
           <span className="text-lg" aria-hidden="true">{option.flag}</span><span>{option.label}</span><span className="ml-auto text-amber">{language === option.code ? "✓" : ""}</span>
