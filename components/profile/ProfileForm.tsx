@@ -1,12 +1,15 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useRef, useState, type ChangeEvent, type FormEvent } from "react";
+import { ChevronRight, Globe2, UserRound, X } from "lucide-react";
+import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { avatarPresets } from "@/lib/avatar-presets";
+import { LanguageControl, useProfileLanguage } from "./LanguageControl";
 import { ThemeControl } from "./ThemeControl";
+import { SignOutButton } from "./SignOutButton";
 
-const MAX_BIO = 280;
 const MAX_UPLOAD_BYTES = 350 * 1024;
 
 type Props = {
@@ -15,224 +18,121 @@ type Props = {
   displayName: string;
   bio: string;
   avatarUrl: string | null;
+  guest: boolean;
 };
 
 export function ProfileForm(props: Props) {
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
-
+  const language = useProfileLanguage();
+  const [savedDisplayName, setSavedDisplayName] = useState(props.displayName);
+  const [savedAvatarUrl, setSavedAvatarUrl] = useState(props.avatarUrl);
   const [displayName, setDisplayName] = useState(props.displayName);
-  const [bio, setBio] = useState(props.bio);
   const [avatarUrl, setAvatarUrl] = useState(props.avatarUrl);
-  const presets = useMemo(() => avatarPresets(props.username), [props.username]);
-  const [status, setStatus] = useState<
-    { kind: "error" | "ok"; text: string } | null
-  >(null);
+  const [editing, setEditing] = useState(false);
+  const [languageOpen, setLanguageOpen] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [status, setStatus] = useState<{ kind: "error" | "ok"; text: string } | null>(null);
+  const name = savedDisplayName.trim() || props.username;
+
+  function closeEditor() {
+    setDisplayName(savedDisplayName);
+    setAvatarUrl(savedAvatarUrl);
+    setStatus(null);
+    setEditing(false);
+  }
 
   function pickAvatar(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file) return;
-
-    if (!file.type.startsWith("image/")) {
-      setStatus({ kind: "error", text: "Berkas tersebut bukan gambar." });
+    if (!file.type.startsWith("image/") || file.size > MAX_UPLOAD_BYTES) {
+      setStatus({ kind: "error", text: "Pilih gambar di bawah 350 KB." });
       return;
     }
-
-    if (file.size > MAX_UPLOAD_BYTES) {
-      setStatus({
-        kind: "error",
-        text: "Gambar terlalu besar. Pilih yang kurang dari 350 KB.",
-      });
-      return;
-    }
-
-    // Read as a data URI so the avatar lives in Postgres — no blob store, and
-    // it survives a redeploy on an ephemeral filesystem.
     const reader = new FileReader();
-    reader.onload = () => {
-      setAvatarUrl(reader.result as string);
-      setStatus(null);
-    };
-    reader.onerror = () =>
-      setStatus({ kind: "error", text: "Berkas tidak dapat dibaca." });
+    reader.onload = () => { setAvatarUrl(reader.result as string); setStatus(null); };
+    reader.onerror = () => setStatus({ kind: "error", text: "Gambar tidak dapat dibaca." });
     reader.readAsDataURL(file);
   }
 
-  async function handleSubmit(event: FormEvent) {
+  async function save(event: FormEvent) {
     event.preventDefault();
     setBusy(true);
     setStatus(null);
-
     try {
       const response = await fetch("/api/profile", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ displayName, bio, avatarUrl }),
+        body: JSON.stringify({ displayName, bio: props.bio, avatarUrl }),
       });
-      const data = (await response.json()) as { error?: string };
-      if (response.ok) {
-        setStatus({ kind: "ok", text: "Profil tersimpan." });
-        router.refresh();
-      } else {
-        setStatus({ kind: "error", text: data.error ?? "Profil tidak dapat disimpan." });
-      }
-    } catch {
-      setStatus({ kind: "error", text: "Koneksi gagal. Silakan coba lagi." });
-    } finally {
-      setBusy(false);
-    }
+      const result = (await response.json()) as { error?: string };
+      if (!response.ok) throw new Error(result.error ?? "Profil gagal disimpan.");
+      setSavedDisplayName(displayName);
+      setSavedAvatarUrl(avatarUrl);
+      setEditing(false);
+      setStatus({ kind: "ok", text: "Profil tersimpan." });
+      router.refresh();
+    } catch (error) {
+      setStatus({ kind: "error", text: error instanceof Error ? error.message : "Koneksi gagal." });
+    } finally { setBusy(false); }
   }
 
-  const initials = (displayName.trim() || props.username).slice(0, 2).toUpperCase();
+  return <div className="mx-auto w-full max-w-2xl px-4 py-7 sm:px-6 sm:py-10">
+    <header className="flex flex-col items-center border-b border-rule pb-8 text-center">
+      <Avatar url={savedAvatarUrl} name={name} />
+      <h1 className="mt-4 font-display text-xl font-bold text-ink-hi">{name}</h1>
+      <p className="mt-1 text-xs text-dim">@{props.username} · {language === "id" ? "Bergabung" : "Joined"} {props.memberSince}</p>
+      <button type="button" onClick={() => { setEditing(true); setStatus(null); }} className="mt-4 min-h-10 text-sm font-semibold text-cyan hover:underline">
+        {language === "id" ? "Ubah Profil" : "Edit Profile"}
+      </button>
+    </header>
 
-  return (
-    <form onSubmit={handleSubmit} className="max-w-xl">
-      <div className="mb-6 flex items-center gap-4">
-        {avatarUrl ? (
-          <Image
-            src={avatarUrl}
-            alt="Avatar Anda"
-            width={64}
-            height={64}
-            className="h-16 w-16 shrink-0 border border-rule-hi object-cover"
-            unoptimized
-          />
-        ) : (
-          <span
-            aria-hidden="true"
-            className="grid h-16 w-16 shrink-0 place-items-center border border-rule-hi bg-amber-dim text-lg font-bold text-ink-hi"
-          >
-            {initials}
-          </span>
-        )}
+    <section className="mt-8">
+      <h2 className="mb-2 px-1 text-micro font-bold uppercase tracking-[0.14em] text-dim">{language === "id" ? "Akun" : "Account"}</h2>
+      <div className="border-y border-rule bg-panel">
+        <button type="button" onClick={() => setEditing(true)} className="flex min-h-14 w-full items-center gap-3 px-4 text-left hover:bg-panel-hi">
+          <UserRound className="h-5 w-5 text-dim" aria-hidden="true" />
+          <span className="flex-1 text-sm text-ink-hi">{language === "id" ? "Akun" : "Account"}</span>
+          <ChevronRight className="h-4 w-4 text-dim" aria-hidden="true" />
+        </button>
+        {props.guest ? <div className="border-t border-rule px-4 py-3 text-xs text-dim"><p>{language === "id" ? "Akun tamu dapat dipakai bersama." : "Guest accounts may be shared."}</p><div className="mt-2 flex gap-4"><Link href="/register" className="text-cyan">{language === "id" ? "Daftar" : "Sign up"}</Link><Link href="/login" className="text-cyan">{language === "id" ? "Masuk" : "Sign in"}</Link></div></div> : <div className="border-t border-rule px-4 py-3"><SignOutButton english={language === "en"} /></div>}
+      </div>
+    </section>
 
-        <div className="flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={() => fileRef.current?.click()}
-            className="border border-rule-hi px-2.5 py-1.5 text-[10px] uppercase tracking-[0.12em] text-dim transition-colors hover:border-amber hover:text-amber"
-          >
-            Pilih gambar
+    <section className="mt-8">
+      <h2 className="mb-2 px-1 text-micro font-bold uppercase tracking-[0.14em] text-dim">{language === "id" ? "Pengaturan" : "Settings"}</h2>
+      <div className="divide-y divide-rule border-y border-rule bg-panel">
+        <ThemeControl label={language === "id" ? "Mode Gelap" : "Dark Mode"} />
+        <div>
+          <button type="button" aria-expanded={languageOpen} onClick={() => setLanguageOpen(!languageOpen)} className="flex min-h-14 w-full items-center gap-3 px-4 text-left hover:bg-panel-hi">
+            <Globe2 className="h-5 w-5 text-dim" aria-hidden="true" /><span className="flex-1 text-sm text-ink-hi">{language === "id" ? "Bahasa" : "Language"}</span>
+            <span className="text-xs text-dim">{language === "id" ? "🇮🇩 Indonesia" : "🇬🇧 English"}</span><ChevronRight className={`h-4 w-4 text-dim transition-transform ${languageOpen ? "rotate-90" : ""}`} aria-hidden="true" />
           </button>
-          {avatarUrl && (
-            <button
-              type="button"
-              onClick={() => setAvatarUrl(null)}
-              className="border border-rule-hi px-2.5 py-1.5 text-[10px] uppercase tracking-[0.12em] text-dim transition-colors hover:border-down hover:text-down"
-            >
-              Hapus
-            </button>
-          )}
-          <input
-            ref={fileRef}
-            type="file"
-            accept="image/*"
-            onChange={pickAvatar}
-            className="hidden"
-          />
+          {languageOpen && <LanguageControl />}
         </div>
       </div>
+    </section>
 
-      <ThemeControl />
+    {status && <p role="status" className={`mt-5 border px-3 py-2 text-xs ${status.kind === "error" ? "border-down/40 text-down" : "border-up/40 text-up"}`}>{status.text}</p>}
 
-      <fieldset className="mb-6">
-        <legend className="mb-2 text-[10px] uppercase tracking-[0.14em] text-dim">Avatar karakter</legend>
-        <div className="grid grid-cols-4 gap-2 sm:grid-cols-8">
-          {presets.map((preset) => (
-            <button
-              key={preset.name}
-              type="button"
-              title={preset.name}
-              aria-label={`Pilih avatar ${preset.name}`}
-              aria-pressed={avatarUrl === preset.url}
-              onClick={() => { setAvatarUrl(preset.url); setStatus(null); }}
-              className={`flex min-w-0 flex-col items-center gap-1 border p-1.5 text-[10px] transition-colors hover:border-amber ${avatarUrl === preset.url ? "border-amber text-amber" : "border-rule-hi text-dim"}`}
-            >
-              <Image src={preset.url} alt="" width={48} height={48} unoptimized className="h-12 w-12 max-w-full" />
-              <span className="truncate">{preset.name}</span>
-            </button>
-          ))}
+    {editing && <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/70 sm:items-center" onMouseDown={(event) => { if (event.target === event.currentTarget) closeEditor(); }} onKeyDown={(event) => { if (event.key === "Escape") closeEditor(); }}>
+      <form onSubmit={save} role="dialog" aria-modal="true" aria-label={language === "id" ? "Ubah profil" : "Edit profile"} className="max-h-[90dvh] w-full max-w-lg overflow-y-auto border border-rule-hi bg-panel shadow-2xl sm:max-h-[85dvh]">
+        <div className="flex items-center justify-between border-b border-rule px-4 py-3"><h2 className="font-display text-sm font-bold text-ink-hi">{language === "id" ? "Ubah Profil" : "Edit Profile"}</h2><button type="button" onClick={closeEditor} aria-label="Tutup" className="grid h-10 w-10 place-items-center text-dim hover:text-ink-hi"><X className="h-5 w-5" /></button></div>
+        <div className="space-y-5 p-4 sm:p-5">
+          <div className="flex flex-col items-center gap-3"><Avatar url={avatarUrl} name={displayName.trim() || props.username} /><span className="text-xs text-dim">{language === "id" ? "Pilih avatar" : "Choose an avatar"}</span></div>
+          <div className="grid grid-cols-3 gap-3">{avatarPresets.map((preset) => <button key={preset.url} type="button" onClick={() => setAvatarUrl(preset.url)} aria-label={`Pilih avatar ${preset.name}`} aria-pressed={avatarUrl === preset.url} className={`flex min-h-28 flex-col items-center justify-center gap-2 border p-2 text-xs ${avatarUrl === preset.url ? "border-amber bg-amber/10 text-amber" : "border-rule-hi text-dim hover:border-amber"}`}><Image src={preset.url} alt="" width={72} height={72} className="h-16 w-16 rounded-full object-cover" /><span>{preset.name}</span></button>)}</div>
+          <div className="flex flex-wrap justify-center gap-2"><button type="button" onClick={() => fileRef.current?.click()} className="min-h-10 border border-rule-hi px-3 text-xs text-cyan hover:border-amber">{language === "id" ? "Pilih gambar sendiri" : "Upload image"}</button><button type="button" onClick={() => setAvatarUrl(null)} className="min-h-10 border border-rule-hi px-3 text-xs text-dim hover:border-amber">{language === "id" ? "Hapus avatar" : "Remove avatar"}</button><input ref={fileRef} type="file" accept="image/*" onChange={pickAvatar} className="hidden" /></div>
+          <div><label htmlFor="display-name" className="mb-1.5 block text-micro uppercase tracking-wider text-dim">{language === "id" ? "Nama tampilan" : "Display name"}</label><input id="display-name" value={displayName} onChange={(event) => setDisplayName(event.target.value)} maxLength={40} className="h-11 w-full border border-rule-hi bg-void px-3 text-sm text-ink-hi outline-none focus:border-amber" /></div>
+          <p className="text-micro text-dim">Username @{props.username} tetap unik dan tidak berubah.</p>
+          {status?.kind === "error" && <p role="alert" className="text-xs text-down">{status.text}</p>}
+          <button type="submit" disabled={busy} className="min-h-11 w-full bg-amber px-4 text-xs font-bold uppercase tracking-wider text-void disabled:opacity-60">{busy ? "Menyimpan…" : language === "id" ? "Simpan" : "Save"}</button>
         </div>
-        <p className="mt-2 text-[10px] text-dim">Pilih karakter lalu simpan profil. Gambar dibuat lokal tanpa layanan eksternal.</p>
-      </fieldset>
-
-      <Field label="Nama pengguna">
-        <p className="border border-rule bg-void px-3 py-2 text-[13px] text-dim">
-          {props.username}
-          <span className="ml-2 text-[10px] uppercase tracking-[0.1em] text-dimmer">
-            sejak {props.memberSince}
-          </span>
-        </p>
-      </Field>
-
-      <Field label="Nama tampilan" htmlFor="displayName">
-        <input
-          id="displayName"
-          value={displayName}
-          onChange={(e) => setDisplayName(e.target.value)}
-          maxLength={40}
-          placeholder={props.username}
-          className="w-full border border-rule-hi bg-void px-3 py-2 text-[13px] text-ink-hi outline-none placeholder:text-dimmer focus:border-amber"
-        />
-      </Field>
-
-      <Field label="Bio" htmlFor="bio">
-        <textarea
-          id="bio"
-          value={bio}
-          onChange={(e) => setBio(e.target.value)}
-          maxLength={MAX_BIO}
-          rows={4}
-          className="w-full resize-y border border-rule-hi bg-void px-3 py-2 text-[13px] leading-relaxed text-ink-hi outline-none focus:border-amber"
-        />
-        <p className="mt-1 text-right text-[10px] text-dimmer">
-          {bio.length} / {MAX_BIO}
-        </p>
-      </Field>
-
-      {status && (
-        <p
-          role="alert"
-          className={`mb-4 border px-3 py-2 text-[12px] ${
-            status.kind === "error"
-              ? "border-down/40 bg-down/10 text-down"
-              : "border-up/40 bg-up/10 text-up"
-          }`}
-        >
-          {status.text}
-        </p>
-      )}
-
-      <button
-        type="submit"
-        disabled={busy}
-        className="bg-amber px-4 py-2 text-[11px] font-bold uppercase tracking-[0.14em] text-void transition-colors hover:bg-ink-hi disabled:opacity-60"
-      >
-        {busy ? "Menyimpan…" : "Simpan profil"}
-      </button>
-    </form>
-  );
+      </form>
+    </div>}
+  </div>;
 }
 
-function Field({
-  label,
-  htmlFor,
-  children,
-}: {
-  label: string;
-  htmlFor?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="mb-4">
-      <label
-        htmlFor={htmlFor}
-        className="mb-1.5 block text-[10px] uppercase tracking-[0.14em] text-dim"
-      >
-        {label}
-      </label>
-      {children}
-    </div>
-  );
+function Avatar({ url, name }: { url: string | null; name: string }) {
+  return url ? <Image src={url} alt={`Avatar ${name}`} width={112} height={112} unoptimized={url.startsWith("data:")} className="h-24 w-24 rounded-full border border-rule-hi object-cover sm:h-28 sm:w-28" />
+    : <span className="grid h-24 w-24 place-items-center rounded-full border border-rule-hi bg-amber/15 font-display text-2xl font-bold text-amber sm:h-28 sm:w-28" aria-label={`Avatar ${name}`}>{name.slice(0, 2).toUpperCase()}</span>;
 }

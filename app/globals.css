@@ -81,6 +81,10 @@ body {
 }
 
 .terminal-nav { scrollbar-width: thin; scrollbar-color: var(--color-amber-dim) var(--color-panel-hi); }
+.panel-header-gain { background: color-mix(in srgb, var(--color-up) 15%, var(--color-panel-hi)); border-bottom-color: color-mix(in srgb, var(--color-up) 40%, var(--color-rule)); }
+.panel-header-gain h2 { color: var(--color-up); }
+.panel-header-loss { background: color-mix(in srgb, var(--color-down) 15%, var(--color-panel-hi)); border-bottom-color: color-mix(in srgb, var(--color-down) 40%, var(--color-rule)); }
+.panel-header-loss h2 { color: var(--color-down); }
 .business-page { width: 100%; }
 .business-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .business-grid { display: grid; grid-template-columns: minmax(0, 1fr); }

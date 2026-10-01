@@ -16,7 +16,8 @@ import { getCompanyDetails } from "@/lib/market-data/company-details";
 import { companySummaryId } from "@/lib/company-summary-id";
 import { Panel } from "@/components/terminal/Panel";
 import { ResizableSplit } from "@/components/terminal/ResizableSplit";
-import { Chart } from "@/components/terminal/Chart";
+import { ChartRangeSelector } from "@/components/terminal/ChartRange";
+import { getYahooRangeOHLCV } from "@/lib/market-data/yahoo";
 import { CompanyLogo } from "@/components/terminal/CompanyLogo";
 import { WatchlistToggle } from "@/components/terminal/WatchlistToggle";
 import { ShareholderList } from "@/components/terminal/ShareholderList";
@@ -52,7 +53,7 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
     return null;
   });
   const detailsPromise = getCompanyDetails(code);
-  const candlesPromise = marketData.getOHLCV(code, "5m", 120).catch((error) => {
+  const candlesPromise = getYahooRangeOHLCV(code, "1D").catch((error) => {
     console.error(`[stock] OHLCV for ${code} failed:`, error);
     return [];
   });
@@ -156,10 +157,10 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
           <Panel
             title="Grafik"
             className="h-full"
-            meta={`5 menit · ${candles.length} batang · ${marketData.name}`}
+            meta="Yahoo Finance · delayed"
             bodyClassName="min-h-[25rem]"
           >
-            <Chart candles={candles} />
+            <ChartRangeSelector code={code} initialCandles={candles} />
           </Panel>
         }
         right={

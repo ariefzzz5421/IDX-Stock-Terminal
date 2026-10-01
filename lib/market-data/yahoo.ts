@@ -7,6 +7,7 @@ import {
   type Unsubscribe,
 } from "./types";
 import { pollingSubscription } from "./polling";
+import { CHART_RANGES, type ChartRange } from "@/lib/chart-ranges";
 
 /**
  * Yahoo Finance. No API key, no signup, and it actually knows IDX — Jakarta
@@ -122,6 +123,21 @@ function mapCandles(body: YahooChart): Candle[] {
   return candles;
 }
 
+/** Calendar ranges for the asset chart. This is real Yahoo history, never synthetic bars. */
+export async function getYahooRangeOHLCV(code: string, range: ChartRange): Promise<Candle[]> {
+  const config = CHART_RANGES.find((item) => item.key === range)!;
+  const provider = new YahooProvider();
+  const body = await provider.getChartRange(code, config.interval, config.yahooRange);
+  const bars = mapCandles(body);
+  if (range === "1D" && bars.length > 0) {
+    const dayFormatter = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jakarta", year: "numeric", month: "2-digit", day: "2-digit" });
+    const jakartaDay = (time: number) => dayFormatter.format(time);
+    const lastDay = jakartaDay(bars[bars.length - 1].time);
+    return bars.filter((bar) => jakartaDay(bar.time) === lastDay);
+  }
+  return bars.slice(-config.maxBars);
+}
+
 export class YahooProvider implements MarketDataProvider {
   readonly name = "yahoo";
   /** Nothing to configure — this is why it's the default real provider. */
@@ -153,6 +169,10 @@ export class YahooProvider implements MarketDataProvider {
     }
 
     return body;
+  }
+
+  async getChartRange(code: string, interval: string, range: string) {
+    return this.chart(code, interval, range);
   }
 
   async getQuote(code: string): Promise<Quote | null> {

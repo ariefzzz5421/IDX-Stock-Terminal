@@ -59,6 +59,9 @@ next-env.d.ts
 /.windsurf/
 /skills-lock.json
 
-# user-uploaded avatars
+# User-uploaded avatars stay local; curated character portraits are versioned.
 /public/avatars/*
 !/public/avatars/.gitkeep
+!/public/avatars/character-adi.png
+!/public/avatars/character-naya.png
+!/public/avatars/character-bima.png

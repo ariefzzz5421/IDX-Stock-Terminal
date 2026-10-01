@@ -59,11 +59,11 @@ export default async function DashboardPage() {
       }
       right={
         <div className="grid min-h-0 h-full gap-px lg:grid-cols-2 xl:pr-8">
-          <Panel title="Top gainers" meta={hasSnapshot ? "TradingView delayed · change %" : "Stored quotes · may be stale"}>
+          <Panel title="Top gainers" headerClassName="panel-header-gain" meta={hasSnapshot ? "TradingView delayed · change %" : "Stored quotes · may be stale"}>
             <StockTable rows={hasSnapshot ? snapshot.gainers.slice(0, 8) : gainers} rank emptyMessage="Belum ada harga." />
           </Panel>
 
-          <Panel title="Top losers" meta={hasSnapshot ? "TradingView delayed · change %" : "Stored quotes · may be stale"}>
+          <Panel title="Top losers" headerClassName="panel-header-loss" meta={hasSnapshot ? "TradingView delayed · change %" : "Stored quotes · may be stale"}>
             <StockTable rows={hasSnapshot ? snapshot.losers.slice(0, 8) : losers} rank emptyMessage="Belum ada harga." />
           </Panel>
 

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 import { getViewer } from "@/lib/auth/session";
+import { isPresetAvatar } from "@/lib/avatar-presets";
 
 const MAX_DISPLAY_NAME = 40;
 const MAX_BIO = 280;
@@ -37,13 +38,13 @@ export async function PUT(request: Request) {
   }
 
   if (avatarUrl !== null) {
-    if (typeof avatarUrl !== "string" || !avatarUrl.startsWith("data:image/")) {
+    if (typeof avatarUrl !== "string" || (!avatarUrl.startsWith("data:image/") && !isPresetAvatar(avatarUrl))) {
       return NextResponse.json(
         { error: "Avatar must be an image." },
         { status: 400 },
       );
     }
-    if (avatarUrl.length > MAX_AVATAR_BYTES) {
+    if (!isPresetAvatar(avatarUrl) && avatarUrl.length > MAX_AVATAR_BYTES) {
       return NextResponse.json(
         { error: "That image is too large. Pick one under 350 KB." },
         { status: 413 },

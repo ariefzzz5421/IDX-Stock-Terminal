@@ -23,11 +23,11 @@ export default async function TopTenPage() {
 
   return (
     <div className="grid min-h-0 flex-1 gap-px lg:grid-cols-2">
-      <Panel title="Top 10 gainers" meta={hasSnapshot ? "TradingView delayed · change %" : "Stored quotes · may be stale"}>
+      <Panel title="Top 10 gainers" headerClassName="panel-header-gain" meta={hasSnapshot ? "TradingView delayed · change %" : "Stored quotes · may be stale"}>
         <StockTable rows={hasSnapshot ? snapshot.gainers.slice(0, 10) : gainers} rank emptyMessage="Belum ada harga." />
       </Panel>
 
-      <Panel title="Top 10 losers" meta={hasSnapshot ? "TradingView delayed · change %" : "Stored quotes · may be stale"}>
+      <Panel title="Top 10 losers" headerClassName="panel-header-loss" meta={hasSnapshot ? "TradingView delayed · change %" : "Stored quotes · may be stale"}>
         <StockTable rows={hasSnapshot ? snapshot.losers.slice(0, 10) : losers} rank emptyMessage="Belum ada harga." />
       </Panel>
 

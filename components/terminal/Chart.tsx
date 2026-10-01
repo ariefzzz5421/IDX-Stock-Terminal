@@ -30,7 +30,7 @@ function chartPalette() {
   };
 }
 
-export function Chart({ candles }: { candles: ChartCandle[] }) {
+export function Chart({ candles, intraday = true }: { candles: ChartCandle[]; intraday?: boolean }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
 
@@ -53,7 +53,7 @@ export function Chart({ candles }: { candles: ChartCandle[] }) {
           horzLines: { color: initial.grid },
         },
         rightPriceScale: { borderColor: initial.grid },
-        timeScale: { borderColor: initial.grid, timeVisible: true, secondsVisible: false },
+        timeScale: { borderColor: initial.grid, timeVisible: intraday, secondsVisible: false },
         crosshair: {
           vertLine: { color: initial.cyan, labelBackgroundColor: initial.cyan },
           horzLine: { color: initial.cyan, labelBackgroundColor: initial.cyan },
@@ -134,7 +134,7 @@ export function Chart({ candles }: { candles: ChartCandle[] }) {
         "text-dim",
       );
     }
-  }, [candles]);
+  }, [candles, intraday]);
 
   if (candles.length === 0) {
     return <p className="p-3 text-[12px] text-dim">Riwayat harga belum tersedia.</p>;
