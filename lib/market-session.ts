@@ -89,8 +89,8 @@ export function marketStatus(now: Date = new Date()): MarketStatus {
     return {
       state: "weekend",
       isOpen: false,
-      label: "Closed",
-      next: "Opens Monday 09:00",
+      label: "Tutup",
+      next: "Buka Senin 09:00",
     };
   }
 
@@ -104,8 +104,8 @@ export function marketStatus(now: Date = new Date()): MarketStatus {
     return {
       state: "closed",
       isOpen: false,
-      label: "Closed",
-      next: `Pre-opening ${hhmm(PRE_OPEN_START)}`,
+      label: "Tutup",
+      next: `Pra-pembukaan ${hhmm(PRE_OPEN_START)}`,
     };
   }
 
@@ -113,8 +113,8 @@ export function marketStatus(now: Date = new Date()): MarketStatus {
     return {
       state: "pre-opening",
       isOpen: false,
-      label: "Pre-opening",
-      next: `Opens ${hhmm(OPEN)}`,
+      label: "Pra-pembukaan",
+      next: `Buka ${hhmm(OPEN)}`,
     };
   }
 
@@ -122,8 +122,8 @@ export function marketStatus(now: Date = new Date()): MarketStatus {
     return {
       state: "session-1",
       isOpen: true,
-      label: "Open · Session I",
-      next: `Break ${hhmm(session1End)}`,
+      label: "Buka · Sesi I",
+      next: `Istirahat ${hhmm(session1End)}`,
     };
   }
 
@@ -131,8 +131,8 @@ export function marketStatus(now: Date = new Date()): MarketStatus {
     return {
       state: "break",
       isOpen: false,
-      label: "Break",
-      next: `Resumes ${hhmm(session2Start)}`,
+      label: "Istirahat",
+      next: `Lanjut ${hhmm(session2Start)}`,
     };
   }
 
@@ -140,8 +140,8 @@ export function marketStatus(now: Date = new Date()): MarketStatus {
     return {
       state: "session-2",
       isOpen: true,
-      label: "Open · Session II",
-      next: `Pre-closing ${hhmm(SESSION_2_END)}`,
+      label: "Buka · Sesi II",
+      next: `Pra-penutupan ${hhmm(SESSION_2_END)}`,
     };
   }
 
@@ -149,8 +149,8 @@ export function marketStatus(now: Date = new Date()): MarketStatus {
     return {
       state: "pre-closing",
       isOpen: false,
-      label: "Pre-closing",
-      next: `Closes ${hhmm(PRE_CLOSE_END)}`,
+      label: "Pra-penutupan",
+      next: `Tutup ${hhmm(PRE_CLOSE_END)}`,
     };
   }
 
@@ -158,15 +158,15 @@ export function marketStatus(now: Date = new Date()): MarketStatus {
     return {
       state: "post-trading",
       isOpen: false,
-      label: "Post-trading",
-      next: `Ends ${hhmm(POST_TRADE_END)}`,
+      label: "Pasca-perdagangan",
+      next: `Selesai ${hhmm(POST_TRADE_END)}`,
     };
   }
 
   return {
     state: "closed",
     isOpen: false,
-    label: "Closed",
-    next: isFriday ? "Opens Monday 09:00" : `Opens tomorrow ${hhmm(OPEN)}`,
+    label: "Tutup",
+    next: isFriday ? "Buka Senin 09:00" : `Buka besok ${hhmm(OPEN)}`,
   };
 }

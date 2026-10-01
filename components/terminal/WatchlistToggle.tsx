@@ -42,7 +42,7 @@ export function WatchlistToggle({
       type="button"
       onClick={toggle}
       disabled={busy}
-      aria-label={watched ? `Hapus ${code} dari watchlist` : `Tambahkan ${code} ke watchlist`}
+      aria-label={watched ? `Hapus ${code} dari pantauan` : `Tambahkan ${code} ke pantauan`}
       aria-pressed={watched}
       className={`inline-flex shrink-0 items-center gap-1.5 border px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.08em] transition-colors disabled:opacity-50 ${
         watched
@@ -51,7 +51,7 @@ export function WatchlistToggle({
       }`}
     >
       <Star aria-hidden="true" className="h-3.5 w-3.5" fill={watched ? "currentColor" : "none"} />
-      {watched ? "Watchlisted" : "Watchlist"}
+      {watched ? "Dipantau" : "Pantau"}
     </button>
   );
 }

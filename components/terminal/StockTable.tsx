@@ -30,7 +30,7 @@ export function StockTable({
   rows,
   extra = "volume",
   rank = false,
-  emptyMessage = "Nothing to show yet.",
+  emptyMessage = "Belum ada data untuk ditampilkan.",
   action,
 }: {
   rows: StockRow[];
@@ -45,7 +45,7 @@ export function StockTable({
   }
 
   const extraLabel =
-    extra === "volume" ? "Volume" : extra === "value" ? "Value" : "Mkt cap";
+    extra === "volume" ? "Volume" : extra === "value" ? "Nilai" : "Kap. pasar";
 
   return (
     <div className="@container/stocktable min-w-0 overflow-hidden">
@@ -53,13 +53,13 @@ export function StockTable({
         <thead>
           <tr className="sticky top-0 z-10 bg-panel">
             {rank && <Th className="w-7 text-right @min-[32rem]/stocktable:w-10">#</Th>}
-            <Th align="left">Ticker</Th>
-            <Th className="w-[4.5rem] @min-[32rem]/stocktable:w-[5.5rem]">Last</Th>
-            <Th className="w-[5rem] @min-[32rem]/stocktable:w-[6rem]">Chg %</Th>
+            <Th align="left">Kode</Th>
+            <Th className="w-[4.5rem] @min-[32rem]/stocktable:w-[5.5rem]">Harga</Th>
+            <Th className="w-[5rem] @min-[32rem]/stocktable:w-[6rem]">Ubah %</Th>
             <Th className="hidden w-[6.5rem] @min-[32rem]/stocktable:table-cell">{extraLabel}</Th>
             {action && (
               <Th className="w-8">
-                <span className="sr-only">Actions</span>
+                <span className="sr-only">Tindakan</span>
               </Th>
             )}
           </tr>
@@ -79,7 +79,7 @@ export function StockTable({
               <td className="min-w-0 px-2 py-2 @min-[32rem]/stocktable:px-3">
                 <Link
                   href={`/asset/${row.code}`}
-                  aria-label={`Open ${row.code} stock detail and bid/offer snapshot`}
+                  aria-label={`Buka detail saham ${row.code} dan ringkasan bid/offer`}
                   className="absolute inset-0 z-0"
                   title={row.name}
                 />
@@ -90,7 +90,7 @@ export function StockTable({
                       {row.code}
                     </span>
                     <span className="truncate text-micro text-dimmer" title={row.name}>{row.name}</span>
-                    <span className="truncate text-micro text-dimmer @min-[32rem]/stocktable:hidden">{extra === "volume" ? formatVolume(row.lastVolume) : formatValue(extra === "value" ? row.lastValue : row.marketCap)} {extraLabel.toLowerCase()}</span>
+                    <span className="block break-words text-micro text-dimmer @min-[32rem]/stocktable:hidden">{extraLabel}: {extra === "volume" ? formatVolume(row.lastVolume) : formatValue(extra === "value" ? row.lastValue : row.marketCap)}</span>
                   </span>
                 </span>
               </td>

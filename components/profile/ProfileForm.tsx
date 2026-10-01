@@ -35,14 +35,14 @@ export function ProfileForm(props: Props) {
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      setStatus({ kind: "error", text: "That file is not an image." });
+      setStatus({ kind: "error", text: "Berkas tersebut bukan gambar." });
       return;
     }
 
     if (file.size > MAX_UPLOAD_BYTES) {
       setStatus({
         kind: "error",
-        text: "That image is too large. Pick one under 350 KB.",
+        text: "Gambar terlalu besar. Pilih yang kurang dari 350 KB.",
       });
       return;
     }
@@ -55,7 +55,7 @@ export function ProfileForm(props: Props) {
       setStatus(null);
     };
     reader.onerror = () =>
-      setStatus({ kind: "error", text: "Could not read that file." });
+      setStatus({ kind: "error", text: "Berkas tidak dapat dibaca." });
     reader.readAsDataURL(file);
   }
 
@@ -72,13 +72,13 @@ export function ProfileForm(props: Props) {
       });
       const data = (await response.json()) as { error?: string };
       if (response.ok) {
-        setStatus({ kind: "ok", text: "Profile saved." });
+        setStatus({ kind: "ok", text: "Profil tersimpan." });
         router.refresh();
       } else {
-        setStatus({ kind: "error", text: data.error ?? "Could not save." });
+        setStatus({ kind: "error", text: data.error ?? "Profil tidak dapat disimpan." });
       }
     } catch {
-      setStatus({ kind: "error", text: "Connection failed. Please try again." });
+      setStatus({ kind: "error", text: "Koneksi gagal. Silakan coba lagi." });
     } finally {
       setBusy(false);
     }
@@ -92,7 +92,7 @@ export function ProfileForm(props: Props) {
         {avatarUrl ? (
           <Image
             src={avatarUrl}
-            alt="Your avatar"
+            alt="Avatar Anda"
             width={64}
             height={64}
             className="h-16 w-16 shrink-0 border border-rule-hi object-cover"
@@ -113,7 +113,7 @@ export function ProfileForm(props: Props) {
             onClick={() => fileRef.current?.click()}
             className="border border-rule-hi px-2.5 py-1.5 text-[10px] uppercase tracking-[0.12em] text-dim transition-colors hover:border-amber hover:text-amber"
           >
-            Choose image
+            Pilih gambar
           </button>
           {avatarUrl && (
             <button
@@ -121,7 +121,7 @@ export function ProfileForm(props: Props) {
               onClick={() => setAvatarUrl(null)}
               className="border border-rule-hi px-2.5 py-1.5 text-[10px] uppercase tracking-[0.12em] text-dim transition-colors hover:border-down hover:text-down"
             >
-              Remove
+              Hapus
             </button>
           )}
           <input
@@ -157,16 +157,16 @@ export function ProfileForm(props: Props) {
         <p className="mt-2 text-[10px] text-dim">Pilih karakter lalu simpan profil. Gambar dibuat lokal tanpa layanan eksternal.</p>
       </fieldset>
 
-      <Field label="Username">
+      <Field label="Nama pengguna">
         <p className="border border-rule bg-void px-3 py-2 text-[13px] text-dim">
           {props.username}
           <span className="ml-2 text-[10px] uppercase tracking-[0.1em] text-dimmer">
-            since {props.memberSince}
+            sejak {props.memberSince}
           </span>
         </p>
       </Field>
 
-      <Field label="Display name" htmlFor="displayName">
+      <Field label="Nama tampilan" htmlFor="displayName">
         <input
           id="displayName"
           value={displayName}
@@ -209,7 +209,7 @@ export function ProfileForm(props: Props) {
         disabled={busy}
         className="bg-amber px-4 py-2 text-[11px] font-bold uppercase tracking-[0.14em] text-void transition-colors hover:bg-ink-hi disabled:opacity-60"
       >
-        {busy ? "Saving…" : "Save profile"}
+        {busy ? "Menyimpan…" : "Simpan profil"}
       </button>
     </form>
   );

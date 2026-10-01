@@ -85,17 +85,17 @@ export const getMarketActivity = cache(async (): Promise<MarketActivity> => {
         changes: { day: metric(rawDay), week: metric(rawWeek), month: metric(rawMonth) },
       }];
     });
+    const rankedVolume = [...stocks].filter((stock) => stock.volume > 0)
+      .sort((a, b) => b.volume - a.volume || b.turnover - a.turnover);
     const byMarketCap: MarketActivity["byMarketCap"] = {
-      all: stocks.filter((stock) => belongs(stock, "all")).slice(0, 10),
-      gt100t: stocks.filter((stock) => belongs(stock, "gt100t")).slice(0, 10),
-      gt50t: stocks.filter((stock) => belongs(stock, "gt50t")).slice(0, 10),
-      gt10t: stocks.filter((stock) => belongs(stock, "gt10t")).slice(0, 10),
-      gt1t: stocks.filter((stock) => belongs(stock, "gt1t")).slice(0, 10),
-      under1t: stocks.filter((stock) => belongs(stock, "under1t")).slice(0, 10),
+      all: rankedVolume.filter((stock) => belongs(stock, "all")).slice(0, 10),
+      gt100t: rankedVolume.filter((stock) => belongs(stock, "gt100t")).slice(0, 10),
+      gt50t: rankedVolume.filter((stock) => belongs(stock, "gt50t")).slice(0, 10),
+      gt10t: rankedVolume.filter((stock) => belongs(stock, "gt10t")).slice(0, 10),
+      gt1t: rankedVolume.filter((stock) => belongs(stock, "gt1t")).slice(0, 10),
+      under1t: rankedVolume.filter((stock) => belongs(stock, "under1t")).slice(0, 10),
     };
-    const byVolume = [...stocks].filter((stock) => stock.volume > 0)
-      .sort((a, b) => b.volume - a.volume || b.turnover - a.turnover)
-      .slice(0, 10);
+    const byVolume = rankedVolume.slice(0, 10);
     return { allStocks: stocks, byMarketCap, byVolume, fetchedAt: new Date().toISOString() };
   } catch (error) {
     console.error("[trending] delayed market snapshot unavailable:", error);

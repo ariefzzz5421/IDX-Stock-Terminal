@@ -37,11 +37,11 @@ const LOSERS: StockRow[] = [
 ];
 
 const ACTIVE = [...WATCHLIST, ...GAINERS.slice(0, 3)].sort(
-  (a, b) => (b.lastValue ?? 0) - (a.lastValue ?? 0),
+  (a, b) => (b.lastVolume ?? 0) - (a.lastVolume ?? 0),
 );
 
 const PREVIEW_TRENDING: TrendingStock[] = [...ACTIVE, ...LOSERS]
-  .sort((a, b) => (b.lastValue ?? 0) - (a.lastValue ?? 0))
+  .sort((a, b) => (b.lastVolume ?? 0) - (a.lastVolume ?? 0))
   .slice(0, 10)
   .map((stock) => ({
     code: stock.code,
@@ -84,13 +84,13 @@ export default function PreviewPage() {
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 bg-amber/10 px-4 py-2 text-xs text-amber">
         <span className="inline-flex items-center gap-2 font-bold uppercase tracking-[0.12em]">
           <Eye aria-hidden="true" className="h-3.5 w-3.5" />
-          Preview mode
+          Mode pratinjau
         </span>
         <span className="text-dim">
-          Sample UI and demo numbers only — PostgreSQL and accounts are not connected yet.
+          Tampilan contoh dengan angka simulasi. Data pasar di sini bukan harga terkini.
         </span>
         <Link href="/" className="ml-auto text-ink underline-offset-4 hover:text-amber hover:underline">
-          Back to landing
+          Kembali ke terminal
         </Link>
       </div>
 
@@ -104,7 +104,7 @@ export default function PreviewPage() {
         </Link>
 
         <div className="flex min-w-[16rem] flex-1 items-center bg-panel px-4 text-xs text-dimmer">
-          Search ticker or command… <span className="ml-auto text-micro uppercase tracking-[0.1em]">demo</span>
+          Cari kode saham… <span className="ml-auto text-micro uppercase tracking-[0.1em]">contoh</span>
         </div>
 
         <div className="flex items-center bg-panel">
@@ -113,11 +113,11 @@ export default function PreviewPage() {
 
         <div className="flex items-center gap-2 bg-panel px-4 text-micro uppercase tracking-[0.1em] text-dim">
           <Database aria-hidden="true" className="h-3.5 w-3.5 text-amber" />
-          DB offline
+          Data simulasi
         </div>
       </header>
 
-      <nav aria-label="Preview terminal sections" className="terminal-nav flex items-stretch gap-px overflow-x-auto bg-rule">
+      <nav aria-label="Menu pratinjau terminal" className="terminal-nav flex items-stretch gap-px overflow-x-auto bg-rule">
         {NAV_ITEMS.map((tab, index) => (
           <Link
             key={tab.href}
@@ -137,32 +137,32 @@ export default function PreviewPage() {
       <TrendingPopup stocks={PREVIEW_TRENDING} demo />
 
       <main className="grid min-h-0 flex-1 gap-px xl:grid-cols-[minmax(0,26rem)_minmax(0,1fr)]">
-        <Panel title="Watchlist" meta={`${WATCHLIST.length} demo issues`}>
-          <StockTable rows={WATCHLIST} />
+        <Panel title="Pantauan" meta={`${WATCHLIST.length} saham contoh`}>
+          <StockTable rows={WATCHLIST} extra="volume" />
         </Panel>
 
         <div className="grid min-h-0 gap-px lg:grid-cols-2">
-          <Panel title="Top gainers" meta="sample change %">
-            <StockTable rows={GAINERS} rank />
+          <Panel title="Kenaikan terbesar" meta="contoh perubahan %">
+            <StockTable rows={GAINERS} extra="volume" rank />
           </Panel>
 
-          <Panel title="Top losers" meta="sample change %">
-            <StockTable rows={LOSERS} rank />
+          <Panel title="Penurunan terbesar" meta="contoh perubahan %">
+            <StockTable rows={LOSERS} extra="volume" rank />
           </Panel>
 
-          <Panel title="Most active" meta="sample turnover" className="lg:col-span-2">
-            <StockTable rows={ACTIVE} extra="value" rank />
+          <Panel title="Volume tertinggi" meta="contoh volume harian" className="lg:col-span-2">
+            <StockTable rows={ACTIVE} extra="volume" rank />
           </Panel>
         </div>
       </main>
 
       <footer className="flex flex-wrap items-center gap-x-6 gap-y-1 bg-panel-hi px-4 py-2 text-micro uppercase tracking-[0.1em] text-dim">
-        <span>Universe <span className="text-ink">demo</span></span>
-        <span>Provider <span className="text-ink">sample</span></span>
-        <span>Feed <span className="text-ink">static preview</span></span>
+        <span>Emiten <span className="text-ink">contoh</span></span>
+        <span>Penyedia <span className="text-ink">simulasi</span></span>
+        <span>Data <span className="text-ink">pratinjau statis</span></span>
         <span className="ml-auto inline-flex items-center gap-1.5 text-dimmer">
           <TerminalSquare aria-hidden="true" className="h-3.5 w-3.5" />
-          Connect the database later to unlock the real terminal
+          Buka terminal utama untuk data pasar
         </span>
       </footer>
     </div>

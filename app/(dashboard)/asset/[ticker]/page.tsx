@@ -109,11 +109,11 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
         </div>
 
         <dl className="grid grid-cols-2 gap-x-8 gap-y-2.5 sm:grid-cols-3 lg:grid-cols-5">
-          <Stat k="Prev close" v={formatPrice(fresh.prevClose)} />
+          <Stat k="Penutupan lalu" v={formatPrice(fresh.prevClose)} />
           <Stat k="Volume" v={formatVolume(fresh.lastVolume)} />
-          <Stat k={quote && marketData.name === "yahoo" ? "Turnover est." : "Turnover"} v={formatValue(fresh.lastValue)} />
-          <Stat k="Market cap" v={formatValue(fresh.marketCap)} />
-          <Stat k="Updated" v={`${fresh.updatedAt.toISOString().slice(11, 19)} UTC${quote ? " · delayed" : " · stored"}`} />
+          <Stat k={quote && marketData.name === "yahoo" ? "Nilai transaksi est." : "Nilai transaksi"} v={formatValue(fresh.lastValue)} />
+          <Stat k="Kapitalisasi pasar" v={formatValue(fresh.marketCap)} />
+          <Stat k="Diperbarui" v={`${fresh.updatedAt.toISOString().slice(11, 19)} UTC${quote ? " · tertunda" : " · tersimpan"}`} />
         </dl>
 
         <div className="ml-auto flex items-center gap-2">
@@ -129,20 +129,20 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
       </section>
 
       <Panel
-        title="Price & Financial Snapshot"
-        meta={details?.financials.source ? `${details.financials.source} · ${details.financials.currency ?? "currency N/D"}` : "Public financial data unavailable"}
+        title="Ringkasan Harga & Keuangan"
+        meta={details?.financials.source ? `${details.financials.source} · ${details.financials.currency ?? "mata uang N/D"}` : "Data keuangan publik belum tersedia"}
         bodyClassName=""
       >
         <div className="grid grid-cols-2 gap-4 p-4 sm:grid-cols-3 xl:grid-cols-6">
-          <Stat k="Last price" v={formatPrice(fresh.lastPrice)} />
-          <Stat k="Market cap" v={formatValue(fresh.marketCap)} />
-          <Stat k="P/E (trailing)" v={formatRatio(details?.quote.trailingPE)} />
-          <Stat k="Revenue" v={financialValue(details?.financials.totalRevenue, details?.financials.currency)} />
-          <Stat k="Net income" v={financialValue(details?.financials.netIncome, details?.financials.currency)} />
-          <Stat k="Free cash flow" v={financialValue(details?.financials.freeCashflow, details?.financials.currency)} />
+          <Stat k="Harga terakhir" v={formatPrice(fresh.lastPrice)} />
+          <Stat k="Kapitalisasi pasar" v={formatValue(fresh.marketCap)} />
+          <Stat k="P/E (historis)" v={formatRatio(details?.quote.trailingPE)} />
+          <Stat k="Pendapatan" v={financialValue(details?.financials.totalRevenue, details?.financials.currency)} />
+          <Stat k="Laba bersih" v={financialValue(details?.financials.netIncome, details?.financials.currency)} />
+          <Stat k="Arus kas bebas" v={financialValue(details?.financials.freeCashflow, details?.financials.currency)} />
         </div>
         <p className="border-t border-rule px-4 py-2 text-micro text-dim">
-          Figures use the issuer reporting currency shown above; periods vary by issuer. N/D means the feed did not provide a value or currency.
+          Angka menggunakan mata uang laporan emiten di atas; periode dapat berbeda antar emiten. N/D berarti sumber tidak menyediakan angka atau mata uang.
         </p>
       </Panel>
 
@@ -150,12 +150,12 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
         storageKey="stock-orderbook"
         resizableSide="right"
         defaultWidth={352}
-        leftLabel="bid / offer"
+        leftLabel="beli / jual"
         left={
           <Panel
-            title="Chart"
+            title="Grafik"
             className="h-full"
-            meta={`5m · ${candles.length} bars · ${marketData.name}`}
+            meta={`5 menit · ${candles.length} batang · ${marketData.name}`}
             bodyClassName="min-h-[25rem]"
           >
             <Chart candles={candles} />
@@ -163,21 +163,21 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
         }
         right={
           <Panel
-            title="Best Bid / Offer"
+            title="Bid / Offer Terbaik"
             className="h-full scroll-mt-3"
-            meta={details?.orderBook.source ? `${details.orderBook.source} snapshot` : "unavailable"}
+            meta={details?.orderBook.source ? `${details.orderBook.source} · snapshot` : "tidak tersedia"}
             bodyClassName=""
           >
             <div id="orderbook" className="scroll-mt-28 p-4">
               <div className="grid grid-cols-2 gap-px bg-rule">
                 <OrderSide
-                  label="Best bid"
+                  label="Bid terbaik"
                   price={details?.orderBook.bid ?? null}
                   volume={details?.orderBook.bidVolume ?? null}
                   tone="buy"
                 />
                 <OrderSide
-                  label="Best offer"
+                  label="Offer terbaik"
                   price={details?.orderBook.offer ?? null}
                   volume={details?.orderBook.offerVolume ?? null}
                   tone="sell"
@@ -190,14 +190,14 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
               </p>
 
               <dl className="mt-5 grid grid-cols-2 gap-x-5 gap-y-4 border-t border-rule pt-4">
-                <Stat k="Open" v={formatPrice(details?.quote.open)} />
-                <Stat k="Day high" v={formatPrice(details?.quote.high)} />
-                <Stat k="Day low" v={formatPrice(details?.quote.low)} />
-                <Stat k="52W high" v={formatPrice(details?.quote.week52High)} />
-                <Stat k="52W low" v={formatPrice(details?.quote.week52Low)} />
+                <Stat k="Pembukaan" v={formatPrice(details?.quote.open)} />
+                <Stat k="Tertinggi harian" v={formatPrice(details?.quote.high)} />
+                <Stat k="Terendah harian" v={formatPrice(details?.quote.low)} />
+                <Stat k="Tertinggi 52 minggu" v={formatPrice(details?.quote.week52High)} />
+                <Stat k="Terendah 52 minggu" v={formatPrice(details?.quote.week52Low)} />
                 <Stat k="P/E" v={formatRatio(details?.quote.trailingPE)} />
                 <Stat k="P/B" v={formatRatio(details?.quote.priceToBook)} />
-                <Stat k="Dividend yield" v={formatOptionalPct(details?.quote.dividendYield)} />
+                <Stat k="Imbal hasil dividen" v={formatOptionalPct(details?.quote.dividendYield)} />
               </dl>
             </div>
           </Panel>
@@ -206,8 +206,8 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
 
       <div className="grid gap-px xl:grid-cols-[minmax(0,1.25fr)_minmax(22rem,0.75fr)]">
         <Panel
-          title="Company Overview"
-          meta={details?.sources.join(" · ") ?? "catalogue only"}
+          title="Profil Perusahaan"
+          meta={details?.sources.join(" · ") ?? "hanya katalog"}
           bodyClassName=""
         >
           <div className="space-y-5 p-5">
@@ -217,23 +217,23 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
                 <h3 className="text-sm font-semibold text-ink-hi">{fresh.name}</h3>
                 <p className="mt-2 max-w-4xl text-sm leading-6 text-dim">
                   {details?.summary ??
-                    "A business description is not available from the connected public sources for this security."}
+                    "Deskripsi usaha belum tersedia dari sumber publik yang terhubung untuk saham ini."}
                 </p>
               </div>
             </div>
 
             <div className="grid gap-px bg-rule sm:grid-cols-2 lg:grid-cols-4">
-              <Fact icon={Landmark} label="Listing board" value={details?.listingBoard ?? "—"} />
-              <Fact icon={Building2} label="Listed" value={formatDate(details?.listingDate)} />
-              <Fact icon={Users} label="Employees" value={formatVolume(details?.employees)} />
-              <Fact icon={Globe2} label="Sector" value={details?.sector ?? fresh.sector ?? "—"} />
+              <Fact icon={Landmark} label="Papan pencatatan" value={details?.listingBoard ?? "—"} />
+              <Fact icon={Building2} label="Tanggal pencatatan" value={formatDate(details?.listingDate)} />
+              <Fact icon={Users} label="Karyawan" value={formatVolume(details?.employees)} />
+              <Fact icon={Globe2} label="Sektor" value={details?.sector ?? fresh.sector ?? "—"} />
             </div>
 
             <dl className="grid grid-cols-2 gap-x-8 gap-y-4 border-t border-rule pt-4 sm:grid-cols-4">
-              <Stat k="Shares outstanding" v={formatVolume(details?.quote.sharesOutstanding)} />
-              <Stat k="Float shares" v={formatVolume(details?.quote.floatShares)} />
-              <Stat k="Industry" v={details?.industry ?? "—"} />
-              <Stat k="Address" v={details?.address ?? "—"} />
+              <Stat k="Saham beredar" v={formatVolume(details?.quote.sharesOutstanding)} />
+              <Stat k="Saham publik" v={formatVolume(details?.quote.floatShares)} />
+              <Stat k="Industri" v={details?.industry ?? "—"} />
+              <Stat k="Alamat" v={details?.address ?? "—"} />
             </dl>
 
             {safeWebsite(details?.website) && (
@@ -243,7 +243,7 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
                 rel="noreferrer"
                 className="inline-flex items-center gap-1.5 text-xs text-amber hover:underline"
               >
-                Official company website
+                Situs resmi perusahaan
                 <ExternalLink aria-hidden="true" className="h-3.5 w-3.5" />
               </a>
             )}
@@ -251,8 +251,8 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
         </Panel>
 
         <Panel
-          title="Holder Percentage"
-          meta={details?.ownership.asOf ? `KSEI ${details.ownership.asOf}` : "unavailable"}
+          title="Struktur Pemegang Saham"
+          meta={details?.ownership.asOf ? `KSEI ${details.ownership.asOf}` : "tidak tersedia"}
           bodyClassName=""
         >
           <div className="p-5">
@@ -262,14 +262,14 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
               other={details?.ownership.unrecordedPct ?? null}
             />
             <dl className="mt-5 grid grid-cols-2 gap-4">
-              <Stat k="Local holding" v={formatPlainPct(details?.ownership.localPct)} />
-              <Stat k="Foreign holding" v={formatPlainPct(details?.ownership.foreignPct)} />
-              <Stat k="Held by insiders" v={formatPlainPct(details?.ownership.insidersPct)} />
-              <Stat k="Held by institutions" v={formatPlainPct(details?.ownership.institutionsPct)} />
+              <Stat k="Kepemilikan lokal" v={formatPlainPct(details?.ownership.localPct)} />
+              <Stat k="Kepemilikan asing" v={formatPlainPct(details?.ownership.foreignPct)} />
+              <Stat k="Kepemilikan internal" v={formatPlainPct(details?.ownership.insidersPct)} />
+              <Stat k="Kepemilikan institusi" v={formatPlainPct(details?.ownership.institutionsPct)} />
             </dl>
             <p className="mt-4 text-micro leading-relaxed text-dimmer">
-              Local/foreign percentages are KSEI scripless holdings, not public free float.
-              Unrecorded includes certificates or securities outside that snapshot.
+              Persentase lokal/asing berasal dari efek tanpa warkat KSEI, bukan saham beredar bebas.
+              Bagian belum tercatat mencakup efek di luar snapshot tersebut.
             </p>
 
             <ShareholderList holders={namedShareholders} />
@@ -297,7 +297,7 @@ function OrderSide({
       <p className={`mt-2 text-xl font-bold ${price == null ? "text-dim" : tone === "buy" ? "text-up" : "text-down"}`}>
         {price == null || price <= 0 ? "N/D" : formatPrice(price)}
       </p>
-      <p className="mt-1 text-xs text-dim">Size {volume == null || volume <= 0 ? "N/D" : formatVolume(volume)}</p>
+      <p className="mt-1 text-xs text-dim">Volume {volume == null || volume <= 0 ? "N/D" : formatVolume(volume)}</p>
     </div>
   );
 }
@@ -312,19 +312,19 @@ function OwnershipBar({
   other: number | null;
 }) {
   if (local == null && foreign == null) {
-    return <p className="text-sm text-dim">Ownership snapshot unavailable.</p>;
+    return <p className="text-sm text-dim">Snapshot kepemilikan belum tersedia.</p>;
   }
   return (
     <div>
-      <div className="flex h-3 overflow-hidden bg-void" aria-label="Ownership composition">
+      <div className="flex h-3 overflow-hidden bg-void" aria-label="Komposisi kepemilikan">
         <span className="bg-amber" style={{ width: `${Math.max(0, local ?? 0)}%` }} />
         <span className="bg-sky-400" style={{ width: `${Math.max(0, foreign ?? 0)}%` }} />
         <span className="bg-rule-hi" style={{ width: `${Math.max(0, other ?? 0)}%` }} />
       </div>
       <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-micro text-dimmer">
-        <Legend color="bg-amber" label="Local" />
-        <Legend color="bg-sky-400" label="Foreign" />
-        <Legend color="bg-rule-hi" label="Unrecorded" />
+        <Legend color="bg-amber" label="Lokal" />
+        <Legend color="bg-sky-400" label="Asing" />
+        <Legend color="bg-rule-hi" label="Belum tercatat" />
       </div>
     </div>
   );
@@ -367,25 +367,25 @@ function Stat({ k, v }: { k: string; v: string }) {
 }
 
 function formatRatio(value: number | null | undefined) {
-  return value == null || !Number.isFinite(value) ? "—" : `${value.toFixed(2)}x`;
+  return value == null || !Number.isFinite(value) ? "—" : `${value.toLocaleString("id-ID", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}x`;
 }
 
 function financialValue(value: number | null | undefined, currency: string | null | undefined) {
   if (value == null || !Number.isFinite(value) || !currency || !/^[A-Z]{3}$/.test(currency)) return "N/D";
   if (currency === "IDR") return formatValue(value);
   const abs = Math.abs(value);
-  if (abs >= 1e12) return `${currency} ${(value / 1e12).toFixed(2)}T`;
-  if (abs >= 1e9) return `${currency} ${(value / 1e9).toFixed(2)}B`;
-  if (abs >= 1e6) return `${currency} ${(value / 1e6).toFixed(2)}M`;
-  return `${currency} ${new Intl.NumberFormat("en-US").format(value)}`;
+  if (abs >= 1e12) return `${currency} ${(value / 1e12).toLocaleString("id-ID", { maximumFractionDigits: 2 })} triliun`;
+  if (abs >= 1e9) return `${currency} ${(value / 1e9).toLocaleString("id-ID", { maximumFractionDigits: 2 })} miliar`;
+  if (abs >= 1e6) return `${currency} ${(value / 1e6).toLocaleString("id-ID", { maximumFractionDigits: 2 })} juta`;
+  return `${currency} ${new Intl.NumberFormat("id-ID").format(value)}`;
 }
 
 function formatOptionalPct(value: number | null | undefined) {
-  return value == null || !Number.isFinite(value) ? "—" : `${(value * 100).toFixed(2)}%`;
+  return value == null || !Number.isFinite(value) ? "—" : `${(value * 100).toLocaleString("id-ID", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`;
 }
 
 function formatPlainPct(value: number | null | undefined) {
-  return value == null || !Number.isFinite(value) ? "—" : `${value.toFixed(2)}%`;
+  return value == null || !Number.isFinite(value) ? "—" : `${value.toLocaleString("id-ID", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`;
 }
 
 function formatDate(value: string | null | undefined) {

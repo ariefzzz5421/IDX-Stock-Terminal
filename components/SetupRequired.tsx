@@ -13,16 +13,16 @@ export function SetupRequired({ missing }: { missing: MissingSetting[] }) {
             IDX
           </span>
           <span className="text-[10px] uppercase tracking-[0.2em] text-dim">
-            Setup required
+            Pengaturan diperlukan
           </span>
         </header>
 
         <div className="px-4 py-5">
           <h1 className="mb-2 text-balance text-lg leading-snug text-ink-hi">
-            This deployment is missing required configuration.
+            Penerapan ini belum memiliki pengaturan yang diperlukan.
           </h1>
           <p className="mb-5 text-[12.5px] leading-relaxed text-dim">
-            The terminal needs these server-side settings before account and market pages can open. The public preview remains available.
+            Terminal memerlukan pengaturan server berikut agar halaman akun dan pasar dapat dibuka. Pratinjau publik tetap tersedia.
           </p>
 
           <dl className="mb-5 border border-rule">
@@ -45,17 +45,17 @@ export function SetupRequired({ missing }: { missing: MissingSetting[] }) {
           </dl>
 
           <h2 className="mb-2 text-[10px] font-bold uppercase tracking-[0.14em] text-amber">
-            Running locally
+            Menjalankan secara lokal
           </h2>
           <p className="mb-4 text-[11.5px] leading-relaxed text-dim">
-            Development uses embedded SQLite by default. If you run a production build locally, set <Code>SESSION_SECRET</Code> before starting it.
+            Pengembangan memakai SQLite lokal secara bawaan. Jika menjalankan build produksi secara lokal, isi <Code>SESSION_SECRET</Code> sebelum memulai.
           </p>
 
           <h2 className="mb-2 text-[10px] font-bold uppercase tracking-[0.14em] text-amber">
-            Running on a host
+            Menjalankan di layanan hosting
           </h2>
           <p className="text-[11.5px] leading-relaxed text-dim">
-            Add the settings in Vercel project environment variables and redeploy. Use the Supabase setup guide in the repository for database connection and migration steps.
+            Tambahkan pengaturan pada variabel lingkungan proyek Vercel lalu terapkan ulang. Ikuti panduan Supabase di repositori untuk koneksi basis data dan migrasi.
           </p>
         </div>
       </div>

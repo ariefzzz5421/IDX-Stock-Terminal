@@ -9,7 +9,7 @@ import { STOCK_SELECT, boardCounts } from "@/lib/stocks";
 import { getMarketActivity } from "@/lib/market-data/trending";
 import { withMarketSnapshot } from "@/lib/market-data/boards";
 
-export const metadata: Metadata = { title: "Market — IDX Terminal" };
+export const metadata: Metadata = { title: "Pasar — IDX Terminal" };
 export const dynamic = "force-dynamic";
 
 const PAGE_SIZE = 50;
@@ -58,16 +58,16 @@ export default async function MarketPage({
 
   return (
     <Panel
-      title="Market"
-      meta={`${counts.total} listed · ${activity.allStocks.length ? `${activity.allStocks.length} in delayed snapshot` : `${counts.quoted} stored quotes`}`}
+      title="Pasar"
+      meta={`${counts.total} emiten · ${activity.allStocks.length ? `${activity.allStocks.length} pada snapshot tertunda` : `${counts.quoted} harga tersimpan`}`}
     >
       <div className="border-b border-rule bg-panel-hi px-4 py-3">
         <BoardSearch initialQuery={query} />
         <p className="mt-2 text-micro text-dimmer">
-          Listed BEI equities from the 30 Sep 2026 exchange profile snapshot,
-          ranked by disclosed market capitalisation. {activity.allStocks.length
-            ? "Prices and activity use a delayed TradingView snapshot where available."
-            : "Market feed unavailable; stored quotes may be stale."}
+          Saham tercatat BEI dari profil bursa 30 September 2026, diurutkan
+          berdasarkan kapitalisasi pasar yang tersedia. {activity.allStocks.length
+            ? "Harga dan aktivitas memakai snapshot TradingView tertunda bila tersedia."
+            : "Umpan pasar tidak tersedia; harga tersimpan mungkin sudah usang."}
         </p>
       </div>
 
@@ -78,30 +78,30 @@ export default async function MarketPage({
           page > pages
             ? "Page di luar hasil yang tersedia. Kembali ke halaman sebelumnya."
             : query
-            ? `Nothing matches “${query}”.`
-            : "The board is empty — run `npm run db:seed`."
+            ? `Tidak ada saham yang cocok dengan “${query}”.`
+            : "Daftar saham belum terisi."
         }
       />
 
       {pages > 1 && (
         <nav
-          aria-label="Pagination"
+          aria-label="Halaman hasil"
           className="flex items-center justify-between gap-3 border-t border-rule bg-panel-hi px-4 py-2.5 text-xs"
         >
           <PageLink
             page={page - 1}
             query={query}
             disabled={page <= 1}
-            label="← Prev"
+            label="← Sebelumnya"
           />
           <span className="text-dim">
-            {matching.toLocaleString("en-US")} results · page {page} of {pages}
+            {matching.toLocaleString("id-ID")} hasil · halaman {page} dari {pages}
           </span>
           <PageLink
             page={page + 1}
             query={query}
             disabled={page >= pages}
-            label="Next →"
+            label="Berikutnya →"
           />
         </nav>
       )}

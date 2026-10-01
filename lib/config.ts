@@ -22,21 +22,21 @@ export function missingSettings(): MissingSetting[] {
     if (process.env.VERCEL === "1" && !/^postgres(?:ql)?:\/\//.test(process.env.DATABASE_URL ?? "")) {
       missing.push({
         name: "DATABASE_URL",
-        why: "A Vercel deployment needs persistent storage for accounts, watchlists, and the IDX catalogue. The local SQLite file cannot serve as a hosted database.",
-        how: "Supabase → Connect → ORM → Prisma: add the transaction pooler URL to Vercel DATABASE_URL. See docs/SUPABASE.md.",
+        why: "Vercel memerlukan penyimpanan permanen untuk akun, daftar pantauan, dan katalog BEI. Berkas SQLite lokal tidak dapat dipakai sebagai basis data hosting.",
+        how: "Supabase → Connect → ORM → Prisma: masukkan URL transaction pooler ke DATABASE_URL di Vercel. Lihat docs/SUPABASE.md.",
       });
     }
     const secret = process.env.SESSION_SECRET ?? "";
     if (!secret) {
       missing.push({
         name: "SESSION_SECRET",
-        why: "Encrypts the login cookie. Required in production — the insecure development default never applies here.",
+        why: "Kunci untuk cookie sesi masuk. Wajib di produksi; nilai bawaan pengembangan tidak digunakan di sini.",
         how: 'node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"',
       });
     } else if (secret.length < 32) {
       missing.push({
         name: "SESSION_SECRET",
-        why: `Must be at least 32 characters; yours is ${secret.length}.`,
+        why: `Panjang minimal 32 karakter; saat ini ${secret.length} karakter.`,
         how: 'node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"',
       });
     }

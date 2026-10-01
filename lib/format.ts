@@ -1,4 +1,6 @@
-const INT = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
+const INT = new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 });
+const ONE_DECIMAL = new Intl.NumberFormat("id-ID", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const TWO_DECIMALS = new Intl.NumberFormat("id-ID", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 /** IDX prices are whole rupiah. */
 export function formatPrice(value: number | null | undefined): string {
@@ -8,7 +10,7 @@ export function formatPrice(value: number | null | undefined): string {
 
 export function formatPct(value: number | null | undefined): string {
   if (value == null || !Number.isFinite(value)) return "—";
-  return `${value >= 0 ? "+" : ""}${value.toFixed(2)}%`;
+  return `${value >= 0 ? "+" : ""}${TWO_DECIMALS.format(value)}%`;
 }
 
 export function formatChange(value: number | null | undefined): string {
@@ -16,13 +18,13 @@ export function formatChange(value: number | null | undefined): string {
   return `${value >= 0 ? "+" : ""}${INT.format(Math.round(value))}`;
 }
 
-/** Compact share counts: 1.2B / 42.1M / 8.4K. */
+/** Jumlah lembar saham ringkas, dengan satuan Indonesia. */
 export function formatVolume(value: number | null | undefined): string {
   if (value == null || !Number.isFinite(value)) return "—";
   const abs = Math.abs(value);
-  if (abs >= 1e9) return `${(value / 1e9).toFixed(1)}B`;
-  if (abs >= 1e6) return `${(value / 1e6).toFixed(1)}M`;
-  if (abs >= 1e3) return `${(value / 1e3).toFixed(1)}K`;
+  if (abs >= 1e9) return `${ONE_DECIMAL.format(value / 1e9)} miliar`;
+  if (abs >= 1e6) return `${ONE_DECIMAL.format(value / 1e6)} juta`;
+  if (abs >= 1e3) return `${ONE_DECIMAL.format(value / 1e3)} ribu`;
   return INT.format(Math.round(value));
 }
 
@@ -30,9 +32,9 @@ export function formatVolume(value: number | null | undefined): string {
 export function formatValue(value: number | null | undefined): string {
   if (value == null || !Number.isFinite(value)) return "—";
   const abs = Math.abs(value);
-  if (abs >= 1e12) return `Rp ${(value / 1e12).toFixed(2)}T`;
-  if (abs >= 1e9) return `Rp ${(value / 1e9).toFixed(1)}B`;
-  if (abs >= 1e6) return `Rp ${(value / 1e6).toFixed(1)}M`;
+  if (abs >= 1e12) return `Rp ${TWO_DECIMALS.format(value / 1e12)} T`;
+  if (abs >= 1e9) return `Rp ${ONE_DECIMAL.format(value / 1e9)} miliar`;
+  if (abs >= 1e6) return `Rp ${ONE_DECIMAL.format(value / 1e6)} juta`;
   return `Rp ${INT.format(Math.round(value))}`;
 }
 

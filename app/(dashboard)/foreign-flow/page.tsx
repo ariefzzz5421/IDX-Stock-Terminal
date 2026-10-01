@@ -5,7 +5,7 @@ import { foreignFlowLeaders } from "@/lib/foreign-flow";
 import { Panel } from "@/components/terminal/Panel";
 import { ForeignFlowTable } from "@/components/terminal/ForeignFlowTable";
 
-export const metadata: Metadata = { title: "Foreign Flow — IDX Terminal" };
+export const metadata: Metadata = { title: "Arus Asing — IDX Terminal" };
 export const dynamic = "force-dynamic";
 
 export default async function ForeignFlowPage() {
@@ -16,9 +16,9 @@ export default async function ForeignFlowPage() {
   // which ones were tried and what would fix it.
   if (!flow.available) {
     return (
-      <Panel title="Foreign Flow" meta="source unavailable">
+      <Panel title="Arus Asing" meta="sumber tidak tersedia">
         <div className="max-w-2xl p-6">
-          <h2 className="mb-3 text-base text-ink-hi">Data Foreign Flow belum tersedia.</h2>
+          <h2 className="mb-3 text-base text-ink-hi">Data arus asing belum tersedia.</h2>
           <p className="mb-5 text-sm leading-relaxed text-dim">
             Data net buy dan net sell asing diambil dari sumber harian. Status
             kedua sumber saat permintaan ini:
@@ -26,7 +26,7 @@ export default async function ForeignFlowPage() {
 
           <dl className="mb-5 border border-rule">
             <div className="border-b border-rule px-4 py-3">
-              <dt className="mb-1 text-sm text-ink-hi">IDX official summary</dt>
+              <dt className="mb-1 text-sm text-ink-hi">Ringkasan resmi BEI</dt>
               <dd className="text-xs leading-relaxed text-dim">
                 {flow.diagnostics.idx}
               </dd>
@@ -61,17 +61,17 @@ export default async function ForeignFlowPage() {
         <span className="ml-auto text-micro uppercase tracking-[0.1em] text-dimmer">
           {flow.date && flow.source
             ? `${flow.source} snapshot ${flow.date}`
-            : "Foreign-flow source unavailable"}
+            : "Sumber arus asing tidak tersedia"}
         </span>
       </div>
 
       <div className="grid min-h-0 flex-1 gap-px xl:grid-cols-2">
         <Panel
-          title="Top Net Buy Foreign Flow"
+          title="Pembelian Neto Asing Terbesar"
           meta={
             <span className="inline-flex items-center gap-1 text-up">
               <ArrowDownToLine aria-hidden="true" className="h-3.5 w-3.5" />
-              accumulation
+              akumulasi
             </span>
           }
         >
@@ -79,11 +79,11 @@ export default async function ForeignFlowPage() {
         </Panel>
 
         <Panel
-          title="Top Net Sell Foreign Flow"
+          title="Penjualan Neto Asing Terbesar"
           meta={
             <span className="inline-flex items-center gap-1 text-down">
               <ArrowUpFromLine aria-hidden="true" className="h-3.5 w-3.5" />
-              distribution
+              distribusi
             </span>
           }
         >

@@ -22,14 +22,14 @@ for (const item of BUSINESS_LOCATIONS) {
 export function BusinessHomeHeader({ preview = false, volumeLeaders }: { preview?: boolean; volumeLeaders?: TrendingStock[] }) {
   return <section aria-label="Ringkasan Lokasi Bisnis" className="border-b border-rule bg-panel">
     <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2">
-      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-amber"><MapPinned aria-hidden="true" className="h-3.5 w-3.5" /> Lokasi Bisnis <span className="hidden font-normal normal-case tracking-normal text-dim sm:inline">/ Indonesia geographic intelligence</span></div>
-      <div className="flex items-center gap-3"><span className="hidden text-micro text-dim md:inline">Mkt cap: TradingView snapshot {MARKET_CAP_AS_OF}</span><Link href={preview ? "/preview/lokasi-bisnis" : "/lokasi-bisnis"} className="inline-flex items-center gap-1 text-xs text-cyan hover:underline">Buka peta <ArrowUpRight aria-hidden="true" className="h-3.5 w-3.5" /></Link></div>
+      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-amber"><MapPinned aria-hidden="true" className="h-3.5 w-3.5" /> Lokasi Bisnis <span className="hidden font-normal normal-case tracking-normal text-dim sm:inline">/ peta aset usaha Indonesia</span></div>
+      <div className="flex items-center gap-3"><span className="hidden text-micro text-dim md:inline">Kap. pasar: snapshot TradingView {MARKET_CAP_AS_OF}</span><Link href={preview ? "/preview/lokasi-bisnis" : "/lokasi-bisnis"} className="inline-flex items-center gap-1 text-xs text-cyan hover:underline">Buka peta <ArrowUpRight aria-hidden="true" className="h-3.5 w-3.5" /></Link></div>
     </div>
     <div className="grid grid-cols-2 gap-px bg-rule lg:grid-cols-4">
-      <HeaderMetric label="Cakupan" value={`${groups.size} grup/operator`} note="Batubara + Data Center" />
+      <HeaderMetric label="Cakupan" value={`${groups.size} grup/operator`} note="Batu bara + pusat data" />
       <HeaderMetric label="Lokasi" value={String(BUSINESS_LOCATIONS.length)} note="Titik peta perkiraan" />
-      <HeaderMetric label="Produksi 2025 · disclosed" value={formatMetric(coalMt, "Mt")} note={`${disclosed.size} dari 10 grup batubara`} />
-      <HeaderMetric label="Kapasitas fasilitas · disclosed" value={`≥${formatMetric(facilityMw, "MW")}`} note={`${facilities.length} fasilitas · bukan live load`} />
+      <HeaderMetric label="Produksi 2025 · terungkap" value={formatMetric(coalMt, "Mt")} note={`${disclosed.size} dari 10 grup batu bara`} />
+      <HeaderMetric label="Kapasitas fasilitas · terungkap" value={`≥${formatMetric(facilityMw, "MW")}`} note={`${facilities.length} fasilitas · bukan beban aktif`} />
     </div>
     {volumeLeaders ? <MarketVolumeTape stocks={volumeLeaders} /> : <BusinessHomeCompanies items={[...companyGroups.values()]} preview={preview} />}
   </section>;

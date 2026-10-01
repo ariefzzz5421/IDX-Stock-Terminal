@@ -7,7 +7,7 @@ import { watchlistRows } from "@/lib/stocks";
 import { getMarketActivity } from "@/lib/market-data/trending";
 import { withMarketSnapshot } from "@/lib/market-data/boards";
 
-export const metadata: Metadata = { title: "Watchlist — IDX Terminal" };
+export const metadata: Metadata = { title: "Pantauan — IDX Terminal" };
 export const dynamic = "force-dynamic";
 
 export default async function WatchlistPage() {
@@ -20,20 +20,20 @@ export default async function WatchlistPage() {
 
   return (
     <Panel
-      title="Watchlist"
+      title="Pantauan"
       meta={
         <span className="flex items-center gap-3">
-          <span>{rows.length} issues</span>
-          <span className="text-up">{up} up</span>
-          <span className="text-down">{down} down</span>
-          <span className="hidden text-dimmer sm:inline">{activity.allStocks.length ? "TradingView delayed" : "Stored quotes · may be stale"}</span>
+          <span>{rows.length} saham</span>
+          <span className="text-up">{up} naik</span>
+          <span className="text-down">{down} turun</span>
+          <span className="hidden text-dimmer sm:inline">{activity.allStocks.length ? "TradingView tertunda" : "Harga tersimpan · mungkin usang"}</span>
         </span>
       }
     >
       <StockTable
         rows={rows}
-        extra="value"
-        emptyMessage="Nothing followed yet. Type a ticker in the command bar, then add it from its page."
+        extra="volume"
+        emptyMessage="Belum ada saham pantauan. Cari kode saham, lalu tambahkan dari halaman saham."
         action={(row) => <RemoveFromWatchlist code={row.code} />}
       />
     </Panel>

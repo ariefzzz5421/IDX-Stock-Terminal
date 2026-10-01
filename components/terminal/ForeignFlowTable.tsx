@@ -30,12 +30,12 @@ export function ForeignFlowTable({
         <thead>
           <tr className="bg-panel">
             <Th className="w-10 text-right">#</Th>
-            <Th align="left">Ticker</Th>
-            <Th>Buy</Th>
-            <Th>Sell</Th>
-            <Th>Net shares</Th>
-            <Th>{source === "IDX" ? "Est. net value" : "Provider value"}</Th>
-            <Th>Close</Th>
+            <Th align="left">Kode</Th>
+            <Th>Beli</Th>
+            <Th>Jual</Th>
+            <Th>Saham neto</Th>
+            <Th>{source === "IDX" ? "Est. nilai neto" : "Nilai penyedia"}</Th>
+            <Th>Penutupan</Th>
           </tr>
         </thead>
         <tbody>
@@ -50,7 +50,7 @@ export function ForeignFlowTable({
               <td className="px-3 py-2">
                 <Link
                   href={`/asset/${row.code}`}
-                  aria-label={`Open ${row.code} stock detail`}
+                  aria-label={`Buka detail saham ${row.code}`}
                   className="absolute inset-0 z-0"
                 />
                 <span className="relative z-10 flex pointer-events-none items-center gap-2.5">

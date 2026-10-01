@@ -9,7 +9,7 @@ export function Nav() {
 
   return (
     <nav
-      aria-label="Terminal sections"
+      aria-label="Menu terminal"
       className="terminal-nav flex min-w-0 items-stretch gap-px overflow-x-auto bg-rule"
     >
       {NAV_ITEMS.map((tab) => {

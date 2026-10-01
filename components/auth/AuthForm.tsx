@@ -10,23 +10,23 @@ type Mode = "login" | "register";
 
 const COPY = {
   login: {
-    heading: "Sign in",
-    blurb: "Enter your credentials to open the terminal.",
-    submit: "Sign in",
-    busy: "Signing in…",
+    heading: "Masuk",
+    blurb: "Masukkan nama pengguna dan kata sandi untuk membuka terminal.",
+    submit: "Masuk",
+    busy: "Sedang masuk…",
     endpoint: "/api/auth/login",
-    altPrompt: "No account yet?",
-    altLabel: "Create one",
+    altPrompt: "Belum punya akun?",
+    altLabel: "Daftar",
     altHref: "/register",
   },
   register: {
-    heading: "Create account",
-    blurb: "Username and password only. No email, no verification.",
-    submit: "Create account",
-    busy: "Creating…",
+    heading: "Buat akun",
+    blurb: "Cukup nama pengguna dan kata sandi. Tidak perlu email.",
+    submit: "Buat akun",
+    busy: "Membuat akun…",
     endpoint: "/api/auth/register",
-    altPrompt: "Already registered?",
-    altLabel: "Sign in",
+    altPrompt: "Sudah punya akun?",
+    altLabel: "Masuk",
     altHref: "/login",
   },
 } as const;
@@ -68,7 +68,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
           return;
         }
         setError(
-          data.error ?? `Server error ${response.status}. Check the server logs.`,
+          data.error ?? `Kesalahan server ${response.status}. Silakan coba lagi.`,
         );
         setBusy(false);
         return;
@@ -78,7 +78,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
       router.replace("/dashboard");
       router.refresh();
     } catch {
-      setError("Could not reach the server. Is it still running?");
+      setError("Server tidak dapat dihubungi. Periksa koneksi dan coba lagi.");
       setBusy(false);
     }
   }
@@ -102,7 +102,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
           htmlFor="username"
           className="mb-1.5 block text-[10px] uppercase tracking-[0.14em] text-dim"
         >
-          Username
+          Nama pengguna
         </label>
         <input
           id="username"
@@ -124,7 +124,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
         />
         {usernameTaken && (
           <p id="username-taken" role="alert" className="-mt-2 mb-4 text-[11px] text-down">
-            Username ini sudah digunakan. Pilih username lain.
+            Nama pengguna ini sudah digunakan. Pilih nama lain.
           </p>
         )}
 
@@ -132,7 +132,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
           htmlFor="password"
           className="mb-1.5 block text-[10px] uppercase tracking-[0.14em] text-dim"
         >
-          Password
+          Kata sandi
         </label>
         <div className="relative">
           <input
@@ -150,7 +150,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
           <button
             type="button"
             onClick={() => setShowPassword((current) => !current)}
-            aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
+            aria-label={showPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}
             aria-pressed={showPassword}
             className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-dim transition-colors hover:text-ink-hi focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber"
           >
@@ -159,7 +159,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
         </div>
         {mode === "register" && (
           <p className="mt-1.5 text-[10px] text-dimmer">
-            At least {PASSWORD_MIN} characters.
+            Minimal {PASSWORD_MIN} karakter.
           </p>
         )}
 

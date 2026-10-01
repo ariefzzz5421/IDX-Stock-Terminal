@@ -9,13 +9,13 @@ import { getMarketActivity } from "@/lib/market-data/trending";
 import { snapshotBoards, withMarketSnapshot } from "@/lib/market-data/boards";
 import {
   boardCounts,
-  mostActive,
+  mostActiveByVolume,
   topGainers,
   topLosers,
   watchlistRows,
 } from "@/lib/stocks";
 
-export const metadata: Metadata = { title: "Dashboard — IDX Terminal" };
+export const metadata: Metadata = { title: "Beranda — IDX Terminal" };
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
@@ -24,7 +24,7 @@ export default async function DashboardPage() {
     watchlistRows(user.id),
     topGainers(8),
     topLosers(8),
-    mostActive(8),
+    mostActiveByVolume(8),
     boardCounts(),
     getMarketActivity(),
   ]);
@@ -37,43 +37,43 @@ export default async function DashboardPage() {
     <ResizableSplit
       storageKey="dashboard"
       defaultWidth={340}
-      leftLabel="watchlist"
+      leftLabel="pantauan"
       left={
         <Panel
-          title="Watchlist"
+          title="Pantauan"
           className="h-full"
           meta={
             <Link href="/watchlist" className="hover:text-amber">
-              {watchlist.length} issues →
+              {watchlist.length} saham →
             </Link>
           }
         >
           <StockTable
             rows={withMarketSnapshot(watchlist, activity)}
-            emptyMessage="Nothing followed yet. Search a ticker in the command bar and add it from its page."
+            emptyMessage="Belum ada saham pantauan. Cari kode saham, lalu tambahkan dari halaman saham."
           />
         </Panel>
       }
       right={
         <div className="grid min-h-0 h-full gap-px lg:grid-cols-2">
-          <Panel title="Top gainers" meta={hasSnapshot ? "TradingView delayed · change %" : "Stored quotes · may be stale"}>
-            <StockTable rows={hasSnapshot ? snapshot.gainers.slice(0, 8) : gainers} rank emptyMessage="No quotes yet." />
+          <Panel title="Kenaikan terbesar" meta={hasSnapshot ? "TradingView tertunda · perubahan %" : "Harga tersimpan · mungkin usang"}>
+            <StockTable rows={hasSnapshot ? snapshot.gainers.slice(0, 8) : gainers} rank emptyMessage="Belum ada harga." />
           </Panel>
 
-          <Panel title="Top losers" meta={hasSnapshot ? "TradingView delayed · change %" : "Stored quotes · may be stale"}>
-            <StockTable rows={hasSnapshot ? snapshot.losers.slice(0, 8) : losers} rank emptyMessage="No quotes yet." />
+          <Panel title="Penurunan terbesar" meta={hasSnapshot ? "TradingView tertunda · perubahan %" : "Harga tersimpan · mungkin usang"}>
+            <StockTable rows={hasSnapshot ? snapshot.losers.slice(0, 8) : losers} rank emptyMessage="Belum ada harga." />
           </Panel>
 
           <Panel
-            title="Most active"
-            meta={hasSnapshot ? `${snapshot.active.length} traded · TradingView delayed` : `${counts.quoted} of ${counts.total} stored quotes`}
+            title="Volume tertinggi"
+            meta={hasSnapshot ? `${snapshot.activeByVolume.length} saham · TradingView tertunda` : `${counts.quoted} dari ${counts.total} harga tersimpan`}
             className="lg:col-span-2"
           >
             <StockTable
-              rows={hasSnapshot ? snapshot.active.slice(0, 8) : active}
-              extra="value"
+              rows={hasSnapshot ? snapshot.activeByVolume.slice(0, 8) : active}
+              extra="volume"
               rank
-              emptyMessage="No turnover recorded yet."
+              emptyMessage="Belum ada volume tercatat."
             />
           </Panel>
         </div>

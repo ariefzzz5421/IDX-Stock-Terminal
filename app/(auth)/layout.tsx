@@ -26,7 +26,7 @@ export default function AuthLayout({ children }: LayoutProps<"/">) {
           className="ml-auto inline-flex items-center gap-1.5 text-micro uppercase tracking-[0.12em] text-dim transition-colors hover:text-amber"
         >
           <ArrowLeft aria-hidden="true" className="h-3.5 w-3.5" />
-          Back to terminal
+          Kembali ke terminal
         </Link>
       </header>
 

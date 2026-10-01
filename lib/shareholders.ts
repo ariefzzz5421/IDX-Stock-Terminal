@@ -1,7 +1,7 @@
 import "server-only";
 import holdingsJson from "@/data/shareholders-2026-02.json";
 
-export const OWNERSHIP_AS_OF = "27 Feb 2026";
+export const OWNERSHIP_AS_OF = "27 Februari 2026";
 export const OWNERSHIP_SOURCE = "https://www.idx.co.id/en/listed-companies/share-ownership-data-of-listed-companies/";
 export const OWNERSHIP_TRANSCRIPTION = "https://github.com/aryakdaniswara/idx-stock-ownership";
 

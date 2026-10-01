@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { requireUser } from "@/lib/auth/session";
 import { Panel } from "@/components/terminal/Panel";
 import { StockTable } from "@/components/terminal/StockTable";
-import { mostActive, topGainers, topLosers } from "@/lib/stocks";
+import { mostActiveByVolume, topGainers, topLosers } from "@/lib/stocks";
 import { getMarketActivity } from "@/lib/market-data/trending";
 import { snapshotBoards } from "@/lib/market-data/boards";
 
@@ -15,7 +15,7 @@ export default async function TopTenPage() {
   const [gainers, losers, active, activity] = await Promise.all([
     topGainers(10),
     topLosers(10),
-    mostActive(10),
+    mostActiveByVolume(10),
     getMarketActivity(),
   ]);
   const snapshot = snapshotBoards(activity);
@@ -23,24 +23,24 @@ export default async function TopTenPage() {
 
   return (
     <div className="grid min-h-0 flex-1 gap-px lg:grid-cols-2">
-      <Panel title="Top 10 gainers" meta={hasSnapshot ? "TradingView delayed · change %" : "Stored quotes · may be stale"}>
-        <StockTable rows={hasSnapshot ? snapshot.gainers.slice(0, 10) : gainers} rank emptyMessage="No quotes yet." />
+      <Panel title="10 kenaikan terbesar" meta={hasSnapshot ? "TradingView tertunda · perubahan %" : "Harga tersimpan · mungkin usang"}>
+        <StockTable rows={hasSnapshot ? snapshot.gainers.slice(0, 10) : gainers} rank emptyMessage="Belum ada harga." />
       </Panel>
 
-      <Panel title="Top 10 losers" meta={hasSnapshot ? "TradingView delayed · change %" : "Stored quotes · may be stale"}>
-        <StockTable rows={hasSnapshot ? snapshot.losers.slice(0, 10) : losers} rank emptyMessage="No quotes yet." />
+      <Panel title="10 penurunan terbesar" meta={hasSnapshot ? "TradingView tertunda · perubahan %" : "Harga tersimpan · mungkin usang"}>
+        <StockTable rows={hasSnapshot ? snapshot.losers.slice(0, 10) : losers} rank emptyMessage="Belum ada harga." />
       </Panel>
 
       <Panel
-        title="Top 10 by turnover"
-        meta={hasSnapshot ? "TradingView delayed · rupiah traded" : "Stored turnover · may be stale"}
+        title="10 volume tertinggi"
+        meta={hasSnapshot ? "TradingView tertunda · jumlah saham" : "Volume tersimpan · mungkin usang"}
         className="lg:col-span-2"
       >
         <StockTable
-          rows={hasSnapshot ? snapshot.active.slice(0, 10) : active}
-          extra="value"
+          rows={hasSnapshot ? snapshot.activeByVolume.slice(0, 10) : active}
+          extra="volume"
           rank
-          emptyMessage="No turnover recorded yet."
+          emptyMessage="Belum ada volume tercatat."
         />
       </Panel>
     </div>

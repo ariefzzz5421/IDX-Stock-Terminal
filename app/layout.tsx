@@ -21,13 +21,13 @@ const plexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   title: "IDX Terminal",
   description:
-    "A Bloomberg-style terminal for the Indonesia Stock Exchange — live watchlist, charts, curated news and pump detection.",
+    "Terminal riset saham Bursa Efek Indonesia dengan pantauan, grafik, peta bisnis, dan data pasar bersumber.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
-      lang="en"
+      lang="id"
       suppressHydrationWarning
       className={`${jetbrainsMono.variable} ${plexMono.variable} h-full antialiased`}
     >

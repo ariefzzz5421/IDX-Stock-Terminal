@@ -124,7 +124,7 @@ export function Chart({ candles }: { candles: ChartCandle[] }) {
     } catch (chartError) {
       console.error("[chart] could not render:", chartError);
       container.textContent =
-        "Chart could not render. Price statistics remain available beside it.";
+        "Grafik tidak dapat ditampilkan. Statistik harga tetap tersedia di sampingnya.";
       container.classList.add(
         "grid",
         "place-items-center",
@@ -137,7 +137,7 @@ export function Chart({ candles }: { candles: ChartCandle[] }) {
   }, [candles]);
 
   if (candles.length === 0) {
-    return <p className="p-3 text-[12px] text-dim">No price history available.</p>;
+    return <p className="p-3 text-[12px] text-dim">Riwayat harga belum tersedia.</p>;
   }
 
   return (

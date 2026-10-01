@@ -28,7 +28,7 @@ export function MarketStatusBadge() {
       <div className="flex items-center gap-2 px-3">
         <span className="h-2 w-2 shrink-0 rounded-full bg-dimmer" />
         <span className="text-xs uppercase tracking-[0.12em] text-dim">
-          Market …
+          Pasar …
         </span>
       </div>
     );
@@ -61,7 +61,7 @@ export function MarketStatusBadge() {
         <span
           className={`text-xs font-bold uppercase tracking-[0.1em] ${text}`}
         >
-          {open ? "Market Open" : status.label}
+          {status.label}
         </span>
         <span className="text-[11px] tracking-[0.04em] text-dim">
           {status.next} · {clock} WIB

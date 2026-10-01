@@ -132,6 +132,16 @@ export function mostActive(take = 10) {
   });
 }
 
+/** Fallback volume ranking when the delayed scanner is unavailable. */
+export function mostActiveByVolume(take = 10) {
+  return prisma.stock.findMany({
+    where: { isListed: true, lastVolume: { not: null, gt: 0 } },
+    orderBy: { lastVolume: "desc" },
+    take,
+    select: STOCK_SELECT,
+  });
+}
+
 export function largestByMarketCap(take = 20) {
   return prisma.stock.findMany({
     where: { isListed: true, marketCap: { not: null } },

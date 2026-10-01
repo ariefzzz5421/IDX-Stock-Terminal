@@ -1,5 +1,6 @@
 import { ExternalLink } from "lucide-react";
 import { formatVolume } from "@/lib/format";
+import { HoldingPieChart } from "./HoldingPieChart";
 import { OWNERSHIP_AS_OF, OWNERSHIP_SOURCE, OWNERSHIP_TRANSCRIPTION, type NamedShareholder } from "@/lib/shareholders";
 
 export function ShareholderList({ holders }: { holders: NamedShareholder[] }) {
@@ -7,6 +8,7 @@ export function ShareholderList({ holders }: { holders: NamedShareholder[] }) {
     <div className="mt-5 border-t border-rule pt-4">
       <h3 className="text-micro font-semibold uppercase tracking-[0.12em] text-amber">Pemegang saham &gt;1%</h3>
       <p className="mt-2 text-xs leading-relaxed text-dim">Snapshot KSEI/BEI {OWNERSHIP_AS_OF}. Kepemilikan bisa berubah setelah tanggal tersebut. Status afiliasi hanya diberi label jika didukung dokumen perusahaan.</p>
+      <HoldingPieChart holders={holders} />
       {holders.length ? (
         <details className="mt-3 border border-rule-hi bg-panel-hi" open>
           <summary className="cursor-pointer px-3 py-2 text-xs font-semibold text-ink-hi">Lihat {holders.length} pemegang saham</summary>

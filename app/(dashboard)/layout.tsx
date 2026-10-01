@@ -76,16 +76,16 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
       {/* ---- status bar ---- */}
       <footer className="flex flex-wrap items-center gap-x-6 gap-y-1 bg-panel-hi px-4 py-2 text-micro uppercase tracking-[0.1em] text-dim">
         <span>
-          Universe <span className="text-ink">{codes.length}</span>
+          Emiten <span className="text-ink">{codes.length}</span>
         </span>
         <span>
-          Boards <span className="text-ink">TradingView</span> · Stock <span className="text-ink">{marketData.name}</span>
+          Papan <span className="text-ink">TradingView</span> · Saham <span className="text-ink">{marketData.name}</span>
         </span>
         <span>
-          Feed <span className="text-ink">snapshot on load</span>
+          Data <span className="text-ink">snapshot saat dibuka</span>
         </span>
         <span className="ml-auto text-dimmer">
-          Delayed data · not investment advice
+          Data tertunda · bukan rekomendasi investasi
         </span>
       </footer>
     </div>

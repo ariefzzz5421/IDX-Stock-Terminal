@@ -33,7 +33,7 @@ export function ThemeControl() {
           const Icon = option === "dark" ? Moon : Sun;
           return (
             <button key={option} type="button" onClick={() => change(option)} aria-pressed={theme === option} className={`flex items-center justify-center gap-2 border px-3 py-2 text-xs font-semibold ${theme === option ? "border-amber bg-amber/10 text-amber" : "border-rule-hi text-ink hover:border-amber"}`}>
-              <Icon aria-hidden="true" className="h-4 w-4" /> {option === "dark" ? "Dark" : "Light"}
+              <Icon aria-hidden="true" className="h-4 w-4" /> {option === "dark" ? "Gelap" : "Terang"}
             </button>
           );
         })}
