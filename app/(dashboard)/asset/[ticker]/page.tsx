@@ -217,7 +217,7 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
               <div>
                 <h3 className="text-sm font-semibold text-ink-hi">{fresh.name}</h3>
                 <p className="mt-2 max-w-4xl text-sm leading-6 text-dim">
-                  {companySummaryId({ name: fresh.name, code: fresh.code, sector: details?.sector ?? fresh.sector, marketCap: fresh.marketCap })}
+                  {companySummaryId({ name: fresh.name, code: fresh.code, sector: details?.sector ?? fresh.sector, marketCap: fresh.marketCap, isListed: fresh.isListed })}
                 </p>
                 {details?.summary && <details className="mt-3 max-w-4xl border-l-2 border-rule-hi pl-3 text-xs text-dim"><summary className="cursor-pointer text-cyan">Uraian kegiatan usaha dari sumber asli</summary><p className="mt-2 whitespace-pre-line leading-relaxed">{details.summary}</p></details>}
               </div>

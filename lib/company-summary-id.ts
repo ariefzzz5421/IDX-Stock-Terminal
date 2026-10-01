@@ -27,7 +27,7 @@ const SECTORS: Record<string, string> = {
 };
 
 /** A source-bounded Indonesian overview for every listed stock, including when source prose is English. */
-export function companySummaryId({ name, code, sector, marketCap }: { name: string; code: string; sector: string | null; marketCap: number | null }) {
+export function companySummaryId({ name, code, sector, marketCap, isListed }: { name: string; code: string; sector: string | null; marketCap: number | null; isListed: boolean }) {
   const translatedSector = sector ? SECTORS[sector.toLowerCase()] : null;
-  return `${name} (${code}) adalah perusahaan tercatat di Bursa Efek Indonesia.${translatedSector ? ` Klasifikasi sektornya adalah ${translatedSector}.` : ""}${marketCap != null ? ` Kapitalisasi pasar yang tersedia pada terminal ini adalah ${formatValue(marketCap)}.` : " Kapitalisasi pasar belum tersedia pada terminal ini."} Rincian kegiatan usaha dari sumber ditampilkan di bawah jika tersedia; angka pasar dapat tertunda.`;
+  return `${name} (${code}) ${isListed ? "tercatat di Bursa Efek Indonesia" : "memiliki data historis di katalog BEI terminal ini"}.${translatedSector ? ` Klasifikasi sektornya adalah ${translatedSector}.` : ""}${marketCap != null ? ` Kapitalisasi pasar yang tersedia pada terminal ini adalah ${formatValue(marketCap)}.` : " Kapitalisasi pasar belum tersedia pada terminal ini."} Rincian kegiatan usaha dari sumber ditampilkan di bawah jika tersedia; angka pasar dapat tertunda.`;
 }
