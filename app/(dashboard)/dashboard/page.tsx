@@ -15,7 +15,7 @@ import {
   watchlistRows,
 } from "@/lib/stocks";
 
-export const metadata: Metadata = { title: "Beranda — IDX Terminal" };
+export const metadata: Metadata = { title: "Dashboard — IDX Terminal" };
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
@@ -37,14 +37,14 @@ export default async function DashboardPage() {
     <ResizableSplit
       storageKey="dashboard"
       defaultWidth={340}
-      leftLabel="pantauan"
+      leftLabel="watchlist"
       left={
         <Panel
-          title="Pantauan"
+          title="Watchlist"
           className="h-full"
           meta={
             <Link href="/watchlist" className="hover:text-amber">
-              {watchlist.length} saham →
+              {watchlist.length} stocks →
             </Link>
           }
         >
@@ -56,17 +56,17 @@ export default async function DashboardPage() {
       }
       right={
         <div className="grid min-h-0 h-full gap-px lg:grid-cols-2">
-          <Panel title="Kenaikan terbesar" meta={hasSnapshot ? "TradingView tertunda · perubahan %" : "Harga tersimpan · mungkin usang"}>
+          <Panel title="Top gainers" meta={hasSnapshot ? "TradingView delayed · change %" : "Stored quotes · may be stale"}>
             <StockTable rows={hasSnapshot ? snapshot.gainers.slice(0, 8) : gainers} rank emptyMessage="Belum ada harga." />
           </Panel>
 
-          <Panel title="Penurunan terbesar" meta={hasSnapshot ? "TradingView tertunda · perubahan %" : "Harga tersimpan · mungkin usang"}>
+          <Panel title="Top losers" meta={hasSnapshot ? "TradingView delayed · change %" : "Stored quotes · may be stale"}>
             <StockTable rows={hasSnapshot ? snapshot.losers.slice(0, 8) : losers} rank emptyMessage="Belum ada harga." />
           </Panel>
 
           <Panel
-            title="Volume tertinggi"
-            meta={hasSnapshot ? `${snapshot.activeByVolume.length} saham · TradingView tertunda` : `${counts.quoted} dari ${counts.total} harga tersimpan`}
+            title="Top volume"
+            meta={hasSnapshot ? `${snapshot.activeByVolume.length} stocks · TradingView delayed` : `${counts.quoted} of ${counts.total} stored quotes`}
             className="lg:col-span-2"
           >
             <StockTable

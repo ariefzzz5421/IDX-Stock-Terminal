@@ -7,7 +7,7 @@ import { watchlistRows } from "@/lib/stocks";
 import { getMarketActivity } from "@/lib/market-data/trending";
 import { withMarketSnapshot } from "@/lib/market-data/boards";
 
-export const metadata: Metadata = { title: "Pantauan — IDX Terminal" };
+export const metadata: Metadata = { title: "Watchlist — IDX Terminal" };
 export const dynamic = "force-dynamic";
 
 export default async function WatchlistPage() {
@@ -20,13 +20,13 @@ export default async function WatchlistPage() {
 
   return (
     <Panel
-      title="Pantauan"
+      title="Watchlist"
       meta={
         <span className="flex items-center gap-3">
-          <span>{rows.length} saham</span>
-          <span className="text-up">{up} naik</span>
-          <span className="text-down">{down} turun</span>
-          <span className="hidden text-dimmer sm:inline">{activity.allStocks.length ? "TradingView tertunda" : "Harga tersimpan · mungkin usang"}</span>
+          <span>{rows.length} stocks</span>
+          <span className="text-up">{up} up</span>
+          <span className="text-down">{down} down</span>
+          <span className="hidden text-dimmer sm:inline">{activity.allStocks.length ? "TradingView delayed" : "Stored quotes · may be stale"}</span>
         </span>
       }
     >

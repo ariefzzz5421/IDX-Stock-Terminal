@@ -31,7 +31,7 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
   return (
     <div className="flex min-h-full flex-1 flex-col gap-px bg-rule">
       {/* ---- top bar ---- */}
-      <header className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] gap-px bg-rule lg:grid-cols-[auto_minmax(12rem,1fr)_auto_auto_auto]">
+      <header className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] gap-px bg-rule sm:grid-cols-[auto_minmax(0,1fr)_auto] xl:grid-cols-[auto_minmax(10rem,1fr)_minmax(13rem,auto)_auto_auto]">
         <Link
           href="/dashboard"
           className="col-start-1 row-start-1 flex shrink-0 items-baseline gap-2.5 bg-panel px-4 py-2.5 hover:opacity-80"
@@ -44,19 +44,19 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
           </span>
         </Link>
 
-        <div className="col-span-2 row-start-2 flex min-w-0 bg-panel lg:col-span-1 lg:col-start-2 lg:row-start-1">
+        <div className="col-span-2 row-start-2 flex min-w-0 bg-panel sm:col-span-1 sm:col-start-2 sm:row-start-1 xl:col-start-2">
           <CommandBar stocks={searchStocks} />
         </div>
 
-        <div className="col-span-2 row-start-3 flex min-w-0 items-center bg-panel sm:col-span-1 sm:col-start-1 lg:col-start-3 lg:row-start-1">
+        <div className="col-span-2 row-start-3 flex min-w-0 items-center bg-panel sm:col-span-1 sm:col-start-1 sm:row-start-2 xl:col-start-3 xl:row-start-1">
           <Suspense fallback={<IhsgQuoteBadge initial={null} />}><IhsgHeader /></Suspense>
         </div>
 
-        <div className="col-span-2 row-start-4 flex min-w-0 items-center bg-panel sm:col-span-1 sm:col-start-2 sm:row-start-3 lg:col-start-4 lg:row-start-1">
+        <div className="col-span-2 row-start-4 flex min-w-0 items-center bg-panel sm:col-start-2 sm:row-start-2 xl:col-span-1 xl:col-start-4 xl:row-start-1">
           <MarketStatusBadge />
         </div>
 
-        <div className="col-start-2 row-start-1 flex bg-panel lg:col-start-5">
+        <div className="col-start-2 row-start-1 flex bg-panel sm:col-start-3 xl:col-start-5">
           <UserBadge
             username={user.username}
             displayName={user.profile?.displayName ?? null}

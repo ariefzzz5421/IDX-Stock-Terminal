@@ -13,6 +13,7 @@ import { prisma } from "@/lib/db/prisma";
 import { requireUser } from "@/lib/auth/session";
 import { marketData } from "@/lib/market-data";
 import { getCompanyDetails } from "@/lib/market-data/company-details";
+import { companySummaryId } from "@/lib/company-summary-id";
 import { Panel } from "@/components/terminal/Panel";
 import { ResizableSplit } from "@/components/terminal/ResizableSplit";
 import { Chart } from "@/components/terminal/Chart";
@@ -216,9 +217,9 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
               <div>
                 <h3 className="text-sm font-semibold text-ink-hi">{fresh.name}</h3>
                 <p className="mt-2 max-w-4xl text-sm leading-6 text-dim">
-                  {details?.summary ??
-                    "Deskripsi usaha belum tersedia dari sumber publik yang terhubung untuk saham ini."}
+                  {companySummaryId({ name: fresh.name, code: fresh.code, sector: details?.sector ?? fresh.sector, marketCap: fresh.marketCap })}
                 </p>
+                {details?.summary && <details className="mt-3 max-w-4xl border-l-2 border-rule-hi pl-3 text-xs text-dim"><summary className="cursor-pointer text-cyan">Uraian kegiatan usaha dari sumber asli</summary><p className="mt-2 whitespace-pre-line leading-relaxed">{details.summary}</p></details>}
               </div>
             </div>
 

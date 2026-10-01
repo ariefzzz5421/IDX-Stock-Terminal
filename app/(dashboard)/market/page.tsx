@@ -9,7 +9,7 @@ import { STOCK_SELECT, boardCounts } from "@/lib/stocks";
 import { getMarketActivity } from "@/lib/market-data/trending";
 import { withMarketSnapshot } from "@/lib/market-data/boards";
 
-export const metadata: Metadata = { title: "Pasar — IDX Terminal" };
+export const metadata: Metadata = { title: "Market — IDX Terminal" };
 export const dynamic = "force-dynamic";
 
 const PAGE_SIZE = 50;
@@ -58,8 +58,8 @@ export default async function MarketPage({
 
   return (
     <Panel
-      title="Pasar"
-      meta={`${counts.total} emiten · ${activity.allStocks.length ? `${activity.allStocks.length} pada snapshot tertunda` : `${counts.quoted} harga tersimpan`}`}
+      title="Market"
+      meta={`${counts.total} listed · ${activity.allStocks.length ? `${activity.allStocks.length} delayed snapshot rows` : `${counts.quoted} stored quotes`}`}
     >
       <div className="border-b border-rule bg-panel-hi px-4 py-3">
         <BoardSearch initialQuery={query} />

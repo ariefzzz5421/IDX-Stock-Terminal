@@ -45,7 +45,7 @@ export function StockTable({
   }
 
   const extraLabel =
-    extra === "volume" ? "Volume" : extra === "value" ? "Nilai" : "Kap. pasar";
+    extra === "volume" ? "Volume" : extra === "value" ? "Value" : "Mkt cap";
 
   return (
     <div className="@container/stocktable min-w-0 overflow-hidden">
@@ -53,9 +53,9 @@ export function StockTable({
         <thead>
           <tr className="sticky top-0 z-10 bg-panel">
             {rank && <Th className="w-7 text-right @min-[32rem]/stocktable:w-10">#</Th>}
-            <Th align="left">Kode</Th>
-            <Th className="w-[4.5rem] @min-[32rem]/stocktable:w-[5.5rem]">Harga</Th>
-            <Th className="w-[5rem] @min-[32rem]/stocktable:w-[6rem]">Ubah %</Th>
+            <Th align="left">Ticker</Th>
+            <Th className="w-[4.5rem] @min-[32rem]/stocktable:w-[5.5rem]">Last</Th>
+            <Th className="w-[5rem] @min-[32rem]/stocktable:w-[6rem]">Chg %</Th>
             <Th className="hidden w-[6.5rem] @min-[32rem]/stocktable:table-cell">{extraLabel}</Th>
             {action && (
               <Th className="w-8">

@@ -200,7 +200,7 @@ export function ResizableSplit({
           aria-label={"Expand " + leftLabel}
           title={"Expand " + leftLabel}
           className={
-            "flex h-full w-full flex-col items-center gap-2 bg-panel-hi pt-3 text-dim transition-colors hover:text-amber border-rule " +
+            "flex h-full w-full flex-col items-center gap-2 bg-panel-hi pt-3 text-amber transition-colors hover:bg-amber/10 border-rule " +
             (isLeftResizable ? "border-r" : "border-l")
           }
         >
@@ -245,7 +245,7 @@ export function ResizableSplit({
           onPointerDown={(event) => event.stopPropagation()}
           aria-label={"Minimize " + leftLabel}
           title={"Minimize " + leftLabel}
-          className="absolute left-1/2 top-3 z-20 flex h-6 w-4 -translate-x-1/2 items-center justify-center border border-rule bg-panel-hi text-dimmer opacity-0 transition-opacity hover:text-amber group-hover:opacity-100"
+          className="absolute left-1/2 top-3 z-20 flex h-9 w-6 -translate-x-1/2 items-center justify-center border border-amber-dim bg-panel-hi text-amber shadow-md transition-colors hover:bg-amber/10 focus-visible:outline-cyan"
         >
           <CollapseIcon aria-hidden="true" className="h-3 w-3" />
         </button>

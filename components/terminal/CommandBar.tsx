@@ -74,7 +74,6 @@ export function CommandBar({ stocks }: { stocks: StockOption[] }) {
         className="min-w-0 flex-1 bg-transparent py-3 text-sm text-ink-hi outline-none"
       />
       {error && <span role="status" className="shrink-0 text-micro text-down">{error}</span>}
-      <button type="submit" aria-label="Buka saham" className="shrink-0 bg-amber px-2.5 py-1.5 font-display text-micro font-bold tracking-[0.12em] text-void transition-colors hover:bg-ink-hi">&lt;GO&gt;</button>
       {open && value.trim() && (
         <div id="ticker-suggestions" role="listbox" aria-label="Hasil pencarian saham" className="absolute inset-x-0 top-full z-[100] max-h-80 overflow-y-auto border border-rule-hi bg-panel shadow-xl">
           {matches.length ? matches.map((stock, index) => (

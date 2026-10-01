@@ -6,7 +6,7 @@ import { hotStocks, mostActiveByVolume } from "@/lib/stocks";
 import { getMarketActivity } from "@/lib/market-data/trending";
 import { snapshotBoards } from "@/lib/market-data/boards";
 
-export const metadata: Metadata = { title: "Saham Aktif — IDX Terminal" };
+export const metadata: Metadata = { title: "Hot — IDX Terminal" };
 export const dynamic = "force-dynamic";
 
 export default async function HotPage() {
@@ -19,13 +19,13 @@ export default async function HotPage() {
   return (
     <div className="grid min-h-0 flex-1 gap-px xl:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]">
       <Panel
-        title="Pergerakan aktif"
-        meta={hasSnapshot ? "TradingView tertunda · pergerakan harga" : "Harga tersimpan · mungkin usang"}
+        title="Hot movers"
+        meta={hasSnapshot ? "TradingView delayed · price movers" : "Stored quotes · may be stale"}
       >
         <div className="border-b border-rule bg-panel-hi px-4 py-2.5">
           <p className="max-w-prose text-xs leading-relaxed text-dim">
-            Peringkat menurut besarnya perubahan harga, hanya untuk saham dengan
-            transaksi tercatat. Kenaikan tinggi pada sedikit lot belum tentu sinyal kuat.
+            Ranked by absolute price change among traded stocks. A large move on
+            low volume is not a confirmed catalyst.
           </p>
         </div>
         <StockTable
@@ -36,7 +36,7 @@ export default async function HotPage() {
         />
       </Panel>
 
-      <Panel title="Volume tertinggi" meta={hasSnapshot ? "TradingView tertunda · berdasarkan volume" : "Volume tersimpan · mungkin usang"}>
+      <Panel title="Top volume" meta={hasSnapshot ? "TradingView delayed · by share volume" : "Stored volume · may be stale"}>
         <StockTable
           rows={hasSnapshot ? snapshot.activeByVolume.slice(0, 15) : active}
           extra="volume"

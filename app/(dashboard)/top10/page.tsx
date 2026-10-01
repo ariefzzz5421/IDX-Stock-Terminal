@@ -23,17 +23,17 @@ export default async function TopTenPage() {
 
   return (
     <div className="grid min-h-0 flex-1 gap-px lg:grid-cols-2">
-      <Panel title="10 kenaikan terbesar" meta={hasSnapshot ? "TradingView tertunda · perubahan %" : "Harga tersimpan · mungkin usang"}>
+      <Panel title="Top 10 gainers" meta={hasSnapshot ? "TradingView delayed · change %" : "Stored quotes · may be stale"}>
         <StockTable rows={hasSnapshot ? snapshot.gainers.slice(0, 10) : gainers} rank emptyMessage="Belum ada harga." />
       </Panel>
 
-      <Panel title="10 penurunan terbesar" meta={hasSnapshot ? "TradingView tertunda · perubahan %" : "Harga tersimpan · mungkin usang"}>
+      <Panel title="Top 10 losers" meta={hasSnapshot ? "TradingView delayed · change %" : "Stored quotes · may be stale"}>
         <StockTable rows={hasSnapshot ? snapshot.losers.slice(0, 10) : losers} rank emptyMessage="Belum ada harga." />
       </Panel>
 
       <Panel
-        title="10 volume tertinggi"
-        meta={hasSnapshot ? "TradingView tertunda · jumlah saham" : "Volume tersimpan · mungkin usang"}
+        title="Top 10 volume"
+        meta={hasSnapshot ? "TradingView delayed · share volume" : "Stored volume · may be stale"}
         className="lg:col-span-2"
       >
         <StockTable
