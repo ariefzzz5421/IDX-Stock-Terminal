@@ -4,9 +4,10 @@ import { redirect } from "next/navigation";
 import { Database, Eye, TerminalSquare } from "lucide-react";
 import { MarketStatusBadge } from "@/components/terminal/MarketStatusBadge";
 import { Panel } from "@/components/terminal/Panel";
+import { ResizableSplit } from "@/components/terminal/ResizableSplit";
 import { StockTable, type StockRow } from "@/components/terminal/StockTable";
 import { NAV_ITEMS } from "@/lib/navigation";
-import { BusinessHomeHeader } from "@/components/business-map/BusinessHomeHeader";
+import { MarketVolumeTape } from "@/components/terminal/MarketVolumeTape";
 import { TrendingPopup } from "@/components/terminal/TrendingPopup";
 import type { TrendingStock } from "@/lib/market-data/trending";
 import { missingSettings } from "@/lib/config";
@@ -133,15 +134,15 @@ export default function PreviewPage() {
         ))}
       </nav>
 
-      <BusinessHomeHeader preview />
+      <MarketVolumeTape stocks={PREVIEW_TRENDING} demo />
       <TrendingPopup stocks={PREVIEW_TRENDING} demo />
 
-      <main className="grid min-h-0 flex-1 gap-px xl:grid-cols-[minmax(0,26rem)_minmax(0,1fr)]">
-        <Panel title="Pantauan" meta={`${WATCHLIST.length} saham contoh`}>
-          <StockTable rows={WATCHLIST} extra="volume" />
-        </Panel>
-
-        <div className="grid min-h-0 gap-px lg:grid-cols-2">
+      <main className="flex min-h-0 flex-1 flex-col">
+        <ResizableSplit storageKey="preview" defaultWidth={340} leftLabel="watchlist" collapseButtonPlacement="panel" mobileDrawerCount={WATCHLIST.length} left={
+          <Panel title="Watchlist" meta={`${WATCHLIST.length} sample stocks`} className="h-full" headerClassName="pr-12">
+            <StockTable rows={WATCHLIST} extra="volume" />
+          </Panel>
+        } right={<div className="grid h-full min-h-0 gap-px lg:grid-cols-2 xl:pr-8">
           <Panel title="Kenaikan terbesar" meta="contoh perubahan %">
             <StockTable rows={GAINERS} extra="volume" rank />
           </Panel>
@@ -153,7 +154,7 @@ export default function PreviewPage() {
           <Panel title="Volume tertinggi" meta="contoh volume harian" className="lg:col-span-2">
             <StockTable rows={ACTIVE} extra="volume" rank />
           </Panel>
-        </div>
+        </div>} />
       </main>
 
       <footer className="flex flex-wrap items-center gap-x-6 gap-y-1 bg-panel-hi px-4 py-2 text-micro uppercase tracking-[0.1em] text-dim">

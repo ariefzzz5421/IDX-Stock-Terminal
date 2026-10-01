@@ -4,7 +4,7 @@ import { requireUser } from "@/lib/auth/session";
 import { Panel } from "@/components/terminal/Panel";
 import { StockTable } from "@/components/terminal/StockTable";
 import { ResizableSplit } from "@/components/terminal/ResizableSplit";
-import { BusinessHomeHeader } from "@/components/business-map/BusinessHomeHeader";
+import { MarketVolumeTape } from "@/components/terminal/MarketVolumeTape";
 import { getMarketActivity } from "@/lib/market-data/trending";
 import { snapshotBoards, withMarketSnapshot } from "@/lib/market-data/boards";
 import {
@@ -33,18 +33,21 @@ export default async function DashboardPage() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-    <BusinessHomeHeader volumeLeaders={activity.byVolume} />
+    <MarketVolumeTape stocks={activity.byVolume} />
     <ResizableSplit
       storageKey="dashboard"
       defaultWidth={340}
       leftLabel="watchlist"
+      collapseButtonPlacement="panel"
+      mobileDrawerCount={watchlist.length}
       left={
         <Panel
           title="Watchlist"
           className="h-full"
+          headerClassName="pr-12"
           meta={
-            <Link href="/watchlist" className="hover:text-amber">
-              {watchlist.length} stocks →
+            <Link href="/watchlist" className="whitespace-nowrap hover:text-amber">
+              {watchlist.length} stocks
             </Link>
           }
         >
@@ -55,7 +58,7 @@ export default async function DashboardPage() {
         </Panel>
       }
       right={
-        <div className="grid min-h-0 h-full gap-px lg:grid-cols-2">
+        <div className="grid min-h-0 h-full gap-px lg:grid-cols-2 xl:pr-8">
           <Panel title="Top gainers" meta={hasSnapshot ? "TradingView delayed · change %" : "Stored quotes · may be stale"}>
             <StockTable rows={hasSnapshot ? snapshot.gainers.slice(0, 8) : gainers} rank emptyMessage="Belum ada harga." />
           </Panel>

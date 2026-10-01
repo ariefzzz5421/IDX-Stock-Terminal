@@ -88,6 +88,14 @@ body {
 .business-sidebar-close, .business-sidebar-trigger, .business-sidebar-backdrop { display: none; }
 .business-home-tape { display: flex; scrollbar-width: thin; scrollbar-color: var(--color-amber-dim) var(--color-panel-hi); }
 .business-home-tape > a { flex: 0 0 12rem; }
+.market-tape-window { overflow: hidden; }
+.market-tape-track { display: flex; width: max-content; animation: market-tape-drift 55s linear infinite; will-change: transform; }
+.market-tape-group { display: flex; flex: 0 0 auto; gap: 1px; padding-right: 1px; }
+.market-tape-group > a { flex: 0 0 12rem; }
+.market-tape-window:hover .market-tape-track, .market-tape-window:focus-within .market-tape-track { animation-play-state: paused; }
+.market-tape-window:focus-within { overflow-x: auto; }
+@keyframes market-tape-drift { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+@media (prefers-reduced-motion: reduce) { .market-tape-track { animation: none; } .market-tape-window { overflow-x: auto; } }
 .business-home-company-trigger { display: none; }
 .business-home-company-sidebar { display: none; }
 .business-primary { height: min(70vh, 42rem); min-height: 26rem; }

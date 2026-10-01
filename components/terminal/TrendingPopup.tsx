@@ -63,12 +63,12 @@ export function TrendingPopup({ stocks, byMarketCap, demo = false }: Props) {
   function endDrag() { dragOffset.current = null; }
 
   if (!expanded) {
-    return <button type="button" onClick={() => setExpanded(true)} aria-label="Open Top 10 Trending" title="Open Top 10 Trending" className="fixed right-0 top-1/2 z-40 flex h-24 w-8 -translate-y-1/2 flex-col items-center justify-center gap-2 border border-r-0 border-amber-dim bg-panel-hi text-amber shadow-lg transition-colors hover:bg-panel sm:w-9">
-      <ChevronLeft aria-hidden="true" className="h-4 w-4" /><Flame aria-hidden="true" className="h-4 w-4" />
+    return <button type="button" onClick={() => setExpanded(true)} aria-label="Open Top 10 Trending" title="Open Top 10 Trending" className="relative z-40 flex min-h-10 w-full items-center justify-center gap-2 border-b border-amber-dim bg-panel-hi text-amber transition-colors hover:bg-panel xl:fixed xl:right-0 xl:top-1/2 xl:h-24 xl:min-h-0 xl:w-8 xl:-translate-y-1/2 xl:flex-col xl:border xl:border-r-0 xl:shadow-lg">
+      <ChevronLeft aria-hidden="true" className="h-4 w-4" /><Flame aria-hidden="true" className="h-4 w-4" /><span className="text-micro font-bold uppercase tracking-widest xl:hidden">Top 10 Trending</span>
     </button>;
   }
 
-  return <aside aria-label="Top 10 Trending" style={position ? { left: position.left, top: position.top, right: "auto", bottom: "auto" } : undefined} className="fixed bottom-3 right-3 z-40 w-[min(24rem,calc(100dvw-1.5rem))] border border-rule-hi bg-panel shadow-[0_12px_42px_#0009] sm:bottom-5 sm:right-5">
+  return <><div aria-hidden="true" className="h-10 border-b border-rule bg-panel-hi xl:hidden" /><aside aria-label="Top 10 Trending" style={position ? { left: position.left, top: position.top, right: "auto", bottom: "auto" } : undefined} className="fixed bottom-3 right-3 z-40 w-[min(24rem,calc(100dvw-1.5rem))] border border-rule-hi bg-panel shadow-[0_12px_42px_#0009] sm:bottom-5 sm:right-5">
     <div className="flex items-center gap-2 bg-panel-hi px-2 py-2">
       <button type="button" onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={endDrag} aria-label="Drag Trending panel" title="Drag panel" className="grid h-9 w-7 shrink-0 touch-none place-items-center text-dim hover:text-amber"><Grip aria-hidden="true" className="h-4 w-4" /></button>
       <Flame aria-hidden="true" className="h-4 w-4 shrink-0 text-amber" />
@@ -81,5 +81,5 @@ export function TrendingPopup({ stocks, byMarketCap, demo = false }: Props) {
     </div>
     {visible.length ? <ol className="max-h-[min(27rem,55vh)] overflow-y-auto">{visible.map((stock, index) => <li key={stock.code} className="border-b border-rule/50 last:border-0"><Link href={`/asset/${stock.code}`} className="flex min-w-0 items-center gap-2 px-3 py-2 hover:bg-panel-hi"><span className="w-6 shrink-0 text-right text-micro tabular-nums text-amber">#{index + 1}</span><CompanyLogo code={stock.code} logoUrl={stock.logoUrl} /><span className="min-w-0 flex-1"><span className="block text-xs font-bold text-ink-hi">{stock.code}</span><span className="block truncate text-micro text-dim" title={stock.name}>{stock.name}</span><span className="block text-micro text-dimmer">Cap {formatValue(stock.marketCap)}</span></span><span className="text-right"><span className={`block text-xs font-bold tabular-nums ${directionClass(stock.changes[timeframe])}`}>{formatPct(stock.changes[timeframe])}</span><span className="block text-micro tabular-nums text-dim">{formatPrice(stock.lastPrice)}</span><span className="block text-micro tabular-nums text-dimmer">Volume {formatVolume(stock.volume)}</span></span></Link></li>)}</ol> : <p className="p-4 text-xs text-dim">No stocks match this filter.</p>}
     <p className="border-t border-rule px-3 py-2 text-micro leading-relaxed text-dimmer">{demo ? "Figures are for layout preview only." : "Delayed TradingView snapshot. Ranked by share volume; timeframe changes price performance only."}</p>
-  </aside>;
+  </aside></>;
 }

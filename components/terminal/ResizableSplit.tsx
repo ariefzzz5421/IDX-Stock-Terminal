@@ -2,12 +2,13 @@
 
 import {
   useCallback,
+  useEffect,
   useRef,
   useState,
   useSyncExternalStore,
   type ReactNode,
 } from "react";
-import { ChevronLeft, ChevronRight, GripVertical } from "lucide-react";
+import { ChevronLeft, ChevronRight, GripVertical, List, X } from "lucide-react";
 
 const BREAKPOINT = "(min-width: 1280px)"; // matches the xl: prefix used elsewhere
 const MIN_WIDTH = 220;
@@ -80,9 +81,8 @@ const encodeBoolean = (value: boolean) => (value ? "1" : "0");
  * a slim rail to get it out of the way. Width and collapsed state persist per
  * storageKey, so different pages remember their own layout independently.
  *
- * Below the xl breakpoint this degrades to a plain stacked layout: dragging a
- * divider does not make sense once the panels are not side by side, so
- * neither the divider nor the collapse rail render there.
+ * Below xl the panels stack without a drag handle. Callers can opt into a
+ * phone sidebar for the left panel; tablet widths keep the stacked layout.
  */
 export function ResizableSplit({
   left,
@@ -91,6 +91,8 @@ export function ResizableSplit({
   defaultWidth = 320,
   leftLabel = "panel",
   resizableSide = "left",
+  collapseButtonPlacement = "divider",
+  mobileDrawerCount,
 }: {
   left: ReactNode;
   right: ReactNode;
@@ -99,12 +101,36 @@ export function ResizableSplit({
   leftLabel?: string;
   /** Which side drags and collapses. The other side fills the remaining space. */
   resizableSide?: "left" | "right";
+  collapseButtonPlacement?: "divider" | "panel";
+  /** Show the left panel as a sidebar on narrow phones instead of stacking it. */
+  mobileDrawerCount?: number;
 }) {
   const isLeftResizable = resizableSide === "left";
   const resizableContent = isLeftResizable ? left : right;
   const fillingContent = isLeftResizable ? right : left;
 
   const isDesktop = useMediaQuery(BREAKPOINT);
+  const isPhone = useMediaQuery("(max-width: 767px)");
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const drawerTrigger = useRef<HTMLButtonElement>(null);
+  const drawerClose = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!drawerOpen || !isPhone) return;
+    const originalOverflow = document.body.style.overflow;
+    const triggerButton = drawerTrigger.current;
+    document.body.style.overflow = "hidden";
+    drawerClose.current?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setDrawerOpen(false);
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      document.removeEventListener("keydown", onKeyDown);
+      triggerButton?.focus();
+    };
+  }, [drawerOpen, isPhone]);
   const [persistedWidth, setPersistedWidth] = usePersistentValue(
     "idx-split-width:" + storageKey,
     decodeWidth(defaultWidth),
@@ -172,8 +198,24 @@ export function ResizableSplit({
     [width, setPersistedWidth],
   );
 
-  // Below the breakpoint: plain stack, no drag or collapse chrome at all.
+  // Below xl: phone sidebar when requested, otherwise a plain stack.
   if (!isDesktop) {
+    if (isPhone && isLeftResizable && mobileDrawerCount !== undefined) {
+      const drawerId = `split-drawer-${storageKey}`;
+      return <div className="flex min-h-0 flex-1 flex-col gap-px">
+        <button ref={drawerTrigger} type="button" onClick={() => setDrawerOpen(true)} aria-label={`Open ${leftLabel} sidebar (${mobileDrawerCount} stocks)`} aria-expanded={drawerOpen} aria-controls={drawerId} className="flex min-h-11 items-center justify-between border-b border-rule bg-panel-hi px-4 text-xs font-bold uppercase tracking-widest text-amber">
+          <span className="inline-flex items-center gap-2"><List aria-hidden="true" className="h-4 w-4" /> {leftLabel}</span>
+          <span className="text-dim">{mobileDrawerCount} stocks <ChevronRight aria-hidden="true" className="inline h-4 w-4" /></span>
+        </button>
+        {drawerOpen && <button type="button" onClick={() => setDrawerOpen(false)} aria-label={`Close ${leftLabel} sidebar`} className="fixed inset-0 z-[1090] bg-black/70" />}
+        <aside id={drawerId} aria-label={`${leftLabel} sidebar`} className={`fixed inset-y-0 left-0 z-[1100] w-[min(88vw,22rem)] border-r border-rule-hi bg-panel shadow-xl motion-safe:transition-transform ${drawerOpen ? "translate-x-0" : "invisible -translate-x-full"}`}>
+          <div className="relative h-full min-h-0">{resizableContent}
+            <button ref={drawerClose} type="button" onClick={() => setDrawerOpen(false)} aria-label={`Close ${leftLabel} sidebar`} className="absolute right-2 top-1.5 grid h-8 w-8 place-items-center border border-rule-hi bg-panel-hi text-amber"><X aria-hidden="true" className="h-4 w-4" /></button>
+          </div>
+        </aside>
+        {fillingContent}
+      </div>;
+    }
     return (
       <div className="flex min-h-0 flex-1 flex-col gap-px">
         {left}
@@ -187,7 +229,7 @@ export function ResizableSplit({
 
   const resizablePanel = (
     <div
-      className="min-h-0 shrink-0 overflow-hidden"
+      className="relative min-h-0 shrink-0 overflow-hidden"
       style={{
         width: collapsed ? RAIL_WIDTH : width,
         transition: dragging ? "none" : "width 160ms ease",
@@ -209,6 +251,7 @@ export function ResizableSplit({
       ) : (
         <div className="flex h-full min-h-0 flex-col" style={{ width }}>
           {resizableContent}
+          {collapseButtonPlacement === "panel" && <button type="button" onClick={toggleCollapsed} aria-label={`Minimize ${leftLabel}`} title={`Minimize ${leftLabel}`} className="absolute right-2 top-1.5 z-20 grid h-8 w-8 place-items-center border border-amber-dim bg-panel-hi text-amber hover:bg-amber/10 focus-visible:outline-cyan"><CollapseIcon aria-hidden="true" className="h-4 w-4" /></button>}
         </div>
       )}
     </div>
@@ -234,7 +277,7 @@ export function ResizableSplit({
         (dragging ? "bg-amber" : "")
       }
     >
-      {!collapsed && (
+      {!collapsed && collapseButtonPlacement === "divider" && (
         <button
           type="button"
           onClick={toggleCollapsed}
