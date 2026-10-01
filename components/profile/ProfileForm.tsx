@@ -25,18 +25,14 @@ export function ProfileForm(props: Props) {
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
   const language = useProfileLanguage();
-  const [savedDisplayName, setSavedDisplayName] = useState(props.displayName);
   const [savedAvatarUrl, setSavedAvatarUrl] = useState(props.avatarUrl);
-  const [displayName, setDisplayName] = useState(props.displayName);
   const [avatarUrl, setAvatarUrl] = useState(props.avatarUrl);
   const [editing, setEditing] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState<{ kind: "error" | "ok"; text: string } | null>(null);
-  const name = savedDisplayName.trim() || props.username;
 
   function closeEditor() {
-    setDisplayName(savedDisplayName);
     setAvatarUrl(savedAvatarUrl);
     setStatus(null);
     setEditing(false);
@@ -63,11 +59,10 @@ export function ProfileForm(props: Props) {
       const response = await fetch("/api/profile", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ displayName, bio: props.bio, avatarUrl }),
+        body: JSON.stringify({ displayName: props.displayName, bio: props.bio, avatarUrl }),
       });
       const result = (await response.json()) as { error?: string };
       if (!response.ok) throw new Error(result.error ?? "Profil gagal disimpan.");
-      setSavedDisplayName(displayName);
       setSavedAvatarUrl(avatarUrl);
       setEditing(false);
       setStatus({ kind: "ok", text: "Profil tersimpan." });
@@ -79,9 +74,7 @@ export function ProfileForm(props: Props) {
 
   return <div className="mx-auto w-full max-w-2xl px-4 py-7 sm:px-6 sm:py-10">
     <header className="flex flex-col items-center border-b border-rule pb-8 text-center">
-      <Avatar url={savedAvatarUrl} name={name} />
-      <h1 className="mt-4 font-display text-xl font-bold text-ink-hi">{name}</h1>
-      <p className="mt-1 text-xs text-dim">@{props.username} · {language === "id" ? "Bergabung" : "Joined"} {props.memberSince}</p>
+      <Avatar url={savedAvatarUrl} name={props.username} />
       <button type="button" onClick={() => { setEditing(true); setStatus(null); }} className="mt-4 min-h-10 text-sm font-semibold text-cyan hover:underline">
         {language === "id" ? "Ubah Profil" : "Edit Profile"}
       </button>
@@ -119,11 +112,10 @@ export function ProfileForm(props: Props) {
       <form onSubmit={save} role="dialog" aria-modal="true" aria-label={language === "id" ? "Ubah profil" : "Edit profile"} className="max-h-[90dvh] w-full max-w-lg overflow-y-auto border border-rule-hi bg-panel shadow-2xl sm:max-h-[85dvh]">
         <div className="flex items-center justify-between border-b border-rule px-4 py-3"><h2 className="font-display text-sm font-bold text-ink-hi">{language === "id" ? "Ubah Profil" : "Edit Profile"}</h2><button type="button" onClick={closeEditor} aria-label="Tutup" className="grid h-10 w-10 place-items-center text-dim hover:text-ink-hi"><X className="h-5 w-5" /></button></div>
         <div className="space-y-5 p-4 sm:p-5">
-          <div className="flex flex-col items-center gap-3"><Avatar url={avatarUrl} name={displayName.trim() || props.username} /><span className="text-xs text-dim">{language === "id" ? "Pilih avatar" : "Choose an avatar"}</span></div>
+          <div className="flex flex-col items-center gap-3"><Avatar url={avatarUrl} name={props.username} /><span className="text-xs text-dim">{language === "id" ? "Pilih avatar" : "Choose an avatar"}</span></div>
           <div className="grid grid-cols-3 gap-3">{avatarPresets.map((preset) => <button key={preset.url} type="button" onClick={() => setAvatarUrl(preset.url)} aria-label={`Pilih avatar ${preset.name}`} aria-pressed={avatarUrl === preset.url} className={`flex min-h-28 flex-col items-center justify-center gap-2 border p-2 text-xs ${avatarUrl === preset.url ? "border-amber bg-amber/10 text-amber" : "border-rule-hi text-dim hover:border-amber"}`}><Image src={preset.url} alt="" width={72} height={72} className="h-16 w-16 rounded-full object-cover" /><span>{preset.name}</span></button>)}</div>
           <div className="flex flex-wrap justify-center gap-2"><button type="button" onClick={() => fileRef.current?.click()} className="min-h-10 border border-rule-hi px-3 text-xs text-cyan hover:border-amber">{language === "id" ? "Pilih gambar sendiri" : "Upload image"}</button><button type="button" onClick={() => setAvatarUrl(null)} className="min-h-10 border border-rule-hi px-3 text-xs text-dim hover:border-amber">{language === "id" ? "Hapus avatar" : "Remove avatar"}</button><input ref={fileRef} type="file" accept="image/*" onChange={pickAvatar} className="hidden" /></div>
-          <div><label htmlFor="display-name" className="mb-1.5 block text-micro uppercase tracking-wider text-dim">{language === "id" ? "Nama tampilan" : "Display name"}</label><input id="display-name" value={displayName} onChange={(event) => setDisplayName(event.target.value)} maxLength={40} className="h-11 w-full border border-rule-hi bg-void px-3 text-sm text-ink-hi outline-none focus:border-amber" /></div>
-          <p className="text-micro text-dim">Username @{props.username} tetap unik dan tidak berubah.</p>
+          <p className="text-micro text-dim">Akun @{props.username} · {language === "id" ? "bergabung" : "joined"} {props.memberSince}</p>
           {status?.kind === "error" && <p role="alert" className="text-xs text-down">{status.text}</p>}
           <button type="submit" disabled={busy} className="min-h-11 w-full bg-amber px-4 text-xs font-bold uppercase tracking-wider text-void disabled:opacity-60">{busy ? "Menyimpan…" : language === "id" ? "Simpan" : "Save"}</button>
         </div>
