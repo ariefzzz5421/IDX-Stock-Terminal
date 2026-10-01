@@ -6,7 +6,7 @@ import { MarketStatusBadge } from "@/components/terminal/MarketStatusBadge";
 import { Panel } from "@/components/terminal/Panel";
 import { ResizableSplit } from "@/components/terminal/ResizableSplit";
 import { StockTable, type StockRow } from "@/components/terminal/StockTable";
-import { NAV_ITEMS } from "@/lib/navigation";
+import { Nav } from "@/components/terminal/Nav";
 import { MarketVolumeTape } from "@/components/terminal/MarketVolumeTape";
 import { TrendingPopup } from "@/components/terminal/TrendingPopup";
 import type { TrendingStock } from "@/lib/market-data/trending";
@@ -118,21 +118,7 @@ export default function PreviewPage() {
         </div>
       </header>
 
-      <nav aria-label="Menu pratinjau terminal" className="terminal-nav flex items-stretch gap-px overflow-x-auto bg-rule">
-        {NAV_ITEMS.map((tab, index) => (
-          <Link
-            key={tab.href}
-            href={tab.href === "/lokasi-bisnis" ? "/preview/lokasi-bisnis" : tab.href === "/dashboard" ? "/preview" : tab.href}
-            className={`whitespace-nowrap px-4 py-2 text-xs uppercase tracking-[0.12em] ${
-              index === 0
-                ? "bg-panel text-amber shadow-[inset_0_-2px_0_0_var(--color-amber)]"
-                : "bg-panel-hi text-dim"
-            }`}
-          >
-            {tab.shortLabel ?? tab.label}
-          </Link>
-        ))}
-      </nav>
+      <Nav preview />
 
       <MarketVolumeTape stocks={PREVIEW_TRENDING} demo />
       <TrendingPopup stocks={PREVIEW_TRENDING} demo />
