@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
-import { ChevronLeft, ChevronRight, Flame, Grip, SlidersHorizontal } from "lucide-react";
+import { ChevronLeft, ChevronRight, Flame, Grip, Puzzle, SlidersHorizontal } from "lucide-react";
 import { CompanyLogo } from "./CompanyLogo";
 import { directionClass, formatPct, formatPrice, formatValue, formatVolume } from "@/lib/format";
 import type { MarketCapFilter, TrendingStock } from "@/lib/market-data/trending";
 import { useProfileLanguage } from "@/components/profile/LanguageControl";
+import { setTrendingExtensionEnabled } from "@/lib/trending-extension";
 
 type Timeframe = keyof TrendingStock["changes"];
 type Props = {
@@ -36,8 +38,9 @@ function matchesCap(stock: TrendingStock, filter: MarketCapFilter) {
 }
 
 export function TrendingPopup({ stocks, byMarketCap, demo = false }: Props) {
+  const router = useRouter();
   const language = useProfileLanguage();
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(!demo);
   const [timeframe, setTimeframe] = useState<Timeframe>("day");
   const [capFilter, setCapFilter] = useState<MarketCapFilter>("all");
   const [position, setPosition] = useState<{ left: number; top: number } | null>(null);
@@ -64,7 +67,16 @@ export function TrendingPopup({ stocks, byMarketCap, demo = false }: Props) {
 
   function endDrag() { dragOffset.current = null; }
 
+  function closePanel() {
+    setExpanded(false);
+    if (!demo) {
+      setTrendingExtensionEnabled(false);
+      router.refresh();
+    }
+  }
+
   if (!expanded) {
+    if (!demo) return null;
     return <button type="button" onClick={() => setExpanded(true)} aria-label="Open Top 10 Trending" title="Open Top 10 Trending" className="relative z-40 flex min-h-10 w-full items-center justify-center gap-2 border-b border-amber-dim bg-panel-hi text-amber transition-colors hover:bg-panel xl:fixed xl:right-0 xl:top-1/2 xl:h-24 xl:min-h-0 xl:w-8 xl:-translate-y-1/2 xl:flex-col xl:border xl:border-r-0 xl:shadow-lg">
       <ChevronLeft aria-hidden="true" className="h-4 w-4" /><Flame aria-hidden="true" className="h-4 w-4" /><span className="text-micro font-bold uppercase tracking-widest xl:hidden">Top 10 Trending</span>
     </button>;
@@ -75,13 +87,14 @@ export function TrendingPopup({ stocks, byMarketCap, demo = false }: Props) {
       <button type="button" onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={endDrag} aria-label="Drag Trending panel" title="Drag panel" className="grid h-9 w-7 shrink-0 touch-none place-items-center text-dim hover:text-amber"><Grip aria-hidden="true" className="h-4 w-4" /></button>
       <Flame aria-hidden="true" className="h-4 w-4 shrink-0 text-amber" />
       <div className="min-w-0 flex-1"><div className="font-display text-xs font-bold uppercase tracking-widest text-amber">Top 10 Trending</div><div className="truncate text-micro text-dim">{demo ? language === "id" ? "Data contoh · bukan harga pasar" : "Sample data · not market prices" : language === "id" ? "Peringkat volume harian · data tertunda" : "Daily volume rank · delayed data"}</div></div>
-      <button type="button" onClick={() => setExpanded(false)} aria-label="Dock Trending panel to right edge" title="Dock to right edge" className="grid h-9 w-9 shrink-0 place-items-center border border-rule text-ink hover:text-amber"><ChevronRight aria-hidden="true" className="h-4 w-4" /></button>
+      {!demo && <Link href="/extension" aria-label="Pengaturan Extension" title="Pengaturan Extension" className="grid h-9 w-9 shrink-0 place-items-center border border-rule text-ink hover:text-amber"><Puzzle aria-hidden="true" className="h-4 w-4" /></Link>}
+      <button type="button" onClick={closePanel} aria-label={demo ? "Dock Trending panel to right edge" : "Tutup Top 10 Trending"} title={demo ? "Dock to right edge" : "Tutup panel"} className="grid h-9 w-9 shrink-0 place-items-center border border-rule text-ink hover:text-amber"><ChevronRight aria-hidden="true" className="h-4 w-4" /></button>
     </div>
     <div className="grid grid-cols-2 gap-2 border-y border-rule px-3 py-2 text-micro text-dim">
       <label className="min-w-0"><span className="mb-1 flex items-center gap-1"><SlidersHorizontal aria-hidden="true" className="h-3 w-3" /> Market cap</span><select value={capFilter} onChange={(event) => setCapFilter(event.target.value as MarketCapFilter)} aria-label="Filter market cap" className="min-h-9 w-full border border-rule bg-void px-2 text-xs text-ink">{CAP_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
       <label className="min-w-0"><span className="mb-1 block">Timeframe</span><select value={timeframe} onChange={(event) => setTimeframe(event.target.value as Timeframe)} aria-label="Choose price change timeframe" className="min-h-9 w-full border border-rule bg-void px-2 text-xs text-ink"><option value="day">1 day</option><option value="week">1 week</option><option value="month">1 month</option></select></label>
     </div>
-    {visible.length ? <ol className="max-h-[min(27rem,55vh)] overflow-y-auto">{visible.map((stock, index) => <li key={stock.code} className="border-b border-rule/50 last:border-0"><Link href={`/asset/${stock.code}`} className="flex min-w-0 items-center gap-2 px-3 py-2 hover:bg-panel-hi"><span className="w-6 shrink-0 text-right text-micro tabular-nums text-amber">#{index + 1}</span><CompanyLogo code={stock.code} logoUrl={stock.logoUrl} /><span className="min-w-0 flex-1"><span className="block text-xs font-bold text-ink-hi">{stock.code}</span><span className="block truncate text-micro text-dim" title={stock.name}>{stock.name}</span><span className="block text-micro text-dimmer">Cap {formatValue(stock.marketCap)}</span></span><span className="text-right"><span className={`block text-xs font-bold tabular-nums ${directionClass(stock.changes[timeframe])}`}>{formatPct(stock.changes[timeframe])}</span><span className="block text-micro tabular-nums text-dim">{formatPrice(stock.lastPrice)}</span><span className="block text-micro tabular-nums text-dimmer">Volume {formatVolume(stock.volume)}</span></span></Link></li>)}</ol> : <p className="p-4 text-xs text-dim">{language === "id" ? "Tidak ada saham yang cocok dengan filter." : "No stocks match this filter."}</p>}
+    {visible.length ? <ol className="max-h-[min(27rem,55vh)] overflow-y-auto">{visible.map((stock, index) => <li key={stock.code} className="border-b border-rule/50 last:border-0"><Link href={`/asset/${stock.code}`} className="flex min-w-0 items-center gap-2 px-3 py-2 hover:bg-panel-hi"><span className="w-6 shrink-0 text-right text-micro tabular-nums text-amber">#{index + 1}</span><CompanyLogo code={stock.code} logoUrl={stock.logoUrl} /><span className="min-w-0 flex-1"><span className="block text-xs font-bold text-ink-hi">{stock.code}</span><span className="block truncate text-micro text-ink" title={stock.name}>{stock.name}</span><span className="block text-micro text-dim">Cap {formatValue(stock.marketCap)}</span></span><span className="text-right"><span className={`block text-xs font-bold tabular-nums ${directionClass(stock.changes[timeframe])}`}>{formatPct(stock.changes[timeframe])}</span><span className="block text-micro tabular-nums text-dim">{formatPrice(stock.lastPrice)}</span><span className="block text-micro tabular-nums text-dim">Volume {formatVolume(stock.volume)}</span></span></Link></li>)}</ol> : <p className="p-4 text-xs text-dim">{language === "id" ? "Tidak ada saham yang cocok dengan filter." : "No stocks match this filter."}</p>}
     <p className="border-t border-rule px-3 py-2 text-micro leading-relaxed text-dimmer">{demo ? language === "id" ? "Angka hanya untuk pratinjau tata letak." : "Figures are for layout preview only." : language === "id" ? "Snapshot TradingView tertunda. Peringkat menurut volume saham; pilihan waktu hanya mengubah kinerja harga." : "Delayed TradingView snapshot. Ranked by share volume; timeframe changes price performance only."}</p>
   </aside></>;
 }

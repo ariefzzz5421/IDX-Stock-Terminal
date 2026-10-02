@@ -8,7 +8,6 @@ import { ResizableSplit } from "@/components/terminal/ResizableSplit";
 import { StockTable, type StockRow } from "@/components/terminal/StockTable";
 import { Nav } from "@/components/terminal/Nav";
 import { MarketVolumeTape } from "@/components/terminal/MarketVolumeTape";
-import { TrendingPopup } from "@/components/terminal/TrendingPopup";
 import type { TrendingStock } from "@/lib/market-data/trending";
 import { missingSettings } from "@/lib/config";
 
@@ -121,7 +120,6 @@ export default function PreviewPage() {
       <Nav preview />
 
       <MarketVolumeTape stocks={PREVIEW_TRENDING} demo />
-      <TrendingPopup stocks={PREVIEW_TRENDING} demo />
 
       <main className="flex min-h-0 flex-1 flex-col">
         <ResizableSplit storageKey="preview" defaultWidth={340} leftLabel="watchlist" collapseButtonPlacement="panel" mobileDrawerCount={WATCHLIST.length} left={

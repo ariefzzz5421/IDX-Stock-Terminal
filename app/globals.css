@@ -18,8 +18,8 @@
      rather than fighting it. */
   --color-ink: #c7cdd9;
   --color-ink-hi: #edf1f7;
-  --color-dim: #626b7c;
-  --color-dimmer: #3e4552;
+  --color-dim: #919bad;
+  --color-dimmer: #788497;
 
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
   --font-display: var(--font-plex-mono), var(--font-jetbrains-mono), monospace;

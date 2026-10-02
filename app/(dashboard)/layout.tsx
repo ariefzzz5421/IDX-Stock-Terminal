@@ -43,7 +43,7 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
           <span className="font-display text-lg font-bold tracking-[0.16em] text-amber">
             IDX
           </span>
-          <span className="text-micro uppercase tracking-[0.2em] text-dim">
+          <span className="text-micro font-semibold uppercase tracking-[0.2em] text-ink">
             Terminal
           </span>
         </Link>

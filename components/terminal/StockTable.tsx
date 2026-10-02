@@ -92,8 +92,8 @@ export function StockTable({
                     <span className="font-bold tracking-[0.05em] text-ink-hi group-hover:text-amber">
                       {row.code}
                     </span>
-                    <span className="truncate text-micro text-dimmer" title={row.name}>{row.name}</span>
-                    <span className="block break-words text-micro text-dimmer @min-[32rem]/stocktable:hidden">{extraLabel}: {extra === "volume" ? formatVolume(row.lastVolume) : formatValue(extra === "value" ? row.lastValue : row.marketCap)}</span>
+                    <span className="truncate text-micro text-ink" title={row.name}>{row.name}</span>
+                    <span className="block break-words text-micro text-dim @min-[32rem]/stocktable:hidden">{extraLabel}: {extra === "volume" ? formatVolume(row.lastVolume) : formatValue(extra === "value" ? row.lastValue : row.marketCap)}</span>
                   </span>
                 </span>
               </td>
