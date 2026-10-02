@@ -4,10 +4,12 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   CandlestickSeries,
   HistogramSeries,
+  LineSeries,
   createChart,
   type IChartApi,
   type UTCTimestamp,
 } from "lightweight-charts";
+import { bollinger, ema, macd, rsi, seriesPoints, sma, vwap, type IndicatorKey } from "@/lib/chart-indicators";
 
 export type ChartTool = "cursor" | "horizontal" | "trend";
 export type ChartDrawing =
@@ -35,7 +37,7 @@ function chartPalette() {
   };
 }
 
-export function Chart({ candles, intraday = true, tool = "cursor", drawings = [], onAddDrawing }: { candles: ChartCandle[]; intraday?: boolean; tool?: ChartTool; drawings?: ChartDrawing[]; onAddDrawing?: (drawing: ChartDrawing) => void }) {
+export function Chart({ candles, intraday = true, tool = "cursor", drawings = [], indicators = [], onAddDrawing }: { candles: ChartCandle[]; intraday?: boolean; tool?: ChartTool; drawings?: ChartDrawing[]; indicators?: IndicatorKey[]; onAddDrawing?: (drawing: ChartDrawing) => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const toolRef = useRef(tool);
@@ -103,6 +105,45 @@ export function Chart({ candles, intraday = true, tool = "cursor", drawings = []
           close: candle.close,
         })),
       );
+
+      const closes = candles.map((candle) => candle.close);
+      const addLine = (values: Array<number | null>, color: string, paneIndex = 0, width: 1 | 2 = 2) => {
+        const series = chart.addSeries(LineSeries, {
+          color, lineWidth: width, priceLineVisible: false, lastValueVisible: false,
+          crosshairMarkerVisible: false,
+        }, paneIndex);
+        series.setData(seriesPoints(candles, values).map((point) => ({ time: point.time as UTCTimestamp, value: point.value })));
+        return series;
+      };
+      if (indicators.includes("sma")) addLine(sma(closes, 20), "#f5a623");
+      if (indicators.includes("ema")) addLine(ema(closes, 20), "#54a8f0");
+      if (indicators.includes("bb")) {
+        const bands = bollinger(closes);
+        addLine(bands.upper, "#a987ec", 0, 1);
+        addLine(bands.middle, "#a987ec", 0, 1);
+        addLine(bands.lower, "#a987ec", 0, 1);
+      }
+      if (indicators.includes("vwap")) addLine(vwap(candles), "#e7c95c");
+      if (indicators.includes("rsi")) {
+        const pane = chart.addPane();
+        pane.setHeight(100);
+        const rsiSeries = addLine(rsi(closes), "#a987ec", pane.paneIndex());
+        rsiSeries.createPriceLine({ price: 70, color: "#a987ec77", lineWidth: 1, lineStyle: 2, axisLabelVisible: true, title: "70" });
+        rsiSeries.createPriceLine({ price: 30, color: "#a987ec77", lineWidth: 1, lineStyle: 2, axisLabelVisible: true, title: "30" });
+      }
+      if (indicators.includes("macd")) {
+        const pane = chart.addPane();
+        pane.setHeight(110);
+        const data = macd(closes);
+        const macdSeries = addLine(data.line, "#54a8f0", pane.paneIndex());
+        macdSeries.createPriceLine({ price: 0, color: "#626b7c88", lineWidth: 1, lineStyle: 2, axisLabelVisible: true, title: "0" });
+        addLine(data.signal, "#f5a623", pane.paneIndex());
+        chart.addSeries(HistogramSeries, {
+          priceLineVisible: false, lastValueVisible: false,
+        }, pane.paneIndex()).setData(seriesPoints(candles, data.histogram).map((point) => ({
+          time: point.time as UTCTimestamp, value: point.value, color: point.value >= 0 ? "#2bd97c88" : "#ff4b5788",
+        })));
+      }
 
       let firstPoint: { time: number; price: number } | null = null;
       const repaint = () => {
@@ -184,7 +225,7 @@ export function Chart({ candles, intraday = true, tool = "cursor", drawings = []
         "text-dim",
       );
     }
-  }, [candles, intraday]);
+  }, [candles, intraday, indicators]);
 
   if (candles.length === 0) {
     return <p className="p-3 text-[12px] text-dim">Riwayat harga belum tersedia.</p>;
