@@ -50,6 +50,9 @@ export const getMarketActivity = cache(async (): Promise<MarketActivity> => {
   try {
     const response = await fetch("https://scanner.tradingview.com/indonesia/scan", {
       method: "POST",
+      // Next.js does not cache POST requests by default. Share this public,
+      // delayed snapshot across viewers while keeping account data uncached.
+      cache: "force-cache",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         filter: [{ left: "exchange", operation: "equal", right: "IDX" }],
