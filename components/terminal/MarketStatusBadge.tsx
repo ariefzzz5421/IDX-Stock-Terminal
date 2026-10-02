@@ -32,16 +32,21 @@ export function MarketStatusBadge() {
   const language = useProfileLanguage();
   const [status, setStatus] = useState<MarketStatus | null>(null);
   const [clock, setClock] = useState<string | null>(null);
+  const [date, setDate] = useState<string | null>(null);
 
   useEffect(() => {
     const tick = () => {
-      setStatus(marketStatus());
-      setClock(jakartaNow().clock);
+      const now = new Date();
+      setStatus(marketStatus(now));
+      setClock(jakartaNow(now).clock);
+      setDate(new Intl.DateTimeFormat(language === "id" ? "id-ID" : "en-GB", {
+        timeZone: "Asia/Jakarta", day: "2-digit", month: "short", year: "numeric",
+      }).format(now));
     };
     tick();
     const timer = setInterval(tick, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [language]);
 
   // Nothing until mounted: the server and the viewer's clock won't agree.
   if (!status || !clock) {
@@ -80,10 +85,9 @@ export function MarketStatusBadge() {
       </span>
 
       <div className="flex flex-col leading-tight">
-        <span
-          className={`text-xs font-bold uppercase tracking-[0.1em] ${text}`}
-        >
-          {copy.label}
+        <span className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+          <span className={`text-xs font-bold uppercase tracking-[0.1em] ${text}`}>{copy.label}</span>
+          {date && <time dateTime={new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jakarta", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date())} className="text-[11px] font-semibold uppercase tracking-[0.04em] text-ink">{date}</time>}
         </span>
         <span className="text-[11px] tracking-[0.04em] text-dim">
           {copy.next} · {clock} WIB

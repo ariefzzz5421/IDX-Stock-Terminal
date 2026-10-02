@@ -10,7 +10,7 @@ import { useProfileLanguage } from "@/components/profile/LanguageControl";
 const INDONESIAN_LABELS: Record<string, string> = {
   "/dashboard": "Beranda", "/watchlist": "Pantauan", "/top10": "Top 10",
   "/foreign-flow": "Arus Asing", "/hot": "Hot", "/market": "Pasar",
-  "/sector": "Sector", "/overview": "Overview", "/konglo": "Konglo", "/lokasi-bisnis": "Lokasi Bisnis",
+  "/sector": "Sector", "/overview": "Overview", "/free-float": "Free Float", "/konglo": "Konglo", "/lokasi-bisnis": "Lokasi Bisnis",
   "/ai-analyst": "AI Analyst", "/account": "Profil",
 };
 
