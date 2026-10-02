@@ -1,7 +1,7 @@
 import "server-only";
-import holdingsJson from "@/data/shareholders-2026-02.json";
+import holdingsJson from "@/data/shareholders-2026-05.json";
 
-type Row = [name: string, percentage: number, shares: number, type: string];
+type Row = [name: string, percentage: number, shares: number, type: string, localForeign: string, domicile: string];
 const holdings = holdingsJson as unknown as Record<string, Row[]>;
 
 export const OWNERSHIP_ROWS = Object.values(holdings).reduce((sum, rows) => sum + rows.length, 0);
@@ -16,11 +16,13 @@ const typeNames: Record<string, string> = {
 export function ownershipOverview() {
   const types = new Map<string, number>();
   const investors = new Map<string, Set<string>>();
+  const disclosedNames = new Set<string>();
   const busiest: { code: string; count: number }[] = [];
   for (const [code, rows] of Object.entries(holdings)) {
     busiest.push({ code, count: rows.length });
     for (const [name, , , type] of rows) {
       types.set(type, (types.get(type) ?? 0) + 1);
+      disclosedNames.add(name.trim());
       const key = name.trim().toUpperCase();
       const codes = investors.get(key) ?? new Set<string>();
       codes.add(code);
@@ -28,7 +30,7 @@ export function ownershipOverview() {
     }
   }
   return {
-    investorCount: investors.size,
+    investorCount: disclosedNames.size,
     types: [...types].map(([type, count]) => ({ type, name: typeNames[type] ?? type, count, percentage: count / OWNERSHIP_ROWS * 100 })).sort((a, b) => b.count - a.count),
     crossHolders: [...investors].map(([name, codes]) => ({ name, count: codes.size })).sort((a, b) => b.count - a.count).slice(0, 12),
     busiest: busiest.sort((a, b) => b.count - a.count).slice(0, 12),

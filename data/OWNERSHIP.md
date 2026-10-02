@@ -1,0 +1,7 @@
+# Ownership snapshot
+
+`shareholders-2026-05.json` contains 7,161 positions across 956 tickers, dated 29 May 2026. It was generated from the public **Unduh CSV** export at https://www.ceritasaham.com/superinvestor, which attributes its underlying shareholder register to KSEI/BEI. The BEI disclosure page is https://www.idx.co.id/en/listed-companies/share-ownership-data-of-listed-companies/.
+
+Run `python scripts/import-ownership-csv.py input.csv data/shareholders-2026-05.json` to reproduce the compact dataset. The import retains investor names, share counts, investor classifications, and local/foreign metadata. A data quality check found decimal-shifted percentages in the CSV. The importer reconciles percentages with each ticker's common outstanding-share denominator; it uses `prisma/idx-listing.json` when its listed-share count agrees within 1%, or when every CSV percentage appears shifted tenfold. 1,096 of 7,161 percentages changed by more than 0.05 percentage points. It rejects a ticker whose reconciled disclosed positions exceed 100.5%.
+
+The catalog's listed-share counts are dated 31 August or 30 September 2026, while these holder positions are from 29 May 2026. Where those counts differ materially, the importer uses the denominator inferred from the May holder rows instead. This is a derived reconstruction of the public CSV, not a new KSEI release. Keep the snapshot date visible in the UI and verify any material ownership or valuation claim against the original issuer disclosure.

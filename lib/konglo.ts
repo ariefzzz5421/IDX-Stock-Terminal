@@ -1,6 +1,6 @@
 import "server-only";
 import { getCompanyCatalogEntry } from "@/lib/company-catalog";
-import { OWNERSHIP_SOURCE, codesForNamedShareholder, shareholdersFor } from "@/lib/shareholders";
+import { OWNERSHIP_AS_OF, OWNERSHIP_SOURCE, codesForNamedShareholder, shareholdersFor } from "@/lib/shareholders";
 
 export const FORBES_LIST_URL = "https://www.forbes.com/lists/indonesia-billionaires/?view=pc";
 export const FORBES_LIST_DATE = "10 Desember 2025";
@@ -21,7 +21,7 @@ export type KongloProfile = {
 
 const HAJI_SOURCE = "https://market.bisnis.com/read/20260921/192/2005815/deretan-portofolio-bisnis-haji-isam-dari-sawit-pertambangan-hingga-transportasi";
 const BAKRIE_SOURCE = "https://bakrie-brothers.com/wp-content/uploads/2026/04/BNBR-Integrated-Annual-Report-2025.pdf";
-const OWNERSHIP_DATE = "27 Februari 2026";
+const OWNERSHIP_DATE = OWNERSHIP_AS_OF;
 
 /** Forbes wealth and KSEI direct ownership have different dates and scopes. */
 const CURATED_PROFILES: readonly KongloProfile[] = [

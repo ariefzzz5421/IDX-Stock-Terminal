@@ -1,11 +1,11 @@
 import "server-only";
-import holdingsJson from "@/data/shareholders-2026-02.json";
+import holdingsJson from "@/data/shareholders-2026-05.json";
 
-export const OWNERSHIP_AS_OF = "27 Februari 2026";
+export const OWNERSHIP_AS_OF = "29 Mei 2026";
 export const OWNERSHIP_SOURCE = "https://www.idx.co.id/en/listed-companies/share-ownership-data-of-listed-companies/";
-export const OWNERSHIP_TRANSCRIPTION = "https://github.com/aryakdaniswara/idx-stock-ownership";
+export const OWNERSHIP_TRANSCRIPTION = "https://www.ceritasaham.com/superinvestor";
 
-type HoldingTuple = [name: string, percentage: number, shares: number, investorType: string];
+type HoldingTuple = [name: string, percentage: number, shares: number, investorType: string, localForeign: string, domicile: string];
 type Affiliation = { label: string; sourceUrl: string };
 
 /** Only source-confirmed relationships are tagged. Unknown is not independent. */
@@ -22,6 +22,8 @@ export type NamedShareholder = {
   percentage: number;
   shares: number;
   investorType: string;
+  localForeign: string;
+  domicile: string;
   affiliation: Affiliation | null;
 };
 
@@ -29,9 +31,9 @@ export function shareholdersFor(code: string): NamedShareholder[] {
   const upper = code.toUpperCase();
   const tuples = (holdingsJson as unknown as Record<string, HoldingTuple[]>)[upper] ?? [];
   return tuples
-    .filter((row) => row[1] > 1 && row[0])
-    .map(([name, percentage, shares, investorType]) => ({
-      name, percentage, shares, investorType,
+    .filter((row) => row[1] >= 1 && row[0])
+    .map(([name, percentage, shares, investorType, localForeign, domicile]) => ({
+      name, percentage, shares, investorType, localForeign, domicile,
       affiliation: AFFILIATIONS[upper]?.[name.toUpperCase()] ?? null,
     }))
     .sort((a, b) => b.percentage - a.percentage);
@@ -50,7 +52,7 @@ function shareholderCodeIndex() {
   holderIndex = new Map();
   for (const [code, rows] of Object.entries(holdingsJson as unknown as Record<string, HoldingTuple[]>)) {
     for (const [name, percentage] of rows) {
-      if (percentage <= 1) continue;
+      if (percentage < 1) continue;
       const key = name.trim().toUpperCase();
       const codes = holderIndex.get(key) ?? [];
       codes.push(code);

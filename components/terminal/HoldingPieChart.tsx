@@ -47,7 +47,7 @@ export function HoldingPieChart({ holders }: { holders: NamedShareholder[] }) {
       <div className="max-h-52 overflow-y-auto">
         {slices.map((slice, index) => <button key={`${slice.name}-${index}`} type="button" onMouseEnter={() => setSelected(index)} onMouseLeave={() => setSelected(null)} onFocus={() => setSelected(index)} onBlur={() => setSelected(null)} onClick={() => setSelected(selected === index ? null : index)} className="flex min-h-8 w-full items-center gap-2 border-b border-rule/60 py-1 text-left text-[11px] hover:text-amber focus-visible:outline-amber" aria-pressed={selected === index}><span className="h-2.5 w-2.5 shrink-0" style={{ backgroundColor: slice.color }} /><span className="min-w-0 flex-1 break-words">{slice.name}</span><span className="shrink-0 tabular-nums">{slice.percentage.toLocaleString("id-ID", { maximumFractionDigits: 4 })}%</span></button>)}
       </div>
-      <p className="mt-2 text-[10px] leading-relaxed text-dim">Bagian “lainnya” adalah selisih dari pemegang &gt;1% yang tercantum; dapat mencakup pemegang kecil, data tidak terurai, dan pembulatan. Jika total sumber melebihi 100%, irisan dinormalisasi hanya untuk tampilan.</p>
+      <p className="mt-2 text-[10px] leading-relaxed text-dim">Bagian “lainnya” adalah selisih dari pemegang ≥1% yang tercantum; dapat mencakup pemegang kecil, data tidak terurai, dan pembulatan. Jika total sumber melebihi 100%, irisan dinormalisasi hanya untuk tampilan.</p>
     </div>
   </div>;
 }

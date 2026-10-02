@@ -6,8 +6,8 @@ import { OWNERSHIP_AS_OF, OWNERSHIP_SOURCE, OWNERSHIP_TRANSCRIPTION, type NamedS
 export function ShareholderList({ holders }: { holders: NamedShareholder[] }) {
   return (
     <div className="mt-5 border-t border-rule pt-4">
-      <h3 className="text-micro font-semibold uppercase tracking-[0.12em] text-amber">Pemegang saham &gt;1%</h3>
-      <p className="mt-2 text-xs leading-relaxed text-dim">Snapshot KSEI/BEI {OWNERSHIP_AS_OF}. Kepemilikan bisa berubah setelah tanggal tersebut. Status afiliasi hanya diberi label jika didukung dokumen perusahaan.</p>
+      <h3 className="text-micro font-semibold uppercase tracking-[0.12em] text-amber">Pemegang saham ≥1%</h3>
+      <p className="mt-2 text-xs leading-relaxed text-dim">Snapshot KSEI/BEI {OWNERSHIP_AS_OF}. Persentase CSV yang tidak konsisten dihitung ulang dari lembar saham. Kepemilikan bisa berubah setelah tanggal tersebut. Status afiliasi hanya diberi label jika didukung dokumen perusahaan.</p>
       <HoldingPieChart holders={holders} />
       {holders.length ? (
         <details className="mt-3 border border-rule-hi bg-panel-hi" open>
@@ -25,7 +25,7 @@ export function ShareholderList({ holders }: { holders: NamedShareholder[] }) {
             ))}
           </ol>
         </details>
-      ) : <p className="mt-3 text-xs text-dim">Tidak ada rincian &gt;1% untuk ticker ini dalam snapshot tersebut.</p>}
+      ) : <p className="mt-3 text-xs text-dim">Tidak ada rincian ≥1% untuk ticker ini dalam snapshot tersebut.</p>}
       <p className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-dim">
         <a href={OWNERSHIP_SOURCE} target="_blank" rel="noopener noreferrer" className="text-cyan hover:underline">Sumber BEI/KSEI ↗</a>
         <a href={OWNERSHIP_TRANSCRIPTION} target="_blank" rel="noopener noreferrer" className="text-cyan hover:underline">Transkripsi CSV ↗</a>
