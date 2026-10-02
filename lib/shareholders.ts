@@ -36,3 +36,26 @@ export function shareholdersFor(code: string): NamedShareholder[] {
     }))
     .sort((a, b) => b.percentage - a.percentage);
 }
+
+/** Discover exact-name positions without guessing a person's company affiliations. */
+export function codesForNamedShareholder(holderName: string): string[] {
+  const needle = holderName.trim().toUpperCase();
+  if (!needle) return [];
+  return shareholderCodeIndex().get(needle) ?? [];
+}
+
+let holderIndex: Map<string, string[]> | null = null;
+function shareholderCodeIndex() {
+  if (holderIndex) return holderIndex;
+  holderIndex = new Map();
+  for (const [code, rows] of Object.entries(holdingsJson as unknown as Record<string, HoldingTuple[]>)) {
+    for (const [name, percentage] of rows) {
+      if (percentage <= 1) continue;
+      const key = name.trim().toUpperCase();
+      const codes = holderIndex.get(key) ?? [];
+      codes.push(code);
+      holderIndex.set(key, codes);
+    }
+  }
+  return holderIndex;
+}

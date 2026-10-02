@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   CandlestickSeries,
   HistogramSeries,
@@ -8,6 +8,11 @@ import {
   type IChartApi,
   type UTCTimestamp,
 } from "lightweight-charts";
+
+export type ChartTool = "cursor" | "horizontal" | "trend";
+export type ChartDrawing =
+  | { id: string; kind: "horizontal"; price: number }
+  | { id: string; kind: "trend"; from: { time: number; price: number }; to: { time: number; price: number } };
 
 export type ChartCandle = {
   time: number;
@@ -30,9 +35,17 @@ function chartPalette() {
   };
 }
 
-export function Chart({ candles, intraday = true }: { candles: ChartCandle[]; intraday?: boolean }) {
+export function Chart({ candles, intraday = true, tool = "cursor", drawings = [], onAddDrawing }: { candles: ChartCandle[]; intraday?: boolean; tool?: ChartTool; drawings?: ChartDrawing[]; onAddDrawing?: (drawing: ChartDrawing) => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
+  const toolRef = useRef(tool);
+  const drawingsRef = useRef(drawings);
+  const onAddRef = useRef(onAddDrawing);
+  const repaintRef = useRef<(() => void) | null>(null);
+  const [lines, setLines] = useState<Array<{ id: string; x1: number; y1: number; x2: number; y2: number }>>([]);
+  useEffect(() => { toolRef.current = tool; }, [tool]);
+  useEffect(() => { drawingsRef.current = drawings; repaintRef.current?.(); }, [drawings]);
+  useEffect(() => { onAddRef.current = onAddDrawing; }, [onAddDrawing]);
 
   useLayoutEffect(() => {
     const container = containerRef.current;
@@ -91,6 +104,39 @@ export function Chart({ candles, intraday = true }: { candles: ChartCandle[]; in
         })),
       );
 
+      let firstPoint: { time: number; price: number } | null = null;
+      const repaint = () => {
+        const width = container.clientWidth;
+        setLines(drawingsRef.current.flatMap((drawing) => {
+          const y1 = candleSeries.priceToCoordinate(drawing.kind === "horizontal" ? drawing.price : drawing.from.price);
+          const y2 = drawing.kind === "horizontal" ? y1 : candleSeries.priceToCoordinate(drawing.to.price);
+          const x1 = drawing.kind === "horizontal" ? 0 : chart.timeScale().timeToCoordinate(drawing.from.time as UTCTimestamp);
+          const x2 = drawing.kind === "horizontal" ? width : chart.timeScale().timeToCoordinate(drawing.to.time as UTCTimestamp);
+          return x1 == null || x2 == null || y1 == null || y2 == null ? [] : [{ id: drawing.id, x1, y1, x2, y2 }];
+        }));
+      };
+      repaintRef.current = repaint;
+      chart.subscribeClick((event) => {
+        if (toolRef.current === "cursor" || !event.point) return;
+        const price = candleSeries.coordinateToPrice(event.point.y);
+        if (price === null || !Number.isFinite(price) || price <= 0) return;
+        if (toolRef.current === "horizontal") {
+          onAddRef.current?.({ id: crypto.randomUUID(), kind: "horizontal", price });
+          return;
+        }
+        const time = chart.timeScale().coordinateToTime(event.point.x);
+        if (typeof time !== "number") return;
+        const point = { time, price };
+        if (!firstPoint) firstPoint = point;
+        else {
+          onAddRef.current?.({ id: crypto.randomUUID(), kind: "trend", from: firstPoint, to: point });
+          firstPoint = null;
+        }
+      });
+      chart.timeScale().subscribeVisibleLogicalRangeChange(repaint);
+      const resize = new ResizeObserver(repaint);
+      resize.observe(container);
+
       function updateTheme() {
         const colors = chartPalette();
         chart.applyOptions({
@@ -115,11 +161,15 @@ export function Chart({ candles, intraday = true }: { candles: ChartCandle[]; in
       themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
       chart.timeScale().fitContent();
+      repaint();
 
       return () => {
+        resize.disconnect();
+        chart.timeScale().unsubscribeVisibleLogicalRangeChange(repaint);
         themeObserver.disconnect();
         chart.remove();
         chartRef.current = null;
+        repaintRef.current = null;
       };
     } catch (chartError) {
       console.error("[chart] could not render:", chartError);
@@ -143,6 +193,9 @@ export function Chart({ candles, intraday = true }: { candles: ChartCandle[]; in
   return (
     <div className="relative h-[25rem] w-full">
       <div ref={containerRef} className="absolute inset-0" />
+      <svg className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden="true">
+        {lines.map((line) => <line key={line.id} x1={line.x1} y1={line.y1} x2={line.x2} y2={line.y2} stroke="#f5a623" strokeWidth="1.5" strokeDasharray="5 3" />)}
+      </svg>
     </div>
   );
 }

@@ -15,7 +15,8 @@ function slicePath(start: number, end: number) {
   if (end - start >= 359.999) return "M 100 14 A 86 86 0 1 1 99.99 14 Z";
   const a = point(start);
   const b = point(end);
-  return `M 100 100 L ${a.x} ${a.y} A 86 86 0 ${end - start > 180 ? 1 : 0} 1 ${b.x} ${b.y} Z`;
+  // Stable SVG serialization avoids tiny server/browser floating-point differences during hydration.
+  return `M 100 100 L ${a.x.toFixed(4)} ${a.y.toFixed(4)} A 86 86 0 ${end - start > 180 ? 1 : 0} 1 ${b.x.toFixed(4)} ${b.y.toFixed(4)} Z`;
 }
 
 export function HoldingPieChart({ holders }: { holders: NamedShareholder[] }) {

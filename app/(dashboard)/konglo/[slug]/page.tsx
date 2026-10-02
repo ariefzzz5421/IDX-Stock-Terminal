@@ -46,11 +46,14 @@ export default async function KongloDetailPage({ params }: PageProps<"/konglo/[s
     <div className="min-w-0 bg-panel">
       <section className="min-w-0">
         <h2 className="border-b border-rule bg-panel-hi px-4 py-3 text-xs font-bold uppercase tracking-wider text-amber">Komposisi aset saham terpetakan</h2>
-        <div className="p-4 sm:p-5"><PortfolioDonut items={chartItems} />
-          <p className="mt-4 text-micro leading-relaxed text-dim">Irisan = persentase saham × kapitalisasi pasar katalog. Label “entitas” menunjukkan nilai saham perusahaan grup atau deemed interest, bukan nilai ekonomis pribadi tokoh. Persentase tanpa sumber atau kapitalisasi pasar tidak masuk grafik. Angka memakai tanggal kepemilikan dan valuasi yang bisa berbeda.</p>
-        </div>
+        <div className="p-4 sm:p-5"><PortfolioDonut items={chartItems} /></div>
       </section>
     </div>
+
+    {profile.pendingExposure?.length ? <section className="border-t border-rule">
+      <h2 className="border-b border-rule bg-panel-hi px-4 py-3 text-xs font-bold uppercase tracking-wider text-amber">Transaksi diumumkan · belum selesai</h2>
+      <ul className="divide-y divide-rule">{profile.pendingExposure.map((item) => <li key={item.code} className="flex flex-wrap items-center gap-3 px-4 py-3 text-xs sm:px-6"><Link href={`/asset/${item.code}`} className="font-bold text-cyan hover:underline">{item.code}</Link><span className="text-ink-hi">{item.holder} · rencana {item.percentage}%</span><span className="text-dim">{item.note} Diumumkan {item.announcedOn}; tidak masuk total portofolio.</span><SourceLink href={item.sourceUrl}>Keterbukaan transaksi</SourceLink></li>)}</ul>
+    </section> : null}
 
     <section className="min-w-0 border-t border-rule">
       <h2 className="border-b border-rule bg-panel-hi px-4 py-3 text-xs font-bold uppercase tracking-wider text-amber">Emiten terkait</h2>

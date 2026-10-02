@@ -17,6 +17,7 @@ import { companySummaryId } from "@/lib/company-summary-id";
 import { Panel } from "@/components/terminal/Panel";
 import { ResizableSplit } from "@/components/terminal/ResizableSplit";
 import { ChartRangeSelector } from "@/components/terminal/ChartRange";
+import { StockDailyFlow } from "@/components/terminal/StockDailyFlow";
 import { getYahooRangeOHLCV } from "@/lib/market-data/yahoo";
 import { CompanyLogo } from "@/components/terminal/CompanyLogo";
 import { WatchlistToggle } from "@/components/terminal/WatchlistToggle";
@@ -83,6 +84,8 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
     fresh.lastPrice != null && fresh.prevClose != null
       ? fresh.lastPrice - fresh.prevClose
       : null;
+  const tradingDate = new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeZone: "Asia/Jakarta" }).format(fresh.updatedAt);
+  const tradingTime = new Intl.DateTimeFormat("id-ID", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Jakarta" }).format(fresh.updatedAt);
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-px">
@@ -106,16 +109,17 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
             {formatPrice(fresh.lastPrice)}
           </div>
           <div className={`mt-1.5 text-sm font-medium ${directionClass(change)}`}>
-            {formatChange(change)} &nbsp; {formatPct(fresh.lastChangePct)}
+            <span className="text-micro text-dim">1D</span> &nbsp; {formatChange(change)} &nbsp; {formatPct(fresh.lastChangePct)}
           </div>
+          <p className="mt-1 text-micro text-dim">{tradingDate} · penutupan sebelumnya {formatPrice(fresh.prevClose)}</p>
         </div>
 
         <dl className="grid grid-cols-2 gap-x-8 gap-y-2.5 sm:grid-cols-3 lg:grid-cols-5">
           <Stat k="Penutupan lalu" v={formatPrice(fresh.prevClose)} />
-          <Stat k="Volume" v={formatVolume(fresh.lastVolume)} />
-          <Stat k={quote && marketData.name === "yahoo" ? "Nilai transaksi est." : "Nilai transaksi"} v={formatValue(fresh.lastValue)} />
+          <Stat k="Volume · 1D" v={formatVolume(fresh.lastVolume)} />
+          <Stat k={quote && marketData.name === "yahoo" ? "Nilai transaksi est. · 1D" : "Nilai transaksi · 1D"} v={formatValue(fresh.lastValue)} />
           <Stat k="Kapitalisasi pasar" v={formatValue(fresh.marketCap)} />
-          <Stat k="Diperbarui" v={`${fresh.updatedAt.toISOString().slice(11, 19)} UTC${quote ? " · tertunda" : " · tersimpan"}`} />
+          <Stat k="Snapshot harga" v={`${tradingDate} · ${tradingTime} WIB${quote ? " · tertunda" : " · tersimpan"}`} />
         </dl>
 
         <div className="ml-auto flex items-center gap-2">
@@ -129,6 +133,7 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
           <WatchlistToggle code={code} initiallyWatched={Boolean(watched)} />
         </div>
       </section>
+      <StockDailyFlow code={code} />
 
       <Panel
         title="Ringkasan Harga & Keuangan"

@@ -1,6 +1,6 @@
 import "server-only";
 import { getCompanyCatalogEntry } from "@/lib/company-catalog";
-import { OWNERSHIP_SOURCE, shareholdersFor } from "@/lib/shareholders";
+import { OWNERSHIP_SOURCE, codesForNamedShareholder, shareholdersFor } from "@/lib/shareholders";
 
 export const FORBES_LIST_URL = "https://www.forbes.com/lists/indonesia-billionaires/?view=pc";
 export const FORBES_LIST_DATE = "10 Desember 2025";
@@ -16,6 +16,7 @@ export type KongloProfile = {
   candidateCodes: readonly string[];
   reportedDirect?: readonly { code: string; percentage: number; ownershipAsOf: string; sourceUrl: string }[];
   groupExposure?: readonly { code: string; sourceUrl: string; percentage?: number; shares?: number; ownershipAsOf?: string; holder?: string; holderNames?: readonly string[]; stakeMultiplier?: number }[];
+  pendingExposure?: readonly { code: string; holder: string; percentage: number; sourceUrl: string; announcedOn: string; note: string }[];
 };
 
 const HAJI_SOURCE = "https://market.bisnis.com/read/20260921/192/2005815/deretan-portofolio-bisnis-haji-isam-dari-sawit-pertambangan-hingga-transportasi";
@@ -23,10 +24,13 @@ const BAKRIE_SOURCE = "https://bakrie-brothers.com/wp-content/uploads/2026/04/BN
 const OWNERSHIP_DATE = "27 Februari 2026";
 
 /** Forbes wealth and KSEI direct ownership have different dates and scopes. */
-export const KONGLO_PROFILES: readonly KongloProfile[] = [
+const CURATED_PROFILES: readonly KongloProfile[] = [
   { slug: "hartono", rank: 1, name: "Keluarga Hartono", netWorthUsd: 43.8e9, wealthNote: "Forbes 2025 menilai Budi & Michael Hartono bersama; angka historis ini bukan valuasi saham grup saat ini.", candidateCodes: [], groupExposure: [
     { code: "BBCA", holderNames: ["PT DWIMURIA INVESTAMA ANDALAN"], holder: "PT Dwimuria Investama Andalan", sourceUrl: "https://www.bca.co.id/id/tentang-bca/hubungan-investor/informasi-saham/komposisi-pemegang-saham" },
     { code: "BELI", holderNames: ["PT GLOBAL INVESTAMA ANDALAN"], holder: "PT Global Investama Andalan", sourceUrl: "https://about.blibli.com/investor-relations/prospectus/Preliminary%20Prospectus%20IPO%20-%20PT%20Global%20Digital%20Niaga%20Tbk.pdf" },
+  ] },
+  { slug: "widjaja-family", rank: 3, name: "Keluarga Widjaja", netWorthUsd: 28.3e9, candidateCodes: [], groupExposure: [
+    { code: "DSSA", holderNames: ["PT SINAR MAS TUNGGAL"], holder: "PT Sinar Mas Tunggal", sourceUrl: "https://dssa.co.id/documents/Annual_Report_DSSA_2025.pdf" },
   ] },
   { slug: "prajogo-pangestu", rank: 2, name: "Prajogo Pangestu", netWorthUsd: 39.8e9, holderName: "PRAJOGO PANGESTU", candidateCodes: ["BRPT", "TPIA", "CUAN"] },
   { slug: "franky-widjaja", name: "Franky Oesman Widjaja", wealthNote: "Forbes menilai keluarga Widjaja US$28,3 miliar; angka itu bukan kekayaan pribadi Franky.", holderName: "FRANKY OESMAN WIDJAJA", candidateCodes: ["BOLA"], groupExposure: [{ code: "DSSA", percentage: 59.9, shares: 4615523200, ownershipAsOf: "31 Desember 2025", holder: "PT Sinar Mas Tunggal · deemed interest Franky", sourceUrl: "https://dssa.co.id/documents/Annual_Report_DSSA_2025.pdf" }] },
@@ -42,7 +46,14 @@ export const KONGLO_PROFILES: readonly KongloProfile[] = [
   { slug: "haji-isam", name: "Haji Isam (Samsudin Andi Arsyad)", candidateCodes: [], reportedDirect: [
     { code: "PACK", percentage: 20.05, ownershipAsOf: "18 September 2026", sourceUrl: HAJI_SOURCE },
     { code: "RANS", percentage: 1.4, ownershipAsOf: "31 Agustus 2026", sourceUrl: HAJI_SOURCE },
-  ], groupExposure: ["JARR", "PGUN", "TEBE"].map((code) => ({ code, sourceUrl: HAJI_SOURCE })) },
+  ], groupExposure: [
+    { code: "JARR", holderNames: ["ESHAN AGRO SENTOSA PT"], holder: "PT Eshan Agro Sentosa · Jhonlin Group", sourceUrl: "https://www.idxchannel.com/playlists/siapa-pemilik-saham-jarr-punya-konglomerat-kalsel-intip-info-kepemilikannya" },
+    { code: "PGUN", holderNames: ["PT ARAYA AGRO LESTARI", "PT CITRA AGRO RAYA"], holder: "PT Araya Agro Lestari + PT Citra Agro Raya · anak Haji Isam", sourceUrl: HAJI_SOURCE },
+    { code: "TEBE", holderNames: ["PT. DUA SAMUDERA PERKASA"], holder: "PT Dua Samudera Perkasa · Jhonlin Group", sourceUrl: "https://www.idxchannel.com/playlists/keluarga-haji-isam-perluas-sayap-dari-tambang-ke-bisnis-kfc" },
+  ], pendingExposure: [{ code: "BYAN", holder: "PT Jhonlin Baratama", percentage: 30, announcedOn: "16 September 2026", sourceUrl: "https://market.bisnis.com/read/20260927/192/2007518/haji-isam-akuisisi-30-saham-bayan-byan-low-tuck-kwong-tetap-pengendali", note: "Perjanjian jual beli bersyarat; penyelesaian dan perpindahan saham belum dikonfirmasi." }] },
+  { slug: "tanoko-family", rank: 9, name: "Wijono & Hermanto Tanoko & keluarga", netWorthUsd: 8.1e9, candidateCodes: [], groupExposure: [
+    { code: "AVIA", holderNames: ["PT TANCORP SURYA SENTOSA", "PT WAHANA LANCAR REJEKI"], holder: "PT Tancorp Surya Sentosa + PT Wahana Lancar Rejeki", sourceUrl: "https://avianbrands.com/tentang-kami/managemen/hermanto-tanoko" },
+  ] },
   { slug: "happy-hapsoro", name: "Happy Hapsoro", holderName: "HAPSORO", candidateCodes: ["RAJA", "MINA", "SINI", "UANG", "ARKO"] },
   { slug: "bakrie", name: "Keluarga Bakrie", candidateCodes: [], groupExposure: [
     { code: "BNBR", sourceUrl: BAKRIE_SOURCE },
@@ -52,6 +63,46 @@ export const KONGLO_PROFILES: readonly KongloProfile[] = [
     { code: "COIN", sourceUrl: "https://market.bisnis.com/read/20251217/192/1937426/investasi-baru-arsari-group-milik-hashim-coin-hingga-blok-migas-natuna" },
     { code: "WIFI", holderNames: ["PT. INVESTASI SUKSES BERSAMA"], stakeMultiplier: 0.45, holder: "PT Arsari Sentra Data 45% × PT Investasi Sukses Bersama", sourceUrl: "https://legacy.pasardana.id/news/2025/1/10/pt-arsari-sentra-data-miliki-22-55-wifi-secara-tidak-langsung-melalui-kepemilikan-45-00-pt-investasi-sukses-bersama/" },
   ] },
+];
+
+/** Forbes Indonesia's 50 Richest, published 10 December 2025. USD figures are dated estimates. */
+const FORBES_2025 = [
+  [1, "R. Budi & Michael Hartono", 43.8], [2, "Prajogo Pangestu", 39.8],
+  [3, "Widjaja family", 28.3], [4, "Low Tuck Kwong", 24.9],
+  [5, "Anthoni Salim & family", 13.6], [6, "Otto Toto Sugiri", 11.3],
+  [7, "Tahir & family", 9.8], [8, "Marina Budiman", 8.2],
+  [9, "Wijono & Hermanto Tanoko & family", 8.1], [10, "Sri Prakash Lohia", 8],
+  [11, "Haryanto Tjiptodihardjo", 6.2], [12, "Han Arming Hanafia", 5.3],
+  [13, "Agoes Projosasmito", 5], [14, "Lim Hariyanto Wijaya Sarwono", 4.9],
+  [15, "Theodore Rachmat", 4.45], [16, "Chairul Tanjung", 4.4],
+  [17, "Dewi Kam", 4.3], [18, "Bachtiar Karim & family", 4.2],
+  [19, "Garibaldi Thohir & family", 3.8], [20, "Mochtar Riady & family", 3.75],
+  [21, "Sukanto Tanoto", 3.7], [22, "Setiawan family", 3.6],
+  [23, "Martua Sitorus", 3.55], [24, "Jogi Hendra Atmadja & family", 3.5],
+  [25, "Susilo Wonowidjojo & family", 3.2], [26, "Peter Sondakh", 3.1],
+  [27, "Ciliandra Fangiono & family", 3.05], [28, "Hilmi Panigoro & family", 2.9],
+  [29, "Sjamsul Nursalim & family", 2.8], [30, "Djoko Susanto", 2.7],
+  [31, "Manoj Punjabi", 2.6], [32, "Putera Sampoerna & family", 2.5],
+  [33, "Arini Subianto & family", 2.4], [34, "Bambang Sutantio", 2.35],
+  [35, "Alexander Ramlie", 2.3], [36, "Eddy Kusnadi Sariaatmadja & family", 1.8],
+  [37, "Hamami family", 1.7], [38, "Ciputra family", 1.6],
+  [39, "Husodo Angkosubroto & family", 1.5], [40, "Sulistyo family", 1.45],
+  [41, "Jenny Quantero & Engki Wibowo", 1.4], [42, "Soegiarto Adikoesoemo", 1.35],
+  [43, "Lim Chai Hock", 1.3], [44, "Hartati Murdaya", 1.25],
+  [45, "Edwin Soeryadjaya & family", 1.2], [46, "Irwan Hidayat & family", 1.15],
+  [47, "Eddy Sugianto", 1.1], [48, "Hary Tanoesoedibjo", 1],
+  [49, "Eddy Katuari & family", 0.995], [50, "Husain Djojonegoro & family", 0.92],
+] as const;
+
+const curatedByRank = new Map(CURATED_PROFILES.filter((profile) => profile.rank).map((profile) => [profile.rank, profile]));
+export const KONGLO_PROFILES: readonly KongloProfile[] = [
+  ...FORBES_2025.map(([rank, name, usdBillions]): KongloProfile => curatedByRank.get(rank) ?? {
+    slug: name.toLowerCase().replaceAll(/[^a-z0-9]+/g, "-").replaceAll(/^-|-$/g, ""),
+    rank, name, netWorthUsd: usdBillions * 1e9,
+    holderName: !name.includes("&") && !name.toLowerCase().includes("family") ? name.toUpperCase() : undefined,
+    candidateCodes: [],
+  }),
+  ...CURATED_PROFILES.filter((profile) => !profile.rank),
 ];
 
 export type KongloHolding = {
@@ -75,7 +126,8 @@ function valueFromMarketCap(percentage: number | null, marketCap: number | null)
 }
 
 export function kongloHoldings(profile: KongloProfile): KongloHolding[] {
-  const direct: KongloHolding[] = profile.holderName ? profile.candidateCodes.flatMap((code) => {
+  const directCodes = profile.holderName ? [...new Set([...profile.candidateCodes, ...codesForNamedShareholder(profile.holderName)])] : [];
+  const direct: KongloHolding[] = directCodes.flatMap((code) => {
     const holder = shareholdersFor(code).find((row) => row.name.toUpperCase() === profile.holderName);
     const company = getCompanyCatalogEntry(code);
     if (!holder || !company) return [];
@@ -83,7 +135,7 @@ export function kongloHoldings(profile: KongloProfile): KongloHolding[] {
     return [{ code, name: company.name, percentage: holder.percentage, ownershipAsOf: OWNERSHIP_DATE, shares: holder.shares, price,
       priceAsOf: price ? company.holdingsDate : null, marketCap: company.marketCap, indicativeValue: valueFromMarketCap(holder.percentage, company.marketCap),
       kind: "direct", holder: holder.name, sourceUrl: OWNERSHIP_SOURCE }];
-  }) : [];
+  });
   const reported: KongloHolding[] = (profile.reportedDirect ?? []).flatMap((item) => {
     const company = getCompanyCatalogEntry(item.code);
     return company ? [{ code: item.code, name: company.name, percentage: item.percentage,
