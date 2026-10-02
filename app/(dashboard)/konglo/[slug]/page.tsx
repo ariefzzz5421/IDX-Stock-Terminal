@@ -8,6 +8,8 @@ import { PortfolioDonut } from "@/components/konglo/PortfolioDonut";
 import { getCompanyCatalogEntry } from "@/lib/company-catalog";
 import { FORBES_LIST_DATE, FORBES_LIST_URL, KONGLO_PROFILES, kongloHoldings, kongloPortfolioSummary } from "@/lib/konglo";
 import { formatRupiahCompact, formatShares, formatWealth } from "@/lib/konglo-format";
+import { KongloPortrait } from "@/components/konglo/KongloPortrait";
+import { KONGLO_PHOTOS } from "@/lib/konglo-photos";
 
 export async function generateMetadata({ params }: PageProps<"/konglo/[slug]">): Promise<Metadata> {
   const { slug } = await params;
@@ -31,8 +33,9 @@ export default async function KongloDetailPage({ params }: PageProps<"/konglo/[s
     <header className="border-b border-rule px-4 py-4 sm:px-6">
       <Link href="/konglo" className="text-micro text-cyan hover:underline">← Semua tokoh</Link>
       <p className="mt-3 text-micro uppercase tracking-widest text-amber">Investor research {profile.rank ? `· Forbes #${profile.rank}` : "· tokoh tambahan"}</p>
-      <h1 className="mt-1 font-display text-xl font-bold text-ink-hi">{profile.name}</h1>
-      <p className="mt-2 max-w-4xl text-xs leading-relaxed text-dim">Peta saham BEI yang tercatat atas nama pribadi dan entitas terkait. Persentase saham dikalikan kapitalisasi pasar dalam katalog. Nilai entitas ditampilkan terpisah dari nilai pribadi agar tidak dihitung dua kali sebagai kekayaan pemilik.</p>
+      <div className="mt-2 flex items-center gap-3"><KongloPortrait slug={profile.slug} name={profile.name} size={64} /><h1 className="min-w-0 font-display text-xl font-bold text-ink-hi">{profile.name}</h1></div>
+      {KONGLO_PHOTOS[profile.slug] && <a href={KONGLO_PHOTOS[profile.slug].sourceUrl} target="_blank" rel="noopener noreferrer" className="mt-1 inline-block text-micro text-dim hover:text-cyan">Foto: {KONGLO_PHOTOS[profile.slug].credit} ↗</a>}
+      <p className="mt-2 max-w-4xl text-xs leading-relaxed text-dim">Peta saham BEI yang tercatat atas nama pribadi dan entitas terkait. Persentase saham dikalikan kapitalisasi pasar dalam katalog. Nilai entitas ditampilkan terpisah; saham anak dan induk dalam satu rantai dapat tumpang tindih, sehingga jumlahnya bukan kekayaan ekonomis pribadi.</p>
       <a href={FORBES_LIST_URL} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1 text-micro text-cyan hover:underline">Forbes Indonesia 50 Richest · {FORBES_LIST_DATE} <ArrowUpRight className="h-3 w-3" aria-hidden="true" /></a>
     </header>
 
@@ -59,7 +62,7 @@ export default async function KongloDetailPage({ params }: PageProps<"/konglo/[s
       <h2 className="border-b border-rule bg-panel-hi px-4 py-3 text-xs font-bold uppercase tracking-wider text-amber">Emiten terkait</h2>
       {holdings.length ? <ol className="divide-y divide-rule/70">{holdings.map((item) => {
         const company = getCompanyCatalogEntry(item.code);
-        return <li key={item.code} className="grid min-w-0 gap-3 p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:px-6">
+        return <li key={`${item.kind}-${item.code}`} className="grid min-w-0 gap-3 p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:px-6">
           <div className="flex min-w-0 items-center gap-3"><CompanyLogo code={item.code} logoUrl={company?.logoUrl ?? null} /><div className="min-w-0"><Link href={`/asset/${item.code}`} className="font-bold text-cyan hover:underline">{item.code} ↗</Link><p className="truncate text-xs text-dim" title={item.name}>{item.name}</p><p className="mt-1 text-micro text-dim">{item.kind === "direct" ? "Saham pribadi" : "Saham entitas / deemed interest"} · {item.holder} · {item.ownershipAsOf ?? "tanggal N/D"}</p></div></div>
           <div className="min-w-0 text-xs sm:text-right"><p className="font-display font-bold tabular-nums text-ink-hi">{item.percentage === null ? "Persentase N/D" : `${item.percentage.toLocaleString("id-ID", { maximumFractionDigits: 4 })}% · ${item.shares === null ? "jumlah N/D" : `${formatShares(item.shares)} lembar`}`}</p><p className="mt-1 text-dim">Kap. pasar {formatRupiahCompact(item.marketCap)}</p><p className="mt-1 text-ink-hi">Nilai saham {formatRupiahCompact(item.indicativeValue)}</p><SourceLink href={item.sourceUrl}>{item.snapshotSourceUrl ? "Sumber keterkaitan" : "Sumber kepemilikan"}</SourceLink>{item.snapshotSourceUrl && <span className="ml-3"><SourceLink href={item.snapshotSourceUrl}>Snapshot KSEI/BEI</SourceLink></span>}</div>
         </li>;

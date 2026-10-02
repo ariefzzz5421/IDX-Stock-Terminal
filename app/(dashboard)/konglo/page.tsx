@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { requireUser } from "@/lib/auth/session";
 import { FORBES_LIST_DATE, FORBES_LIST_URL, KONGLO_PROFILES, kongloHoldings, kongloPortfolioSummary } from "@/lib/konglo";
 import { formatRupiahCompact, formatWealth } from "@/lib/konglo-format";
+import { KongloPortrait } from "@/components/konglo/KongloPortrait";
 
 export const metadata: Metadata = { title: "Konglo — IDX Terminal" };
 export const dynamic = "force-dynamic";
@@ -29,6 +30,7 @@ export default async function KongloPage() {
         return <li key={profile.slug}>
           <Link href={`/konglo/${profile.slug}`} className="flex min-w-0 items-start gap-3 px-4 py-4 transition-colors hover:bg-panel-hi sm:items-center sm:px-6">
             <span className="w-10 shrink-0 font-display text-sm font-bold tabular-nums text-amber">{index + 1}.</span>
+            <KongloPortrait slug={profile.slug} name={profile.name} />
             <span className="min-w-0 flex-1">
               <span className="block font-display text-sm font-bold text-ink-hi">{profile.name}</span>
               <span className="mt-1 block text-micro text-dim">{profile.rank ? `Forbes #${profile.rank} · ` : ""}{directCount} saham langsung &gt;1% · {holdings.length - directCount} keterkaitan grup</span>

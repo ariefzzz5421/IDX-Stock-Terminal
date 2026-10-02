@@ -4,6 +4,7 @@ import { useState } from "react";
 import { formatRupiahCompact, formatShares } from "@/lib/konglo-format";
 
 type Slice = { code: string; shares: number | null; percentage: number; value: number; kind: "direct" | "group"; holder: string };
+const sliceId = (item: Slice) => `${item.kind}-${item.code}-${item.holder}`;
 const COLORS = ["#f5a623", "#36b6d9", "#50c49a", "#b59bf2", "#e77b81", "#d7bd6a", "#62aee8", "#d795c2"];
 const shareOfChart = (fraction: number) => fraction > 0 && fraction < 0.001 ? "<0,1%" : `${(fraction * 100).toLocaleString("id-ID", { maximumFractionDigits: 1 })}%`;
 
@@ -16,7 +17,7 @@ export function PortfolioDonut({ items }: { items: Slice[] }) {
   const total = sorted.reduce((sum, item) => sum + item.value, 0);
   if (!total) return <div className="border border-rule bg-void p-5 text-xs leading-relaxed text-dim">Belum ada persentase kepemilikan dan kapitalisasi pasar yang dapat dihitung untuk profil ini.</div>;
 
-  const active = sorted.find((item) => item.code === selected) ?? null;
+  const active = sorted.find((item) => sliceId(item) === selected) ?? null;
   const slices = sorted.reduce<Array<Slice & { fraction: number; start: number; color: string }>>((acc, item, index) => {
     const fraction = item.value / total;
     const previous = acc.at(-1);
@@ -28,7 +29,7 @@ export function PortfolioDonut({ items }: { items: Slice[] }) {
     <div className="relative mx-auto aspect-square w-full max-w-60">
       <svg viewBox="0 0 200 200" role="img" aria-label="Komposisi nilai saham yang terpetakan, langsung dan melalui entitas" className="h-full w-full -rotate-90">
         <circle cx="100" cy="100" r="72" fill="none" stroke="var(--color-rule, #303644)" strokeWidth="24" />
-        {slices.map((item) => <circle key={item.code} cx="100" cy="100" r="72" fill="none" stroke={item.color} strokeWidth={selected === item.code ? 30 : 24} strokeDasharray={`${Math.max(0, item.fraction * 452.39 - 2)} 452.39`} strokeDashoffset={-item.start * 452.39} className="cursor-pointer transition-[stroke-width,opacity] duration-150" opacity={selected && selected !== item.code ? 0.52 : 1} onMouseEnter={() => setHovered(item.code)} onMouseLeave={() => setHovered(null)} onClick={() => setPinned(pinned === item.code ? null : item.code)} />)}
+        {slices.map((item) => <circle key={sliceId(item)} cx="100" cy="100" r="72" fill="none" stroke={item.color} strokeWidth={selected === sliceId(item) ? 30 : 24} strokeDasharray={`${Math.max(0, item.fraction * 452.39 - 2)} 452.39`} strokeDashoffset={-item.start * 452.39} className="cursor-pointer transition-[stroke-width,opacity] duration-150" opacity={selected && selected !== sliceId(item) ? 0.52 : 1} onMouseEnter={() => setHovered(sliceId(item))} onMouseLeave={() => setHovered(null)} onClick={() => setPinned(pinned === sliceId(item) ? null : sliceId(item))} />)}
       </svg>
       <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
         <span className="text-micro uppercase tracking-wider text-dim">{active?.code ?? "Total terpetakan"}</span>
@@ -37,7 +38,7 @@ export function PortfolioDonut({ items }: { items: Slice[] }) {
       </div>
     </div>
     <div className="min-w-0 space-y-1" aria-label="Pilih saham untuk melihat rincian">
-      {slices.map((item) => <button key={item.code} type="button" onFocus={() => setHovered(item.code)} onBlur={() => setHovered(null)} onMouseEnter={() => setHovered(item.code)} onMouseLeave={() => setHovered(null)} onClick={() => setPinned(pinned === item.code ? null : item.code)} aria-pressed={pinned === item.code} className={`flex min-h-11 w-full items-center gap-2 border px-2 text-left text-xs hover:border-amber focus-visible:border-amber focus-visible:outline-none ${selected === item.code ? "border-amber bg-amber/5" : "border-rule"}`}>
+      {slices.map((item) => <button key={sliceId(item)} type="button" onFocus={() => setHovered(sliceId(item))} onBlur={() => setHovered(null)} onMouseEnter={() => setHovered(sliceId(item))} onMouseLeave={() => setHovered(null)} onClick={() => setPinned(pinned === sliceId(item) ? null : sliceId(item))} aria-pressed={pinned === sliceId(item)} className={`flex min-h-11 w-full items-center gap-2 border px-2 text-left text-xs hover:border-amber focus-visible:border-amber focus-visible:outline-none ${selected === sliceId(item) ? "border-amber bg-amber/5" : "border-rule"}`}>
         <span className="h-3 w-3 shrink-0" style={{ backgroundColor: item.color }} aria-hidden="true" />
         <span className="min-w-0 flex-1"><strong className="block text-ink-hi">{item.code} <span className="font-normal text-dim">· {item.kind === "direct" ? "pribadi" : "entitas"}</span></strong><span className="block truncate text-micro text-dim">{item.percentage.toLocaleString("id-ID", { maximumFractionDigits: 4 })}% saham · {item.shares === null ? "lembar N/D" : `${formatShares(item.shares)} lembar`}</span><span className="block truncate text-micro text-dim" title={item.holder}>{item.holder}</span></span>
         <span className="text-right"><strong className="block font-display tabular-nums text-ink-hi">{shareOfChart(item.fraction)}</strong><span className="block text-micro text-dim">{formatRupiahCompact(item.value)}</span></span>

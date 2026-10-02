@@ -34,9 +34,11 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
     <div className="flex min-h-full flex-1 flex-col gap-px bg-rule">
       {/* ---- top bar ---- */}
       <header className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] gap-px bg-rule sm:grid-cols-[auto_minmax(0,1fr)_auto] xl:grid-cols-[auto_minmax(10rem,1fr)_minmax(13rem,auto)_auto_auto]">
+        <div className="col-start-1 row-start-1 flex min-w-0 items-stretch bg-panel">
+        <Nav headerTrigger />
         <Link
           href="/dashboard"
-          className="col-start-1 row-start-1 flex shrink-0 items-baseline gap-2.5 bg-panel px-4 py-2.5 hover:opacity-80"
+          className="flex min-w-0 items-baseline gap-2 bg-panel px-2 py-2.5 hover:opacity-80 sm:px-4"
         >
           <span className="font-display text-lg font-bold tracking-[0.16em] text-amber">
             IDX
@@ -45,6 +47,7 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
             Terminal
           </span>
         </Link>
+        </div>
 
         <div className="col-span-2 row-start-2 flex min-w-0 bg-panel sm:col-span-1 sm:col-start-2 sm:row-start-1 xl:col-start-2">
           <CommandBar stocks={searchStocks} />
@@ -68,7 +71,7 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
         </div>
       </header>
 
-      <Nav />
+      <Nav desktopOnly />
 
       <Suspense fallback={null}><TrendingDock /></Suspense>
 
