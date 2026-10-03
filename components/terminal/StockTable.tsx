@@ -58,7 +58,7 @@ export function StockTable({
             {rank && <Th className="w-7 text-right @min-[32rem]/stocktable:w-10">#</Th>}
             <Th align="left">{language === "id" ? "Kode" : "Ticker"}</Th>
             <Th className="w-[4.5rem] @min-[32rem]/stocktable:w-[5.5rem]">{language === "id" ? "Harga" : "Last"}</Th>
-            <Th className="w-[5rem] @min-[32rem]/stocktable:w-[6rem]">{language === "id" ? "Ubah %" : "Chg %"}</Th>
+            <Th className="w-[5rem] px-1 tracking-normal @min-[32rem]/stocktable:w-[6rem]">Change %</Th>
             <Th className="hidden w-[6.5rem] @min-[32rem]/stocktable:table-cell">{extraLabel}</Th>
             {action && (
               <Th className="w-8">

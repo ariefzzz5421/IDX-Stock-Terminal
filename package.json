@@ -5,7 +5,7 @@
   "scripts": {
     "predev": "node scripts/postinstall-db.mjs",
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/build.mjs",
     "start": "next start",
     "lint": "eslint",
     "postinstall": "prisma generate && prisma generate --config prisma.supabase.config.ts && node scripts/postinstall-db.mjs",

@@ -22,6 +22,9 @@ model User {
 
   profile   Profile?
   watchlist Watchlist[]
+  streamPosts StreamPost[]
+  streamComments StreamComment[]
+  streamLikes StreamLike[]
 
   @@map("users")
 }
@@ -121,4 +124,44 @@ model News {
 
   @@index([publishedAt(sort: Desc)])
   @@map("news")
+}
+
+model StreamPost {
+  id String @id @default(cuid())
+  authorId String @map("author_id")
+  kind String @default("status")
+  body String
+  tickers String @default("[]")
+  hasPhoto Boolean @default(false) @map("has_photo")
+  photoData String? @map("photo_data")
+  createdAt DateTime @default(now()) @map("created_at")
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  comments StreamComment[]
+  likes StreamLike[]
+  @@index([createdAt(sort: Desc)])
+  @@index([authorId, createdAt(sort: Desc)])
+  @@map("stream_posts")
+}
+
+model StreamComment {
+  id String @id @default(cuid())
+  postId String @map("post_id")
+  authorId String @map("author_id")
+  body String
+  createdAt DateTime @default(now()) @map("created_at")
+  post StreamPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  @@index([postId, createdAt(sort: Desc)])
+  @@map("stream_comments")
+}
+
+model StreamLike {
+  postId String @map("post_id")
+  userId String @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  post StreamPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@id([postId, userId])
+  @@index([userId])
+  @@map("stream_likes")
 }

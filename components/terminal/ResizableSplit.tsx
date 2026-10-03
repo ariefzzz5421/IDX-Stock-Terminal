@@ -93,6 +93,7 @@ export function ResizableSplit({
   resizableSide = "left",
   collapseButtonPlacement = "divider",
   mobileDrawerCount,
+  hideLeftOnPhone = false,
 }: {
   left: ReactNode;
   right: ReactNode;
@@ -104,6 +105,7 @@ export function ResizableSplit({
   collapseButtonPlacement?: "divider" | "panel";
   /** Show the left panel as a sidebar on narrow phones instead of stacking it. */
   mobileDrawerCount?: number;
+  hideLeftOnPhone?: boolean;
 }) {
   const isLeftResizable = resizableSide === "left";
   const resizableContent = isLeftResizable ? left : right;
@@ -200,6 +202,7 @@ export function ResizableSplit({
 
   // Below xl: phone sidebar when requested, otherwise a plain stack.
   if (!isDesktop) {
+    if (isPhone && isLeftResizable && hideLeftOnPhone) return <div className="flex min-h-0 flex-1 flex-col">{fillingContent}</div>;
     if (isPhone && isLeftResizable && mobileDrawerCount !== undefined) {
       const drawerId = `split-drawer-${storageKey}`;
       return <div className="flex min-h-0 flex-1 flex-col gap-px">
@@ -251,7 +254,7 @@ export function ResizableSplit({
       ) : (
         <div className="flex h-full min-h-0 flex-col" style={{ width }}>
           {resizableContent}
-          {collapseButtonPlacement === "panel" && <button type="button" onClick={toggleCollapsed} aria-label={`Minimize ${leftLabel}`} title={`Minimize ${leftLabel}`} className="absolute right-2 top-1.5 z-20 grid h-8 w-8 place-items-center border border-amber-dim bg-panel-hi text-amber hover:bg-amber/10 focus-visible:outline-cyan"><CollapseIcon aria-hidden="true" className="h-4 w-4" /></button>}
+          {collapseButtonPlacement === "panel" && <button type="button" onClick={toggleCollapsed} aria-label={`Minimize ${leftLabel}`} title={`Minimize ${leftLabel}`} className="absolute right-2 top-1.5 z-20 grid h-7 w-7 place-items-center border border-amber-dim bg-panel-hi text-amber hover:bg-amber/10 focus-visible:outline-cyan"><CollapseIcon aria-hidden="true" className="h-3.5 w-3.5" /></button>}
         </div>
       )}
     </div>

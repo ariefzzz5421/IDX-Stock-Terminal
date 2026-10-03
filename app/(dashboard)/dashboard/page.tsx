@@ -42,7 +42,7 @@ export default async function DashboardPage() {
       defaultWidth={340}
       leftLabel="watchlist"
       collapseButtonPlacement="panel"
-      mobileDrawerCount={watchlist.length}
+      hideLeftOnPhone
       left={
         <Panel
           title={language === "id" ? "Pantauan" : "Watchlist"}

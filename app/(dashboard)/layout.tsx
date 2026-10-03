@@ -15,6 +15,7 @@ import { COMPANY_CATALOG } from "@/lib/company-catalog";
 import { getUiLanguage } from "@/lib/ui-language";
 import { FooterClock } from "@/components/terminal/FooterClock";
 import { BiRateFooter } from "@/components/terminal/BiRateFooter";
+import { MobileExtensionDock } from "@/components/terminal/MobileExtensionDock";
 
 const codes = COMPANY_CATALOG.map((stock) => stock.code).sort();
 const searchStocks = COMPANY_CATALOG.map(({ code, name }) => ({ code, name }));
@@ -75,6 +76,7 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
       <Nav desktopOnly />
 
       <Suspense fallback={null}><TrendingDock /></Suspense>
+      <Suspense fallback={null}><MobileExtensionDock userId={user.id} /></Suspense>
 
       {/* ---- panes ---- */}
       <div className="flex min-h-0 flex-1 flex-col gap-px">{children}</div>

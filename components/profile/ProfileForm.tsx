@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronRight, Globe2, UserRound, X } from "lucide-react";
+import { ChevronRight, Globe2, MessageSquareText, UserRound, X } from "lucide-react";
 import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { avatarPresets } from "@/lib/avatar-presets";
 import { LanguageControl, useProfileLanguage } from "./LanguageControl";
@@ -88,6 +88,7 @@ export function ProfileForm(props: Props) {
           <span className="flex-1 text-sm text-ink-hi">{language === "id" ? "Akun" : "Account"}</span>
           <ChevronRight className="h-4 w-4 text-dim" aria-hidden="true" />
         </button>
+        <Link href={`/stream/user/${encodeURIComponent(props.username)}`} className="flex min-h-14 items-center gap-3 border-t border-rule px-4 hover:bg-panel-hi"><MessageSquareText className="h-5 w-5 text-dim" aria-hidden="true" /><span className="flex-1 text-sm text-ink-hi">Profil Stream</span><ChevronRight className="h-4 w-4 text-dim" aria-hidden="true" /></Link>
         {props.guest ? <div className="border-t border-rule px-4 py-3 text-xs text-dim"><p>{language === "id" ? "Akun tamu dapat dipakai bersama." : "Guest accounts may be shared."}</p><div className="mt-2 flex gap-4"><Link href="/register" className="text-cyan">{language === "id" ? "Daftar" : "Sign up"}</Link><Link href="/login" className="text-cyan">{language === "id" ? "Masuk" : "Sign in"}</Link></div></div> : <div className="border-t border-rule px-4 py-3"><SignOutButton english={language === "en"} /></div>}
       </div>
     </section>

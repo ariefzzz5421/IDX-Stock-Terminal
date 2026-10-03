@@ -66,7 +66,7 @@ export default async function MarketPage({
         <p className="mt-2 text-micro text-dimmer">
           Saham tercatat BEI dari profil bursa 30 September 2026, diurutkan
           berdasarkan kapitalisasi pasar yang tersedia. {activity.allStocks.length
-            ? "Harga dan aktivitas memakai snapshot TradingView tertunda bila tersedia."
+            ? "Harga dan aktivitas memakai snapshot pasar bila tersedia."
             : "Umpan pasar tidak tersedia; harga tersimpan mungkin sudah usang."}
         </p>
       </div>

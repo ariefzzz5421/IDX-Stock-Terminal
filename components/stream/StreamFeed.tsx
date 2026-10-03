@@ -1,0 +1,113 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
+import { Camera, Heart, MessageCircle, Send, Share2, X } from "lucide-react";
+import type { StreamPostView } from "@/lib/stream-types";
+import { StreamAvatar } from "./StreamAvatar";
+
+type StockOption = { code: string; name: string };
+
+export function StreamComposer({ stocks, canPost }: { stocks: StockOption[]; canPost: boolean }) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [kind, setKind] = useState<"status" | "thesis">("status");
+  const [body, setBody] = useState("");
+  const [query, setQuery] = useState("");
+  const [tickers, setTickers] = useState<string[]>([]);
+  const [photo, setPhoto] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState("");
+  const matches = query.trim() ? stocks.filter((stock) => !tickers.includes(stock.code) && `${stock.code} ${stock.name}`.toLowerCase().includes(query.toLowerCase())).slice(0, 6) : [];
+
+  function pickPhoto(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type) || file.size > 350 * 1024) {
+      setMessage("Pilih foto PNG, JPG, atau WebP maksimal 350 KB."); return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => { setPhoto(typeof reader.result === "string" ? reader.result : null); setMessage(""); };
+    reader.onerror = () => setMessage("Foto gagal dibaca.");
+    reader.readAsDataURL(file);
+  }
+
+  async function submit(event: FormEvent) {
+    event.preventDefault(); setBusy(true); setMessage("");
+    try {
+      const response = await fetch("/api/stream", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ body, kind, tickers, photo }) });
+      const result = await response.json() as { error?: string };
+      if (!response.ok) throw new Error(result.error ?? "Posting gagal disimpan.");
+      setBody(""); setTickers([]); setPhoto(null); setKind("status");
+      window.location.reload();
+    } catch (error) { setMessage(error instanceof Error ? error.message : "Koneksi gagal."); }
+    finally { setBusy(false); }
+  }
+
+  if (!canPost) return <div className="border border-rule-hi bg-panel-hi p-4 text-sm text-ink">Masuk dengan akun pribadi untuk menulis, menyukai, dan berkomentar. <Link href="/login" className="font-bold text-cyan hover:underline">Masuk</Link> · <Link href="/register" className="font-bold text-cyan hover:underline">Daftar</Link></div>;
+  return <form onSubmit={submit} className="border border-rule-hi bg-panel">
+    <div className="flex gap-2 border-b border-rule p-3 sm:p-4"><button type="button" onClick={() => setKind("status")} aria-pressed={kind === "status"} className={`min-h-10 border px-4 text-xs font-bold uppercase ${kind === "status" ? "border-amber bg-amber/10 text-amber" : "border-rule-hi text-ink"}`}>Status</button><button type="button" onClick={() => setKind("thesis")} aria-pressed={kind === "thesis"} className={`min-h-10 border px-4 text-xs font-bold uppercase ${kind === "thesis" ? "border-amber bg-amber/10 text-amber" : "border-rule-hi text-ink"}`}>Thesis</button></div>
+    <label className="block p-3 sm:p-4"><span className="sr-only">Tulis status atau thesis saham</span><textarea value={body} onChange={(event) => setBody(event.target.value)} maxLength={2000} rows={4} required placeholder="Apa pandanganmu tentang pasar atau saham hari ini?" className="w-full resize-y bg-transparent text-sm leading-6 text-ink-hi outline-none placeholder:text-dim" /></label>
+    <div className="relative border-t border-rule px-3 py-3 sm:px-4"><label className="block text-micro font-bold uppercase tracking-wider text-dim" htmlFor="stream-stock-search">Tag saham yang kamu beli atau bahas · maks. 5</label><input id="stream-stock-search" value={query} onChange={(event) => setQuery(event.target.value)} disabled={tickers.length >= 5} placeholder="Cari kode atau nama emiten" className="mt-1 min-h-10 w-full border border-rule-hi bg-void px-3 text-sm text-ink-hi outline-none focus:border-amber disabled:opacity-50" />{matches.length > 0 && <div className="absolute left-3 right-3 top-full z-20 max-h-52 overflow-auto border border-rule-hi bg-panel shadow-xl sm:left-4 sm:right-4">{matches.map((stock) => <button key={stock.code} type="button" onClick={() => { setTickers([...tickers, stock.code]); setQuery(""); }} className="flex min-h-10 w-full items-center gap-2 border-b border-rule px-3 text-left text-xs hover:bg-panel-hi"><strong className="text-amber">${stock.code}</strong><span className="truncate text-ink">{stock.name}</span></button>)}</div>}{tickers.length > 0 && <div className="mt-2 flex flex-wrap gap-2">{tickers.map((code) => <button key={code} type="button" onClick={() => setTickers(tickers.filter((item) => item !== code))} className="inline-flex min-h-8 items-center gap-1 border border-cyan/50 px-2 text-xs text-cyan">${code}<X className="h-3 w-3" /></button>)}</div>}</div>
+    {photo && <div className="flex items-start gap-3 border-t border-rule p-3"><Image src={photo} alt="Pratinjau foto" width={120} height={80} unoptimized className="max-h-24 w-auto max-w-32 object-contain" /><button type="button" onClick={() => { setPhoto(null); if (fileRef.current) fileRef.current.value = ""; }} className="min-h-9 text-xs text-down">Hapus foto</button></div>}
+    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-rule p-3 sm:p-4"><div className="flex items-center gap-2"><button type="button" onClick={() => fileRef.current?.click()} className="inline-flex min-h-10 items-center gap-2 border border-rule-hi px-3 text-xs text-cyan hover:border-amber"><Camera className="h-4 w-4" /> Foto</button><input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp" onChange={pickPhoto} className="hidden" /><span className="text-micro text-dim">{body.length}/2000</span></div><button type="submit" disabled={busy || body.trim().length < 2} className="inline-flex min-h-10 items-center gap-2 bg-amber px-4 text-xs font-bold uppercase text-void disabled:opacity-50"><Send className="h-4 w-4" /> {busy ? "Mengirim…" : "Posting"}</button></div>
+    {message && <p role="alert" className="border-t border-rule px-3 py-2 text-xs text-down">{message}</p>}
+  </form>;
+}
+
+export function StreamFeed({ initialPosts, initialCursor, canInteract, paginated = false, author }: { initialPosts: StreamPostView[]; initialCursor: string | null; canInteract: boolean; paginated?: boolean; author?: string }) {
+  const [extra, setExtra] = useState<StreamPostView[]>([]);
+  const [cursor, setCursor] = useState(initialCursor);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  async function more() {
+    if (!cursor) return;
+    setLoading(true); setError("");
+    try {
+      const response = await fetch(`/api/stream?cursor=${encodeURIComponent(cursor)}${author ? `&author=${encodeURIComponent(author)}` : ""}`);
+      if (!response.ok) throw new Error("Posting berikutnya belum bisa dimuat.");
+      const result = await response.json() as { posts: StreamPostView[]; nextCursor: string | null };
+      setExtra((current) => [...current, ...result.posts]); setCursor(result.nextCursor);
+    } catch (cause) { setError(cause instanceof Error ? cause.message : "Gagal memuat."); }
+    finally { setLoading(false); }
+  }
+  const posts = [...initialPosts, ...extra];
+  return <div className="space-y-3">{posts.length ? posts.map((post) => <StreamCard key={post.id} post={post} canInteract={canInteract} />) : <div className="border border-rule bg-panel p-8 text-center text-sm text-dim">Belum ada posting. Jadilah yang pertama membagikan pandangan saham.</div>}{paginated && cursor && <button type="button" onClick={more} disabled={loading} className="min-h-11 w-full border border-rule-hi bg-panel-hi text-xs font-bold text-cyan disabled:opacity-50">{loading ? "Memuat…" : "Muat posting berikutnya"}</button>}{error && <p role="alert" className="text-xs text-down">{error}</p>}</div>;
+}
+
+export function StreamCard({ post, canInteract }: { post: StreamPostView; canInteract: boolean }) {
+  const [liked, setLiked] = useState(post.liked);
+  const [likes, setLikes] = useState(post.likes);
+  const [comment, setComment] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [notice, setNotice] = useState("");
+  const display = post.author.displayName || post.author.username;
+  async function toggleLike() {
+    if (!canInteract) { setNotice("Masuk untuk memberi like."); return; }
+    setBusy(true);
+    try { const res = await fetch(`/api/stream/${post.id}/like`, { method: "POST" }); const data = await res.json() as { liked?: boolean; count?: number; error?: string }; if (!res.ok) throw new Error(data.error); setLiked(Boolean(data.liked)); setLikes(data.count ?? likes); }
+    catch (error) { setNotice(error instanceof Error ? error.message : "Like gagal."); }
+    finally { setBusy(false); }
+  }
+  async function submitComment(event: FormEvent) {
+    event.preventDefault(); setBusy(true); setNotice("");
+    try { const res = await fetch(`/api/stream/${post.id}/comments`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ body: comment }) }); const data = await res.json() as { error?: string }; if (!res.ok) throw new Error(data.error); setComment(""); window.location.reload(); }
+    catch (error) { setNotice(error instanceof Error ? error.message : "Komentar gagal."); }
+    finally { setBusy(false); }
+  }
+  async function share() {
+    const url = `${window.location.origin}/stream/post/${post.id}`;
+    try { if (navigator.share) await navigator.share({ title: `Stream: ${display}`, url }); else { await navigator.clipboard.writeText(url); setNotice("Tautan posting disalin."); } }
+    catch (error) { if (error instanceof Error && error.name !== "AbortError") setNotice("Tautan tidak dapat dibagikan."); }
+  }
+  return <article className="min-w-0 border border-rule bg-panel">
+    <div className="flex min-w-0 items-center gap-3 p-3 sm:p-4"><StreamAvatar url={post.author.avatarUrl} name={display} /><div className="min-w-0 flex-1"><Link href={`/stream/user/${encodeURIComponent(post.author.username)}`} className="block truncate text-sm font-bold text-ink-hi hover:text-amber">{display}</Link><span className="text-micro text-dim">@{post.author.username} · {new Date(post.createdAt).toLocaleString("id-ID", { timeZone: "Asia/Jakarta", dateStyle: "medium", timeStyle: "short" })} WIB</span></div><span className="shrink-0 border border-rule-hi px-2 py-1 text-micro font-bold uppercase text-amber">{post.kind}</span></div>
+    <div className="whitespace-pre-wrap break-words px-3 pb-3 text-sm leading-6 text-ink-hi sm:px-4">{post.body}</div>
+    {post.tickers.length > 0 && <div className="flex flex-wrap gap-2 px-3 pb-3 sm:px-4">{post.tickers.map((code) => <Link key={code} href={`/asset/${code}`} className="border border-cyan/50 px-2 py-1 text-xs font-bold text-cyan hover:bg-cyan/10">${code}</Link>)}</div>}
+    {post.hasPhoto && <Link href={`/stream/post/${post.id}`} className="block border-y border-rule bg-void"><Image src={`/api/stream/${post.id}/photo`} alt={`Foto posting ${display}`} width={960} height={640} unoptimized className="mx-auto max-h-[32rem] w-auto max-w-full object-contain" /></Link>}
+    <div className="flex flex-wrap items-center gap-4 border-t border-rule px-3 py-2 text-xs sm:px-4"><button type="button" onClick={toggleLike} disabled={busy} aria-pressed={liked} className={`inline-flex min-h-9 items-center gap-1.5 ${liked ? "text-down" : "text-dim hover:text-down"}`}><Heart className="h-4 w-4" fill={liked ? "currentColor" : "none"} /> {likes}</button><Link href={`/stream/post/${post.id}`} className="inline-flex min-h-9 items-center gap-1.5 text-dim hover:text-cyan"><MessageCircle className="h-4 w-4" /> {post.comments}</Link><button type="button" onClick={share} className="inline-flex min-h-9 items-center gap-1.5 text-dim hover:text-cyan"><Share2 className="h-4 w-4" /> Bagikan</button></div>
+    {post.recentComments.length > 0 && <div className="border-t border-rule px-3 py-2 sm:px-4">{post.recentComments.map((item) => <p key={item.id} className="break-words py-1 text-xs text-ink"><Link href={`/stream/user/${encodeURIComponent(item.author.username)}`} className="font-bold text-cyan hover:underline">@{item.author.username}</Link> {item.body}</p>)}{post.comments > post.recentComments.length && <Link href={`/stream/post/${post.id}`} className="text-xs text-cyan hover:underline">Lihat semua {post.comments} komentar</Link>}</div>}
+    {canInteract && <form onSubmit={submitComment} className="flex gap-2 border-t border-rule p-3 sm:p-4"><input value={comment} onChange={(event) => setComment(event.target.value)} maxLength={500} required placeholder="Tulis komentar…" aria-label="Tulis komentar" className="min-h-10 min-w-0 flex-1 border border-rule-hi bg-void px-3 text-xs text-ink-hi outline-none focus:border-amber" /><button type="submit" disabled={busy || !comment.trim()} className="min-h-10 border border-amber px-3 text-xs font-bold text-amber disabled:opacity-50">Kirim</button></form>}
+    {notice && <p role="status" className="border-t border-rule px-3 py-2 text-xs text-cyan">{notice}</p>}
+  </article>;
+}
