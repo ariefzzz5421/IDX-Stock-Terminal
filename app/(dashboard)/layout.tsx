@@ -14,6 +14,7 @@ import { getIhsgQuote } from "@/lib/market-data/ihsg";
 import { COMPANY_CATALOG } from "@/lib/company-catalog";
 import { getUiLanguage } from "@/lib/ui-language";
 import { FooterClock } from "@/components/terminal/FooterClock";
+import { BiRateFooter } from "@/components/terminal/BiRateFooter";
 
 const codes = COMPANY_CATALOG.map((stock) => stock.code).sort();
 const searchStocks = COMPANY_CATALOG.map(({ code, name }) => ({ code, name }));
@@ -79,10 +80,11 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
       <div className="flex min-h-0 flex-1 flex-col gap-px">{children}</div>
 
       {/* ---- status bar ---- */}
-      <footer className="flex items-center gap-3 bg-panel-hi px-4 py-2 text-micro uppercase tracking-[0.1em] text-dim">
+      <footer className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 bg-panel-hi px-4 py-2 text-micro uppercase tracking-[0.1em] text-dim">
         <span>
           {language === "id" ? "Emiten" : "Listings"} <span className="text-ink">{codes.length}</span>
         </span>
+        <Suspense fallback={<span className="text-dim">BI-Rate …</span>}><BiRateFooter /></Suspense>
         <FooterClock />
       </footer>
     </div>

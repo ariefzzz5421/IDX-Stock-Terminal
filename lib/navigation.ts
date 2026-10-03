@@ -1,4 +1,4 @@
-import { BrainCircuit, Flame, Globe2, LayoutDashboard, ListOrdered, MapPinned, Star, TrendingUp, UserRound, Layers3, UsersRound, Network, ChartNoAxesCombined, Puzzle, type LucideIcon } from "lucide-react";
+import { BrainCircuit, Flame, Globe2, LayoutDashboard, ListOrdered, MapPinned, Star, TrendingUp, UserRound, Layers3, UsersRound, Network, ChartNoAxesCombined, Puzzle, BookOpenText, type LucideIcon } from "lucide-react";
 
 export type NavItem = { href: string; label: string; shortLabel?: string; icon: LucideIcon };
 
@@ -16,5 +16,6 @@ export const NAV_ITEMS: NavItem[] = [
   { href: "/lokasi-bisnis", label: "Lokasi Bisnis", shortLabel: "Lokasi", icon: MapPinned },
   { href: "/ai-analyst", label: "AI Analyst", shortLabel: "AI", icon: BrainCircuit },
   { href: "/extension", label: "Extension", shortLabel: "Ext", icon: Puzzle },
+  { href: "/research", label: "Research", shortLabel: "Riset", icon: BookOpenText },
   { href: "/account", label: "Profile", icon: UserRound },
 ];

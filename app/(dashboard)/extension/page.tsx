@@ -15,7 +15,7 @@ export default async function ExtensionPage() {
       <p className="text-micro font-semibold uppercase tracking-[0.16em] text-amber">Terminal / personalisasi</p>
       <h1 className="mt-2 flex items-center gap-2 font-display text-2xl font-bold text-ink-hi">Extension</h1>
       <p className="mb-6 mt-2 text-sm text-dim">Pilih panel tambahan yang ingin tampil saat menggunakan terminal.</p>
-      <TrendingExtensionControl key={enabled ? "on" : "off"} initialEnabled={enabled} />
+      <TrendingExtensionControl initialEnabled={enabled} />
     </div>
   </main>;
 }

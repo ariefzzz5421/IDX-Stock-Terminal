@@ -165,7 +165,7 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
             meta="Yahoo Finance · delayed"
             bodyClassName="min-h-[25rem]"
           >
-            <ChartRangeSelector code={code} initialCandles={candles} />
+            <ChartRangeSelector key={code} code={code} initialCandles={candles} />
           </Panel>
         }
         right={
