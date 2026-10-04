@@ -13,5 +13,5 @@ export default async function StreamPostPage({ params }: { params: Promise<{ id:
   const { id } = await params;
   const post = await getStreamPost(id, user.id);
   if (!post) notFound();
-  return <main className="min-w-0 flex-1 bg-void px-3 py-5 sm:px-6"><div className="mx-auto max-w-3xl space-y-4"><Link href="/stream" className="text-xs text-cyan hover:underline">← Kembali ke Stream</Link><StreamCard post={post} canInteract={!isGuest(user)} /></div></main>;
+  return <main className="min-w-0 flex-1 bg-void px-3 py-5 sm:px-6"><div className="mx-auto max-w-3xl space-y-4"><Link href="/stream" className="text-xs text-cyan hover:underline">← Kembali ke Stream</Link><StreamCard post={post} canInteract={!isGuest(user)} viewerUsername={user.username} /></div></main>;
 }

@@ -71,22 +71,21 @@ export function StockTable({
           {rows.map((row, index) => (
             <tr
               key={row.code}
-              className="group relative border-b border-rule/50 transition-colors hover:bg-panel-hi"
+              className="group border-b border-rule/50 transition-colors hover:bg-panel-hi"
             >
               {rank && (
-                <td className="px-2 py-2 text-right text-xs text-dimmer tabular-nums">
-                  {index + 1}
+                <td className="p-0 text-right text-xs text-dimmer tabular-nums">
+                  <Link href={`/asset/${row.code}`} aria-label={`Buka saham ${row.code}, peringkat ${index + 1}`} className="block px-2 py-2">{index + 1}</Link>
                 </td>
               )}
 
-              <td className="min-w-0 px-2 py-2 @min-[32rem]/stocktable:px-3">
+              <td className="min-w-0 p-0">
                 <Link
                   href={`/asset/${row.code}`}
                   aria-label={language === "id" ? `Buka detail saham ${row.code} dan ringkasan bid/offer` : `Open ${row.code} stock details and bid/offer summary`}
-                  className="absolute inset-0 z-0"
+                  className="flex min-w-0 items-center gap-2 px-2 py-2 @min-[32rem]/stocktable:px-3"
                   title={row.name}
-                />
-                <span className="pointer-events-none relative z-10 flex min-w-0 items-center gap-2">
+                >
                   <CompanyLogo code={row.code} logoUrl={row.logoUrl} />
                   <span className="flex min-w-0 flex-col leading-tight">
                     <span className="font-bold tracking-[0.05em] text-ink-hi group-hover:text-amber">
@@ -95,25 +94,27 @@ export function StockTable({
                     <span className="truncate text-micro text-ink" title={row.name}>{row.name}</span>
                     <span className="block break-words text-micro text-dim @min-[32rem]/stocktable:hidden">{extraLabel}: {extra === "volume" ? formatVolume(row.lastVolume) : formatValue(extra === "value" ? row.lastValue : row.marketCap)}</span>
                   </span>
-                </span>
+                </Link>
               </td>
-              <td className="relative z-10 pointer-events-none px-1 py-2 text-right text-ink tabular-nums @min-[32rem]/stocktable:px-3">
-                {formatPrice(row.lastPrice)}
+              <td className="p-0 text-right text-ink tabular-nums">
+                <Link href={`/asset/${row.code}`} aria-label={`Buka saham ${row.code}`} className="block px-1 py-2 @min-[32rem]/stocktable:px-3">{formatPrice(row.lastPrice)}</Link>
               </td>
 
               <td
-                className={`relative z-10 pointer-events-none px-1 py-2 text-right font-medium tabular-nums @min-[32rem]/stocktable:px-3 ${directionClass(row.lastChangePct)}`}
+                className={`p-0 text-right font-medium tabular-nums ${directionClass(row.lastChangePct)}`}
               >
-                {formatPct(row.lastChangePct)}
+                <Link href={`/asset/${row.code}`} aria-label={`Buka saham ${row.code}`} className="block px-1 py-2 @min-[32rem]/stocktable:px-3">{formatPct(row.lastChangePct)}</Link>
               </td>
 
-              <td className="relative z-10 hidden pointer-events-none px-3 py-2 text-right text-xs text-dim tabular-nums @min-[32rem]/stocktable:table-cell">
-                {extra === "volume" && formatVolume(row.lastVolume)}
-                {extra === "value" && formatValue(row.lastValue)}
-                {extra === "marketCap" && formatValue(row.marketCap)}
+              <td className="hidden p-0 text-right text-xs text-dim tabular-nums @min-[32rem]/stocktable:table-cell">
+                <Link href={`/asset/${row.code}`} aria-label={`Buka saham ${row.code}`} className="block px-3 py-2">
+                  {extra === "volume" && formatVolume(row.lastVolume)}
+                  {extra === "value" && formatValue(row.lastValue)}
+                  {extra === "marketCap" && formatValue(row.marketCap)}
+                </Link>
               </td>
 
-              {action && <td className="relative z-20 pr-2 text-right">{action(row)}</td>}
+              {action && <td className="pr-2 text-right">{action(row)}</td>}
             </tr>
           ))}
         </tbody>

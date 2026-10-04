@@ -26,7 +26,7 @@ export default async function ResearchIssuePage({ params }: PageProps<"/research
 
   return <main className="min-w-0 flex-1 bg-panel">
     <header className="border-b border-rule px-4 py-5 sm:px-6">
-      <Link href="/research" className="inline-flex min-h-9 items-center gap-1.5 text-xs text-cyan hover:underline"><ArrowLeft className="h-4 w-4" aria-hidden="true" />Semua riset</Link>
+      <Link href="/research/meridian" className="inline-flex min-h-9 items-center gap-1.5 text-xs text-cyan hover:underline"><ArrowLeft className="h-4 w-4" aria-hidden="true" />Meridian Research</Link>
       <p className="mt-3 text-micro font-semibold uppercase tracking-[0.16em] text-amber">Meridian Research / #{String(issue.number).padStart(2, "0")} / {issue.category}</p>
       <h1 className="mt-1 break-words font-display text-2xl font-bold text-ink-hi">{issue.title}</h1>
       <p className="mt-2 text-xs text-dim">{issue.publishedAt ? `Tanggal terbit dalam PDF: ${showDate(issue.publishedAt)}` : `Tanggal unggah Drive: ${showDate(issue.uploadedAt)} · tanggal terbit dalam PDF belum terverifikasi; grafik memakai tanggal unggah`}</p>

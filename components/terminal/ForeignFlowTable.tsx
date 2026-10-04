@@ -42,18 +42,17 @@ export function ForeignFlowTable({
           {rows.map((row, index) => (
             <tr
               key={row.code}
-              className="group relative border-b border-rule/50 transition-colors hover:bg-panel-hi"
+              className="group border-b border-rule/50 transition-colors hover:bg-panel-hi"
             >
-              <td className="px-2 py-2 text-right text-xs text-dimmer tabular-nums">
-                {index + 1}
+              <td className="p-0 text-right text-xs text-dimmer tabular-nums">
+                <Link href={`/asset/${row.code}`} aria-label={`Buka saham ${row.code}`} className="block px-2 py-2">{index + 1}</Link>
               </td>
-              <td className="px-3 py-2">
+              <td className="p-0">
                 <Link
                   href={`/asset/${row.code}`}
                   aria-label={`Buka detail saham ${row.code}`}
-                  className="absolute inset-0 z-0"
-                />
-                <span className="relative z-10 flex pointer-events-none items-center gap-2.5">
+                  className="flex items-center gap-2.5 px-3 py-2"
+                >
                   <CompanyLogo code={row.code} logoUrl={row.logoUrl} />
                   <span className="min-w-0">
                     <span className="flex items-center gap-1.5 font-bold tracking-[0.05em] text-ink-hi group-hover:text-amber">
@@ -64,16 +63,16 @@ export function ForeignFlowTable({
                       {row.name}
                     </span>
                   </span>
-                </span>
+                </Link>
               </td>
-              <Td>{formatVolume(row.foreignBuy)}</Td>
-              <Td>{formatVolume(row.foreignSell)}</Td>
-              <Td className={`font-semibold ${tone}`}>
+              <Td code={row.code}>{formatVolume(row.foreignBuy)}</Td>
+              <Td code={row.code}>{formatVolume(row.foreignSell)}</Td>
+              <Td code={row.code} className={`font-semibold ${tone}`}>
                 {direction === "buy" ? "+" : ""}
                 {formatVolume(row.netShares)}
               </Td>
-              <Td>{formatValue(row.estimatedNetValue)}</Td>
-              <Td>{formatPrice(row.close)}</Td>
+              <Td code={row.code}>{formatValue(row.estimatedNetValue)}</Td>
+              <Td code={row.code}>{formatPrice(row.close)}</Td>
             </tr>
           ))}
         </tbody>
@@ -102,10 +101,10 @@ function Th({
   );
 }
 
-function Td({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+function Td({ children, code, className = "" }: { children: React.ReactNode; code: string; className?: string }) {
   return (
-    <td className={`relative z-10 pointer-events-none px-3 py-2 text-right text-xs text-dim ${className}`}>
-      {children}
+    <td className={`p-0 text-right text-xs text-dim ${className}`}>
+      <Link href={`/asset/${code}`} aria-label={`Buka saham ${code}`} className="block px-3 py-2">{children}</Link>
     </td>
   );
 }
