@@ -57,6 +57,7 @@ export async function analyzeDocument(input: { text: string; ticker: string; cat
   const response = await client.responses.create({
     model,
     store: false,
+    ...(model === "gpt-6-luna" ? { reasoning: { effort: "none" as const } } : {}),
     max_output_tokens: 2500,
     input: [
       { role: "system", content: "You extract and explain ONLY facts explicitly present in the supplied official disclosure. Write Indonesian. Do not invent source, price, date, transaction value, share count, index flow, approval, or market direction. If unknown use null or N/D. A CONFIRMED label means only the cited facts in the official document are confirmed, not that a proposal was completed. Use exactQuote copied verbatim from source text for every material claim. Distinguish proposed, approved and completed phases, and cite phase in evidence. Impact direction is uncertain unless strong source-grounded reason. Never interpret a schedule as proof of ETF flow." },

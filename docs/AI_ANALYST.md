@@ -34,7 +34,7 @@ The production build script also applies pending Supabase migrations when `DIREC
 ### Activate in Vercel
 
 1. Set production `DATABASE_URL`, `DIRECT_URL`, and `SESSION_SECRET` as already required by this app.
-2. Set `OPENAI_API_KEY` and a Responses API model in `OPENAI_MODEL`. The default example is `gpt-4o-mini`; confirm that the account can use the chosen model.
+2. Set `OPENAI_API_KEY` and a Responses API model in `OPENAI_MODEL`. The default example is `gpt-6-luna`; confirm that the account can use the chosen model. The document extractor uses `reasoning.effort: none` for Luna to keep bounded, source-grounded JSON output within the response budget.
 3. Generate a random `CRON_SECRET` of at least 32 characters and add it to Vercel Production. Do not reuse the session secret.
 4. Set `AI_ANALYST_ADMIN_USERNAMES` to signed-in usernames allowed to inspect diagnostics and run manual scans. Leave empty to disable manual scans.
 5. Deploy the app with `vercel.json`. Vercel Cron calls `/api/intelligence/cron` at `0 13 * * *` UTC, approximately 20:00 WIB every day including weekends. Vercel Hobby may invoke at any point during that hour.
