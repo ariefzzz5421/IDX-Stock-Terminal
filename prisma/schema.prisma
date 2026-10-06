@@ -25,6 +25,7 @@ model User {
   streamPosts StreamPost[]
   streamComments StreamComment[]
   streamLikes StreamLike[]
+  researchNotifications ResearchNotification[]
 
   @@map("users")
 }
@@ -81,6 +82,7 @@ model Stock {
 
   watchlists   Watchlist[]
   priceHistory PriceHistory[]
+  intelligenceTickers IntelligenceTicker[]
 
   @@index([lastChangePct])
   @@index([marketCap])
@@ -164,4 +166,125 @@ model StreamLike {
   @@id([postId, userId])
   @@index([userId])
   @@map("stream_likes")
+}
+
+model IntelligenceEvent {
+  id String @id
+  identity String @unique
+  category String
+  title String
+  priority String
+  status String
+  direction String
+  score Int
+  summary String
+  firstSeenAt DateTime @default(now())
+  publishedAt DateTime?
+  effectiveAt DateTime?
+  lastChangedAt DateTime @default(now())
+  lastCheckedAt DateTime @default(now())
+  latestVersion Int @default(0)
+  versions IntelligenceEventVersion[]
+  sources IntelligenceSource[]
+  tickers IntelligenceTicker[]
+  @@index([publishedAt(sort: Desc)])
+  @@index([category, priority, status])
+  @@map("intelligence_events")
+}
+
+model IntelligenceEventVersion {
+  id String @id @default(cuid())
+  eventId String
+  eventVersion Int
+  previousVersionId String?
+  contentFingerprint String
+  changeType String
+  sourceUrl String
+  sourceDocumentId String
+  status String
+  priority String
+  direction String
+  score Int
+  title String
+  summary String
+  factsJson String
+  analysisJson String
+  announcementAt DateTime?
+  effectiveAt DateTime?
+  publishedAt DateTime @default(now())
+  createdAt DateTime @default(now())
+  event IntelligenceEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  sources IntelligenceSource[]
+  notifications ResearchNotification[]
+  @@unique([eventId, eventVersion])
+  @@index([publishedAt(sort: Desc)])
+  @@map("intelligence_event_versions")
+}
+
+model IntelligenceSource {
+  id String @id @default(cuid())
+  sourceDocumentId String @unique
+  eventId String?
+  versionId String?
+  adapter String
+  sourceUrl String
+  host String
+  title String
+  status String
+  contentFingerprint String?
+  excerpt String?
+  publishedAt DateTime?
+  fetchedAt DateTime @default(now())
+  lastCheckedAt DateTime @default(now())
+  error String?
+  event IntelligenceEvent? @relation(fields: [eventId], references: [id], onDelete: SetNull)
+  version IntelligenceEventVersion? @relation(fields: [versionId], references: [id], onDelete: SetNull)
+  @@index([adapter, publishedAt(sort: Desc)])
+  @@map("intelligence_sources")
+}
+
+model IntelligenceTicker {
+  eventId String
+  stockCode String
+  securityCode String
+  securityType String @default("STOCK")
+  event IntelligenceEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  stock Stock @relation(fields: [stockCode], references: [code], onDelete: Cascade)
+  @@id([eventId, securityCode])
+  @@index([stockCode])
+  @@map("intelligence_tickers")
+}
+
+model ResearchRun {
+  id String @id @default(cuid())
+  slot String @unique
+  status String
+  dryRun Boolean @default(false)
+  startedAt DateTime @default(now())
+  endedAt DateTime?
+  leaseExpiresAt DateTime
+  cursorJson String @default("{}")
+  sourcesChecked Int @default(0)
+  newEvents Int @default(0)
+  updatedEvents Int @default(0)
+  failedAdapters Int @default(0)
+  aiInputTokens Int @default(0)
+  aiOutputTokens Int @default(0)
+  errorLog String @default("[]")
+  @@index([startedAt(sort: Desc)])
+  @@index([status, startedAt(sort: Desc)])
+  @@map("research_runs")
+}
+
+model ResearchNotification {
+  id String @id @default(cuid())
+  userId String
+  versionId String
+  createdAt DateTime @default(now())
+  readAt DateTime?
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  version IntelligenceEventVersion @relation(fields: [versionId], references: [id], onDelete: Cascade)
+  @@unique([userId, versionId])
+  @@index([userId, readAt])
+  @@map("research_notifications")
 }

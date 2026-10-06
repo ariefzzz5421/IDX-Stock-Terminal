@@ -62,12 +62,18 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
     where: { userId_stockCode: { userId: user.id, stockCode: code } },
     select: { id: true },
   });
+  const intelligencePromise = prisma.intelligenceEvent.findFirst({
+    where: { tickers: { some: { stockCode: code } } },
+    orderBy: { publishedAt: "desc" },
+    select: { id: true, title: true, category: true, priority: true, status: true, publishedAt: true },
+  });
 
-  const [quote, details, candles, watched] = await Promise.all([
+  const [quote, details, candles, watched, intelligence] = await Promise.all([
     quotePromise,
     detailsPromise,
     candlesPromise,
     watchedPromise,
+    intelligencePromise,
   ]);
   const namedShareholders = shareholdersFor(code);
 
@@ -134,6 +140,7 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
         </div>
       </section>
       <StockDailyFlow code={code} />
+      <Panel title="Corporate Intelligence" meta="pengumuman perusahaan"><div className="p-4 text-xs text-ink">{intelligence ? <><p className="font-bold text-ink-hi">{intelligence.title}</p><p className="mt-1 text-dim">{intelligence.category.replaceAll("_", " ")} · {intelligence.priority} · {intelligence.status} · {intelligence.publishedAt ? new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeZone: "Asia/Jakarta" }).format(intelligence.publishedAt) : "N/D"}</p><Link href={`/ai-analyst/research/${intelligence.id}`} className="mt-2 inline-block text-cyan hover:underline">Baca riset lengkap →</Link></> : "Belum ada peristiwa material terverifikasi untuk saham ini."}</div></Panel>
 
       <Panel
         title="Ringkasan Harga & Keuangan"
