@@ -11,6 +11,7 @@ export const KSEI_FEEDS: Array<{ name: string; path: string; category: Category 
   { name: "KSEI Rights", path: "/publications/corporate-action-schedules/rights-distribution", category: "RIGHTS_ISSUE" },
   { name: "KSEI Cash Dividend", path: "/publications/corporate-action-schedules/cash-dividend", category: "DIVIDEND" },
   { name: "KSEI Share Dividend", path: "/publications/corporate-action-schedules/share-dividend", category: "DIVIDEND" },
+  { name: "KSEI Mixed Dividend", path: "/publications/corporate-action-schedules/mix-dividend", category: "DIVIDEND" },
   { name: "KSEI Share Bonus", path: "/publications/corporate-action-schedules/share-bonus", category: "BONUS_SHARES" },
   { name: "KSEI MASR", path: "/publications/corporate-action-schedules/masr", category: "TENDER_OFFER" },
 ];

@@ -62,7 +62,7 @@ export async function CorporateIntelligence({ userId, filters }: { userId: strin
     <details className="border-b border-rule px-4 py-3 text-xs sm:px-6">
       <summary className="cursor-pointer font-bold text-cyan">Cakupan sumber dan kesehatan pipeline</summary>
       <div className="mt-3 grid gap-3 text-ink lg:grid-cols-2">
-        <div><strong className="text-ink-hi">Aktif:</strong> KSEI jadwal HMETD, dividen tunai/saham, bonus saham, dan MASR. PDF diambil dari host resmi dan diperiksa ulang saat isinya berubah.</div>
+        <div><strong className="text-ink-hi">Aktif:</strong> KSEI jadwal HMETD, dividen tunai/saham/campuran, bonus saham, dan MASR. PDF diambil dari host resmi dan diperiksa ulang saat isinya berubah.</div>
         <ul className="space-y-1">{overview.sourceGaps.map((gap) => <li key={gap}>• {gap}</li>)}</ul>
       </div>
       {run && run.errorLog !== "[]" && <pre className="mt-3 max-h-48 overflow-auto whitespace-pre-wrap border border-rule p-2 text-down">{(JSON.parse(run.errorLog) as string[]).join("\n")}</pre>}
