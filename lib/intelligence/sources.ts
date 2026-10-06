@@ -1,6 +1,6 @@
 import "server-only";
 import { load } from "cheerio";
-import { PDFParse } from "pdf-parse";
+import pdfParse from "pdf-parse/lib/pdf-parse.js";
 import { normalize, sha, type Category } from "./core";
 
 const MAX_BYTES = 8 * 1024 * 1024;
@@ -91,13 +91,9 @@ export async function fetchSourceDocument(document: DiscoveredDocument): Promise
   let text = "";
   if (contentType.includes("pdf") || document.sourceUrl.toLowerCase().endsWith(".pdf")) {
     if (buffer.subarray(0, 4).toString() !== "%PDF") throw new Error("Invalid PDF signature");
-    const parser = new PDFParse({ data: buffer });
-    try {
-      const info = await parser.getInfo();
-      if (info.total > 12) throw new Error("PDF exceeds 12-page extraction limit");
-      text = (await parser.getText()).text;
-    }
-    finally { await parser.destroy(); }
+    const parsed = await pdfParse(buffer, { max: 12 });
+    if (parsed.numpages > 12) throw new Error("PDF exceeds 12-page extraction limit");
+    text = parsed.text;
   } else if (contentType.includes("html")) {
     const $ = load(buffer.toString("utf8"));
     $("script, style, nav, footer").remove();
