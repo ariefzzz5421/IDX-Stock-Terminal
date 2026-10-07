@@ -4,12 +4,25 @@ export type FloatHolderInput = {
   percentage: number;
   shares: number;
   investorType: string;
+  localForeign?: string;
+  domicile?: string;
   affiliation: { label: string; sourceUrl: string } | null;
 };
 
 export type FloatHolderAssessment = FloatHolderInput & {
   treatment: "verified-affiliate" | "type-strategic" | "unverified";
 };
+
+export function investorTypeCode(type: string): string {
+  const codes: Record<string, string> = {
+    Corporate: "CP", Individual: "ID", Bank: "IB", Foundation: "FD",
+    "Mutual Funds": "MF", Insurance: "IS", "Pension Funds": "PF",
+    "Securities Company": "SC", Government: "GV",
+    "State Owned Enterprises": "SOE", "State Owned Company": "SOE",
+    "Sovereign Wealth Fund": "SWF",
+  };
+  return codes[type] ?? "—";
+}
 
 // Conservative, explicit assumptions for an indicative KSEI-based calculation.
 // A type-based exclusion is not a claim that the holder is affiliated with the issuer.

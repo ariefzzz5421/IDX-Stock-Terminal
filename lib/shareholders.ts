@@ -46,6 +46,28 @@ export function codesForNamedShareholder(holderName: string): string[] {
   return shareholderCodeIndex().get(needle) ?? [];
 }
 
+/** Exact-name cross-ticker positions from the same dated ownership snapshot. */
+export function positionsForNamedShareholder(holderName: string): { code: string; percentage: number; shares: number }[] {
+  const needle = holderName.trim().toUpperCase();
+  if (!needle) return [];
+  if (!positionIndex) {
+    positionIndex = new Map();
+    for (const [code, rows] of Object.entries(holdingsJson as unknown as Record<string, HoldingTuple[]>)) {
+      for (const [name, percentage, shares] of rows) {
+        if (percentage < 1) continue;
+        const key = name.trim().toUpperCase();
+        const positions = positionIndex.get(key) ?? [];
+        positions.push({ code, percentage, shares });
+        positionIndex.set(key, positions);
+      }
+    }
+    for (const positions of positionIndex.values()) positions.sort((a, b) => b.percentage - a.percentage || a.code.localeCompare(b.code));
+  }
+  return positionIndex.get(needle) ?? [];
+}
+
+let positionIndex: Map<string, { code: string; percentage: number; shares: number }[]> | null = null;
+
 let holderIndex: Map<string, string[]> | null = null;
 function shareholderCodeIndex() {
   if (holderIndex) return holderIndex;

@@ -5,12 +5,14 @@ import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { requireUser } from "@/lib/auth/session";
 import { getCompanyCatalogEntry } from "@/lib/company-catalog";
 import { formatPrice, formatValue } from "@/lib/format";
-import { assessFloatHolders } from "@/lib/free-float-research";
+import { assessFloatHolders, investorTypeCode } from "@/lib/free-float-research";
 import { getFreeFloatSnapshot } from "@/lib/market-data/free-float";
 import { sharedHolderLinks } from "@/lib/ownership-overview";
-import { OWNERSHIP_AS_OF, OWNERSHIP_SOURCE, OWNERSHIP_TRANSCRIPTION, shareholdersFor } from "@/lib/shareholders";
+import { OWNERSHIP_AS_OF, OWNERSHIP_SOURCE, OWNERSHIP_TRANSCRIPTION, positionsForNamedShareholder, shareholdersFor } from "@/lib/shareholders";
 import { CompanyLogo } from "@/components/terminal/CompanyLogo";
 import { FloatHolderBubbles } from "@/components/terminal/FloatHolderBubbles";
+import { FloatOwnershipNetwork } from "@/components/terminal/FloatOwnershipNetwork";
+import { HoldingPieChart } from "@/components/terminal/HoldingPieChart";
 
 export const dynamic = "force-dynamic";
 
@@ -37,6 +39,19 @@ export default async function FreeFloatAssetPage({ params }: { params: Promise<{
   const research = assessFloatHolders(holders);
   const related = holders.length ? sharedHolderLinks(code) : [];
   const nonFloatShares = stock ? Math.max(0, stock.outstandingShares - stock.floatShares) : null;
+  const networks = holders.map((holder) => ({
+    name: holder.name,
+    investorType: holder.investorType,
+    typeCode: investorTypeCode(holder.investorType),
+    localForeign: holder.localForeign ?? "",
+    domicile: holder.domicile ?? "",
+    positions: positionsForNamedShareholder(holder.name).map((position) => ({ ...position, assetAvailable: !!getCompanyCatalogEntry(position.code) })),
+  }));
+  const typeTotals = [...holders.reduce((totals, holder) => {
+    const key = holder.investorType || "Tidak terklasifikasi";
+    totals.set(key, (totals.get(key) ?? 0) + holder.percentage);
+    return totals;
+  }, new Map<string, number>())].sort((a, b) => b[1] - a[1]);
 
   return <main className="min-w-0 flex-1 bg-panel">
     <header className="border-b border-rule px-4 py-5 sm:px-6">
@@ -63,11 +78,12 @@ export default async function FreeFloatAssetPage({ params }: { params: Promise<{
         </section>
         <section className="min-w-0">
           <div className="border-b border-rule bg-panel-hi px-4 py-3 sm:px-6"><h2 className="text-xs font-bold uppercase tracking-wider text-amber">Pemegang saham ≥1% · {OWNERSHIP_AS_OF}</h2></div>
-          {holders.length ? <div className="overflow-x-auto"><table className="w-full min-w-[42rem] text-left text-xs"><thead className="text-micro uppercase text-dim"><tr className="border-b border-rule"><th className="px-4 py-2">Pemegang</th><th className="px-2 py-2">Jenis</th><th className="px-2 py-2">Perlakuan model</th><th className="px-2 py-2 text-right">Saham</th><th className="px-4 py-2 text-right">Porsi</th></tr></thead><tbody>{research.holders.map((holder) => <tr key={`${holder.name}-${holder.shares}`} className="border-b border-rule/70"><td className="max-w-72 break-words px-4 py-2 text-ink-hi">{holder.name}{holder.affiliation && <a href={holder.affiliation.sourceUrl} target="_blank" rel="noopener noreferrer" className="block text-micro text-cyan hover:underline">Bukti afiliasi ↗</a>}</td><td className="px-2 py-2 text-ink">{holder.investorType || "N/D"}</td><td className="px-2 py-2 text-dim">{holder.treatment === "verified-affiliate" ? "Afiliasi terverifikasi" : holder.treatment === "type-strategic" ? "Strategis berdasar jenis" : "Afiliasi belum terverifikasi"}</td><td className="px-2 py-2 text-right tabular-nums text-ink">{count(holder.shares)}</td><td className="px-4 py-2 text-right tabular-nums text-amber">{pct(holder.percentage)}</td></tr>)}</tbody></table></div> : <p className="px-4 py-5 text-xs text-dim sm:px-6">Tidak ada rincian pemegang ≥1% untuk ticker ini pada snapshot yang tersedia.</p>}
+          {holders.length ? <div className="overflow-x-auto"><table className="w-full min-w-[58rem] text-left text-xs"><thead className="text-micro uppercase text-dim"><tr className="border-b border-rule"><th className="px-4 py-2">Pemegang</th><th className="px-2 py-2">Jenis</th><th className="px-2 py-2">L/F</th><th className="px-2 py-2">Domisili</th><th className="px-2 py-2">Perlakuan model</th><th className="px-2 py-2 text-right">Saham</th><th className="px-4 py-2 text-right">Porsi</th></tr></thead><tbody>{research.holders.map((holder) => <tr key={`${holder.name}-${holder.shares}`} className="border-b border-rule/70"><td className="max-w-72 break-words px-4 py-2 text-ink-hi">{holder.name}{holder.affiliation && <a href={holder.affiliation.sourceUrl} target="_blank" rel="noopener noreferrer" className="block text-micro text-cyan hover:underline">Bukti afiliasi ↗</a>}</td><td className="px-2 py-2 text-ink"><span className="mr-1 border border-cyan/40 px-1 text-micro font-bold text-cyan">{investorTypeCode(holder.investorType)}</span>{holder.investorType || "N/D"}</td><td className="px-2 py-2 text-ink">{holder.localForeign || "—"}</td><td className="px-2 py-2 text-ink">{holder.domicile || "—"}</td><td className="px-2 py-2 text-dim">{holder.treatment === "verified-affiliate" ? "Afiliasi terverifikasi" : holder.treatment === "type-strategic" ? "Strategis berdasar jenis" : "Afiliasi belum terverifikasi"}</td><td className="px-2 py-2 text-right tabular-nums text-ink">{count(holder.shares)}</td><td className="px-4 py-2 text-right tabular-nums text-amber">{pct(holder.percentage)}</td></tr>)}</tbody></table></div> : <p className="px-4 py-5 text-xs text-dim sm:px-6">Tidak ada rincian pemegang ≥1% untuk ticker ini pada snapshot yang tersedia.</p>}
         </section>
       </div>
 
       <aside className="min-w-0 border-b border-rule">
+        <section className="border-b border-rule p-4 sm:p-6"><h2 className="text-xs font-bold uppercase tracking-wider text-amber">Distribusi kepemilikan</h2>{holders.length ? <><HoldingPieChart holders={holders} compact /><h3 className="mt-5 text-micro font-bold uppercase tracking-wider text-cyan">Jenis investor dalam posisi terungkap</h3><div className="mt-2 space-y-2">{typeTotals.map(([type, total]) => <div key={type} className="flex items-center justify-between gap-2 border-b border-rule/60 pb-1.5 text-xs"><span className="min-w-0 break-words text-ink"><span className="mr-2 text-cyan">{investorTypeCode(type)}</span>{type}</span><strong className="shrink-0 tabular-nums text-amber">{pct(total)}</strong></div>)}</div><p className="mt-2 text-micro leading-relaxed text-dim">Persentase di atas adalah porsi saham yang dipegang kategori investor tercatat, bukan persentase jumlah investor.</p></> : <p className="mt-3 text-xs text-dim">Data distribusi belum tersedia.</p>}</section>
         <section className="border-b border-rule p-4 sm:p-6"><h2 className="text-xs font-bold uppercase tracking-wider text-amber">Perhitungan</h2>
           <p className="mt-3 text-micro uppercase tracking-wider text-dim">Vendor · TradingView</p><strong className="mt-1 block font-display text-xl text-ink-hi">{stock ? pct(stock.floatPercent) : "N/D"}</strong>
           <p className="mt-1 text-xs leading-relaxed text-ink">{stock ? `${count(stock.floatShares)} saham float ÷ ${count(stock.outstandingShares)} saham beredar × 100` : "Pasangan data saham float dan saham beredar belum tersedia."}</p>
@@ -82,5 +98,6 @@ export default async function FreeFloatAssetPage({ params }: { params: Promise<{
         <section className="p-4 text-xs sm:p-6"><h2 className="font-bold uppercase tracking-wider text-amber">Sumber & batas data</h2><div className="mt-3 flex flex-col items-start gap-2"><a href={OWNERSHIP_SOURCE} target="_blank" rel="noopener noreferrer" className="text-cyan hover:underline">BEI / KSEI · daftar kepemilikan ↗</a><a href={OWNERSHIP_TRANSCRIPTION} target="_blank" rel="noopener noreferrer" className="text-cyan hover:underline">Transkripsi data pemegang ↗</a><a href="https://www.tradingview.com/support/solutions/43000670341-free-float/" target="_blank" rel="noopener noreferrer" className="text-cyan hover:underline">TradingView · metodologi float ↗</a><a href={`https://www.idx.co.id/id/perusahaan-tercatat/profil-perusahaan-tercatat/${code}`} target="_blank" rel="noopener noreferrer" className="text-cyan hover:underline">Profil emiten BEI ↗</a></div><p className="mt-3 text-micro leading-relaxed text-dim">Snapshot kepemilikan dan data vendor punya waktu berbeda. Jangan menyamakan selisih kedua angka dengan transaksi atau perubahan kepemilikan terbaru.</p></section>
       </aside>
     </div>
+    <section className="min-w-0 border-t border-rule"><div className="border-b border-rule bg-panel-hi px-4 py-3 sm:px-6"><h2 className="text-xs font-bold uppercase tracking-wider text-amber">Ownership Network</h2><p className="mt-1 text-micro text-dim">Pilih pemegang untuk melihat saham lain yang tercatat atas nama yang sama pada snapshot {OWNERSHIP_AS_OF}.</p></div><FloatOwnershipNetwork holders={networks} /></section>
   </main>;
 }

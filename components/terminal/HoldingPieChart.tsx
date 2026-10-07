@@ -19,7 +19,7 @@ function slicePath(start: number, end: number) {
   return `M 100 100 L ${a.x.toFixed(4)} ${a.y.toFixed(4)} A 86 86 0 ${end - start > 180 ? 1 : 0} 1 ${b.x.toFixed(4)} ${b.y.toFixed(4)} Z`;
 }
 
-export function HoldingPieChart({ holders }: { holders: NamedShareholder[] }) {
+export function HoldingPieChart({ holders, compact = false }: { holders: NamedShareholder[]; compact?: boolean }) {
   const [selected, setSelected] = useState<number | null>(null);
   if (!holders.length) return null;
 
@@ -35,7 +35,7 @@ export function HoldingPieChart({ holders }: { holders: NamedShareholder[] }) {
     end: slices.slice(0, index + 1).reduce((sum, earlier) => sum + earlier.percentage, 0) / total * 360,
   }));
 
-  return <div className="mt-4 grid min-w-0 gap-4 border border-rule-hi bg-panel-hi p-3 sm:grid-cols-[minmax(0,13rem)_minmax(0,1fr)]">
+  return <div className={`mt-4 grid min-w-0 gap-4 border border-rule-hi bg-panel-hi p-3 ${compact ? "" : "sm:grid-cols-[minmax(0,13rem)_minmax(0,1fr)]"}`}>
     <div className="relative mx-auto aspect-square w-full max-w-52">
       <svg viewBox="0 0 200 200" className="h-full w-full" role="img" aria-label="Diagram lingkaran struktur kepemilikan saham">
         {arcs.map(({ slice, index, start, end }) => <path key={`${slice.name}-${index}`} d={slicePath(start, end)} fill={slice.color} stroke="var(--color-panel-hi)" strokeWidth="1.5" opacity={selected === null || selected === index ? 1 : 0.42} onMouseEnter={() => setSelected(index)} onMouseLeave={() => setSelected(null)} onFocus={() => setSelected(index)} onBlur={() => setSelected(null)} tabIndex={0} aria-label={`${slice.name}: ${slice.percentage.toLocaleString("id-ID", { maximumFractionDigits: 4 })}%`} className="cursor-pointer outline-none focus:stroke-amber focus:stroke-[3]" />)}

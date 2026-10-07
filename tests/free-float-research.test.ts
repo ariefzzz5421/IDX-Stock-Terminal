@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { assessFloatHolders, type FloatHolderInput } from "../lib/free-float-research";
+import { assessFloatHolders, investorTypeCode, type FloatHolderInput } from "../lib/free-float-research";
 
 const holder = (name: string, percentage: number, investorType: string, affiliated = false): FloatHolderInput => ({
   name, percentage, investorType, shares: percentage * 1_000_000,
@@ -27,4 +27,10 @@ test("missing holders never imply 100 percent float", () => {
 
 test("inconsistent positions above 100 percent suppress the estimate", () => {
   assert.equal(assessFloatHolders([holder("A", 70, "Corporate"), holder("B", 40, "Corporate")]).indicativeFloatPercent, null);
+});
+
+test("known investor types have explicit badges and unknown types are not mislabeled", () => {
+  assert.equal(investorTypeCode("Corporate"), "CP");
+  assert.equal(investorTypeCode("Individual"), "ID");
+  assert.equal(investorTypeCode("Unknown"), "—");
 });
