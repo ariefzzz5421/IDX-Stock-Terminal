@@ -3,6 +3,7 @@ import test from "node:test";
 import { calculateDilution, calculateSizeToMarketCap, changeType, deriveRunStatus, eventIdentity, matchTickers, scoreMateriality } from "../lib/intelligence/core";
 import { parseResearchResponse, verifyResearch } from "../lib/intelligence/validation";
 import { cronAuthorized } from "../lib/intelligence/security";
+import { scanHeadline } from "../lib/intelligence/scan-presentation";
 
 test("matches only catalogued issuers and maps warrant codes to base ticker", () => {
   assert.deepEqual(matchTickers("BRNA-R and BRNA-W, plus fake ZZZZ", new Set(["BRNA", "TLKM"])), ["BRNA"]);
@@ -71,4 +72,14 @@ test("unreachable sources never become a clean scan", () => {
   assert.equal(deriveRunStatus({ failedAdapters: 5, errors: 0, pending: 0, sourceAdapters: 5, successfulAdapters: 0 }), "FAILED");
   assert.equal(deriveRunStatus({ failedAdapters: 0, errors: 0, pending: 1, sourceAdapters: 5, successfulAdapters: 5 }), "PARTIAL");
   assert.equal(deriveRunStatus({ failedAdapters: 0, errors: 0, pending: 0, sourceAdapters: 5, successfulAdapters: 5 }), "SUCCESS");
+});
+
+test("a clean no-news message requires a successful scan on the current Jakarta day", () => {
+  const now = new Date("2026-10-07T14:00:00.000Z");
+  const run = { status: "SUCCESS", endedAt: new Date("2026-10-07T13:05:00.000Z"), newEvents: 0, updatedEvents: 0 };
+  assert.match(scanHeadline(run, now), /Tidak ada temuan material baru/);
+  assert.match(scanHeadline({ ...run, endedAt: new Date("2026-10-06T13:05:00.000Z") }, now), /Belum ada pemindaian berhasil hari ini/);
+  assert.doesNotMatch(scanHeadline({ ...run, status: "PARTIAL" }, now), /Tidak ada temuan material baru/);
+  assert.doesNotMatch(scanHeadline({ ...run, status: "FAILED" }, now), /Tidak ada temuan material baru/);
+  assert.doesNotMatch(scanHeadline({ ...run, status: "RUNNING" }, now), /Tidak ada temuan material baru/);
 });

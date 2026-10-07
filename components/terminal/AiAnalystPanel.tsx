@@ -3,13 +3,14 @@
 import { useState } from "react";
 import { BrainCircuit, RefreshCw } from "lucide-react";
 import type { AnalystFact, MarketBrief } from "@/lib/ai-analyst";
+import { CompanyLogo } from "./CompanyLogo";
 
 type Result = { brief: MarketBrief; aiSummary: string | null; providerConfigured: boolean; providerError?: boolean };
 
 function FactList({ title, items }: { title: string; items: AnalystFact[] }) {
   return <section className="min-w-0 border-t border-rule bg-panel">
     <h2 className="border-b border-rule bg-panel-hi px-4 py-2.5 text-micro font-bold uppercase tracking-widest text-amber">{title}</h2>
-    {items.length ? <ol>{items.map((item, index) => <li key={item.code} className="flex min-w-0 items-center gap-3 border-b border-rule/60 px-4 py-2 text-xs last:border-0"><span className="w-6 shrink-0 tabular-nums text-amber">{index + 1}.</span><a href={`/asset/${item.code}`} className="w-16 shrink-0 font-bold text-cyan hover:underline">{item.code}</a><span className="min-w-0 flex-1 text-right tabular-nums text-ink">{item.price}</span><span className="w-20 shrink-0 text-right tabular-nums text-ink-hi">{item.change}</span><span className="hidden w-28 shrink-0 text-right tabular-nums text-dim sm:block">{item.volume}</span></li>)}</ol> : <p className="px-4 py-3 text-xs text-dim">No verified snapshot rows.</p>}
+    {items.length ? <ol>{items.map((item, index) => <li key={item.code} className="flex min-w-0 items-center gap-2 border-b border-rule/60 px-4 py-2 text-xs last:border-0 sm:gap-3"><span className="w-5 shrink-0 tabular-nums text-amber sm:w-6">{index + 1}.</span><CompanyLogo code={item.code} /><a href={`/asset/${item.code}`} className="w-12 shrink-0 font-bold text-cyan hover:underline sm:w-16">{item.code}</a><span className="min-w-0 flex-1 text-right tabular-nums text-ink">{item.price}</span><span className="w-16 shrink-0 text-right tabular-nums text-ink-hi sm:w-20">{item.change}</span><span className="hidden w-28 shrink-0 text-right tabular-nums text-dim sm:block">{item.volume}</span></li>)}</ol> : <p className="px-4 py-3 text-xs text-dim">No verified snapshot rows.</p>}
   </section>;
 }
 

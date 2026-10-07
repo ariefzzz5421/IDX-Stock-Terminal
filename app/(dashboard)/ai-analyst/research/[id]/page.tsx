@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/db/prisma";
+import { CompanyLogo } from "@/components/terminal/CompanyLogo";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Riset korporasi — IDX Terminal" };
@@ -28,7 +29,7 @@ export default async function ResearchDetail({ params }: { params: Promise<{ id:
       <p className="mt-4 text-micro font-bold uppercase tracking-widest text-amber">{event.category.replaceAll("_", " ")} · {event.priority} · {event.status}</p>
       <h1 className="mt-2 max-w-4xl font-display text-2xl font-bold text-ink-hi">{event.title}</h1>
       <p className="mt-2 text-xs text-dim">Dipublikasikan {date(current?.publishedAt)} · Berlaku {date(current?.effectiveAt)} · Versi {event.latestVersion}</p>
-      <div className="mt-3 flex flex-wrap gap-2">{event.tickers.map((ticker) => <Link key={ticker.securityCode} href={`/asset/${ticker.stockCode}`} className="border border-cyan/50 px-2 py-1 text-xs font-bold text-cyan">{ticker.securityCode} ↗</Link>)}</div>
+      <div className="mt-3 flex flex-wrap gap-2">{event.tickers.map((ticker) => <Link key={ticker.securityCode} href={`/asset/${ticker.stockCode}`} className="inline-flex min-w-0 items-center gap-2 border border-cyan/50 px-2 py-1 text-xs font-bold text-cyan"><CompanyLogo code={ticker.stockCode} />{ticker.securityCode} ↗</Link>)}</div>
     </header>
     <div className="grid gap-px bg-rule xl:grid-cols-[minmax(0,2fr)_minmax(19rem,1fr)]">
       <div className="space-y-px">

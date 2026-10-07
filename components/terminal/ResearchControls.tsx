@@ -11,7 +11,10 @@ export function ResearchControls({ admin, unread }: { admin: boolean; unread: nu
     try {
       const response = await fetch("/api/intelligence/run", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ dryRun }) });
       const result = await response.json() as { status?: string; newEvents?: number; updatedEvents?: number; pending?: number; error?: string };
-      setMessage(response.ok ? `${result.status}: ${result.newEvents ?? 0} baru, ${result.updatedEvents ?? 0} diperbarui, ${result.pending ?? 0} tertunda.` : result.error ?? "Scan gagal");
+      const summary = result.status === "SUCCESS" && !dryRun && !result.newEvents && !result.updatedEvents
+        ? "Tidak ada temuan material baru dari sumber KSEI yang terhubung."
+        : `${result.newEvents ?? 0} baru, ${result.updatedEvents ?? 0} diperbarui, ${result.pending ?? 0} tertunda.`;
+      setMessage(response.ok ? `${dryRun ? "Uji sumber" : "Riset"} ${result.status}: ${summary}` : result.error ?? `Scan ${result.status ?? "gagal"}. Periksa diagnostik sumber.`);
       router.refresh();
     } catch { setMessage("Scan gagal. Coba lagi dari panel diagnostik."); }
     finally { setBusy(false); }

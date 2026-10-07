@@ -4,6 +4,9 @@ import { intelligenceOverview, listResearch, type ResearchFilters } from "@/lib/
 import { isResearchAdmin } from "@/lib/intelligence/access";
 import { ResearchControls } from "./ResearchControls";
 import { CATEGORIES } from "@/lib/intelligence/core";
+import { scanHeadline } from "@/lib/intelligence/scan-presentation";
+import { CompanyLogo } from "./CompanyLogo";
+import { ResearchClock } from "./ResearchClock";
 
 function date(value: Date | null | undefined) {
   return value ? new Intl.DateTimeFormat("id-ID", { timeZone: "Asia/Jakarta", dateStyle: "medium", timeStyle: "short" }).format(value) + " WIB" : "N/D";
@@ -33,11 +36,7 @@ export async function CorporateIntelligence({ userId, filters }: { userId: strin
     p.set("page", String(page));
     return `/ai-analyst?${p.toString()}`;
   };
-  const clear = !run ? "Belum pernah dipindai." : run.status === "SUCCESS" && run.newEvents === 0 && run.updatedEvents === 0
-    ? "No new material developments since the previous successful scan."
-    : run.status === "PARTIAL" ? "Pemindaian sebagian: ada sumber atau dokumen yang belum berhasil diperiksa."
-    : run.status === "FAILED" ? "Pemindaian gagal. Tidak ada kesimpulan tentang peristiwa baru."
-    : `${run.newEvents} peristiwa baru · ${run.updatedEvents} pembaruan substantif.`;
+  const clear = scanHeadline(run, new Date());
   return <section className="min-w-0 border-b border-rule bg-panel">
     <header className="flex flex-wrap items-start justify-between gap-4 border-b border-rule px-4 py-5 sm:px-6">
       <div>
@@ -45,7 +44,11 @@ export async function CorporateIntelligence({ userId, filters }: { userId: strin
         <h2 className="mt-1 flex items-center gap-2 font-display text-xl font-bold text-ink-hi"><FileSearch className="h-5 w-5 text-amber" /> Intelijen Korporasi</h2>
         <p className="mt-2 max-w-3xl text-xs leading-5 text-ink">Pengumuman resmi ditelusuri ke dokumen asal. Prioritas adalah materialitas, bukan prediksi harga.</p>
       </div>
-      <ResearchControls admin={admin} unread={overview.unread} />
+      <div className="flex min-w-0 flex-col items-start gap-2 sm:items-end">
+        <div className="text-micro uppercase tracking-widest text-dim">Waktu sekarang · Jakarta</div>
+        <ResearchClock initialTime={new Date().toISOString()} />
+        <ResearchControls admin={admin} unread={overview.unread} />
+      </div>
     </header>
     <div className="grid gap-px bg-rule sm:grid-cols-2 xl:grid-cols-5">
       <Metric label="Scan berhasil terakhir" value={date(overview.latestSuccess?.endedAt)} />
@@ -55,9 +58,9 @@ export async function CorporateIntelligence({ userId, filters }: { userId: strin
       <Metric label="Confirmed / Preliminary" value={`${overview.confirmed} / ${overview.preliminary}`} />
     </div>
     <div className={`flex flex-wrap items-center gap-2 border-b border-rule px-4 py-3 text-xs sm:px-6 ${run?.status === "FAILED" || run?.status === "PARTIAL" ? "text-amber" : "text-ink"}`}>
-      {run?.status === "FAILED" || run?.status === "PARTIAL" ? <AlertTriangle className="h-4 w-4" /> : <ShieldCheck className="h-4 w-4 text-cyan" />}
+      {run?.status === "SUCCESS" ? <ShieldCheck className="h-4 w-4 shrink-0 text-cyan" /> : <AlertTriangle className="h-4 w-4 shrink-0 text-amber" />}
       <strong>{clear}</strong>
-      <span className="text-dim">Run: {date(run?.startedAt)} · {run?.sourcesChecked ?? 0} dokumen · {run?.failedAdapters ?? 0} feed gagal</span>
+      <span className="text-dim">Scan mulai {date(run?.startedAt)} · selesai {date(run?.endedAt)} · {run?.sourcesChecked ?? 0} dokumen diperiksa · {run?.failedAdapters ?? 0} feed gagal</span>
     </div>
     <details className="border-b border-rule px-4 py-3 text-xs sm:px-6">
       <summary className="cursor-pointer font-bold text-cyan">Cakupan sumber dan kesehatan pipeline</summary>
@@ -89,12 +92,13 @@ export async function CorporateIntelligence({ userId, filters }: { userId: strin
       const facts = latest ? JSON.parse(latest.factsJson) as { evidence?: Array<{ claim: string }> } : null;
       return <article key={event.id} className="min-w-0 bg-panel p-4 sm:p-5">
         <div className="flex flex-wrap items-center gap-2 text-micro font-bold uppercase tracking-widest">
+          {event.tickers[0] && <CompanyLogo code={event.tickers[0].stockCode} size="md" />}
           <span className="text-cyan">{event.tickers[0]?.stockCode ?? "N/D"}</span><span className="text-amber">{event.category.replaceAll("_", " ")}</span>
           <span className="border border-rule-hi px-1.5 py-0.5 text-ink">{event.priority}</span><span className={event.status === "CONFIRMED" ? "text-up" : "text-amber"}>{event.status}</span>
         </div>
         <h3 className="mt-2 text-sm font-bold text-ink-hi">{event.title}</h3>
         <p className="mt-2 line-clamp-3 text-xs leading-5 text-ink">{event.summary}</p>
-        <p className="mt-2 text-micro text-dim">Pengumuman {date(latest?.announcementAt)} · Berlaku {date(latest?.effectiveAt)} · Versi {event.latestVersion} · Dampak {event.direction}</p>
+        <p className="mt-2 text-micro text-ink">Riset terbit {date(latest?.publishedAt)} · Pengumuman {date(latest?.announcementAt)} · Berlaku {date(latest?.effectiveAt)} · Versi {event.latestVersion} · Dampak {event.direction}</p>
         {facts?.evidence?.[0] && <p className="mt-2 line-clamp-2 text-xs text-dim">Fakta: {facts.evidence[0].claim}</p>}
         <div className="mt-3 flex flex-wrap gap-3 text-xs"><Link href={`/ai-analyst/research/${event.id}`} className="inline-flex items-center gap-1 font-bold text-amber hover:underline">Buka riset <ArrowRight className="h-3 w-3" /></Link><a href={latest?.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-cyan hover:underline">Dokumen asli ↗</a>{event.tickers.map((ticker) => <Link key={ticker.securityCode} href={`/asset/${ticker.stockCode}`} className="text-cyan hover:underline">{ticker.securityCode}</Link>)}</div>
       </article>;

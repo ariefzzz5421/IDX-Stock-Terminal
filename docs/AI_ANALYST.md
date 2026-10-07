@@ -20,6 +20,8 @@ The corporate-intelligence section is separate from the existing market brief an
 
 The pipeline has an explicit coverage panel. IDX disclosure/surveillance feeds, issuer/OJK feeds, stock splits, the complete warrant-series catalog, and MSCI/FTSE/VanEck index notices are **not yet connected**. No run claims full BEI coverage. Index announcements, ETF holdings and observed flows must be independently sourced and must not be treated as interchangeable. The 5–6 October BUVA, BTPS, INPS and other historical notes supplied in the task are import candidates only; none are automatically seeded or marked confirmed.
 
+The research page shows a live Jakarta clock, the exact publication time of each research version, and the last scan start/end times. It says no new material findings **only after a successful scan completed on the current Jakarta day**, scoped to the connected KSEI feeds. A partial, failed, running, or stale scan never claims that the market had no corporate actions. Previous findings remain accessible as an archive. Ticker logos use the terminal's existing issuer logo catalog and manual overrides; unavailable logos use a ticker monogram.
+
 ### Data model and migrations
 
 Both `prisma/schema.prisma` (SQLite) and `prisma/supabase/schema.prisma` (PostgreSQL) contain the same six intelligence models. The matching migration SQL is in `prisma/migrations/20261006162049_intelligence` and `prisma/supabase/migrations/20261006162049_intelligence`. Apply with:
