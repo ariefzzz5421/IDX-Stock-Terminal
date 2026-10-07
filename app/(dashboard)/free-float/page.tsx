@@ -15,7 +15,7 @@ const rupiah = (value: number | null) => value === null ? "N/D" : `Rp ${(value /
 
 function FloatRow({ stock, rank }: { stock: FloatStock; rank: number }) {
   return <li className="border-b border-rule last:border-0">
-    <Link href={`/asset/${stock.code}`} className="grid min-w-0 grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-2 px-4 py-3 hover:bg-panel-hi md:grid-cols-[2rem_minmax(0,1fr)_8rem_8rem_6rem_8rem_1rem] md:gap-3 md:px-6">
+    <Link href={`/free-float/asset/${stock.code}`} className="grid min-w-0 grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-2 px-4 py-3 hover:bg-panel-hi md:grid-cols-[2rem_minmax(0,1fr)_8rem_8rem_6rem_8rem_1rem] md:gap-3 md:px-6">
       <span className="text-xs tabular-nums text-dim">{rank}.</span>
       <span className="flex min-w-0 items-center gap-2"><CompanyLogo code={stock.code} /><span className="min-w-0"><strong className="block font-display text-sm text-ink-hi">{stock.code}</strong><span className="block truncate text-micro text-dim" title={stock.name}>{stock.name}</span></span></span>
       <span className="text-right md:contents"><strong className="font-display text-sm tabular-nums text-amber md:order-3 md:text-right">{percentage(stock.floatPercent)}</strong><span className="block text-micro tabular-nums text-dim md:order-1 md:text-right md:text-xs md:text-ink">{shares(stock.floatShares)}</span></span>
@@ -30,12 +30,14 @@ export default async function FreeFloatPage({ searchParams }: { searchParams: Pr
   await requireUser();
   const params = await searchParams;
   const query = (params.q ?? "").trim().slice(0, 40);
-  const sort = params.sort === "market-cap" ? "market-cap" : "lowest-float";
+  const sort = params.sort === "market-cap" || params.sort === "largest-float" ? params.sort : "lowest-float";
   const snapshot = await getFreeFloatSnapshot();
   const filtered = snapshot.rows.filter((item) => `${item.code} ${item.name}`.toLocaleLowerCase("id-ID").includes(query.toLocaleLowerCase("id-ID")));
   filtered.sort(sort === "market-cap"
     ? (a, b) => (b.marketCap ?? -1) - (a.marketCap ?? -1) || a.code.localeCompare(b.code)
-    : (a, b) => a.floatPercent - b.floatPercent || a.code.localeCompare(b.code));
+    : sort === "largest-float"
+      ? (a, b) => b.floatPercent - a.floatPercent || a.code.localeCompare(b.code)
+      : (a, b) => a.floatPercent - b.floatPercent || a.code.localeCompare(b.code));
   const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const requestedPage = Number(params.page);
   const page = Number.isSafeInteger(requestedPage) && requestedPage > 0 ? Math.min(requestedPage, pages) : 1;
@@ -55,7 +57,7 @@ export default async function FreeFloatPage({ searchParams }: { searchParams: Pr
     </section>
     <form action="/free-float" className="flex flex-col gap-2 border-b border-rule px-4 py-3 sm:flex-row sm:items-center sm:px-6">
       <label className="flex min-w-0 flex-1 items-center gap-2 border border-rule-hi bg-void px-3 focus-within:border-amber"><Search className="h-4 w-4 shrink-0 text-amber" aria-hidden="true" /><input type="search" name="q" defaultValue={query} maxLength={40} placeholder="Cari emiten atau kode" aria-label="Cari emiten atau kode" className="min-h-11 min-w-0 flex-1 bg-transparent text-xs text-ink-hi outline-none placeholder:text-dim" /></label>
-      <label className="flex items-center gap-2 text-xs text-dim">Urutkan <select name="sort" defaultValue={sort} className="min-h-11 flex-1 border border-rule-hi bg-void px-3 text-ink-hi sm:flex-initial"><option value="lowest-float">Float terkecil</option><option value="market-cap">Market cap terbesar</option></select></label>
+      <label className="flex items-center gap-2 text-xs text-dim">Urutkan <select name="sort" defaultValue={sort} className="min-h-11 flex-1 border border-rule-hi bg-void px-3 text-ink-hi sm:flex-initial"><option value="lowest-float">Float Terkecil</option><option value="largest-float">Float Terbesar</option><option value="market-cap">Market cap terbesar</option></select></label>
       <button type="submit" className="min-h-11 border border-amber px-4 text-xs font-bold uppercase text-amber hover:bg-amber/10">Terapkan</button>
     </form>
     {!snapshot.available ? <p className="px-4 py-8 text-sm text-dim sm:px-6">Data float belum tersedia dari TradingView. Coba buka kembali beberapa saat lagi.</p> : filtered.length === 0 ? <p className="px-4 py-8 text-sm text-dim sm:px-6">Tidak ada emiten yang cocok atau memiliki data float dan saham beredar lengkap.</p> : <>
