@@ -25,15 +25,11 @@ export default async function HotPage() {
         title="Hot movers"
         meta={hasSnapshot ? `${copy.delayed} · price movers` : copy.stored}
       >
-        <div className="border-b border-rule bg-panel-hi px-4 py-2.5">
-          <p className="max-w-prose text-xs leading-relaxed text-dim">
-            {language === "id" ? "Diurutkan menurut perubahan harga absolut saham yang ditransaksikan. Perubahan besar dengan volume rendah belum membuktikan adanya katalis." : "Ranked by absolute price change among traded stocks. A large move on low volume is not a confirmed catalyst."}
-          </p>
-        </div>
         <StockTable
           language={language}
           rows={hasSnapshot ? snapshot.hot.slice(0, 20) : hot}
           extra="volume"
+          showDailyValue
           rank
           emptyMessage={language === "id" ? "Belum ada transaksi. Coba lagi saat jam perdagangan." : "No trades yet. Try again during market hours."}
         />
@@ -44,6 +40,7 @@ export default async function HotPage() {
           language={language}
           rows={hasSnapshot ? snapshot.activeByVolume.slice(0, 15) : active}
           extra="volume"
+          showDailyValue
           rank
           emptyMessage={copy.noVolume}
         />

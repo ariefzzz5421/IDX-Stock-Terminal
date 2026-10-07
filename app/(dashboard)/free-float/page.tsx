@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight, Search } from "lucide-react";
 import { requireUser } from "@/lib/auth/session";
 import { getFreeFloatSnapshot, type FloatStock } from "@/lib/market-data/free-float";
+import { CompanyLogo } from "@/components/terminal/CompanyLogo";
 
 export const metadata: Metadata = { title: "Free Float — IDX Terminal" };
 export const dynamic = "force-dynamic";
@@ -14,13 +15,13 @@ const rupiah = (value: number | null) => value === null ? "N/D" : `Rp ${(value /
 
 function FloatRow({ stock, rank }: { stock: FloatStock; rank: number }) {
   return <li className="border-b border-rule last:border-0">
-    <Link href={`/asset/${stock.code}`} className="grid min-w-0 grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-2 px-4 py-3 hover:bg-panel-hi sm:grid-cols-[2rem_minmax(0,1fr)_8rem_8rem_6rem_8rem_1rem] sm:gap-3 sm:px-6">
+    <Link href={`/asset/${stock.code}`} className="grid min-w-0 grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-2 px-4 py-3 hover:bg-panel-hi md:grid-cols-[2rem_minmax(0,1fr)_8rem_8rem_6rem_8rem_1rem] md:gap-3 md:px-6">
       <span className="text-xs tabular-nums text-dim">{rank}.</span>
-      <span className="min-w-0"><strong className="block font-display text-sm text-ink-hi">{stock.code}</strong><span className="block truncate text-micro text-dim">{stock.name}</span></span>
-      <span className="text-right sm:contents"><strong className="font-display text-sm tabular-nums text-amber sm:order-3 sm:text-right">{percentage(stock.floatPercent)}</strong><span className="block text-micro tabular-nums text-dim sm:order-1 sm:text-right sm:text-xs sm:text-ink">{shares(stock.floatShares)}</span></span>
-      <span className="hidden text-right text-xs tabular-nums text-ink sm:order-2 sm:block">{shares(stock.outstandingShares)}</span>
-      <span className="hidden text-right text-xs tabular-nums text-dim sm:order-4 sm:block">{rupiah(stock.marketCap)}</span>
-      <ArrowRight aria-hidden="true" className="hidden h-3.5 w-3.5 text-amber sm:order-5 sm:block" />
+      <span className="flex min-w-0 items-center gap-2"><CompanyLogo code={stock.code} /><span className="min-w-0"><strong className="block font-display text-sm text-ink-hi">{stock.code}</strong><span className="block truncate text-micro text-dim" title={stock.name}>{stock.name}</span></span></span>
+      <span className="text-right md:contents"><strong className="font-display text-sm tabular-nums text-amber md:order-3 md:text-right">{percentage(stock.floatPercent)}</strong><span className="block text-micro tabular-nums text-dim md:order-1 md:text-right md:text-xs md:text-ink">{shares(stock.floatShares)}</span></span>
+      <span className="hidden text-right text-xs tabular-nums text-ink md:order-2 md:block">{shares(stock.outstandingShares)}</span>
+      <span className="hidden text-right text-xs tabular-nums text-dim md:order-4 md:block">{rupiah(stock.marketCap)}</span>
+      <ArrowRight aria-hidden="true" className="hidden h-3.5 w-3.5 text-amber md:order-5 md:block" />
     </Link>
   </li>;
 }
@@ -58,7 +59,7 @@ export default async function FreeFloatPage({ searchParams }: { searchParams: Pr
       <button type="submit" className="min-h-11 border border-amber px-4 text-xs font-bold uppercase text-amber hover:bg-amber/10">Terapkan</button>
     </form>
     {!snapshot.available ? <p className="px-4 py-8 text-sm text-dim sm:px-6">Data float belum tersedia dari TradingView. Coba buka kembali beberapa saat lagi.</p> : filtered.length === 0 ? <p className="px-4 py-8 text-sm text-dim sm:px-6">Tidak ada emiten yang cocok atau memiliki data float dan saham beredar lengkap.</p> : <>
-      <div className="hidden grid-cols-[2rem_minmax(0,1fr)_8rem_8rem_6rem_8rem_1rem] gap-3 border-b border-rule px-6 py-3 text-micro uppercase tracking-wider text-dim sm:grid"><span>#</span><span>Emiten</span><span className="text-right">Float shares</span><span className="text-right">Saham beredar</span><span className="text-right">Float %</span><span className="text-right">Market cap</span><span /></div>
+      <div className="hidden grid-cols-[2rem_minmax(0,1fr)_8rem_8rem_6rem_8rem_1rem] gap-3 border-b border-rule px-6 py-3 text-micro uppercase tracking-wider text-dim md:grid"><span>#</span><span>Emiten</span><span className="text-right">Float shares</span><span className="text-right">Saham beredar</span><span className="text-right">Float %</span><span className="text-right">Market cap</span><span /></div>
       <ol>{visible.map((stock, index) => <FloatRow key={stock.code} stock={stock} rank={(page - 1) * PAGE_SIZE + index + 1} />)}</ol>
       <nav aria-label="Halaman free float" className="flex items-center justify-between gap-3 border-t border-rule px-4 py-4 text-xs sm:px-6"><span className="text-dim">{filtered.length.toLocaleString("id-ID")} hasil · halaman {page}/{pages}</span><div className="flex gap-2">{page > 1 && <Link href={pageHref(page - 1)} className="border border-rule-hi px-3 py-2 text-ink hover:border-amber">Sebelumnya</Link>}{page < pages && <Link href={pageHref(page + 1)} className="border border-rule-hi px-3 py-2 text-ink hover:border-amber">Berikutnya</Link>}</div></nav>
     </>}
