@@ -3,11 +3,12 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { requireUser } from "@/lib/auth/session";
 import { FORBES_LIST_DATE, FORBES_LIST_URL, KONGLO_PROFILES, kongloHoldings, kongloPortfolioSummary } from "@/lib/konglo";
-import { formatRupiahCompact, formatWealth } from "@/lib/konglo-format";
+import { formatRupiahCompact, formatWealth, formatWealthRupiahEstimate, WEALTH_FX_DATE, WEALTH_FX_SOURCE, WEALTH_USD_IDR_RATE } from "@/lib/konglo-format";
 import { KongloPortrait } from "@/components/konglo/KongloPortrait";
 
 export const metadata: Metadata = { title: "Konglo — IDX Terminal" };
 export const dynamic = "force-dynamic";
+const HIGHLIGHT_SLUGS = ["haji-isam", "prajogo-pangestu", "bakrie"] as const;
 
 export default async function KongloPage() {
   await requireUser();
@@ -18,7 +19,21 @@ export default async function KongloPage() {
       <h1 className="mt-1 font-display text-xl font-bold text-ink-hi">Konglo</h1>
       <p className="mt-2 max-w-4xl text-xs leading-relaxed text-dim">50 peringkat Forbes 2025 dan tokoh tambahan. Kekayaan Forbes, saham pribadi, serta saham entitas grup ditampilkan sesuai lingkupnya. Posisi yang belum bisa diverifikasi bernilai N/D; transaksi bersyarat tidak dihitung sebagai kepemilikan.</p>
       <a href={FORBES_LIST_URL} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-micro text-cyan hover:underline">Forbes Indonesia 50 Richest · {FORBES_LIST_DATE} ↗</a>
+      <p className="mt-2 text-micro text-dim">EST rupiah memakai <a href={WEALTH_FX_SOURCE} target="_blank" rel="noopener noreferrer" className="text-cyan hover:underline">JISDOR BI ↗</a> Rp {WEALTH_USD_IDR_RATE.toLocaleString("id-ID")}/US$ · {WEALTH_FX_DATE}. Konversi dari estimasi Forbes 2025, bukan nilai kekayaan terkini.</p>
     </header>
+    <section aria-labelledby="konglo-highlights" className="border-b border-rule bg-panel-hi px-4 py-4 sm:px-6">
+      <h2 id="konglo-highlights" className="text-micro font-bold uppercase tracking-widest text-amber">Sorotan konglomerasi</h2>
+      <div className="mt-3 grid min-w-0 gap-3 md:grid-cols-3">{HIGHLIGHT_SLUGS.map((slug) => {
+        const profile = KONGLO_PROFILES.find((item) => item.slug === slug);
+        if (!profile) return null;
+        const holdings = kongloHoldings(profile);
+        return <Link key={slug} href={`/konglo/${slug}`} className="group flex min-w-0 flex-col border border-rule bg-panel p-3 transition-colors hover:border-amber-dim hover:bg-panel-hi">
+          <span className="flex min-w-0 items-center gap-3"><KongloPortrait slug={slug} name={profile.name} /><span className="min-w-0 flex-1"><strong className="block truncate font-display text-sm text-ink-hi">{profile.name}</strong><span className="mt-1 block text-micro text-dim">{holdings.length} emiten terkait · {profile.rank ? `Forbes #${profile.rank}` : "nilai Forbes N/D"}</span></span><ArrowRight aria-hidden="true" className="h-4 w-4 shrink-0 text-amber" /></span>
+          <span className="mt-3 flex flex-wrap gap-1">{holdings.map((item) => <span key={`${item.kind}-${item.code}`} className="border border-rule-hi px-1.5 py-0.5 text-micro text-cyan">{item.code}</span>)}{profile.pendingExposure?.map((item) => <span key={`pending-${item.code}`} className="border border-amber/50 px-1.5 py-0.5 text-micro text-amber">{item.code} · rencana</span>)}</span>
+          {profile.netWorthUsd !== undefined && <span className="mt-3 block font-display text-sm text-ink-hi">{formatWealth(profile.netWorthUsd)} <span className="ml-2 text-micro text-dim">{formatWealthRupiahEstimate(profile.netWorthUsd)}</span></span>}
+        </Link>;
+      })}</div>
+    </section>
     <ol className="divide-y divide-rule">
       {KONGLO_PROFILES.map((profile, index) => {
         const holdings = kongloHoldings(profile);
@@ -35,9 +50,9 @@ export default async function KongloPage() {
               <span className="block font-display text-sm font-bold text-ink-hi">{profile.name}</span>
               <span className="mt-1 block text-micro text-dim">{profile.rank ? `Forbes #${profile.rank} · ` : ""}{directCount} saham langsung &gt;1% · {holdings.length - directCount} keterkaitan grup</span>
               <span className="mt-2 flex flex-wrap gap-1">{holdings.map((holding) => <span key={`${holding.kind}-${holding.code}`} className="border border-rule-hi px-1.5 py-0.5 text-micro text-cyan">{holding.code} {holding.percentage === null ? "N/D" : `${holding.percentage.toLocaleString("id-ID", { maximumFractionDigits: 4 })}%`}</span>)}{profile.pendingExposure?.map((item) => <span key={`pending-${item.code}`} className="border border-amber/50 px-1.5 py-0.5 text-micro text-amber">{item.code} · rencana</span>)}</span>
-              <span className="mt-2 block text-micro text-dim sm:hidden">{wealthLabel} · <strong className="font-display text-ink-hi">{wealth}</strong></span>
+              <span className="mt-2 block text-micro text-dim sm:hidden">{wealthLabel} · <strong className="font-display text-ink-hi">{wealth}</strong>{profile.netWorthUsd !== undefined && <span className="ml-2 text-ink">{formatWealthRupiahEstimate(profile.netWorthUsd)}</span>}</span>
             </span>
-            <span className="hidden shrink-0 text-right sm:block"><span className="block text-micro uppercase tracking-wider text-dim">{wealthLabel}</span><strong className="mt-1 block font-display text-sm tabular-nums text-ink-hi">{wealth}</strong>{summary.groupValue !== null && <span className="mt-1 block text-micro text-dim">Entitas {formatRupiahCompact(summary.groupValue)}</span>}</span>
+            <span className="hidden shrink-0 text-right sm:block"><span className="block text-micro uppercase tracking-wider text-dim">{wealthLabel}</span><strong className="mt-1 block font-display text-sm tabular-nums text-ink-hi">{wealth}</strong>{profile.netWorthUsd !== undefined && <span className="mt-1 block font-display text-xs tabular-nums text-cyan">{formatWealthRupiahEstimate(profile.netWorthUsd)}</span>}{summary.groupValue !== null && <span className="mt-1 block text-micro text-dim">Entitas {formatRupiahCompact(summary.groupValue)}</span>}</span>
             <ArrowRight aria-hidden="true" className="mt-1 h-4 w-4 shrink-0 text-amber sm:mt-0" />
           </Link>
         </li>;

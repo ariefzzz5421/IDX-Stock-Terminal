@@ -7,7 +7,7 @@ import { CompanyLogo } from "@/components/terminal/CompanyLogo";
 import { PortfolioDonut } from "@/components/konglo/PortfolioDonut";
 import { getCompanyCatalogEntry } from "@/lib/company-catalog";
 import { FORBES_LIST_DATE, FORBES_LIST_URL, KONGLO_PROFILES, kongloHoldings, kongloPortfolioSummary } from "@/lib/konglo";
-import { formatRupiahCompact, formatShares, formatWealth } from "@/lib/konglo-format";
+import { formatRupiahCompact, formatShares, formatWealth, formatWealthRupiahEstimate, WEALTH_FX_DATE, WEALTH_FX_SOURCE, WEALTH_USD_IDR_RATE } from "@/lib/konglo-format";
 import { KongloPortrait } from "@/components/konglo/KongloPortrait";
 import { KONGLO_PHOTOS } from "@/lib/konglo-photos";
 
@@ -40,11 +40,12 @@ export default async function KongloDetailPage({ params }: PageProps<"/konglo/[s
     </header>
 
     <div className="grid grid-cols-2 gap-px border-b border-rule bg-rule xl:grid-cols-4">
-      <Metric label={isForbes ? "Net worth · Forbes 2025" : groupOnly ? "Est. nilai saham grup" : "Est. net worth · saham BEI"} value={isForbes ? formatWealth(profile.netWorthUsd) : formatRupiahCompact(groupOnly ? summary.groupValue : summary.indicativeValue)} note={profile.wealthNote ?? (isForbes ? `Forbes · ${FORBES_LIST_DATE}` : groupOnly ? "Nilai saham entitas terkait; bagian pribadi keluarga belum terverifikasi" : "Batas bawah dari saham pribadi yang terverifikasi; bukan seluruh harta bersih")} />
+      <Metric label={isForbes ? "Net worth · Forbes 2025" : groupOnly ? "Est. nilai saham grup" : "Est. nilai saham BEI"} value={isForbes ? formatWealth(profile.netWorthUsd) : formatRupiahCompact(groupOnly ? summary.groupValue : summary.indicativeValue)} secondary={isForbes ? formatWealthRupiahEstimate(profile.netWorthUsd) : undefined} note={profile.wealthNote ?? (isForbes ? `Forbes · ${FORBES_LIST_DATE}` : groupOnly ? "Nilai saham entitas terkait; bagian pribadi keluarga belum terverifikasi" : "Batas bawah dari saham pribadi yang terverifikasi; bukan seluruh harta bersih")} />
       <Metric label="Nilai saham pribadi" value={formatRupiahCompact(summary.indicativeValue)} note={`${summary.valuedCount} posisi langsung · ${summary.directCount} saham teridentifikasi`} />
       <Metric label="Nilai saham entitas" value={formatRupiahCompact(summary.groupValue)} note={`${summary.groupValuedCount} posisi grup bernilai; bukan milik pribadi sepenuhnya`} />
       <Metric label="Lembar pribadi tercatat" value={summary.sharesKnownCount ? formatShares(summary.totalShares) : "N/D"} note={`${summary.sharesKnownCount} dari ${summary.directCount} posisi dengan jumlah tepat`} />
     </div>
+    {isForbes && <p className="border-b border-rule px-4 py-2 text-micro text-dim sm:px-6">EST rupiah = angka Forbes 2025 × <a href={WEALTH_FX_SOURCE} target="_blank" rel="noopener noreferrer" className="text-cyan hover:underline">JISDOR BI ↗</a> Rp {WEALTH_USD_IDR_RATE.toLocaleString("id-ID")}/US$ ({WEALTH_FX_DATE}); bukan penilaian kekayaan terbaru.</p>}
 
     <div className="min-w-0 bg-panel">
       <section className="min-w-0">
@@ -71,8 +72,8 @@ export default async function KongloDetailPage({ params }: PageProps<"/konglo/[s
   </main>;
 }
 
-function Metric({ label, value, note }: { label: string; value: string; note: string }) {
-  return <div className="min-w-0 bg-panel px-4 py-4"><p className="text-micro uppercase tracking-wider text-dim">{label}</p><strong className="mt-2 block font-display text-base tabular-nums text-ink-hi">{value}</strong><p className="mt-1 text-micro leading-relaxed text-dim">{note}</p></div>;
+function Metric({ label, value, secondary, note }: { label: string; value: string; secondary?: string; note: string }) {
+  return <div className="min-w-0 bg-panel px-4 py-4"><p className="text-micro uppercase tracking-wider text-dim">{label}</p><strong className="mt-2 block font-display text-base tabular-nums text-ink-hi">{value}</strong>{secondary && <p className="mt-1 font-display text-xs tabular-nums text-cyan">{secondary}</p>}<p className="mt-1 text-micro leading-relaxed text-dim">{note}</p></div>;
 }
 
 function SourceLink({ href, children }: { href: string; children: React.ReactNode }) {

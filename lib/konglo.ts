@@ -21,6 +21,7 @@ export type KongloProfile = {
 
 const HAJI_SOURCE = "https://market.bisnis.com/read/20260921/192/2005815/deretan-portofolio-bisnis-haji-isam-dari-sawit-pertambangan-hingga-transportasi";
 const BAKRIE_SOURCE = "https://bakrie-brothers.com/wp-content/uploads/2026/04/BNBR-Integrated-Annual-Report-2025.pdf";
+const BAKRIE_ENTITIES_SOURCE = "https://bakrie-brothers.com/discover-bakrie/our-entities/";
 const OWNERSHIP_DATE = OWNERSHIP_AS_OF;
 
 /** Forbes wealth and KSEI direct ownership have different dates and scopes. */
@@ -85,6 +86,10 @@ const CURATED_PROFILES: readonly KongloProfile[] = [
     { code: "BUMI", holderNames: ["PT BAKRIE CAPITAL INDONESIA"], holder: "PT Bakrie Capital Indonesia", sourceUrl: BAKRIE_SOURCE },
     { code: "UNSP", holderNames: ["PT BAKRIE CAPITAL INDONESIA"], holder: "PT Bakrie Capital Indonesia", sourceUrl: BAKRIE_SOURCE },
     { code: "ENRG", holderNames: ["PT BAKRIE CAPITAL INDONESIA", "PT BAKRIE KALILA INVESTMENT"], holder: "PT Bakrie Capital Indonesia + PT Bakrie Kalila Investment", sourceUrl: BAKRIE_SOURCE },
+    { code: "BRMS", holder: "Entitas terkait Grup Bakrie · porsi kepemilikan N/D", sourceUrl: BAKRIE_ENTITIES_SOURCE },
+    { code: "DEWA", holder: "Entitas terkait Grup Bakrie · porsi kepemilikan N/D", sourceUrl: BAKRIE_ENTITIES_SOURCE },
+    { code: "ELTY", holder: "Entitas terkait Grup Bakrie · porsi kepemilikan N/D", sourceUrl: BAKRIE_ENTITIES_SOURCE },
+    { code: "MDIA", holder: "Entitas terkait Grup Bakrie · porsi kepemilikan N/D", sourceUrl: BAKRIE_ENTITIES_SOURCE },
   ] },
   { slug: "hashim-djojohadikusumo", name: "Hashim Djojohadikusumo", candidateCodes: [], groupExposure: [
     { code: "COIN", sourceUrl: "https://market.bisnis.com/read/20251217/192/1937426/investasi-baru-arsari-group-milik-hashim-coin-hingga-blok-migas-natuna" },
