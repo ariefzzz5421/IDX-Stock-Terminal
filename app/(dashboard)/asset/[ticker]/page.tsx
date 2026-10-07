@@ -126,7 +126,7 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
 
         <dl className="grid grid-cols-2 gap-x-8 gap-y-2.5 sm:grid-cols-3 lg:grid-cols-5">
           <Stat k="Penutupan lalu" v={formatPrice(fresh.prevClose)} />
-          <Stat k="Volume · sesi harian" v={dailyTrading.volume === null ? "N/D" : `${formatVolume(dailyTrading.volume)} lembar`} />
+          <Stat k="Volume · sesi harian" v={dailyTrading.volume === null ? "N/D" : `${new Intl.NumberFormat("id-ID").format(dailyTrading.volume)} lembar`} />
           <Stat k={dailyTrading.estimatedValue ? "Estimasi nilai transaksi · harian" : "Nilai transaksi · harian"} v={dailyTrading.value === null ? "N/D" : formatValue(dailyTrading.value)} />
           <Stat k="Kapitalisasi pasar" v={formatValue(fresh.marketCap)} />
           <Stat k="Snapshot harga" v={`${tradingDate} · ${tradingTime} WIB${quote ? " · tertunda" : " · tersimpan"}`} />
