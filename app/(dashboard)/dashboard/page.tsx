@@ -64,25 +64,29 @@ export default async function DashboardPage() {
       right={
         <div className="grid min-h-0 h-full gap-px lg:grid-cols-2 xl:pr-8">
           <Panel title="Top gainers" headerClassName="panel-header-gain" meta={hasSnapshot ? `${copy.delayed} · change %` : copy.stored}>
-            <StockTable language={language} rows={hasSnapshot ? snapshot.gainers.slice(0, 8) : gainers} rank emptyMessage={copy.noPrice} />
+            <StockTable language={language} rows={hasSnapshot ? snapshot.gainers.slice(0, 8) : gainers} rank showDailyValue emptyMessage={copy.noPrice} />
           </Panel>
 
           <Panel title="Top losers" headerClassName="panel-header-loss" meta={hasSnapshot ? `${copy.delayed} · change %` : copy.stored}>
-            <StockTable language={language} rows={hasSnapshot ? snapshot.losers.slice(0, 8) : losers} rank emptyMessage={copy.noPrice} />
+            <StockTable language={language} rows={hasSnapshot ? snapshot.losers.slice(0, 8) : losers} rank showDailyValue emptyMessage={copy.noPrice} />
           </Panel>
 
           <Panel
             title="Top volume"
-            meta={hasSnapshot ? `${snapshot.activeByVolume.length} ${copy.stocks} · TradingView · volume harian (lembar)` : language === "id" ? `${counts.quoted} dari ${counts.total} harga tersimpan` : `${counts.quoted} of ${counts.total} stored quotes`}
+            meta={hasSnapshot ? `${snapshot.activeByVolume.length} ${copy.stocks} · TradingView · volume & nilai transaksi harian` : language === "id" ? `${counts.quoted} dari ${counts.total} harga tersimpan` : `${counts.quoted} of ${counts.total} stored quotes`}
             className="lg:col-span-2"
           >
+            <>
             <StockTable
               language={language}
               rows={hasSnapshot ? snapshot.activeByVolume.slice(0, 8) : active}
               extra="volume"
+              showDailyValue
               rank
               emptyMessage={copy.noVolume}
             />
+            <p className="border-t border-rule px-3 py-2 text-micro text-dim">{hasSnapshot ? "Est. nilai transaksi harian dalam rupiah mengikuti Value.Traded dari snapshot TradingView." : "Est. nilai transaksi memakai data harga tersimpan; snapshot pasar saat ini tidak tersedia."} Angka yang tidak tersedia ditampilkan —.</p>
+            </>
           </Panel>
         </div>
       }

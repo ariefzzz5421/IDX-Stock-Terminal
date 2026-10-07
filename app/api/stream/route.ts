@@ -3,6 +3,7 @@ import { getViewer } from "@/lib/auth/session";
 import { prisma } from "@/lib/db/prisma";
 import { listStreamPosts } from "@/lib/stream";
 import { streamWriter, validatePhoto } from "@/lib/stream-validation";
+import { verifyFriendMentions } from "@/lib/stream-friends";
 
 export async function GET(request: Request) {
   const viewer = await getViewer();
@@ -30,6 +31,7 @@ export async function POST(request: Request) {
   if (body.length < 2 || body.length > 2000) return NextResponse.json({ error: "Tulis 2–2.000 karakter." }, { status: 400 });
   if (tickers.length > 5 || tickers.some((code) => !/^[A-Z0-9]{4,6}$/.test(code))) return NextResponse.json({ error: "Pilih maksimal 5 kode saham." }, { status: 400 });
   if (photo === undefined) return NextResponse.json({ error: "Gunakan foto PNG, JPG, atau WebP di bawah 350 KB." }, { status: 400 });
+  if (!(await verifyFriendMentions(body, user.id))) return NextResponse.json({ error: "Tag hanya untuk teman yang sudah menerima permintaan. Periksa @username." }, { status: 400 });
   if (tickers.length) {
     const matches = await prisma.stock.count({ where: { code: { in: tickers }, isListed: true } });
     if (matches !== tickers.length) return NextResponse.json({ error: "Ada kode saham yang tidak terdaftar." }, { status: 400 });

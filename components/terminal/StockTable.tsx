@@ -34,6 +34,7 @@ export function StockTable({
   emptyMessage = "Belum ada data untuk ditampilkan.",
   action,
   language = "id",
+  showDailyValue = false,
 }: {
   rows: StockRow[];
   extra?: Column;
@@ -42,6 +43,8 @@ export function StockTable({
   emptyMessage?: string;
   action?: (row: StockRow) => React.ReactNode;
   language?: UiLanguage;
+  /** Show the provider's daily IDR traded value beside share volume. */
+  showDailyValue?: boolean;
 }) {
   if (rows.length === 0) {
     return <p className="p-4 text-sm leading-relaxed text-dim">{emptyMessage}</p>;
@@ -60,6 +63,7 @@ export function StockTable({
             <Th className="w-[4.5rem] @min-[32rem]/stocktable:w-[5.5rem]">{language === "id" ? "Harga" : "Last"}</Th>
             <Th className="w-[5rem] px-1 tracking-normal @min-[32rem]/stocktable:w-[6rem]">Change %</Th>
             <Th className="hidden w-[6.5rem] @min-[32rem]/stocktable:table-cell">{extraLabel}</Th>
+            {showDailyValue && <Th className="hidden w-[8rem] @min-[38rem]/stocktable:table-cell">{language === "id" ? "Est. nilai (Rp)" : "Est. traded (IDR)"}</Th>}
             {action && (
               <Th className="w-8">
                 <span className="sr-only">{language === "id" ? "Tindakan" : "Action"}</span>
@@ -93,6 +97,7 @@ export function StockTable({
                     </span>
                     <span className="truncate text-micro text-ink" title={row.name}>{row.name}</span>
                     <span className="block break-words text-micro text-dim @min-[32rem]/stocktable:hidden">{extraLabel}: {extra === "volume" ? formatVolume(row.lastVolume) : formatValue(extra === "value" ? row.lastValue : row.marketCap)}</span>
+                    {showDailyValue && <span className="block break-words text-micro text-cyan @min-[38rem]/stocktable:hidden">Est. nilai: {(row.lastValue ?? 0) > 0 ? formatValue(row.lastValue) : "—"}</span>}
                   </span>
                 </Link>
               </td>
@@ -113,6 +118,8 @@ export function StockTable({
                   {extra === "marketCap" && formatValue(row.marketCap)}
                 </Link>
               </td>
+
+              {showDailyValue && <td className="hidden p-0 text-right text-xs text-cyan tabular-nums @min-[38rem]/stocktable:table-cell"><Link href={`/asset/${row.code}`} className="block px-3 py-2">{(row.lastValue ?? 0) > 0 ? formatValue(row.lastValue) : "—"}</Link></td>}
 
               {action && <td className="pr-2 text-right">{action(row)}</td>}
             </tr>

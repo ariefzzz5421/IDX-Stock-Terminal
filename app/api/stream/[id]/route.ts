@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 import { streamWriter, validatePhoto } from "@/lib/stream-validation";
+import { verifyFriendMentions } from "@/lib/stream-friends";
 
 type Context = { params: Promise<{ id: string }> };
 
@@ -17,6 +18,7 @@ export async function PATCH(request: Request, { params }: Context) {
   } catch { return NextResponse.json({ error: "Data posting tidak valid." }, { status: 400 }); }
   const body = typeof input.body === "string" ? input.body.trim() : "";
   if (body.length < 2 || body.length > 2000) return NextResponse.json({ error: "Tulis 2–2.000 karakter." }, { status: 400 });
+  if (!(await verifyFriendMentions(body, user.id))) return NextResponse.json({ error: "Tag hanya untuk teman yang sudah menerima permintaan. Periksa @username." }, { status: 400 });
   if (input.kind !== "status" && input.kind !== "thesis") return NextResponse.json({ error: "Jenis posting tidak valid." }, { status: 400 });
   if (!Array.isArray(input.tickers) || input.tickers.some((item) => typeof item !== "string")) return NextResponse.json({ error: "Tag saham tidak valid." }, { status: 400 });
   const tickers = [...new Set((input.tickers as string[]).map((item) => item.trim().toUpperCase()))];

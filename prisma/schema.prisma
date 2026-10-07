@@ -25,6 +25,9 @@ model User {
   streamPosts StreamPost[]
   streamComments StreamComment[]
   streamLikes StreamLike[]
+  friendAsA StreamFriendship[] @relation("FriendA")
+  friendAsB StreamFriendship[] @relation("FriendB")
+  friendRequests StreamFriendship[] @relation("FriendRequester")
   researchNotifications ResearchNotification[]
 
   @@map("users")
@@ -166,6 +169,23 @@ model StreamLike {
   @@id([postId, userId])
   @@index([userId])
   @@map("stream_likes")
+}
+
+model StreamFriendship {
+  id String @id @default(cuid())
+  userAId String @map("user_a_id")
+  userBId String @map("user_b_id")
+  requestedById String @map("requested_by_id")
+  status String @default("PENDING")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  userA User @relation("FriendA", fields: [userAId], references: [id], onDelete: Cascade)
+  userB User @relation("FriendB", fields: [userBId], references: [id], onDelete: Cascade)
+  requestedBy User @relation("FriendRequester", fields: [requestedById], references: [id], onDelete: Cascade)
+  @@unique([userAId, userBId])
+  @@index([userAId, status])
+  @@index([userBId, status])
+  @@map("stream_friendships")
 }
 
 model IntelligenceEvent {
