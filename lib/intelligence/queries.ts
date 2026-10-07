@@ -52,6 +52,19 @@ export async function intelligenceOverview(userId: string) {
   return { latestRun, latestSuccess, recentEvents, priorityCount, eventCount, confirmed, preliminary, affected: affected.length, unread: notifications, sourceGaps: SOURCE_GAPS };
 }
 
+export async function researchRunHistory(page = 1) {
+  const safePage = Math.max(1, Math.min(Number.isFinite(page) ? Math.trunc(page) : 1, 1000));
+  const where: Prisma.ResearchRunWhereInput = { NOT: { slot: "LOCK" }, dryRun: false };
+  const [total, runs] = await Promise.all([
+    prisma.researchRun.count({ where }),
+    prisma.researchRun.findMany({
+      where, orderBy: { startedAt: "desc" }, skip: (safePage - 1) * 10, take: 10,
+      select: { id: true, slot: true, status: true, startedAt: true, endedAt: true, newEvents: true, updatedEvents: true, sourcesChecked: true, failedAdapters: true },
+    }),
+  ]);
+  return { total, page: safePage, runs };
+}
+
 export async function syncNotifications(userId: string) {
   const latestSuccess = await prisma.researchRun.findFirst({ where: { status: "SUCCESS", dryRun: false }, orderBy: { endedAt: "desc" }, select: { endedAt: true } });
   if (!latestSuccess?.endedAt) return;

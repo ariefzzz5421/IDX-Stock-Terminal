@@ -90,6 +90,7 @@ function mapQuote(body: YahooChart, code: string): Quote | null {
     high: meta.regularMarketDayHigh ?? price,
     low: meta.regularMarketDayLow ?? price,
     volume: meta.regularMarketVolume ?? 0,
+    volumeAvailable: typeof meta.regularMarketVolume === "number" && Number.isFinite(meta.regularMarketVolume),
     // Yahoo doesn't report turnover, so approximate it.
     value: (meta.regularMarketVolume ?? 0) * price,
     timestamp: meta.regularMarketTime ? meta.regularMarketTime * 1000 : Date.now(),

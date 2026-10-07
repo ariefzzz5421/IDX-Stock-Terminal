@@ -13,6 +13,7 @@ import { prisma } from "@/lib/db/prisma";
 import { requireUser } from "@/lib/auth/session";
 import { marketData } from "@/lib/market-data";
 import { getCompanyDetails } from "@/lib/market-data/company-details";
+import { selectDailyTrading } from "@/lib/market-data/daily-trading";
 import { companySummaryId } from "@/lib/company-summary-id";
 import { Panel } from "@/components/terminal/Panel";
 import { ResizableSplit } from "@/components/terminal/ResizableSplit";
@@ -76,6 +77,9 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
     intelligencePromise,
   ]);
   const namedShareholders = shareholdersFor(code);
+  const dailyTrading = selectDailyTrading(details?.dailyTrading, quote, marketData.name);
+  const dailyDate = dailyTrading.date ? new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeZone: "Asia/Jakarta" }).format(new Date(`${dailyTrading.date}T12:00:00+07:00`)) : "N/D";
+  const dailySourceHref = dailyTrading.source.startsWith("BEI") ? "https://www.idx.co.id/id/data-pasar/ringkasan-perdagangan/ringkasan-saham/" : dailyTrading.source === "Yahoo Finance" ? `https://finance.yahoo.com/quote/${code}.JK/` : null;
 
   const fresh = quote ? {
     ...stock,
@@ -122,11 +126,12 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
 
         <dl className="grid grid-cols-2 gap-x-8 gap-y-2.5 sm:grid-cols-3 lg:grid-cols-5">
           <Stat k="Penutupan lalu" v={formatPrice(fresh.prevClose)} />
-          <Stat k="Volume · 1D" v={formatVolume(fresh.lastVolume)} />
-          <Stat k={quote && marketData.name === "yahoo" ? "Nilai transaksi est. · 1D" : "Nilai transaksi · 1D"} v={formatValue(fresh.lastValue)} />
+          <Stat k="Volume · sesi harian" v={dailyTrading.volume === null ? "N/D" : `${formatVolume(dailyTrading.volume)} lembar`} />
+          <Stat k={dailyTrading.estimatedValue ? "Estimasi nilai transaksi · harian" : "Nilai transaksi · harian"} v={dailyTrading.value === null ? "N/D" : formatValue(dailyTrading.value)} />
           <Stat k="Kapitalisasi pasar" v={formatValue(fresh.marketCap)} />
           <Stat k="Snapshot harga" v={`${tradingDate} · ${tradingTime} WIB${quote ? " · tertunda" : " · tersimpan"}`} />
         </dl>
+        <p className="w-full text-micro text-dim">Volume dan nilai: {dailySourceHref ? <a href={dailySourceHref} target="_blank" rel="noopener noreferrer" className="text-cyan hover:underline">{dailyTrading.source} ↗</a> : dailyTrading.source} · sesi {dailyDate}{dailyTrading.estimatedValue ? " · nilai ≈ volume × harga terakhir, bukan total transaksi resmi" : ""}. Data dapat tertunda.</p>
 
         <div className="ml-auto flex items-center gap-2">
           <Link

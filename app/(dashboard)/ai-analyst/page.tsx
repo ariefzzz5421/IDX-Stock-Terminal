@@ -24,5 +24,5 @@ export default async function AiAnalystPage({ searchParams }: { searchParams: Pr
   };
   if (!isGuest(user)) await syncNotifications(user.id);
   const brief = createMarketBrief(await getMarketActivity());
-  return <div className="min-w-0 flex-1"><CorporateIntelligence userId={user.id} filters={filters} /><AiAnalystPanel initial={brief} configured={Boolean(getAnalystProvider())} /></div>;
+  return <div className="min-w-0 flex-1"><CorporateIntelligence userId={user.id} filters={filters} historyPage={Number(get("historyPage") || 1)} /><AiAnalystPanel initial={brief} configured={Boolean(getAnalystProvider())} /></div>;
 }

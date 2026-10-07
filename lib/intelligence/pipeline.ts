@@ -6,11 +6,12 @@ import { ensureStockCatalog } from "@/lib/stocks";
 import { analyzeDocument } from "./openai";
 import { changeType, calculateDilution, deriveRunStatus, eventIdentity, matchTickers, scoreMateriality, sha } from "./core";
 import { discoverKsei, fetchSourceDocument, KSEI_FEEDS, type DiscoveredDocument } from "./sources";
+import { scheduledSlot, type ResearchSession } from "./schedule";
 
 const MAX_DOCUMENTS_PER_RUN = 10;
 const LEASE_MS = 4 * 60_000;
 const knownTickers = new Set(COMPANY_CATALOG.map((stock) => stock.code));
-type ScanOptions = { dryRun: boolean; scheduled: boolean };
+type ScanOptions = { dryRun: boolean; scheduled: boolean; session?: ResearchSession };
 type ScanOutcome = { status: string; newEvents: number; updatedEvents: number; sourcesChecked: number; failedAdapters: number; errors: string[]; pending: number };
 
 export const SOURCE_GAPS = [
@@ -20,10 +21,6 @@ export const SOURCE_GAPS = [
   "Katalog saham biasa mencakup emiten tersimpan; daftar lengkap seri warrant belum tersinkronisasi dari BEI.",
   "KSEI jadwal bonus saham bukan pemecahan saham. Stock split dan kategori korporasi lain menunggu adapter resmi tersendiri.",
 ];
-
-function jakartaDay(date: Date): string {
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jakarta", year: "numeric", month: "2-digit", day: "2-digit" }).format(date);
-}
 
 async function acquireLease() {
   const now = new Date();
@@ -145,10 +142,11 @@ async function processDocument(document: DiscoveredDocument, dryRun: boolean): P
 }
 
 export async function runResearch(options: ScanOptions): Promise<ScanOutcome> {
+  if (options.scheduled && !options.session) throw new Error("Scheduled research requires a session");
   const owner = await acquireLease();
   if (!owner) throw new Error("A research scan is already running");
   const now = new Date();
-  const slot = options.scheduled ? `scheduled:${jakartaDay(now)}` : `manual:${now.toISOString()}:${randomUUID()}`;
+  const slot = options.scheduled && options.session ? scheduledSlot(now, options.session) : `manual:${now.toISOString()}:${randomUUID()}`;
   let run: { id: string };
   try {
     run = await prisma.researchRun.create({ data: { slot, status: "RUNNING", dryRun: options.dryRun, leaseExpiresAt: new Date(now.getTime() + LEASE_MS) } });

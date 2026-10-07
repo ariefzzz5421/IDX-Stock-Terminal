@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { AlertTriangle, ArrowRight, FileSearch, ShieldCheck } from "lucide-react";
-import { intelligenceOverview, listResearch, type ResearchFilters } from "@/lib/intelligence/queries";
+import { intelligenceOverview, listResearch, researchRunHistory, type ResearchFilters } from "@/lib/intelligence/queries";
 import { isResearchAdmin } from "@/lib/intelligence/access";
 import { ResearchControls } from "./ResearchControls";
 import { CATEGORIES } from "@/lib/intelligence/core";
-import { scanHeadline } from "@/lib/intelligence/scan-presentation";
+import { runOutcome, scanHeadline } from "@/lib/intelligence/scan-presentation";
+import { sessionLabel } from "@/lib/intelligence/schedule";
 import { CompanyLogo } from "./CompanyLogo";
 import { ResearchClock } from "./ResearchClock";
 
@@ -14,8 +15,8 @@ function date(value: Date | null | undefined) {
 const categoryOptions = CATEGORIES;
 const field = "min-h-9 min-w-0 border border-rule-hi bg-panel px-2 text-xs text-ink";
 
-export async function CorporateIntelligence({ userId, filters }: { userId: string; filters: ResearchFilters }) {
-  const [overview, listing, admin] = await Promise.all([intelligenceOverview(userId), listResearch(filters, userId), isResearchAdmin()]);
+export async function CorporateIntelligence({ userId, filters, historyPage }: { userId: string; filters: ResearchFilters; historyPage: number }) {
+  const [overview, listing, history, admin] = await Promise.all([intelligenceOverview(userId), listResearch(filters, userId), researchRunHistory(historyPage), isResearchAdmin()]);
   const run = overview.latestRun;
   const inputRate = Number(process.env.OPENAI_INPUT_USD_PER_MILLION);
   const outputRate = Number(process.env.OPENAI_OUTPUT_USD_PER_MILLION);
@@ -33,8 +34,14 @@ export async function CorporateIntelligence({ userId, filters }: { userId: strin
     if (filters.latest) p.set("latest", "1");
     if (filters.watchlist) p.set("watchlist", "1");
     if (filters.sort) p.set("sort", filters.sort);
+    if (history.page > 1) p.set("historyPage", String(history.page));
     p.set("page", String(page));
     return `/ai-analyst?${p.toString()}`;
+  };
+  const historyLink = (page: number) => {
+    const url = new URL(pageLink(listing.page), "https://idx-terminal.local");
+    url.searchParams.set("historyPage", String(page));
+    return `${url.pathname}${url.search}#research-history`;
   };
   const clear = scanHeadline(run, new Date());
   return <section className="min-w-0 border-b border-rule bg-panel">
@@ -43,6 +50,7 @@ export async function CorporateIntelligence({ userId, filters }: { userId: strin
         <p className="text-micro font-bold uppercase tracking-widest text-amber">Corporate intelligence / arsip terverifikasi</p>
         <h2 className="mt-1 flex items-center gap-2 font-display text-xl font-bold text-ink-hi"><FileSearch className="h-5 w-5 text-amber" /> Intelijen Korporasi</h2>
         <p className="mt-2 max-w-3xl text-xs leading-5 text-ink">Pengumuman resmi ditelusuri ke dokumen asal. Prioritas adalah materialitas, bukan prediksi harga.</p>
+        <p className="mt-1 text-xs text-cyan">Riset berjalan otomatis Senin–Jumat sekitar 08.00 dan 21.00 WIB. Waktu nyata setiap scan tercatat di riwayat.</p>
       </div>
       <div className="flex min-w-0 flex-col items-start gap-2 sm:items-end">
         <div className="text-micro uppercase tracking-widest text-dim">Waktu sekarang · Jakarta</div>
@@ -104,6 +112,15 @@ export async function CorporateIntelligence({ userId, filters }: { userId: strin
       </article>;
     })}</div> : <p className="px-4 py-8 text-sm text-ink sm:px-6">Belum ada riset yang memenuhi filter. Dokumen yang belum diverifikasi tidak ditampilkan sebagai temuan.</p>}
     {listing.total > 20 && <div className="flex gap-3 border-t border-rule px-4 py-3 text-xs">{listing.page > 1 && <Link href={pageLink(listing.page - 1)} className="text-cyan">← Sebelumnya</Link>}<span className="text-ink">Halaman {listing.page}</span>{listing.page * 20 < listing.total && <Link href={pageLink(listing.page + 1)} className="text-cyan">Berikutnya →</Link>}</div>}
+    <section id="research-history" className="border-t border-rule">
+      <h3 className="bg-panel-hi px-4 py-2 text-micro font-bold uppercase tracking-widest text-amber sm:px-6">Riwayat pemindaian · {history.total} sesi</h3>
+      {history.runs.length ? <ol className="divide-y divide-rule">{history.runs.map((item) => <li key={item.id} className="grid min-w-0 gap-1 px-4 py-3 text-xs sm:grid-cols-[minmax(12rem,1fr)_minmax(12rem,1.5fr)_auto] sm:items-center sm:gap-4 sm:px-6">
+        <div className="min-w-0"><strong className="text-ink-hi">{date(item.startedAt)}</strong><span className="ml-2 text-dim">{sessionLabel(item.slot)}</span></div>
+        <div className={item.status === "SUCCESS" ? "text-cyan" : "text-amber"}>{runOutcome(item)}</div>
+        <div className="text-dim">{item.sourcesChecked} dokumen · {item.failedAdapters} feed gagal · selesai {date(item.endedAt)}</div>
+      </li>)}</ol> : <p className="px-4 py-4 text-xs text-ink sm:px-6">Belum ada pemindaian yang tersimpan.</p>}
+      {history.total > 10 && <nav aria-label="Halaman riwayat pemindaian" className="flex gap-4 border-t border-rule px-4 py-3 text-xs sm:px-6">{history.page > 1 && <Link href={historyLink(history.page - 1)} className="text-cyan">← Lebih baru</Link>}<span className="text-ink">Halaman {history.page}</span>{history.page * 10 < history.total && <Link href={historyLink(history.page + 1)} className="text-cyan">Lebih lama →</Link>}</nav>}
+    </section>
   </section>;
 }
 

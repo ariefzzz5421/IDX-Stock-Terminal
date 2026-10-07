@@ -75,6 +75,11 @@ export type CompanyDetails = {
     currency: string | null;
     source: "Yahoo Finance" | null;
   };
+  dailyTrading: {
+    date: string | null;
+    volume: number | null;
+    value: number | null;
+  };
   orderBook: {
     bid: number | null;
     bidVolume: number | null;
@@ -311,6 +316,11 @@ export async function getCompanyDetails(code: string): Promise<CompanyDetails | 
       freeCashflow: yahoo?.freeCashflow ?? null,
       currency: yahoo?.financialCurrency ?? null,
       source: yahoo ? "Yahoo Finance" : null,
+    },
+    dailyTrading: {
+      date: idxQuote ? idxSummary.date : null,
+      volume: idxQuote?.volume ?? null,
+      value: idxQuote?.value ?? null,
     },
     orderBook: bestOrderBook(idxQuote, yahoo, idxSummary.date),
     ownership: {

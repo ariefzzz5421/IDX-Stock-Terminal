@@ -27,3 +27,11 @@ export function scanHeadline(run: ScanSummary | null, now: Date): string {
   }
   return `${run.newEvents} peristiwa baru · ${run.updatedEvents} pembaruan substantif dari pemindaian hari ini.`;
 }
+
+export function runOutcome(run: ScanSummary): string {
+  if (run.status === "RUNNING") return "Sedang memindai";
+  if (run.status === "PARTIAL") return "Sebagian sumber atau dokumen belum selesai diperiksa";
+  if (run.status !== "SUCCESS") return "Gagal; tidak dapat menyimpulkan tidak ada berita";
+  if (run.newEvents === 0 && run.updatedEvents === 0) return "Tidak ada temuan material baru dari sumber KSEI yang terhubung";
+  return `${run.newEvents} riset baru · ${run.updatedEvents} pembaruan`;
+}

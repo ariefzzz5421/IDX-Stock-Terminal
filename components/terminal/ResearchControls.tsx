@@ -25,10 +25,10 @@ export function ResearchControls({ admin, unread }: { admin: boolean; unread: nu
   }
   return <div className="flex flex-wrap items-center gap-2 text-xs">
     {unread > 0 && <button type="button" onClick={markRead} className="border border-amber px-3 py-2 text-amber hover:bg-amber/10">{unread} pembaruan baru · tandai dibaca</button>}
-    {admin && <>
+    {admin && <details className="min-w-0"><summary className="cursor-pointer text-dim hover:text-cyan">Alat admin (opsional)</summary><div className="mt-2 flex min-w-0 flex-col gap-2 border border-rule-hi bg-panel p-3">
       <button type="button" disabled={busy} onClick={() => run(true)} className="border border-rule-hi px-3 py-2 text-ink hover:border-cyan disabled:opacity-50">Uji sumber</button>
       <button type="button" disabled={busy} onClick={() => run(false)} className="border border-amber px-3 py-2 text-amber hover:bg-amber/10 disabled:opacity-50">{busy ? "Memindai…" : "Jalankan riset"}</button>
-    </>}
+    </div></details>}
     {message && <span role="status" className="w-full text-cyan">{message}</span>}
   </div>;
 }

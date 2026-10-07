@@ -10,6 +10,8 @@ export type Quote = {
   low: number;
   /** Shares traded today. */
   volume: number;
+  /** False when the upstream snapshot omitted volume rather than reporting zero. */
+  volumeAvailable?: boolean;
   /** Rupiah traded today. */
   value: number;
   /** Epoch milliseconds. */

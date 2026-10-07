@@ -73,7 +73,7 @@ export default async function DashboardPage() {
 
           <Panel
             title="Top volume"
-            meta={hasSnapshot ? `${snapshot.activeByVolume.length} ${copy.stocks} · ${copy.delayed}` : language === "id" ? `${counts.quoted} dari ${counts.total} harga tersimpan` : `${counts.quoted} of ${counts.total} stored quotes`}
+            meta={hasSnapshot ? `${snapshot.activeByVolume.length} ${copy.stocks} · TradingView · volume harian (lembar)` : language === "id" ? `${counts.quoted} dari ${counts.total} harga tersimpan` : `${counts.quoted} of ${counts.total} stored quotes`}
             className="lg:col-span-2"
           >
             <StockTable

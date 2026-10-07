@@ -3,7 +3,10 @@ import test from "node:test";
 import { calculateDilution, calculateSizeToMarketCap, changeType, deriveRunStatus, eventIdentity, matchTickers, scoreMateriality } from "../lib/intelligence/core";
 import { parseResearchResponse, verifyResearch } from "../lib/intelligence/validation";
 import { cronAuthorized } from "../lib/intelligence/security";
-import { scanHeadline } from "../lib/intelligence/scan-presentation";
+import { runOutcome, scanHeadline } from "../lib/intelligence/scan-presentation";
+import { scheduledSlot, sessionLabel } from "../lib/intelligence/schedule";
+import { selectDailyTrading } from "../lib/market-data/daily-trading";
+import type { Quote } from "../lib/market-data/types";
 
 test("matches only catalogued issuers and maps warrant codes to base ticker", () => {
   assert.deepEqual(matchTickers("BRNA-R and BRNA-W, plus fake ZZZZ", new Set(["BRNA", "TLKM"])), ["BRNA"]);
@@ -82,4 +85,34 @@ test("a clean no-news message requires a successful scan on the current Jakarta 
   assert.doesNotMatch(scanHeadline({ ...run, status: "PARTIAL" }, now), /Tidak ada temuan material baru/);
   assert.doesNotMatch(scanHeadline({ ...run, status: "FAILED" }, now), /Tidak ada temuan material baru/);
   assert.doesNotMatch(scanHeadline({ ...run, status: "RUNNING" }, now), /Tidak ada temuan material baru/);
+});
+
+test("weekday morning and evening scans have distinct idempotent Jakarta slots", () => {
+  const morning = new Date("2026-10-07T01:20:00.000Z");
+  const duplicate = new Date("2026-10-07T01:55:00.000Z");
+  const evening = new Date("2026-10-07T14:20:00.000Z");
+  assert.equal(scheduledSlot(morning, "morning"), "scheduled:2026-10-07:morning");
+  assert.equal(scheduledSlot(morning, "morning"), scheduledSlot(duplicate, "morning"));
+  assert.equal(scheduledSlot(evening, "evening"), "scheduled:2026-10-07:evening");
+  assert.notEqual(scheduledSlot(morning, "morning"), scheduledSlot(evening, "evening"));
+  assert.match(sessionLabel(scheduledSlot(morning, "morning")), /Pagi/);
+});
+
+test("scan history never labels partial or failed runs as no news", () => {
+  const base = { endedAt: new Date(), newEvents: 0, updatedEvents: 0 };
+  assert.match(runOutcome({ ...base, status: "SUCCESS" }), /Tidak ada temuan/);
+  assert.doesNotMatch(runOutcome({ ...base, status: "PARTIAL" }), /Tidak ada temuan/);
+  assert.doesNotMatch(runOutcome({ ...base, status: "FAILED" }), /Tidak ada temuan/);
+});
+
+test("daily volume selects dated exact BEI data or clearly estimated provider fallback", () => {
+  const quote: Quote = { code: "TLKM", price: 2280, prevClose: 2300, change: -20, changePct: -0.87, open: 2300, high: 2320, low: 2260, volume: 162_461_500, value: 162_461_500 * 2280, timestamp: Date.parse("2026-10-06T09:14:40Z") };
+  const official = { date: "2026-10-06", volume: 162_461_500, value: 369_000_000_000 };
+  assert.deepEqual(selectDailyTrading(official, quote, "yahoo"), { date: "2026-10-06", volume: 162_461_500, value: 369_000_000_000, source: "BEI · Ringkasan Saham", estimatedValue: false });
+  const yahoo = selectDailyTrading({ ...official, date: "2026-10-05" }, quote, "yahoo");
+  assert.equal(yahoo.volume, 162_461_500);
+  assert.equal(yahoo.estimatedValue, true);
+  assert.equal(yahoo.date, "2026-10-06");
+  assert.equal(selectDailyTrading(null, { ...quote, volumeAvailable: false }, "yahoo").volume, null);
+  assert.equal(selectDailyTrading(null, quote, "mock").volume, null);
 });
