@@ -56,7 +56,7 @@ export function Nav({ preview = false, headerTrigger = false, desktopOnly = fals
   }, [open]);
 
   return <>
-    {!desktopOnly && <div className={headerTrigger ? "flex shrink-0 items-center bg-panel pl-2" : "flex min-w-0 items-center justify-between bg-panel-hi px-3 py-1 lg:hidden"}>
+    {!desktopOnly && <div className={headerTrigger ? "flex shrink-0 items-center bg-panel pl-1 sm:pl-2" : "flex min-w-0 items-center justify-between bg-panel-hi px-3 py-1 lg:hidden"}>
       <button ref={trigger} type="button" aria-label="Buka menu" aria-expanded={open} aria-controls="mobile-terminal-menu" onClick={() => setOpen(true)} className={headerTrigger ? "inline-flex h-11 w-11 items-center justify-center text-amber focus-visible:outline-2 focus-visible:outline-amber" : "inline-flex min-h-10 items-center gap-2 px-2 text-xs font-bold uppercase tracking-wider text-amber focus-visible:outline-2 focus-visible:outline-amber"}>
         <Menu className="h-5 w-5" aria-hidden="true" />{!headerTrigger && "Menu"}
       </button>

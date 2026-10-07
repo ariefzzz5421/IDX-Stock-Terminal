@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
-  BookOpen,
   Building2,
   ExternalLink,
   Globe2,
@@ -99,50 +98,46 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-px">
-      <section className="flex flex-wrap items-end gap-x-10 gap-y-4 bg-panel px-5 py-4">
-        <div className="flex items-center gap-3.5">
-          <CompanyLogo code={fresh.code} logoUrl={fresh.logoUrl} size="lg" />
-          <div className="flex flex-col gap-1">
-            <h1 className="font-display text-xl font-bold leading-none tracking-[0.08em] text-amber">
-              {fresh.code}
-            </h1>
-            <p className="max-w-[32rem] text-xs leading-snug text-dim">
-              {fresh.name}
-              {details?.industry ? ` · ${details.industry}` : fresh.sector ? ` · ${fresh.sector}` : ""}
-            </p>
-            {!fresh.isListed && <p className="text-xs font-semibold text-amber">Tidak tercatat di daftar emiten BEI saat ini · data harga mungkin historis</p>}
+      <section className="min-w-0 bg-panel px-4 py-4 sm:px-5">
+        <div className="grid min-w-0 gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
+          <div className="flex min-w-0 flex-wrap items-center gap-x-6 gap-y-3">
+            <div className="flex min-w-0 items-center gap-3.5">
+              <CompanyLogo code={fresh.code} logoUrl={fresh.logoUrl} size="lg" />
+              <div className="flex min-w-0 flex-col gap-1">
+                <h1 className="font-display text-xl font-bold leading-none tracking-[0.08em] text-amber">
+                  {fresh.code}
+                </h1>
+                <p className="max-w-[28rem] break-words text-xs leading-snug text-dim">
+                  {fresh.name}
+                  {details?.industry ? ` · ${details.industry}` : fresh.sector ? ` · ${fresh.sector}` : ""}
+                </p>
+                {!fresh.isListed && <p className="text-xs font-semibold text-amber">Tidak tercatat di daftar emiten BEI saat ini · data harga mungkin historis</p>}
+              </div>
+            </div>
+
+            <div className="min-w-0 border-l-2 border-rule-hi pl-4">
+              <div className="font-display text-2xl font-bold leading-none tabular-nums text-ink-hi">
+                {formatPrice(fresh.lastPrice)}
+              </div>
+              <div className={`mt-1.5 text-sm font-medium ${directionClass(change)}`}>
+                <span className="text-micro text-dim">1D</span> &nbsp; {formatChange(change)} &nbsp; {formatPct(fresh.lastChangePct)}
+              </div>
+              <p className="mt-1 text-micro text-dim">{tradingDate} · penutupan sebelumnya {formatPrice(fresh.prevClose)}</p>
+            </div>
+          </div>
+          <div className="flex justify-end sm:justify-self-end">
+            <WatchlistToggle code={code} initiallyWatched={Boolean(watched)} />
           </div>
         </div>
 
-        <div>
-          <div className="text-2xl font-bold leading-none text-ink-hi">
-            {formatPrice(fresh.lastPrice)}
-          </div>
-          <div className={`mt-1.5 text-sm font-medium ${directionClass(change)}`}>
-            <span className="text-micro text-dim">1D</span> &nbsp; {formatChange(change)} &nbsp; {formatPct(fresh.lastChangePct)}
-          </div>
-          <p className="mt-1 text-micro text-dim">{tradingDate} · penutupan sebelumnya {formatPrice(fresh.prevClose)}</p>
-        </div>
-
-        <dl className="grid grid-cols-2 gap-x-8 gap-y-2.5 sm:grid-cols-3 lg:grid-cols-5">
+        <dl className="mt-5 grid min-w-0 grid-cols-2 gap-x-5 gap-y-3 border-t border-rule pt-4 sm:grid-cols-3 lg:grid-cols-5">
           <Stat k="Penutupan lalu" v={formatPrice(fresh.prevClose)} />
           <Stat k="Volume · sesi harian" v={dailyTrading.volume === null ? "N/D" : `${new Intl.NumberFormat("id-ID").format(dailyTrading.volume)} lembar`} />
           <Stat k={dailyTrading.estimatedValue ? "Estimasi nilai transaksi · harian" : "Nilai transaksi · harian"} v={dailyTrading.value === null ? "N/D" : formatValue(dailyTrading.value)} />
           <Stat k="Kapitalisasi pasar" v={formatValue(fresh.marketCap)} />
           <Stat k="Snapshot harga" v={`${tradingDate} · ${tradingTime} WIB${quote ? " · tertunda" : " · tersimpan"}`} />
         </dl>
-        <p className="w-full text-micro text-dim">Volume dan nilai: {dailySourceHref ? <a href={dailySourceHref} target="_blank" rel="noopener noreferrer" className="text-cyan hover:underline">{dailyTrading.source} ↗</a> : dailyTrading.source} · sesi {dailyDate}{dailyTrading.estimatedValue ? " · nilai ≈ volume × harga terakhir, bukan total transaksi resmi" : ""}. Data dapat tertunda.</p>
-
-        <div className="ml-auto flex items-center gap-2">
-          <Link
-            href="#orderbook"
-            className="inline-flex items-center gap-1.5 border border-rule-hi px-3 py-2 text-xs text-dim hover:border-amber hover:text-amber"
-          >
-            <BookOpen aria-hidden="true" className="h-3.5 w-3.5" />
-            Bid / Offer
-          </Link>
-          <WatchlistToggle code={code} initiallyWatched={Boolean(watched)} />
-        </div>
+        <p className="mt-4 text-micro leading-relaxed text-dim">Volume dan nilai: {dailySourceHref ? <a href={dailySourceHref} target="_blank" rel="noopener noreferrer" className="text-cyan hover:underline">{dailyTrading.source} ↗</a> : dailyTrading.source} · sesi {dailyDate}{dailyTrading.estimatedValue ? " · nilai ≈ volume × harga terakhir, bukan total transaksi resmi" : ""}. Data dapat tertunda.</p>
       </section>
       <StockDailyFlow code={code} />
       <Panel title="Corporate Intelligence" meta="pengumuman perusahaan"><div className="p-4 text-xs text-ink">{intelligence ? <><p className="font-bold text-ink-hi">{intelligence.title}</p><p className="mt-1 text-dim">{intelligence.category.replaceAll("_", " ")} · {intelligence.priority} · {intelligence.status} · {intelligence.publishedAt ? new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeZone: "Asia/Jakarta" }).format(intelligence.publishedAt) : "N/D"}</p><Link href={`/ai-analyst/research/${intelligence.id}`} className="mt-2 inline-block text-cyan hover:underline">Baca riset lengkap →</Link></> : "Belum ada peristiwa material terverifikasi untuk saham ini."}</div></Panel>

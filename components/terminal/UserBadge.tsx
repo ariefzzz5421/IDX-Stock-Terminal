@@ -18,10 +18,10 @@ export function UserBadge({ username, displayName, avatarUrl, guest }: Props) {
   const initials = label.slice(0, 2).toUpperCase();
 
   return (
-    <div className="flex shrink-0 items-center gap-2.5 px-3 py-1.5">
+    <div className="flex shrink-0 items-center gap-1.5 px-1.5 py-1.5 sm:gap-2.5 sm:px-3">
       <Link
         href="/account"
-        className="flex items-center gap-2.5 hover:opacity-80"
+        className="flex items-center gap-1.5 hover:opacity-80 sm:gap-2.5"
         title={language === "id" ? "Buka profil" : "Open profile"}
       >
         {avatarUrl ? (
@@ -52,16 +52,16 @@ export function UserBadge({ username, displayName, avatarUrl, guest }: Props) {
       {guest ? (
         // Sign-up is the action we actually want a guest to take, so it gets
         // the emphasis and "Sign in" stays secondary.
-        <span className="flex items-center gap-1.5">
+        <span className="flex items-center gap-1 sm:gap-1.5">
           <Link
             href="/login"
-            className="border border-rule-hi px-2.5 py-1.5 text-micro uppercase tracking-[0.1em] text-dim transition-colors hover:border-amber hover:text-amber"
+            className="border border-rule-hi px-1.5 py-1.5 text-micro uppercase tracking-[0.1em] text-dim transition-colors hover:border-amber hover:text-amber sm:px-2.5"
           >
             {language === "id" ? "Masuk" : "Sign in"}
           </Link>
           <Link
             href="/register"
-            className="bg-amber px-2.5 py-1.5 text-micro font-bold uppercase tracking-[0.1em] text-void transition-colors hover:bg-ink-hi"
+            className="bg-amber px-1.5 py-1.5 text-micro font-bold uppercase tracking-[0.1em] text-void transition-colors hover:bg-ink-hi sm:px-2.5"
           >
             {language === "id" ? "Daftar" : "Sign up"}
           </Link>

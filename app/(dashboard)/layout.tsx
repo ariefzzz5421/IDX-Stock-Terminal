@@ -16,6 +16,7 @@ import { getUiLanguage } from "@/lib/ui-language";
 import { FooterClock } from "@/components/terminal/FooterClock";
 import { BiRateFooter } from "@/components/terminal/BiRateFooter";
 import { MobileExtensionDock } from "@/components/terminal/MobileExtensionDock";
+import { ThemeControl } from "@/components/profile/ThemeControl";
 
 const codes = COMPANY_CATALOG.map((stock) => stock.code).sort();
 const searchStocks = COMPANY_CATALOG.map(({ code, name }) => ({ code, name }));
@@ -40,12 +41,12 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
         <Nav headerTrigger />
         <Link
           href="/dashboard"
-          className="flex min-w-0 items-baseline gap-2 bg-panel px-2 py-2.5 hover:opacity-80 sm:px-4"
+          className="flex min-w-0 items-baseline gap-1 bg-panel px-1 py-2.5 hover:opacity-80 sm:gap-2 sm:px-4"
         >
-          <span className="font-display text-lg font-bold tracking-[0.16em] text-amber">
+          <span className="font-display text-base font-bold tracking-[0.12em] text-amber sm:text-lg sm:tracking-[0.16em]">
             IDX
           </span>
-          <span className="text-micro font-semibold uppercase tracking-[0.2em] text-ink">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink sm:text-micro sm:tracking-[0.2em]">
             Terminal
           </span>
         </Link>
@@ -63,7 +64,8 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
           <MarketStatusBadge />
         </div>
 
-        <div className="col-start-2 row-start-1 flex bg-panel sm:col-start-3 xl:col-start-5">
+        <div className="col-start-2 row-start-1 flex items-stretch bg-panel sm:col-start-3 xl:col-start-5">
+          <ThemeControl compact />
           <UserBadge
             username={user.username}
             displayName={user.profile?.displayName ?? null}

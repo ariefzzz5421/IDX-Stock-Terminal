@@ -51,7 +51,7 @@ export function WatchlistToggle({
       }`}
     >
       <Star aria-hidden="true" className="h-3.5 w-3.5" fill={watched ? "currentColor" : "none"} />
-      {watched ? "Dipantau" : "Pantau"}
+      Watchlist
     </button>
   );
 }
