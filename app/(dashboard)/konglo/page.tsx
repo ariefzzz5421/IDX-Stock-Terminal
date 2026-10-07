@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Newspaper } from "lucide-react";
 import { requireUser } from "@/lib/auth/session";
 import { FORBES_LIST_DATE, FORBES_LIST_URL, KONGLO_PROFILES, kongloHoldings, kongloPortfolioSummary } from "@/lib/konglo";
-import { formatRupiahCompact, formatWealth, formatWealthRupiahEstimate, WEALTH_FX_DATE, WEALTH_FX_SOURCE, WEALTH_USD_IDR_RATE } from "@/lib/konglo-format";
+import { formatRupiahCompact, formatWealth, formatWealthRupiahEstimate } from "@/lib/konglo-format";
 import { KongloPortrait } from "@/components/konglo/KongloPortrait";
 
 export const metadata: Metadata = { title: "Konglo — IDX Terminal" };
@@ -16,10 +16,8 @@ export default async function KongloPage() {
   return <main className="min-w-0 flex-1 bg-panel">
     <header className="border-b border-rule px-4 py-4 sm:px-6">
       <p className="text-micro uppercase tracking-widest text-amber">Ownership map / investor research</p>
-      <h1 className="mt-1 font-display text-xl font-bold text-ink-hi">Konglo</h1>
-      <p className="mt-2 max-w-4xl text-xs leading-relaxed text-dim">50 peringkat Forbes 2025 dan tokoh tambahan. Kekayaan Forbes, saham pribadi, serta saham entitas grup ditampilkan sesuai lingkupnya. Posisi yang belum bisa diverifikasi bernilai N/D; transaksi bersyarat tidak dihitung sebagai kepemilikan.</p>
+      <div className="flex flex-wrap items-center justify-between gap-3"><h1 className="mt-1 font-display text-xl font-bold text-ink-hi">Konglo</h1><Link href="/konglo/feed" className="inline-flex min-h-9 items-center gap-2 border border-amber-dim px-3 text-xs font-bold text-amber hover:bg-amber/10"><Newspaper aria-hidden="true" className="h-4 w-4" />Konglo Feed <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" /></Link></div>
       <a href={FORBES_LIST_URL} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-micro text-cyan hover:underline">Forbes Indonesia 50 Richest · {FORBES_LIST_DATE} ↗</a>
-      <p className="mt-2 text-micro text-dim">EST rupiah memakai <a href={WEALTH_FX_SOURCE} target="_blank" rel="noopener noreferrer" className="text-cyan hover:underline">JISDOR BI ↗</a> Rp {WEALTH_USD_IDR_RATE.toLocaleString("id-ID")}/US$ · {WEALTH_FX_DATE}. Konversi dari estimasi Forbes 2025, bukan nilai kekayaan terkini.</p>
     </header>
     <section aria-labelledby="konglo-highlights" className="border-b border-rule bg-panel-hi px-4 py-4 sm:px-6">
       <h2 id="konglo-highlights" className="text-micro font-bold uppercase tracking-widest text-amber">Sorotan konglomerasi</h2>

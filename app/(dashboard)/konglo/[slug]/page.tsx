@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Newspaper } from "lucide-react";
 import { requireUser } from "@/lib/auth/session";
 import { CompanyLogo } from "@/components/terminal/CompanyLogo";
 import { PortfolioDonut } from "@/components/konglo/PortfolioDonut";
@@ -33,7 +33,7 @@ export default async function KongloDetailPage({ params }: PageProps<"/konglo/[s
     <header className="border-b border-rule px-4 py-4 sm:px-6">
       <Link href="/konglo" className="text-micro text-cyan hover:underline">← Semua tokoh</Link>
       <p className="mt-3 text-micro uppercase tracking-widest text-amber">Investor research {profile.rank ? `· Forbes #${profile.rank}` : "· tokoh tambahan"}</p>
-      <div className="mt-2 flex items-center gap-3"><KongloPortrait slug={profile.slug} name={profile.name} size={64} /><h1 className="min-w-0 font-display text-xl font-bold text-ink-hi">{profile.name}</h1></div>
+      <div className="mt-2 flex flex-wrap items-center gap-3"><KongloPortrait slug={profile.slug} name={profile.name} size={64} /><h1 className="min-w-0 flex-1 font-display text-xl font-bold text-ink-hi">{profile.name}</h1><Link href={`/konglo/feed?person=${encodeURIComponent(profile.slug)}`} className="inline-flex min-h-9 items-center gap-2 border border-amber-dim px-3 text-xs font-bold text-amber hover:bg-amber/10"><Newspaper aria-hidden="true" className="h-4 w-4" />Konglo Feed</Link></div>
       {KONGLO_PHOTOS[profile.slug] && <a href={KONGLO_PHOTOS[profile.slug].sourceUrl} target="_blank" rel="noopener noreferrer" className="mt-1 inline-block text-micro text-dim hover:text-cyan">Foto: {KONGLO_PHOTOS[profile.slug].credit} ↗</a>}
       <p className="mt-2 max-w-4xl text-xs leading-relaxed text-dim">Peta saham BEI yang tercatat atas nama pribadi dan entitas terkait. Persentase saham dikalikan kapitalisasi pasar dalam katalog. Nilai entitas ditampilkan terpisah; saham anak dan induk dalam satu rantai dapat tumpang tindih, sehingga jumlahnya bukan kekayaan ekonomis pribadi.</p>
       <a href={FORBES_LIST_URL} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1 text-micro text-cyan hover:underline">Forbes Indonesia 50 Richest · {FORBES_LIST_DATE} <ArrowUpRight className="h-3 w-3" aria-hidden="true" /></a>
