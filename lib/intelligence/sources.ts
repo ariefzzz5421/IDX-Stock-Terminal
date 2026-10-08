@@ -2,6 +2,7 @@ import "server-only";
 import { load } from "cheerio";
 import pdfParse from "pdf-parse/lib/pdf-parse.js";
 import { normalize, sha, type Category } from "./core";
+import { parseKseiDate } from "./source-date";
 
 const MAX_BYTES = 8 * 1024 * 1024;
 const ALLOWED_HOSTS = new Set(["web.ksei.co.id", "www.idx.co.id", "idx.co.id", "www.ksei.co.id", "ksei.co.id", "www.ojk.go.id", "ojk.go.id", "www.msci.com", "msci.com", "www.lseg.com", "lseg.com", "www.vaneck.com", "vaneck.com"]);
@@ -45,8 +46,13 @@ async function boundedFetch(url: string, timeoutMs = 9000): Promise<Response> {
 export async function discoverKsei(feed: typeof KSEI_FEEDS[number]): Promise<AdapterResult> {
   const checkedAt = new Date();
   try {
-    const url = `https://web.ksei.co.id${feed.path}?setLocale=en-US`;
-    const html = await (await boundedFetch(url)).text();
+    let html: string;
+    try {
+      html = await (await boundedFetch(`https://web.ksei.co.id${feed.path}?setLocale=en-US`)).text();
+    } catch {
+      // KSEI sometimes rejects the locale query while the canonical public page remains available.
+      html = await (await boundedFetch(`https://web.ksei.co.id${feed.path}`)).text();
+    }
     const $ = load(html);
     const documents: DiscoveredDocument[] = [];
     $("table tbody tr").each((_index, row) => {
@@ -58,11 +64,11 @@ export async function discoverKsei(feed: typeof KSEI_FEEDS[number]): Promise<Ada
       if (!href || !reference || !title) return;
       const sourceUrl = new URL(href, "https://web.ksei.co.id").toString();
       try { allowedSourceUrl(sourceUrl); } catch { return; }
-      const publishedAt = dateValue ? new Date(`${dateValue} 12:00:00 GMT+0700`) : null;
+      const publishedAt = parseKseiDate(dateValue);
       documents.push({
         adapter: feed.name, category: feed.category, sourceUrl,
         sourceDocumentId: `KSEI:${reference}`,
-        title, publishedAt: publishedAt && !Number.isNaN(publishedAt.getTime()) ? publishedAt : null,
+        title, publishedAt,
       });
     });
     if (!$("table[data-table]").length) throw new Error("Expected KSEI announcement table absent");

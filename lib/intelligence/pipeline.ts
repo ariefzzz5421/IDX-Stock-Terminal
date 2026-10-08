@@ -45,7 +45,7 @@ async function recordDocument(document: DiscoveredDocument, text: string, finger
       host: new URL(document.sourceUrl).hostname, title: document.title, status: "AVAILABLE",
       contentFingerprint: fingerprint, excerpt: text.slice(0, 18_000), publishedAt: document.publishedAt,
     },
-    update: { sourceUrl: document.sourceUrl, title: document.title, status: "AVAILABLE", contentFingerprint: fingerprint, excerpt: text.slice(0, 18_000), lastCheckedAt: new Date(), error: null },
+    update: { sourceUrl: document.sourceUrl, title: document.title, status: "AVAILABLE", contentFingerprint: fingerprint, excerpt: text.slice(0, 18_000), publishedAt: document.publishedAt, lastCheckedAt: new Date(), error: null },
   });
 }
 
@@ -174,6 +174,19 @@ export async function runResearch(options: ScanOptions): Promise<ScanOutcome> {
       try { const cursor = JSON.parse(previousRun.cursorJson) as { pending?: DiscoveredDocument[] }; pending.unshift(...(cursor.pending ?? []).map((d) => ({ ...d, publishedAt: d.publishedAt ? new Date(d.publishedAt) : null }))); } catch { /* Corrupt cursor is visible in run errors below. */ }
     }
     pending = [...new Map(pending.map((d) => [d.sourceDocumentId, d])).values()];
+    if (!options.dryRun && pending.length) {
+      const existing = await prisma.intelligenceSource.findMany({ where: { sourceDocumentId: { in: pending.map((d) => d.sourceDocumentId) } }, select: { sourceDocumentId: true, sourceUrl: true, versionId: true, status: true, lastCheckedAt: true } });
+      const indexed = new Map(existing.map((source) => [source.sourceDocumentId, source]));
+      await prisma.intelligenceSource.createMany({ data: pending.filter((document) => !indexed.has(document.sourceDocumentId)).map((document) => ({
+        sourceDocumentId: document.sourceDocumentId, adapter: document.adapter, sourceUrl: document.sourceUrl,
+        host: new URL(document.sourceUrl).hostname, title: document.title, status: "DISCOVERED", publishedAt: document.publishedAt,
+      })) });
+      // A processed, unchanged disclosure needs only occasional rechecking; new and failed documents keep their place in the queue.
+      pending = pending.filter((document) => {
+        const source = indexed.get(document.sourceDocumentId);
+        return !source || source.sourceUrl !== document.sourceUrl || !(source.versionId || source.status === "NO_MATCH" || source.status === "UNCONFIRMED") || Date.now() - source.lastCheckedAt.getTime() > 7 * 24 * 60 * 60_000;
+      });
+    }
     const batch = pending.splice(0, MAX_DOCUMENTS_PER_RUN);
     for (let index = 0; index < batch.length; index++) {
       const document = batch[index];

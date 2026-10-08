@@ -7,6 +7,13 @@ import { runOutcome, scanHeadline } from "../lib/intelligence/scan-presentation"
 import { scheduledSlot, sessionLabel } from "../lib/intelligence/schedule";
 import { selectDailyTrading } from "../lib/market-data/daily-trading";
 import type { Quote } from "../lib/market-data/types";
+import { parseKseiDate } from "../lib/intelligence/source-date";
+
+test("KSEI source dates retain the real Indonesian publication day", () => {
+  assert.equal(parseKseiDate("07 Oktober 2026")?.toISOString(), "2026-10-07T05:00:00.000Z");
+  assert.equal(parseKseiDate("06 October 2026")?.toISOString(), "2026-10-06T05:00:00.000Z");
+  assert.equal(parseKseiDate("32 Oktober 2026"), null);
+});
 
 test("matches only catalogued issuers and maps warrant codes to base ticker", () => {
   assert.deepEqual(matchTickers("BRNA-R and BRNA-W, plus fake ZZZZ", new Set(["BRNA", "TLKM"])), ["BRNA"]);

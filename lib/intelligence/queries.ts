@@ -65,6 +65,15 @@ export async function researchRunHistory(page = 1) {
   return { total, page: safePage, runs };
 }
 
+export async function latestSourceDocuments() {
+  return prisma.intelligenceSource.findMany({
+    where: { publishedAt: { not: null } },
+    orderBy: [{ publishedAt: "desc" }, { fetchedAt: "desc" }],
+    take: 16,
+    select: { id: true, title: true, sourceUrl: true, adapter: true, status: true, publishedAt: true, fetchedAt: true, versionId: true, eventId: true },
+  });
+}
+
 export async function syncNotifications(userId: string) {
   const latestSuccess = await prisma.researchRun.findFirst({ where: { status: "SUCCESS", dryRun: false }, orderBy: { endedAt: "desc" }, select: { endedAt: true } });
   if (!latestSuccess?.endedAt) return;
