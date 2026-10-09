@@ -1,5 +1,5 @@
 import "server-only";
-import holdingsJson from "@/data/shareholders-2026-05.json";
+import holdingsJson from "@/data/shareholders-2026-09.json";
 
 type Row = [name: string, percentage: number, shares: number, type: string, localForeign: string, domicile: string];
 const holdings = holdingsJson as unknown as Record<string, Row[]>;

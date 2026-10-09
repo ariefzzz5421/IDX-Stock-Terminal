@@ -1,9 +1,9 @@
 import "server-only";
-import holdingsJson from "@/data/shareholders-2026-05.json";
+import holdingsJson from "@/data/shareholders-2026-09.json";
 
-export const OWNERSHIP_AS_OF = "29 Mei 2026";
-export const OWNERSHIP_SOURCE = "https://www.idx.co.id/en/listed-companies/share-ownership-data-of-listed-companies/";
-export const OWNERSHIP_TRANSCRIPTION = "https://www.ceritasaham.com/superinvestor";
+export const OWNERSHIP_AS_OF = "30 September 2026";
+export const OWNERSHIP_SOURCE = "https://www.idx.co.id/id/perusahaan-tercatat/data-kepemilikan-saham/";
+export const OWNERSHIP_DOCUMENT = "https://www.idx.co.id/Media/yqjhhsee/peng-2026-09-00024-satu-persen.xlsx";
 
 type HoldingTuple = [name: string, percentage: number, shares: number, investorType: string, localForeign: string, domicile: string];
 type Affiliation = { label: string; sourceUrl: string };

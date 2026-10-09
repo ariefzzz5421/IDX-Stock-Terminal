@@ -5,7 +5,7 @@ import { requireUser } from "@/lib/auth/session";
 import { getCompanyCatalogEntry } from "@/lib/company-catalog";
 import { KONGLO_PROFILES, kongloHoldings } from "@/lib/konglo";
 import { OWNERSHIP_ROWS, OWNERSHIP_TICKERS, findOwnership, ownershipOverview } from "@/lib/ownership-overview";
-import { OWNERSHIP_AS_OF, OWNERSHIP_SOURCE, OWNERSHIP_TRANSCRIPTION, codesForNamedShareholder } from "@/lib/shareholders";
+import { OWNERSHIP_AS_OF, OWNERSHIP_DOCUMENT, OWNERSHIP_SOURCE, codesForNamedShareholder } from "@/lib/shareholders";
 
 export const metadata: Metadata = { title: "Ownership Overview — IDX Terminal" };
 export const dynamic = "force-dynamic";
@@ -30,8 +30,8 @@ export default async function OverviewPage({ searchParams }: { searchParams: Pro
     <header className="border-b border-rule px-4 py-5 sm:px-6">
       <p className="text-micro uppercase tracking-[0.18em] text-amber">KSEI / Ownership intelligence</p>
       <h1 className="mt-1 font-display text-2xl font-bold text-ink-hi">Overview</h1>
-      <p className="mt-2 max-w-4xl text-xs leading-relaxed text-dim">Peta pemegang saham ≥1% emiten BEI berdasarkan snapshot {OWNERSHIP_AS_OF}. Persentase CSV yang tidak cocok dengan jumlah lembar saham dihitung ulang. Nama yang sama pada dua saham menunjukkan posisi tercatat, bukan otomatis satu grup pengendali.</p>
-      <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs"><a href={OWNERSHIP_SOURCE} target="_blank" rel="noopener noreferrer" className="text-cyan hover:underline">Sumber BEI / KSEI ↗</a><a href={OWNERSHIP_TRANSCRIPTION} target="_blank" rel="noopener noreferrer" className="text-cyan hover:underline">CSV publik yang diolah ↗</a></div>
+      <p className="mt-2 max-w-4xl text-xs leading-relaxed text-dim">Peta pemegang saham ≥1% emiten BEI berdasarkan laporan BEI/KSEI per {OWNERSHIP_AS_OF}. Nama yang sama pada dua saham menunjukkan posisi tercatat, bukan otomatis satu grup pengendali.</p>
+      <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs"><a href={OWNERSHIP_SOURCE} target="_blank" rel="noopener noreferrer" className="text-cyan hover:underline">Sumber BEI / KSEI ↗</a><a href={OWNERSHIP_DOCUMENT} target="_blank" rel="noopener noreferrer" className="text-cyan hover:underline">Laporan XLSX resmi ↗</a></div>
       <form action="/overview" className="mt-5 flex w-full max-w-2xl items-stretch border border-rule-hi bg-void focus-within:border-amber">
         <Search aria-hidden="true" className="m-3 h-4 w-4 shrink-0 text-amber" />
         <input type="search" name="q" defaultValue={query} maxLength={80} placeholder="Cari kode saham atau nama pemegang saham" aria-label="Cari kode saham atau pemegang saham" className="min-w-0 flex-1 bg-transparent py-2 text-sm text-ink-hi outline-none placeholder:text-dim" />

@@ -1,7 +1,13 @@
-# Ownership snapshot
+# Ownership data
 
-`shareholders-2026-05.json` contains 7,161 positions across 956 tickers, dated 29 May 2026. It was generated from the public **Unduh CSV** export at https://www.ceritasaham.com/superinvestor, which attributes its underlying shareholder register to KSEI/BEI. The BEI disclosure page is https://www.idx.co.id/en/listed-companies/share-ownership-data-of-listed-companies/.
+The active shareholder dataset is `shareholders-2026-09.json`: **7,154 positions across 961 tickers, as of 30 September 2026**. It is imported directly from the BEI/KSEI public workbook [Pemegang Saham di Atas 1% per 30 September 2026](https://www.idx.co.id/Media/yqjhhsee/peng-2026-09-00024-satu-persen.xlsx), linked on [BEI Data Kepemilikan Saham](https://www.idx.co.id/id/perusahaan-tercatat/data-kepemilikan-saham/). Downloaded workbook SHA-256: `804b3bb705860c8cee22addf63649c890d8cd66f8ae5e8a5d02730aec86bdd60`.
 
-Run `python scripts/import-ownership-csv.py input.csv data/shareholders-2026-05.json` to reproduce the compact dataset. The import retains investor names, share counts, investor classifications, and local/foreign metadata. A data quality check found decimal-shifted percentages in the CSV. The importer reconciles percentages with each ticker's common outstanding-share denominator; it uses `prisma/idx-listing.json` when its listed-share count agrees within 1%, or when every CSV percentage appears shifted tenfold. 1,096 of 7,161 percentages changed by more than 0.05 percentage points. It rejects a ticker whose reconciled disclosed positions exceed 100.5%.
+Regenerate the compact JSON with:
 
-The catalog's listed-share counts are dated 31 August or 30 September 2026, while these holder positions are from 29 May 2026. Where those counts differ materially, the importer uses the denominator inferred from the May holder rows instead. This is a derived reconstruction of the public CSV, not a new KSEI release. Keep the snapshot date visible in the UI and verify any material ownership or valuation claim against the original issuer disclosure.
+```text
+python scripts/import-ownership-idx-xlsx.py source.xlsx data/shareholders-2026-09.json
+```
+
+The importer retains BEI/KSEI's investor names, classification, local/foreign flag, domicile, share counts, and percentages. It validates the common source date, per-row share totals, and ticker-level disclosed percentages. Four `TRINITI DINAMIK Tbk` rows have `SHARE_CODE=1` in the official workbook because Excel converted the ticker `TRUE` to a boolean. Only those four rows are mapped back to the catalog's `TRUE` ticker; the importer rejects other unrecognized source codes. Classification labels are preserved as published, including unusual labels; they are not evidence of affiliation.
+
+The prior May 2026 dataset is retained as an archive. It was reconstructed from a third-party CSV; it is not used by the active pages. The September data records holders with at least 1% as of the workbook date. It is not a live ownership feed. TradingView free-float figures are fetched separately and have their own check time; their ratio is a vendor estimate, not an official BEI free-float determination.
