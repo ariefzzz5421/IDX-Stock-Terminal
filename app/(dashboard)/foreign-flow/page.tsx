@@ -14,7 +14,7 @@ export default async function ForeignFlowPage() {
   const flow = await foreignFlowLeaders(10);
 
   return <div className="min-w-0 flex-1">
-    <IndexExposureNetwork />
+    <IndexExposureNetwork flow={flow} />
     {!flow.available ? (
       <Panel title="Arus transaksi asing harian" meta="snapshot transaksi">
         <div className="max-w-2xl p-6">
