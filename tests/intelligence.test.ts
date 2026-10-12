@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { calculateDilution, calculateSizeToMarketCap, changeType, deriveRunStatus, eventIdentity, matchTickers, scoreMateriality } from "../lib/intelligence/core";
+import { calculateDilution, calculateSizeToMarketCap, changeType, deriveRunStatus, eventIdentity, matchTickers, referencedKseiAnnouncement, scoreMateriality } from "../lib/intelligence/core";
 import { parseResearchResponse, parseSourceSummary, verifyResearch } from "../lib/intelligence/validation";
 import { cronAuthorized } from "../lib/intelligence/security";
 import { runOutcome, scanHeadline } from "../lib/intelligence/scan-presentation";
@@ -27,6 +27,14 @@ test("event identity survives a new document title within the same rights series
     eventIdentity("DOOH", "TENDER_OFFER", "Mandatory Tender Offer", new Date("2026-10-02"), "KSEI-1"),
     eventIdentity("DOOH", "TENDER_OFFER", "Mandatory Tender Offer", new Date("2026-10-02"), "KSEI-2"),
   );
+});
+
+test("an explicit KSEI follow-up keeps the original corporate action identity", () => {
+  const originalId = "KSEI:KSEI-7347/JKU/0426";
+  const followUp = "Sebagai tindak lanjut Pengumuman KSEI No. KSEI-7347/JKU/0426 7 April 2026, bersama ini disampaikan informasi tambahan saham bonus MEGA.";
+  assert.equal(referencedKseiAnnouncement(followUp), originalId);
+  assert.equal(eventIdentity("MEGA", "BONUS_SHARES", "Jadwal pembagian saham bonus MEGA", new Date("2026-04-07"), originalId),
+    eventIdentity("MEGA", "BONUS_SHARES", followUp, new Date("2026-04-14"), "KSEI:KSEI-7806/JKU/0426"));
 });
 
 test("unchanged source and facts does not create another alert", () => {

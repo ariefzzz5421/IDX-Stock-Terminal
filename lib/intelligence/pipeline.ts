@@ -7,6 +7,7 @@ import { analyzeDocument, summarizeSourceDocument } from "./openai";
 import { changeType, calculateDilution, deriveRunStatus, eventIdentity, matchTickers, scoreMateriality, sha } from "./core";
 import { discoverKsei, fetchSourceDocument, KSEI_FEEDS, type DiscoveredDocument } from "./sources";
 import { scheduledSlot, type ResearchSession } from "./schedule";
+import { reconcileKseiFollowUps } from "./reconcile";
 
 const MAX_DOCUMENTS_PER_RUN = 10;
 const LEASE_MS = 4 * 60_000;
@@ -175,6 +176,7 @@ export async function runResearch(options: ScanOptions): Promise<ScanOutcome> {
   try {
     const deadline = Date.now() + 170_000;
     await ensureStockCatalog();
+    if (!options.dryRun) await reconcileKseiFollowUps();
     const results = [];
     for (let i = 0; i < KSEI_FEEDS.length; i += 2) {
       results.push(...await Promise.all(KSEI_FEEDS.slice(i, i + 2).map(discoverKsei)));

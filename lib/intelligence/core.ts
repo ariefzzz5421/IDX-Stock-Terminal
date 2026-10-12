@@ -23,13 +23,19 @@ export function matchTickers(text: string, known: Set<string>): string[] {
   return [...found];
 }
 
+export function referencedKseiAnnouncement(documentText: string): string | null {
+  const reference = normalize(documentText).match(/(?:tindak lanjut|following|further to).{0,120}?KSEI\s*(?:No\.?|Nomor)?\s*(KSEI-\d+\/[A-Z]+\/\d+)/i)?.[1];
+  return reference ? `KSEI:${reference.toUpperCase()}` : null;
+}
+
 export function eventIdentity(ticker: string, category: Category, documentText: string, publishedAt: Date | null, sourceDocumentId?: string): string {
   const offering = documentText.match(/(?:Penawaran Umum Terbatas|Limited Public Offering|PMHMETD)\s*(?:ke-)?([IVX0-9]+)/i)?.[1]?.toUpperCase();
   const rightsCode = documentText.match(/\b([A-Z]{4}-R)\b/)?.[1];
   const year = publishedAt?.getUTCFullYear() ?? new Date().getUTCFullYear();
   const fiscalYear = documentText.match(/(?:fiscal year|tahun buku)\s*[:\s]*(20\d{2})/i)?.[1];
   const paymentDay = documentText.match(/(?:payment date|tanggal pembayaran)[^\n]{0,80}?(\d{1,2}\s+[A-Za-z]+\s+20\d{2})/i)?.[1]?.toUpperCase().replace(/\s+/g, "");
-  const action = offering || rightsCode || (category === "DIVIDEND" && paymentDay ? `${fiscalYear ?? year}:${paymentDay}` : sourceDocumentId ? sha(sourceDocumentId).slice(0, 16) : publishedAt?.toISOString().slice(0, 10) ?? String(year));
+  const referencedDocumentId = referencedKseiAnnouncement(documentText);
+  const action = offering || rightsCode || (category === "DIVIDEND" && paymentDay ? `${fiscalYear ?? year}:${paymentDay}` : referencedDocumentId ? sha(referencedDocumentId).slice(0, 16) : sourceDocumentId ? sha(sourceDocumentId).slice(0, 16) : publishedAt?.toISOString().slice(0, 10) ?? String(year));
   return `${ticker}:${category}:${action}`;
 }
 
