@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto";
 import { prisma } from "@/lib/db/prisma";
 import { COMPANY_CATALOG } from "@/lib/company-catalog";
 import { ensureStockCatalog } from "@/lib/stocks";
-import { analyzeDocument } from "./openai";
+import { analyzeDocument, summarizeSourceDocument } from "./openai";
 import { changeType, calculateDilution, deriveRunStatus, eventIdentity, matchTickers, scoreMateriality, sha } from "./core";
 import { discoverKsei, fetchSourceDocument, KSEI_FEEDS, type DiscoveredDocument } from "./sources";
 import { scheduledSlot, type ResearchSession } from "./schedule";
@@ -38,7 +38,7 @@ async function acquireLease() {
   return claimed.count === 1 ? owner : null;
 }
 
-async function recordDocument(document: DiscoveredDocument, text: string, fingerprint: string, dryRun: boolean) {
+async function recordDocument(document: DiscoveredDocument, text: string, fingerprint: string, dryRun: boolean, preserveSummary: boolean) {
   if (!dryRun) await prisma.intelligenceSource.upsert({
     where: { sourceDocumentId: document.sourceDocumentId },
     create: {
@@ -46,7 +46,7 @@ async function recordDocument(document: DiscoveredDocument, text: string, finger
       host: new URL(document.sourceUrl).hostname, title: document.title, status: "AVAILABLE",
       contentFingerprint: fingerprint, excerpt: text.slice(0, 18_000), publishedAt: document.publishedAt,
     },
-    update: { sourceUrl: document.sourceUrl, title: document.title, status: "AVAILABLE", contentFingerprint: fingerprint, excerpt: text.slice(0, 18_000), aiSummary: null, aiStatus: null, publishedAt: document.publishedAt, lastCheckedAt: new Date(), error: null },
+    update: { sourceUrl: document.sourceUrl, title: document.title, status: "AVAILABLE", contentFingerprint: fingerprint, excerpt: text.slice(0, 18_000), ...(preserveSummary ? {} : { aiSummary: null, aiStatus: null }), publishedAt: document.publishedAt, lastCheckedAt: new Date(), error: null },
   });
 }
 
@@ -69,7 +69,7 @@ async function processDocument(document: DiscoveredDocument, dryRun: boolean): P
     if (!dryRun) await prisma.intelligenceSource.update({ where: { sourceDocumentId: document.sourceDocumentId }, data: { status: cached.status, lastCheckedAt: new Date(), error: null } });
     return { kind: "UNCHANGED", inputTokens: 0, outputTokens: 0 };
   }
-  await recordDocument(document, source.text, source.fingerprint, dryRun);
+  await recordDocument(document, source.text, source.fingerprint, dryRun, cached?.contentFingerprint === source.fingerprint);
   const matches = matchTickers(`${document.title} ${source.text.slice(0, 1000)}`, knownTickers);
   const primary = matches.find((ticker) => document.title.toUpperCase().includes(`(${ticker})`)) ?? matches[0];
   if (!primary) {
@@ -79,7 +79,20 @@ async function processDocument(document: DiscoveredDocument, dryRun: boolean): P
   const identity = eventIdentity(primary, document.category, source.text, document.publishedAt, document.sourceDocumentId);
   const eventId = sha(identity).slice(0, 32);
   const previous = await prisma.intelligenceEvent.findUnique({ where: { id: eventId }, include: { versions: { orderBy: { eventVersion: "desc" }, take: 1 } } });
-  const result = await analyzeDocument({ text: source.text, ticker: primary, category: document.category, sourceUrl: document.sourceUrl, previousSummary: previous?.summary });
+  let result: Awaited<ReturnType<typeof analyzeDocument>>;
+  try {
+    result = await analyzeDocument({ text: source.text, ticker: primary, category: document.category, sourceUrl: document.sourceUrl, previousSummary: previous?.summary });
+  } catch (error) {
+    // Keep an evidence-linked preview visible when full event verification fails. The
+    // document remains queued; a source preview never becomes a published event.
+    if (!dryRun && !/timeout|aborted/i.test(String(error))) {
+      try {
+        const preview = await summarizeSourceDocument({ text: source.text, ticker: primary, title: document.title });
+        await prisma.intelligenceSource.update({ where: { sourceDocumentId: document.sourceDocumentId }, data: { aiSummary: preview, aiStatus: "UNCONFIRMED" } });
+      } catch { /* The original verification error remains authoritative. */ }
+    }
+    throw error;
+  }
   const research = result.research;
   if (!dryRun) await prisma.intelligenceSource.update({ where: { sourceDocumentId: document.sourceDocumentId }, data: { aiSummary: research.summary, aiStatus: research.status } });
   const stock = COMPANY_CATALOG.find((item) => item.code === primary);

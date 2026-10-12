@@ -33,6 +33,20 @@ export function parseResearchResponse(output: string, sourceText: string, ticker
   return verifyResearch(parsed, sourceText, ticker, category);
 }
 
+export function parseSourceSummary(output: string, sourceText: string): string {
+  let parsed: unknown;
+  try { parsed = JSON.parse(output); } catch { throw new Error("OpenAI returned invalid source summary JSON"); }
+  if (!parsed || typeof parsed !== "object") throw new Error("OpenAI returned invalid source summary");
+  const { summary, exactQuote } = parsed as { summary?: unknown; exactQuote?: unknown };
+  if (typeof summary !== "string" || typeof exactQuote !== "string" || normalize(summary).length < 30 || normalize(summary).length > 500 || !validClaimQuote(exactQuote, sourceText)) {
+    throw new Error("AI source summary cannot be verified against document");
+  }
+  const quoteNumbers = new Set((exactQuote.match(/\d[\d.,]*/g) ?? []).map((value) => value.replace(/\D/g, "")));
+  const summaryNumbers = summary.match(/\d[\d.,]*/g) ?? [];
+  if (summaryNumbers.some((value) => !quoteNumbers.has(value.replace(/\D/g, "")))) throw new Error("AI source summary number is not in cited quote");
+  return `${normalize(summary)}\nBukti sumber: “${normalize(exactQuote)}”`;
+}
+
 export function verifyResearch(raw: unknown, sourceText: string, matchedTicker: string, category: Category): ExtractedResearch {
   if (!raw || typeof raw !== "object") throw new Error("AI returned invalid JSON");
   const item = raw as ExtractedResearch;

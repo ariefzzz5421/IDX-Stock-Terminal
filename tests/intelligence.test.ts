@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { calculateDilution, calculateSizeToMarketCap, changeType, deriveRunStatus, eventIdentity, matchTickers, scoreMateriality } from "../lib/intelligence/core";
-import { parseResearchResponse, verifyResearch } from "../lib/intelligence/validation";
+import { parseResearchResponse, parseSourceSummary, verifyResearch } from "../lib/intelligence/validation";
 import { cronAuthorized } from "../lib/intelligence/security";
 import { runOutcome, scanHeadline } from "../lib/intelligence/scan-presentation";
 import { scheduledSlot, sessionLabel } from "../lib/intelligence/schedule";
@@ -67,6 +67,14 @@ test("invalid AI evidence and unsupported lifecycle are rejected", () => {
   assert.throws(() => verifyResearch({ ...base, announcementDate: "2026-10-06" }, text, "BRNA", "RIGHTS_ISSUE"), /date/);
   assert.throws(() => verifyResearch({ ...base, evidence: [{ claim: "Harga Rp999", exactQuote: "The rights exercise price is Rp685." }] }, text, "BRNA", "RIGHTS_ISSUE"), /claim number/);
   assert.throws(() => parseResearchResponse("{", text, "BRNA", "RIGHTS_ISSUE"), /invalid JSON/);
+});
+
+test("AI source preview requires an exact quote and rejects invented figures", () => {
+  const text = "PT Contoh Tbk menetapkan dividen tunai Rp250 per saham. Pembayaran dijadwalkan bulan depan.";
+  const valid = JSON.stringify({ summary: "Dokumen menyebut dividen tunai Rp250 per saham yang akan dibayarkan.", exactQuote: "menetapkan dividen tunai Rp250 per saham" });
+  assert.match(parseSourceSummary(valid, text), /Bukti sumber/);
+  assert.throws(() => parseSourceSummary(JSON.stringify({ summary: "Dokumen menyebut dividen tunai Rp500 per saham yang akan dibayarkan.", exactQuote: "menetapkan dividen tunai Rp250 per saham" }), text), /number/);
+  assert.throws(() => parseSourceSummary(JSON.stringify({ summary: "Dokumen menyebut dividen tunai Rp250 per saham yang akan dibayarkan.", exactQuote: "dividen tunai Rp250 per saham telah dibayar" }), text), /verified/);
 });
 
 test("cron security requires a configured exact bearer secret", () => {
