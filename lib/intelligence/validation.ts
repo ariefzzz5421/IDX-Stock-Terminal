@@ -1,6 +1,26 @@
 import { normalize, validClaimQuote, type Category } from "./core";
 import type { ExtractedResearch } from "./openai";
 
+export type EvidenceSpan = { id: string; text: string };
+
+// The model selects a numbered source span; only the server supplies the actual quote.
+export function sourceEvidenceSpans(sourceText: string): EvidenceSpan[] {
+  const text = normalize(sourceText.slice(0, 18_000));
+  const spans: EvidenceSpan[] = [];
+  let start = 0;
+  while (start < text.length) {
+    let end = Math.min(text.length, start + 420);
+    if (end < text.length) {
+      const wordBoundary = text.lastIndexOf(" ", end);
+      if (wordBoundary > start + 240) end = wordBoundary;
+    }
+    const excerpt = text.slice(start, end).trim();
+    if (excerpt) spans.push({ id: `S${spans.length + 1}`, text: excerpt });
+    start = text[end] === " " ? end + 1 : end;
+  }
+  return spans;
+}
+
 function sourceHasDate(value: string, text: string): boolean {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
   const [year, monthValue, dayValue] = value.split("-").map(Number);
@@ -27,9 +47,19 @@ function sourceHasNumber(value: number, text: string): boolean {
   return false;
 }
 
-export function parseResearchResponse(output: string, sourceText: string, ticker: string, category: Category): ExtractedResearch {
+export function parseResearchResponse(output: string, sourceText: string, ticker: string, category: Category, spans?: EvidenceSpan[]): ExtractedResearch {
   let parsed: unknown;
   try { parsed = JSON.parse(output); } catch { throw new Error("OpenAI returned invalid JSON"); }
+  if (spans) {
+    if (!parsed || typeof parsed !== "object" || !Array.isArray((parsed as { evidence?: unknown }).evidence)) throw new Error("AI evidence span list is invalid");
+    const indexed = new Map(spans.map((span) => [span.id, span.text]));
+    const research = parsed as { evidence: Array<{ claim?: unknown; quoteId?: unknown }> };
+    research.evidence = research.evidence.map((entry) => {
+      const quote = typeof entry.quoteId === "string" ? indexed.get(entry.quoteId) : null;
+      if (!quote || typeof entry.claim !== "string") throw new Error("AI cited an unknown source span");
+      return { claim: entry.claim, exactQuote: quote };
+    });
+  }
   return verifyResearch(parsed, sourceText, ticker, category);
 }
 

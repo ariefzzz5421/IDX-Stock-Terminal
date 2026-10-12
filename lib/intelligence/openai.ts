@@ -1,7 +1,7 @@
 import "server-only";
 import OpenAI from "openai";
 import { CATEGORIES, type Category, type Direction, type Verification } from "./core";
-import { parseResearchResponse, parseSourceSummary } from "./validation";
+import { parseResearchResponse, parseSourceSummary, sourceEvidenceSpans } from "./validation";
 
 const sourceSummarySchema = {
   type: "object", additionalProperties: false,
@@ -59,7 +59,7 @@ const schema = {
     leverageConcern: { type: "boolean" },
     indexRebalance: { type: "boolean" },
     governanceConcern: { type: "boolean" },
-    evidence: { type: "array", items: { type: "object", additionalProperties: false, properties: { claim: { type: "string" }, exactQuote: { type: "string" } }, required: ["claim", "exactQuote"] } },
+    evidence: { type: "array", items: { type: "object", additionalProperties: false, properties: { claim: { type: "string" }, quoteId: { type: "string" } }, required: ["claim", "quoteId"] } },
   },
   required: ["ticker", "category", "title", "status", "phase", "direction", "summary", "whatChanged", "materiality", "issuerImpact", "marketImpact", "uncertainty", "dilution", "liquidity", "debt", "ownership", "monitorNext", "announcementDate", "effectiveDate", "transactionIdr", "newShares", "existingShares", "exercisePriceIdr", "changesControl", "leverageConcern", "indexRebalance", "governanceConcern", "evidence"],
 } as const;
@@ -79,17 +79,18 @@ export async function analyzeDocument(input: { text: string; ticker: string; cat
   const model = process.env.OPENAI_MODEL;
   if (!key || !model) throw new Error("OpenAI unavailable: OPENAI_API_KEY or OPENAI_MODEL missing");
   const client = new OpenAI({ apiKey: key, timeout: 25_000, maxRetries: 1 });
+  const spans = sourceEvidenceSpans(input.text);
   const response = await client.responses.create({
     model,
     store: false,
     ...(model === "gpt-6-luna" ? { reasoning: { effort: "none" as const } } : {}),
     max_output_tokens: 2500,
     input: [
-      { role: "system", content: "You extract and explain ONLY facts explicitly present in the supplied official disclosure. Write Indonesian. Do not invent source, price, date, transaction value, share count, index flow, approval, or market direction. If unknown use null or N/D. A CONFIRMED label means only the cited facts in the official document are confirmed, not that a proposal was completed. Use exactQuote copied verbatim from source text for every material claim. Distinguish proposed, approved and completed phases, and cite phase in evidence. Impact direction is uncertain unless strong source-grounded reason. Never interpret a schedule as proof of ETF flow." },
-      { role: "user", content: `Ticker: ${input.ticker}\nCategory: ${input.category}\nSource: ${input.sourceUrl}\nPrevious summary: ${input.previousSummary ?? "none"}\n\nSOURCE DOCUMENT EXCERPT:\n${input.text.slice(0, 18_000)}` },
+      { role: "system", content: "Extract and explain ONLY facts explicitly present in this official disclosure. Write Indonesian. Do not invent source, price, date, transaction value, share count, index flow, approval, or market direction. Use exactly the provided ticker and category. If unknown use null or N/D. A CONFIRMED label confirms only the cited document facts, never completion of a proposal. For each material claim choose a quoteId from the numbered source spans; do not write a free-text quote. Every number in a claim must appear in its selected span. Every non-null date and numeric field must appear in at least one selected span; otherwise set it to null. Distinguish proposed, approved and completed phases. Impact direction is uncertain unless strongly supported. Never interpret a schedule as proof of ETF flow." },
+      { role: "user", content: `Ticker: ${input.ticker}\nCategory: ${input.category}\nSource: ${input.sourceUrl}\nPrevious summary: ${input.previousSummary ?? "none"}\n\nNUMBERED SOURCE SPANS:\n${spans.map((span) => `[${span.id}] ${span.text}`).join("\n")}` },
     ],
     text: { format: { type: "json_schema", name: "idx_research", strict: true, schema } },
   });
   const output = response.output.filter((item) => item.type === "message").flatMap((item) => item.content).filter((part) => part.type === "output_text").map((part) => part.text).join("");
-  return { research: parseResearchResponse(output, input.text, input.ticker, input.category), inputTokens: response.usage?.input_tokens ?? 0, outputTokens: response.usage?.output_tokens ?? 0 };
+  return { research: parseResearchResponse(output, input.text, input.ticker, input.category, spans), inputTokens: response.usage?.input_tokens ?? 0, outputTokens: response.usage?.output_tokens ?? 0 };
 }

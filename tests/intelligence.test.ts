@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { calculateDilution, calculateSizeToMarketCap, changeType, deriveRunStatus, eventIdentity, matchTickers, referencedKseiAnnouncement, scoreMateriality } from "../lib/intelligence/core";
-import { parseResearchResponse, parseSourceSummary, verifyResearch } from "../lib/intelligence/validation";
+import { parseResearchResponse, parseSourceSummary, sourceEvidenceSpans, verifyResearch } from "../lib/intelligence/validation";
 import { cronAuthorized } from "../lib/intelligence/security";
 import { runOutcome, scanHeadline } from "../lib/intelligence/scan-presentation";
 import { scheduledSlot, sessionLabel } from "../lib/intelligence/schedule";
@@ -75,6 +75,23 @@ test("invalid AI evidence and unsupported lifecycle are rejected", () => {
   assert.throws(() => verifyResearch({ ...base, announcementDate: "2026-10-06" }, text, "BRNA", "RIGHTS_ISSUE"), /date/);
   assert.throws(() => verifyResearch({ ...base, evidence: [{ claim: "Harga Rp999", exactQuote: "The rights exercise price is Rp685." }] }, text, "BRNA", "RIGHTS_ISSUE"), /claim number/);
   assert.throws(() => parseResearchResponse("{", text, "BRNA", "RIGHTS_ISSUE"), /invalid JSON/);
+});
+
+test("server-selected source spans preserve exact provenance and reject invented numbers", () => {
+  const text = "BRNA The rights exercise price is Rp685. This is a proposal for approval.";
+  const spans = sourceEvidenceSpans(text);
+  assert.equal(spans.length, 1);
+  const base = {
+    ticker: "BRNA", category: "RIGHTS_ISSUE", title: "Rights issue", status: "CONFIRMED", phase: "PROPOSED", direction: "UNCERTAIN",
+    summary: "Dokumen resmi menjelaskan harga pelaksanaan HMETD yang masih berupa usulan.",
+    evidence: [{ claim: "Harga pelaksanaan Rp685", quoteId: spans[0].id }],
+    transactionIdr: null, newShares: null, existingShares: null, exercisePriceIdr: 685,
+  };
+  assert.equal(parseResearchResponse(JSON.stringify(base), text, "BRNA", "RIGHTS_ISSUE", spans).evidence[0].exactQuote, text);
+  assert.throws(() => parseResearchResponse(JSON.stringify({ ...base, evidence: [{ claim: "Harga Rp999", quoteId: spans[0].id }] }), text, "BRNA", "RIGHTS_ISSUE", spans), /claim number/);
+  assert.throws(() => parseResearchResponse(JSON.stringify({ ...base, evidence: [{ claim: "Harga Rp685", quoteId: "S999" }] }), text, "BRNA", "RIGHTS_ISSUE", spans), /unknown source span/);
+  const longSource = `${"dokumen ".repeat(55)} Rp685`;
+  assert.equal(sourceEvidenceSpans(longSource).map((span) => span.text).join(" "), longSource.replace(/\s+/g, " ").trim());
 });
 
 test("AI source preview requires an exact quote and rejects invented figures", () => {
