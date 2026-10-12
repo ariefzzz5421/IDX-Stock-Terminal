@@ -17,5 +17,5 @@ export function FooterClock() {
     const timer = window.setInterval(update, 1000);
     return () => window.clearInterval(timer);
   }, []);
-  return <time aria-label="Tanggal dan jam saat ini, waktu Indonesia Barat" dateTime={now?.toISOString()} className="ml-auto whitespace-nowrap text-right text-ink tabular-nums" suppressHydrationWarning>{now ? `${dateFormatter.format(now)} · ${timeFormatter.format(now)} WIB` : "-- --- ---- · --:--:-- WIB"}</time>;
+  return <time aria-label="Tanggal dan jam saat ini, waktu Indonesia Barat" dateTime={now?.toISOString()} className="col-start-1 row-start-2 min-w-0 text-left text-ink tabular-nums sm:ml-auto sm:whitespace-nowrap sm:text-right" suppressHydrationWarning>{now ? `${dateFormatter.format(now)} · ${timeFormatter.format(now)} WIB` : "-- --- ---- · --:--:-- WIB"}</time>;
 }

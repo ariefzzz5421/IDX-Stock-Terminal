@@ -94,7 +94,7 @@ export function StockTable({
                   <CompanyLogo code={row.code} logoUrl={row.logoUrl} />
                   <span className="flex min-w-0 flex-col leading-tight">
                     <span className="flex min-w-0 flex-wrap items-center gap-1 font-bold tracking-[0.05em] text-ink-hi group-hover:text-amber">
-                      {row.code}{row.marketStatus && <span title={row.marketStatus === "SUSPEND_CONFIRMED" ? "Suspensi terkonfirmasi dari BEI" : "Indikasi harga pada batas auto rejection dari snapshot pasar; cek status resmi di BEI atau broker"} className={`rounded-sm border px-1 text-[9px] leading-4 tracking-normal ${row.marketStatus === "ARA_INDICATIVE" ? "border-up/50 text-up" : "border-down/50 text-down"}`}>{row.marketStatus === "ARA_INDICATIVE" ? "≈ARA" : row.marketStatus === "ARB_INDICATIVE" ? "≈ARB" : "SUSPEND"}</span>}
+                      {row.code}{row.marketStatus && <span title={row.marketStatus === "SUSPEND_CONFIRMED" ? "Suspensi terkonfirmasi dari BEI" : "Indikasi harga pada batas auto rejection dari snapshot pasar; cek status resmi di BEI atau broker"} className={`rounded-sm border px-1 text-[9px] leading-4 tracking-normal ${row.marketStatus === "ARA_INDICATIVE" ? "border-up/50 text-up" : "border-down/50 text-down"}`}>{row.marketStatus === "ARA_INDICATIVE" ? "ARA" : row.marketStatus === "ARB_INDICATIVE" ? "ARB" : "SUSPEND"}</span>}
                     </span>
                     <span className="truncate text-micro text-ink" title={row.name}>{row.name}</span>
                     <span className="block break-words text-micro text-dim @min-[32rem]/stocktable:hidden">{extraLabel}: {extra === "volume" ? formatVolume(row.lastVolume) : formatValue(extra === "value" ? row.lastValue : row.marketCap)}</span>

@@ -3,7 +3,6 @@ import { AlertTriangle, ArrowRight, ChevronDown, FileSearch, ShieldCheck } from 
 import { intelligenceOverview, latestSourceDocuments, listResearch, researchRunHistory, type ResearchFilters } from "@/lib/intelligence/queries";
 import { isResearchAdmin } from "@/lib/intelligence/access";
 import { ResearchControls } from "./ResearchControls";
-import { CATEGORIES } from "@/lib/intelligence/core";
 import { runOutcome, scanHeadline } from "@/lib/intelligence/scan-presentation";
 import { sessionLabel } from "@/lib/intelligence/schedule";
 import { CompanyLogo } from "./CompanyLogo";
@@ -16,10 +15,21 @@ function date(value: Date | null | undefined) {
 function sourceDate(value: Date) {
   return new Intl.DateTimeFormat("id-ID", { timeZone: "Asia/Jakarta", dateStyle: "medium" }).format(value);
 }
-const categoryOptions = CATEGORIES;
-const field = "min-h-9 min-w-0 border border-rule-hi bg-panel px-2 text-xs text-ink";
+function groupByMonth<T>(items: T[], getDate: (item: T) => Date) {
+  const groups = new Map<string, { label: string; items: T[] }>();
+  for (const item of items) {
+    const value = getDate(item);
+    const key = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jakarta", year: "numeric", month: "2-digit" }).format(value);
+    const label = new Intl.DateTimeFormat("id-ID", { timeZone: "Asia/Jakarta", month: "long", year: "numeric" }).format(value);
+    const group = groups.get(key) ?? { label, items: [] };
+    group.items.push(item);
+    groups.set(key, group);
+  }
+  return [...groups.values()];
+}
 
-export async function CorporateIntelligence({ userId, filters, historyPage }: { userId: string; filters: ResearchFilters; historyPage: number }) {
+export async function CorporateIntelligence({ userId, historyPage, researchPage }: { userId: string; historyPage: number; researchPage: number }) {
+  const filters: ResearchFilters = { sort: "newest", page: researchPage };
   const [overview, listing, history, sources, admin] = await Promise.all([intelligenceOverview(userId), listResearch(filters, userId), researchRunHistory(historyPage), latestSourceDocuments(), isResearchAdmin()]);
   const stockCodes = new Set(COMPANY_CATALOG.map((stock) => stock.code));
   const run = overview.latestRun;
@@ -27,27 +37,8 @@ export async function CorporateIntelligence({ userId, filters, historyPage }: { 
   const outputRate = Number(process.env.OPENAI_OUTPUT_USD_PER_MILLION);
   const estimatedCost = process.env.OPENAI_INPUT_USD_PER_MILLION && process.env.OPENAI_OUTPUT_USD_PER_MILLION && Number.isFinite(inputRate) && Number.isFinite(outputRate) && inputRate >= 0 && outputRate >= 0 && run
     ? `US$${((run.aiInputTokens * inputRate + run.aiOutputTokens * outputRate) / 1_000_000).toFixed(4)}` : "N/D";
-  const pageLink = (page: number) => {
-    const p = new URLSearchParams();
-    if (filters.q) p.set("q", filters.q);
-    if (filters.ticker) p.set("ticker", filters.ticker);
-    for (const value of filters.categories ?? []) p.append("category", value);
-    for (const value of filters.priorities ?? []) p.append("priority", value);
-    for (const value of filters.statuses ?? []) p.append("status", value);
-    for (const value of filters.directions ?? []) p.append("direction", value);
-    if (filters.from) p.set("from", filters.from);
-    if (filters.latest) p.set("latest", "1");
-    if (filters.watchlist) p.set("watchlist", "1");
-    if (filters.sort) p.set("sort", filters.sort);
-    if (history.page > 1) p.set("historyPage", String(history.page));
-    p.set("page", String(page));
-    return `/ai-analyst?${p.toString()}`;
-  };
-  const historyLink = (page: number) => {
-    const url = new URL(pageLink(listing.page), "https://idx-terminal.local");
-    url.searchParams.set("historyPage", String(page));
-    return `${url.pathname}${url.search}#research-history`;
-  };
+  const pageLink = (page: number) => `/ai-analyst?page=${page}${history.page > 1 ? `&historyPage=${history.page}` : ""}#research-list`;
+  const historyLink = (page: number) => `/ai-analyst?historyPage=${page}${listing.page > 1 ? `&page=${listing.page}` : ""}#research-history`;
   const clear = scanHeadline(run, new Date());
   return <section className="min-w-0 border-b border-rule bg-panel">
     <header className="flex flex-wrap items-start justify-between gap-4 border-b border-rule px-4 py-5 sm:px-6">
@@ -100,21 +91,11 @@ export async function CorporateIntelligence({ userId, filters, historyPage }: { 
         </article>;
       })}</div> : <p className="px-4 py-4 text-xs text-ink sm:px-6">Belum ada laporan sumber yang tersimpan. Status pemindaian terbaru ada di atas.</p>}
     </section>
-    <form action="/ai-analyst" method="get" className="grid gap-2 border-b border-rule bg-panel-hi p-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8">
-      <input className={field} name="q" aria-label="Cari riset" placeholder="Cari peristiwa" defaultValue={filters.q} />
-      <input className={field} name="ticker" aria-label="Kode saham" placeholder="Kode saham" defaultValue={filters.ticker} maxLength={8} />
-      <FilterGroup name="category" label="Kategori" options={categoryOptions} selected={filters.categories} />
-      <FilterGroup name="priority" label="Prioritas" options={["CRITICAL", "HIGH", "MEDIUM", "WATCH"]} selected={filters.priorities} />
-      <FilterGroup name="status" label="Status" options={["CONFIRMED", "PRELIMINARY", "UNCONFIRMED", "SUPERSEDED"]} selected={filters.statuses} />
-      <FilterGroup name="direction" label="Dampak" options={["POSITIVE", "NEGATIVE", "MIXED", "NEUTRAL", "UNCERTAIN"]} selected={filters.directions} />
-      <input className={field} name="from" type="date" aria-label="Dari tanggal" defaultValue={filters.from} />
-      <select className={field} name="sort" defaultValue={filters.sort ?? "newest"} aria-label="Urutan"><option value="newest">Terbaru</option><option value="oldest">Terlama</option><option value="priority">Materialitas</option></select>
-      <label className="flex items-center gap-2 text-xs text-ink"><input type="checkbox" name="latest" value="1" defaultChecked={filters.latest} />Pembaruan terbaru</label>
-      <label className="flex items-center gap-2 text-xs text-ink"><input type="checkbox" name="watchlist" value="1" defaultChecked={filters.watchlist} />Watchlist saya</label>
-      <button className="min-h-9 border border-amber px-3 text-xs font-bold text-amber hover:bg-amber/10">Terapkan filter</button>
-    </form>
-    <div className="border-b border-rule bg-panel-hi px-4 py-2 text-micro font-bold uppercase tracking-widest text-amber sm:px-6">Riset terbaru · {listing.total} peristiwa</div>
-    {listing.events.length ? <div className="grid gap-px bg-rule lg:grid-cols-2">{listing.events.map((event) => {
+    <section id="research-list" className="border-b border-rule">
+    <h3 className="bg-panel-hi px-4 py-2 text-micro font-bold uppercase tracking-widest text-amber sm:px-6">Riset tersimpan · {listing.total} peristiwa</h3>
+    {listing.events.length ? <div className="divide-y divide-rule">{groupByMonth(listing.events, (event) => event.versions[0]?.publishedAt ?? event.versions[0]?.announcementAt ?? new Date(0)).map((group) => <details key={group.label} open className="group/month">
+      <summary className="flex min-h-10 cursor-pointer list-none items-center justify-between gap-3 bg-panel-hi px-4 py-2 text-xs font-bold text-ink-hi marker:hidden sm:px-6"><span className="flex items-center gap-2"><ChevronDown className="h-4 w-4 text-amber transition-transform group-open/month:rotate-180" />{group.label}</span><span className="text-micro font-medium uppercase tracking-wider text-dim">{group.items.length} peristiwa</span></summary>
+      <div className="grid gap-px bg-rule lg:grid-cols-2">{group.items.map((event) => {
       const latest = event.versions[0];
       const facts = latest ? JSON.parse(latest.factsJson) as { evidence?: Array<{ claim: string }> } : null;
       return <article key={event.id} className="min-w-0 bg-panel p-4 sm:p-5">
@@ -129,15 +110,20 @@ export async function CorporateIntelligence({ userId, filters, historyPage }: { 
         {facts?.evidence?.[0] && <p className="mt-2 line-clamp-2 text-xs text-dim">Fakta: {facts.evidence[0].claim}</p>}
         <div className="mt-3 flex flex-wrap gap-3 text-xs"><Link href={`/ai-analyst/research/${event.id}`} className="inline-flex items-center gap-1 font-bold text-amber hover:underline">Buka riset <ArrowRight className="h-3 w-3" /></Link><a href={latest?.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-cyan hover:underline">Dokumen asli ↗</a>{event.tickers.map((ticker) => <Link key={ticker.securityCode} href={`/asset/${ticker.stockCode}`} className="text-cyan hover:underline">{ticker.securityCode}</Link>)}</div>
       </article>;
-    })}</div> : <p className="px-4 py-8 text-sm text-ink sm:px-6">Belum ada riset yang memenuhi filter. Dokumen yang belum diverifikasi tidak ditampilkan sebagai temuan.</p>}
+      })}</div>
+    </details>)}</div> : <p className="px-4 py-8 text-sm text-ink sm:px-6">Belum ada riset tersimpan. Dokumen yang belum diverifikasi tidak ditampilkan sebagai temuan.</p>}
     {listing.total > 20 && <div className="flex gap-3 border-t border-rule px-4 py-3 text-xs">{listing.page > 1 && <Link href={pageLink(listing.page - 1)} className="text-cyan">← Sebelumnya</Link>}<span className="text-ink">Halaman {listing.page}</span>{listing.page * 20 < listing.total && <Link href={pageLink(listing.page + 1)} className="text-cyan">Berikutnya →</Link>}</div>}
+    </section>
     <section id="research-history" className="border-t border-rule">
       <h3 className="bg-panel-hi px-4 py-2 text-micro font-bold uppercase tracking-widest text-amber sm:px-6">Riwayat pemindaian · {history.total} sesi</h3>
-      {history.runs.length ? <ol className="divide-y divide-rule">{history.runs.map((item) => <li key={item.id} className="grid min-w-0 gap-1 px-4 py-3 text-xs sm:grid-cols-[minmax(12rem,1fr)_minmax(12rem,1.5fr)_auto] sm:items-center sm:gap-4 sm:px-6">
+      {history.runs.length ? <div className="divide-y divide-rule">{groupByMonth(history.runs, (item) => item.startedAt).map((group) => <details key={group.label} open className="group/month">
+        <summary className="flex min-h-10 cursor-pointer list-none items-center justify-between gap-3 bg-panel-hi px-4 py-2 text-xs font-bold text-ink-hi marker:hidden sm:px-6"><span className="flex items-center gap-2"><ChevronDown className="h-4 w-4 text-amber transition-transform group-open/month:rotate-180" />{group.label}</span><span className="text-micro font-medium uppercase tracking-wider text-dim">{group.items.length} sesi</span></summary>
+        <ol className="divide-y divide-rule">{group.items.map((item) => <li key={item.id} className="grid min-w-0 gap-1 px-4 py-3 text-xs sm:grid-cols-[minmax(12rem,1fr)_minmax(12rem,1.5fr)_auto] sm:items-center sm:gap-4 sm:px-6">
         <div className="min-w-0"><strong className="text-ink-hi">{date(item.startedAt)}</strong><span className="ml-2 text-dim">{sessionLabel(item.slot)}</span></div>
         <div className={item.status === "SUCCESS" ? "text-cyan" : "text-amber"}>{runOutcome(item)}</div>
         <div className="text-dim">{item.sourcesChecked} dokumen · {item.failedAdapters} feed gagal · selesai {date(item.endedAt)}</div>
-      </li>)}</ol> : <p className="px-4 py-4 text-xs text-ink sm:px-6">Belum ada pemindaian yang tersimpan.</p>}
+      </li>)}</ol>
+      </details>)}</div> : <p className="px-4 py-4 text-xs text-ink sm:px-6">Belum ada pemindaian yang tersimpan.</p>}
       {history.total > 10 && <nav aria-label="Halaman riwayat pemindaian" className="flex gap-4 border-t border-rule px-4 py-3 text-xs sm:px-6">{history.page > 1 && <Link href={historyLink(history.page - 1)} className="text-cyan">← Lebih baru</Link>}<span className="text-ink">Halaman {history.page}</span>{history.page * 10 < history.total && <Link href={historyLink(history.page + 1)} className="text-cyan">Lebih lama →</Link>}</nav>}
     </section>
   </section>;
@@ -145,7 +131,4 @@ export async function CorporateIntelligence({ userId, filters, historyPage }: { 
 
 function Metric({ label, value }: { label: string; value: string }) {
   return <div className="min-w-0 bg-panel px-4 py-3"><p className="text-micro uppercase tracking-widest text-dim">{label}</p><p className="mt-1 break-words text-sm font-bold text-ink-hi">{value}</p></div>;
-}
-function FilterGroup({ name, label, options, selected }: { name: string; label: string; options: readonly string[]; selected?: string[] }) {
-  return <details className="relative min-w-0 border border-rule-hi bg-panel text-xs text-ink"><summary className="flex min-h-9 cursor-pointer items-center px-2">{label}{selected?.length ? ` (${selected.length})` : ""}</summary><div className="absolute z-20 max-h-56 min-w-48 overflow-y-auto border border-rule-hi bg-panel p-2 shadow-xl">{options.map((option) => <label key={option} className="flex items-center gap-2 py-1"><input type="checkbox" name={name} value={option} defaultChecked={selected?.includes(option)} />{option.replaceAll("_", " ")}</label>)}</div></details>;
 }
