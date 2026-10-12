@@ -40,7 +40,7 @@ export function IndexExposurePie({ snapshot, flow }: { snapshot: IndonesiaIndexS
     </div>
     <div className="mt-3 grid min-w-0 gap-3 sm:grid-cols-[minmax(0,14rem)_minmax(0,1fr)] sm:items-center">
       <div className="relative mx-auto aspect-square w-full max-w-[14rem]">
-        <svg viewBox="0 0 240 240" className="h-full w-full" role="img" aria-label={mode === "weight" ? `Bobot ${snapshot.title}: ${pct.format(listedWeight)} persen pada saham yang ditampilkan` : flows.length ? `Arus asing pada ${flows.length} saham yang tercakup, total nilai absolut ${formatValue(total)}` : "Arus asing belum tersedia untuk chart"}>
+        <svg viewBox="0 0 240 240" className="h-full w-full" role="group" aria-label={mode === "weight" ? `Bobot ${snapshot.title}: ${pct.format(listedWeight)} persen pada saham yang ditampilkan` : flows.length ? `Arus asing pada ${flows.length} saham yang tercakup, total nilai absolut ${formatValue(total)}` : "Arus asing belum tersedia untuk chart"}>
           <circle cx="120" cy="120" r="79" fill="none" stroke="#273344" strokeWidth="39" />
           {slices.map((slice, index) => {
             const key = slice.code ?? "other";
