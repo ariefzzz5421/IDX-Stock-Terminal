@@ -17,8 +17,33 @@ export type IndonesiaIndexSnapshot = {
   capLabel: string;
   sourceUrl: string;
   indexUrl: string;
+  pdfUrl: string;
+  pdfDate: string;
   constituents: IndexConstituent[];
 };
+
+export type IndexFundSnapshot = {
+  ticker: string;
+  provider: "iShares / BlackRock" | "Vanguard";
+  benchmark: string;
+  mandate: string;
+  aumUsdBillion: number;
+  asOf: string;
+  indonesiaWeight: string;
+  weightNote: string;
+  sourceUrl: string;
+  factsheetUrl: string;
+};
+
+export const FX_REFERENCE = { usdIdr: 17_899, asOf: "2026-10-12", sourceUrl: "https://www.bi.go.id/en/statistik/informasi-kurs/jisdor/Default.aspx" } as const;
+
+// Fund AUM belongs to the named ETF, not to MSCI or FTSE Russell. Country
+// weights are shown only when the manager/provider publishes them separately.
+export const INDEX_FUND_SNAPSHOTS: IndexFundSnapshot[] = [
+  { ticker: "EIDO", provider: "iShares / BlackRock", benchmark: "MSCI Indonesia IMI 25/50 Index", mandate: "ETF ekuitas Indonesia", aumUsdBillion: 0.412407519, asOf: "2026-10-01", indonesiaWeight: "Fokus Indonesia", weightNote: "Mandat ETF berfokus pada ekuitas Indonesia; bukan bobot MSCI Indonesia Index di pasar global.", sourceUrl: "https://www.ishares.com/ch/professionals/en/products/239661/EIDO?switchLocale=Y", factsheetUrl: "https://www.ishares.com/us/literature/fact-sheet/eido-ishares-msci-indonesia-etf-fund-fact-sheet-en-us.pdf" },
+  { ticker: "EEM", provider: "iShares / BlackRock", benchmark: "MSCI Emerging Markets Index", mandate: "ETF pasar berkembang", aumUsdBillion: 31.337046591, asOf: "2026-09-10", indonesiaWeight: "Tidak dipisahkan", weightNote: "Paparan geografis Indonesia masuk kelompok Other; angka spesifik tidak tersedia pada tabel publik yang kami akses.", sourceUrl: "https://www.ishares.com/us/products/239637/ishares-core-msci-emerging-markets-etf", factsheetUrl: "https://www.ishares.com/us/literature/fact-sheet/eem-ishares-msci-emerging-markets-etf-fund-fact-sheet-en-us.pdf" },
+  { ticker: "VWO", provider: "Vanguard", benchmark: "FTSE Emerging Markets All Cap China A Inclusion Index", mandate: "ETF pasar berkembang", aumUsdBillion: 168.5, asOf: "2026-08-31", indonesiaWeight: "Tidak dipisahkan", weightNote: "Bobot Indonesia 0,76% pada FTSE Emerging Index adalah bobot benchmark FTSE lain; bukan bobot yang diklaim untuk VWO.", sourceUrl: "https://advisors.vanguard.com/investments/products/vwo/vanguard-ftse-emerging-markets-etf", factsheetUrl: "https://fund-docs.vanguard.com/F0964.pdf" },
+];
 
 // Manually transcribed from each provider's linked, dated factsheet. Refresh
 // dates deliberately stay visible: these are public index snapshots, not ticks.
@@ -32,8 +57,10 @@ export const INDONESIA_INDEX_SNAPSHOTS: IndonesiaIndexSnapshot[] = [
     marketCapUnit: "USD_BILLION",
     topWeightPct: 100,
     capLabel: "Kapitalisasi pasar free-float (USD miliar)",
-    sourceUrl: "https://www.msci.com/documents/10199/255599/msci-indonesia-index.pdf",
+    sourceUrl: "https://www.msci.com/indexes/index/105767/msci-indonesia-index",
     indexUrl: "https://www.msci.com/indexes/index/105767/msci-indonesia-index",
+    pdfUrl: "https://www.msci.com/documents/10199/255599/msci-indonesia-index.pdf",
+    pdfDate: "2026-03-31",
     constituents: [
       { code: "BBCA", name: "Bank Central Asia", sector: "Keuangan", weightPct: 31.41, capValue: 16.76 },
       { code: "BBRI", name: "Bank Rakyat Indonesia", sector: "Keuangan", weightPct: 19.96, capValue: 10.65 },
@@ -57,6 +84,8 @@ export const INDONESIA_INDEX_SNAPSHOTS: IndonesiaIndexSnapshot[] = [
     capLabel: "Net market cap (Rp juta)",
     sourceUrl: "https://research.ftserussell.com/Analytics/FactSheets/temp/95c623d6-3e0d-4a72-a9de-48d4c9ebaed0.pdf",
     indexUrl: "https://research.ftserussell.com/analytics/factsheets",
+    pdfUrl: "https://research.ftserussell.com/Analytics/FactSheets/temp/95c623d6-3e0d-4a72-a9de-48d4c9ebaed0.pdf",
+    pdfDate: "2026-05-29",
     constituents: [
       { code: "BBCA", name: "Bank Central Asia", sector: "Perbankan", weightPct: 19.45, capValue: 279_777_161 },
       { code: "BBRI", name: "Bank Rakyat Indonesia", sector: "Perbankan", weightPct: 13.55, capValue: 194_933_714 },
