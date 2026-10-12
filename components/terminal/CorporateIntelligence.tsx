@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AlertTriangle, ArrowRight, FileSearch, ShieldCheck } from "lucide-react";
+import { AlertTriangle, ArrowRight, ChevronDown, FileSearch, ShieldCheck } from "lucide-react";
 import { intelligenceOverview, latestSourceDocuments, listResearch, researchRunHistory, type ResearchFilters } from "@/lib/intelligence/queries";
 import { isResearchAdmin } from "@/lib/intelligence/access";
 import { ResearchControls } from "./ResearchControls";
@@ -78,7 +78,7 @@ export async function CorporateIntelligence({ userId, filters, historyPage }: { 
     <details className="border-b border-rule px-4 py-3 text-xs sm:px-6">
       <summary className="cursor-pointer font-bold text-cyan">Cakupan sumber dan kesehatan pipeline</summary>
       <div className="mt-3 grid gap-3 text-ink lg:grid-cols-2">
-        <div><strong className="text-ink-hi">Aktif:</strong> KSEI jadwal HMETD, dividen tunai/saham/campuran, bonus saham, dan MASR. PDF diambil dari host resmi dan diperiksa ulang saat isinya berubah.</div>
+        <div><strong className="text-ink-hi">Aktif:</strong> KSEI jadwal HMETD, dividen tunai/saham/campuran, serta halaman pengumuman terbaru. PDF diambil dari host resmi dan diperiksa ulang saat isinya berubah. Cakupan bonus saham dan MASR terbatas.</div>
         <ul className="space-y-1">{overview.sourceGaps.map((gap) => <li key={gap}>• {gap}</li>)}</ul>
       </div>
       {run && run.errorLog !== "[]" && <pre className="mt-3 max-h-48 overflow-auto whitespace-pre-wrap border border-rule p-2 text-down">{(JSON.parse(run.errorLog) as string[]).join("\n")}</pre>}
@@ -90,8 +90,12 @@ export async function CorporateIntelligence({ userId, filters, historyPage }: { 
       <h3 id="official-reports" className="bg-panel-hi px-4 py-2 text-micro font-bold uppercase tracking-widest text-amber sm:px-6">Laporan sumber terbaru</h3>
       {sources.length ? <div className="divide-y divide-rule">{sources.map((source) => {
         const matched = source.title.toUpperCase().match(/\(([A-Z]{4})\)/g)?.map((value) => value.slice(1, -1)).find((code) => stockCodes.has(code));
+        const verifiedSummary = source.event && ["CONFIRMED", "PRELIMINARY"].includes(source.event.status) ? source.event.summary : null;
+        const summary = verifiedSummary ?? source.aiSummary;
         return <article key={source.id} className="flex min-w-0 flex-col gap-2 px-4 py-3 text-xs sm:flex-row sm:items-start sm:justify-between sm:gap-4 sm:px-6">
-          <div className="min-w-0"><div className="flex flex-wrap items-center gap-2">{matched && <Link href={`/asset/${matched}`} className="inline-flex items-center gap-1 font-bold text-cyan hover:underline"><CompanyLogo code={matched} size="sm" />{matched}</Link>}<span className="text-micro text-dim">{source.adapter}</span><span className="border border-rule-hi px-1.5 py-0.5 text-micro text-ink">{source.status === "UNAVAILABLE" ? "Dokumen tak dapat diakses" : source.status === "DISCOVERED" ? "Menunggu pemeriksaan" : source.status === "UNCONFIRMED" ? "Belum terverifikasi" : "Dokumen tersedia"}</span></div><p className="mt-1 break-words font-bold leading-5 text-ink-hi">{source.title}</p><p className="mt-1 text-micro text-dim">{source.publishedAt ? `Tanggal sumber ${sourceDate(source.publishedAt)}` : `Ditemukan ${date(source.fetchedAt)}`}</p></div>
+          <div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2">{matched && <Link href={`/asset/${matched}`} className="inline-flex items-center gap-1 font-bold text-cyan hover:underline"><CompanyLogo code={matched} size="sm" />{matched}</Link>}<span className="text-micro text-dim">{source.adapter}</span><span className="border border-rule-hi px-1.5 py-0.5 text-micro text-ink">{source.status === "UNAVAILABLE" ? "Dokumen tak dapat diakses" : source.status === "DISCOVERED" ? "Menunggu pemeriksaan" : source.status === "UNCONFIRMED" ? "Belum terverifikasi" : "Dokumen tersedia"}</span></div><p className="mt-1 break-words font-bold leading-5 text-ink-hi">{source.title}</p><p className="mt-1 text-micro text-dim">{source.publishedAt ? `Tanggal sumber ${sourceDate(source.publishedAt)}` : `Ditemukan ${date(source.fetchedAt)}`}</p>
+            <details className="mt-2 max-w-4xl border border-rule-hi bg-panel-hi px-2 py-1.5"><summary className="flex cursor-pointer list-none items-center gap-1 text-cyan marker:hidden"><ChevronDown className="h-3 w-3" />{summary ? "Buka ringkasan AI" : "Status ringkasan"}</summary><div className="mt-2 border-t border-rule pt-2 leading-5 text-ink">{summary ? <><p className={`mb-1 text-micro font-bold uppercase ${verifiedSummary ? "text-up" : "text-amber"}`}>{verifiedSummary ? source.event?.status : `Ringkasan dokumen · ${source.aiStatus ?? "belum terverifikasi"}`}</p><p>{summary}</p></> : "Belum ada ringkasan AI untuk dokumen ini. Baca dokumen asli; status pemindaian dan kendala sumber tercatat di atas."}</div></details>
+          </div>
           <div className="flex shrink-0 flex-wrap gap-3"><a href={source.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-cyan hover:underline">Buka sumber ↗</a>{source.eventId && <Link href={`/ai-analyst/research/${source.eventId}`} className="text-amber hover:underline">Baca riset →</Link>}</div>
         </article>;
       })}</div> : <p className="px-4 py-4 text-xs text-ink sm:px-6">Belum ada laporan sumber yang tersimpan. Status pemindaian terbaru ada di atas.</p>}

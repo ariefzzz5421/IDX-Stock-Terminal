@@ -19,6 +19,7 @@ export const SOURCE_GAPS = [
   "OJK dan pengumuman emiten: belum ada feed terstruktur terhubung.",
   "MSCI, FTSE Russell, VanEck GDX/GDXJ: belum ada adapter pengumuman resmi terhubung; perubahan indeks dan arus ETF tidak diklaim tercakup.",
   "Katalog saham biasa mencakup emiten tersimpan; daftar lengkap seri warrant belum tersinkronisasi dari BEI.",
+  "URL lama KSEI untuk bonus saham dan MASR mengembalikan HTTP 500. Pemindaian memakai halaman pengumuman resmi terbaru sebagai pelengkap, tetapi halaman itu hanya menampilkan beberapa entri; riwayat lengkap bonus/MASR belum tercakup.",
   "KSEI jadwal bonus saham bukan pemecahan saham. Stock split dan kategori korporasi lain menunggu adapter resmi tersendiri.",
 ];
 
@@ -45,7 +46,7 @@ async function recordDocument(document: DiscoveredDocument, text: string, finger
       host: new URL(document.sourceUrl).hostname, title: document.title, status: "AVAILABLE",
       contentFingerprint: fingerprint, excerpt: text.slice(0, 18_000), publishedAt: document.publishedAt,
     },
-    update: { sourceUrl: document.sourceUrl, title: document.title, status: "AVAILABLE", contentFingerprint: fingerprint, excerpt: text.slice(0, 18_000), publishedAt: document.publishedAt, lastCheckedAt: new Date(), error: null },
+    update: { sourceUrl: document.sourceUrl, title: document.title, status: "AVAILABLE", contentFingerprint: fingerprint, excerpt: text.slice(0, 18_000), aiSummary: null, aiStatus: null, publishedAt: document.publishedAt, lastCheckedAt: new Date(), error: null },
   });
 }
 
@@ -80,6 +81,7 @@ async function processDocument(document: DiscoveredDocument, dryRun: boolean): P
   const previous = await prisma.intelligenceEvent.findUnique({ where: { id: eventId }, include: { versions: { orderBy: { eventVersion: "desc" }, take: 1 } } });
   const result = await analyzeDocument({ text: source.text, ticker: primary, category: document.category, sourceUrl: document.sourceUrl, previousSummary: previous?.summary });
   const research = result.research;
+  if (!dryRun) await prisma.intelligenceSource.update({ where: { sourceDocumentId: document.sourceDocumentId }, data: { aiSummary: research.summary, aiStatus: research.status } });
   const stock = COMPANY_CATALOG.find((item) => item.code === primary);
   const dilutionPct = research.newShares != null && research.existingShares != null ? calculateDilution(research.existingShares, research.newShares) : null;
   const score = scoreMateriality({

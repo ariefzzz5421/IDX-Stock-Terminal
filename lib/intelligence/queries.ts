@@ -70,7 +70,7 @@ export async function latestSourceDocuments() {
     where: { publishedAt: { not: null } },
     orderBy: [{ publishedAt: "desc" }, { fetchedAt: "desc" }],
     take: 16,
-    select: { id: true, title: true, sourceUrl: true, adapter: true, status: true, publishedAt: true, fetchedAt: true, versionId: true, eventId: true },
+    select: { id: true, title: true, sourceUrl: true, adapter: true, status: true, publishedAt: true, fetchedAt: true, versionId: true, eventId: true, aiSummary: true, aiStatus: true, event: { select: { summary: true, status: true } } },
   });
 }
 

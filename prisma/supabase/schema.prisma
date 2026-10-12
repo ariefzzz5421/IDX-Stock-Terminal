@@ -253,6 +253,8 @@ model IntelligenceSource {
   status String
   contentFingerprint String?
   excerpt String?
+  aiSummary String?
+  aiStatus String?
   publishedAt DateTime?
   fetchedAt DateTime @default(now())
   lastCheckedAt DateTime @default(now())

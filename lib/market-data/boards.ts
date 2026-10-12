@@ -3,6 +3,7 @@ import "server-only";
 import type { StockRow } from "@/components/terminal/StockTable";
 import type { MarketActivity, TrendingStock } from "./trending";
 import { getCompanyCatalogEntry } from "@/lib/company-catalog";
+import { indicativeLimitStatus } from "./limit-status";
 
 function asRow(stock: TrendingStock): StockRow {
   return {
@@ -15,6 +16,7 @@ function asRow(stock: TrendingStock): StockRow {
     lastVolume: stock.volume,
     lastValue: stock.turnover,
     marketCap: stock.marketCap,
+    marketStatus: indicativeLimitStatus(stock.code, stock.lastPrice, stock.changes.day),
   };
 }
 

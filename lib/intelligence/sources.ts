@@ -13,9 +13,16 @@ export const KSEI_FEEDS: Array<{ name: string; path: string; category: Category 
   { name: "KSEI Cash Dividend", path: "/publications/corporate-action-schedules/cash-dividend", category: "DIVIDEND" },
   { name: "KSEI Share Dividend", path: "/publications/corporate-action-schedules/share-dividend", category: "DIVIDEND" },
   { name: "KSEI Mixed Dividend", path: "/publications/corporate-action-schedules/mix-dividend", category: "DIVIDEND" },
-  { name: "KSEI Share Bonus", path: "/publications/corporate-action-schedules/share-bonus", category: "BONUS_SHARES" },
-  { name: "KSEI MASR", path: "/publications/corporate-action-schedules/masr", category: "TENDER_OFFER" },
+  { name: "KSEI Announcements", path: "/en/publication/announcement", category: "DIVIDEND" },
 ];
+
+function announcementCategory(title: string): Category | null {
+  if (/bonus share|saham bonus/i.test(title)) return "BONUS_SHARES";
+  if (/rights|hmetd|preemptive/i.test(title)) return "RIGHTS_ISSUE";
+  if (/tender offer|mandatory tender/i.test(title)) return "TENDER_OFFER";
+  if (/dividen|dividend|deviden/i.test(title)) return "DIVIDEND";
+  return null;
+}
 
 export function allowedSourceUrl(value: string): URL {
   const url = new URL(value);
@@ -46,6 +53,24 @@ async function boundedFetch(url: string, timeoutMs = 9000): Promise<Response> {
 export async function discoverKsei(feed: typeof KSEI_FEEDS[number]): Promise<AdapterResult> {
   const checkedAt = new Date();
   try {
+    if (feed.name === "KSEI Announcements") {
+      const html = await (await boundedFetch("https://www.ksei.co.id/en/publication/announcement")).text();
+      const $ = load(html);
+      const documents: DiscoveredDocument[] = [];
+      $(".data-item").each((_index, row) => {
+        const title = normalize($(row).find(".data-item-title").text());
+        const reference = normalize($(row).find(".ac-item-info").text());
+        const publishedAt = parseKseiDate(normalize($(row).find(".data-item-info").text()));
+        const href = $(row).find("a.btn-download").attr("href");
+        const category = announcementCategory(title);
+        if (!title || !reference || !href || !category) return;
+        const sourceUrl = new URL(href, "https://www.ksei.co.id").toString();
+        try { allowedSourceUrl(sourceUrl); } catch { return; }
+        documents.push({ adapter: feed.name, category, sourceUrl, sourceDocumentId: `KSEI:${reference}`, title, publishedAt });
+      });
+      if (!$(".data-item").length) throw new Error("Expected KSEI announcement entries absent");
+      return { adapter: feed.name, documents, error: null, checkedAt };
+    }
     let html: string;
     try {
       html = await (await boundedFetch(`https://web.ksei.co.id${feed.path}?setLocale=en-US`)).text();
