@@ -17,7 +17,7 @@ function marketCap(snapshot: IndonesiaIndexSnapshot, cap: number) {
 
 function indexCap(snapshot: IndonesiaIndexSnapshot) {
   if (snapshot.marketCapUnit === "USD_BILLION") return `US$ ${number.format(snapshot.indexMarketCap)} miliar`;
-  return `Rp ${number.format(snapshot.indexMarketCap / 1_000_000)} kuadriliun`;
+  return `Rp ${number.format(snapshot.indexMarketCap / 1_000_000_000)} kuadriliun`;
 }
 
 function IndexNetwork({ snapshot }: { snapshot: IndonesiaIndexSnapshot }) {
