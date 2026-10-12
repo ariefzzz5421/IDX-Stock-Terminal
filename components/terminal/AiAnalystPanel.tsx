@@ -45,7 +45,7 @@ export function AiAnalystPanel({ initial, configured }: { initial: MarketBrief; 
     <div className="flex flex-wrap items-center gap-3 border-b border-rule bg-panel-hi px-4 py-3 text-xs sm:px-6">
       <span className="text-ink-hi">{brief.universeCount} stocks scanned</span>
       <span className="text-dim">Snapshot: {timestamp} WIB</span>
-      <span className="text-dim">AI: {providerConfigured ? "configured" : "not configured"}</span>
+      <span className="text-dim">AI ringkasan pasar: {providerConfigured ? "aktif" : "opsional · belum dikonfigurasi"}</span>
       <button type="button" onClick={refresh} disabled={loading} className="ml-auto inline-flex min-h-9 items-center gap-2 border border-amber px-3 text-amber hover:bg-amber/10 disabled:opacity-50"><RefreshCw aria-hidden="true" className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />{loading ? "Updating…" : providerConfigured ? "Generate analysis" : "Refresh snapshot"}</button>
     </div>
 
@@ -53,7 +53,7 @@ export function AiAnalystPanel({ initial, configured }: { initial: MarketBrief; 
       <h2 className="text-micro font-bold uppercase tracking-widest text-amber">Market brief</h2>
       <p className="mt-2 max-w-4xl text-sm leading-relaxed text-ink-hi">{brief.summary}</p>
       {aiSummary && <div className="mt-4 max-w-4xl border-l-2 border-cyan bg-panel-hi p-3"><h3 className="text-micro font-bold uppercase tracking-widest text-cyan">AI-generated interpretation</h3><p className="mt-2 whitespace-pre-line text-xs leading-relaxed text-ink">{aiSummary}</p></div>}
-      {!providerConfigured && <p className="mt-3 text-xs text-dim">AI provider belum dikonfigurasi. Ringkasan berbasis data terverifikasi tetap tersedia.</p>}
+      {!providerConfigured && <p className="mt-3 text-xs text-dim">Provider AI untuk interpretasi snapshot pasar ini belum dikonfigurasi. Riset korporasi dan laporan bersumber di bagian atas berjalan terpisah.</p>}
       {providerError && <p className="mt-3 text-xs text-down">AI provider gagal merespons; ringkasan berbasis data tetap tersedia.</p>}
       {error && <p role="status" className="mt-3 text-xs text-down">{error}</p>}
       <p className="mt-3 text-micro text-dim">Source: <a href={brief.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-cyan hover:underline">TradingView Indonesia market movers ↗</a>. Delayed snapshot; no news or cause-of-move feed is connected.</p>
