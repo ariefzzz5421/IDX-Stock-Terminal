@@ -9,7 +9,7 @@ import { useProfileLanguage } from "@/components/profile/LanguageControl";
 
 const INDONESIAN_LABELS: Record<string, string> = {
   "/dashboard": "Beranda", "/watchlist": "Pantauan", "/top10": "Top 10",
-  "/foreign-flow": "Arus Asing", "/hot": "Hot", "/market": "Pasar",
+  "/foreign-flow": "Foreign Flow", "/hot": "Hot", "/market": "Pasar",
   "/sector": "Sector", "/overview": "Overview", "/free-float": "Free Float", "/konglo": "Konglo", "/lokasi-bisnis": "Lokasi Bisnis",
   "/ai-analyst": "AI Analyst", "/extension": "Extension", "/bei": "BEI", "/panduan": "Panduan", "/research": "Research", "/stream": "Stream", "/account": "Profil",
 };
@@ -66,7 +66,7 @@ export function Nav({ preview = false, headerTrigger = false, desktopOnly = fals
     {!headerTrigger && <nav aria-label={preview ? "Menu pratinjau terminal" : "Menu terminal"} className="terminal-nav hidden min-w-0 items-stretch gap-px overflow-hidden bg-rule lg:flex">
       {PRIMARY_ITEMS.map((tab) => {
         const label = labelFor(tab.href, tab.label);
-        const shortLabel = language === "id" && tab.href === "/foreign-flow" ? "Arus" : tab.shortLabel ?? label;
+        const shortLabel = tab.shortLabel ?? label;
         const active = isActive(tab.href);
         return <Link key={tab.href} href={hrefFor(tab.href)} aria-label={label} title={label} aria-current={active ? "page" : undefined} className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 whitespace-nowrap px-2 py-2 text-xs font-semibold uppercase tracking-[0.06em] transition-colors ${active ? "bg-panel font-bold text-amber shadow-[inset_0_-2px_0_0_var(--color-amber)]" : "bg-panel-hi text-ink hover:bg-panel hover:text-ink-hi"}`}><tab.icon aria-hidden="true" className="h-3.5 w-3.5 shrink-0" /><span className="hidden min-[1280px]:inline min-[1600px]:hidden">{shortLabel}</span><span className="hidden min-[1600px]:inline">{label}</span></Link>;
       })}

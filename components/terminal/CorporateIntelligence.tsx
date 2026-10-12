@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AlertTriangle, ArrowRight, ChevronDown, FileSearch, ShieldCheck } from "lucide-react";
-import { intelligenceOverview, latestSourceDocuments, listResearch, researchRunHistory, type ResearchFilters } from "@/lib/intelligence/queries";
+import { intelligenceOverview, latestSourceDocuments, listResearch, researchAvailablePeriods, researchRunHistory, type ResearchFilters } from "@/lib/intelligence/queries";
+import { formatResearchPeriod, parseResearchPeriod } from "@/lib/intelligence/period";
 import { isResearchAdmin } from "@/lib/intelligence/access";
 import { ResearchControls } from "./ResearchControls";
 import { runOutcome, scanHeadline } from "@/lib/intelligence/scan-presentation";
@@ -28,17 +29,19 @@ function groupByMonth<T>(items: T[], getDate: (item: T) => Date) {
   return [...groups.values()];
 }
 
-export async function CorporateIntelligence({ userId, historyPage, researchPage }: { userId: string; historyPage: number; researchPage: number }) {
-  const filters: ResearchFilters = { sort: "newest", page: researchPage };
-  const [overview, listing, history, sources, admin] = await Promise.all([intelligenceOverview(userId), listResearch(filters, userId), researchRunHistory(historyPage), latestSourceDocuments(), isResearchAdmin()]);
+export async function CorporateIntelligence({ userId, historyPage, researchPage, period }: { userId: string; historyPage: number; researchPage: number; period?: string }) {
+  const selectedPeriod = parseResearchPeriod(period);
+  const filters: ResearchFilters = { sort: "newest", page: researchPage, from: selectedPeriod?.start.toISOString(), before: selectedPeriod?.end.toISOString() };
+  const [overview, listing, history, sources, admin, periods] = await Promise.all([intelligenceOverview(userId), listResearch(filters, userId), researchRunHistory(historyPage), latestSourceDocuments(), isResearchAdmin(), researchAvailablePeriods()]);
   const stockCodes = new Set(COMPANY_CATALOG.map((stock) => stock.code));
   const run = overview.latestRun;
   const inputRate = Number(process.env.OPENAI_INPUT_USD_PER_MILLION);
   const outputRate = Number(process.env.OPENAI_OUTPUT_USD_PER_MILLION);
   const estimatedCost = process.env.OPENAI_INPUT_USD_PER_MILLION && process.env.OPENAI_OUTPUT_USD_PER_MILLION && Number.isFinite(inputRate) && Number.isFinite(outputRate) && inputRate >= 0 && outputRate >= 0 && run
     ? `US$${((run.aiInputTokens * inputRate + run.aiOutputTokens * outputRate) / 1_000_000).toFixed(4)}` : "N/D";
-  const pageLink = (page: number) => `/ai-analyst?page=${page}${history.page > 1 ? `&historyPage=${history.page}` : ""}#research-list`;
-  const historyLink = (page: number) => `/ai-analyst?historyPage=${page}${listing.page > 1 ? `&page=${listing.page}` : ""}#research-history`;
+  const periodQuery = selectedPeriod && period ? `&period=${period}` : "";
+  const pageLink = (page: number) => `/ai-analyst?page=${page}${history.page > 1 ? `&historyPage=${history.page}` : ""}${periodQuery}#research-list`;
+  const historyLink = (page: number) => `/ai-analyst?historyPage=${page}${listing.page > 1 ? `&page=${listing.page}` : ""}${periodQuery}#research-history`;
   const clear = scanHeadline(run, new Date());
   return <section className="min-w-0 border-b border-rule bg-panel">
     <header className="flex flex-wrap items-start justify-between gap-4 border-b border-rule px-4 py-5 sm:px-6">
@@ -91,8 +94,15 @@ export async function CorporateIntelligence({ userId, historyPage, researchPage 
         </article>;
       })}</div> : <p className="px-4 py-4 text-xs text-ink sm:px-6">Belum ada laporan sumber yang tersimpan. Status pemindaian terbaru ada di atas.</p>}
     </section>
-    <section id="research-list" className="border-b border-rule">
-    <h3 className="bg-panel-hi px-4 py-2 text-micro font-bold uppercase tracking-widest text-amber sm:px-6">Riset tersimpan · {listing.total} peristiwa</h3>
+    <section className="border-b border-rule" aria-labelledby="research-list">
+    <div className="flex flex-wrap items-end justify-between gap-3 border-b border-rule bg-panel-hi px-4 py-3 sm:px-6">
+      <div><h3 id="research-list" className="text-micro font-bold uppercase tracking-widest text-amber">Riset tersimpan · {listing.total} peristiwa</h3><p className="mt-1 text-micro text-dim">{selectedPeriod && period ? `Periode ${formatResearchPeriod(period)}` : "Semua bulan dan tahun"}</p></div>
+      <form method="get" action="/ai-analyst#research-list" className="flex min-w-0 flex-wrap items-end gap-2">
+        <label className="min-w-[12rem] text-micro text-dim"><span className="mb-1 block uppercase tracking-wider">Bulan & tahun</span><select name="period" defaultValue={selectedPeriod && period ? period : ""} className="min-h-10 w-full border border-rule-hi bg-panel px-3 text-xs text-ink-hi focus:border-amber focus:outline-none"><option value="">Semua periode</option>{periods.map((value) => <option key={value} value={value}>{formatResearchPeriod(value)}</option>)}</select></label>
+        <button type="submit" className="min-h-10 border border-amber px-4 text-xs font-bold text-amber hover:bg-amber/10">Tampilkan</button>
+        {selectedPeriod && <Link href="/ai-analyst#research-list" className="min-h-10 content-center px-2 text-xs text-cyan hover:underline">Reset</Link>}
+      </form>
+    </div>
     {listing.events.length ? <div className="divide-y divide-rule">{groupByMonth(listing.events, (event) => event.versions[0]?.publishedAt ?? event.versions[0]?.announcementAt ?? new Date(0)).map((group) => <details key={group.label} open className="group/month">
       <summary className="flex min-h-10 cursor-pointer list-none items-center justify-between gap-3 bg-panel-hi px-4 py-2 text-xs font-bold text-ink-hi marker:hidden sm:px-6"><span className="flex items-center gap-2"><ChevronDown className="h-4 w-4 text-amber transition-transform group-open/month:rotate-180" />{group.label}</span><span className="text-micro font-medium uppercase tracking-wider text-dim">{group.items.length} peristiwa</span></summary>
       <div className="grid gap-px bg-rule lg:grid-cols-2">{group.items.map((event) => {

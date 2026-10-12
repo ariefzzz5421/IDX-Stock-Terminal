@@ -2,10 +2,11 @@ import "server-only";
 import { prisma } from "@/lib/db/prisma";
 import { Prisma } from "@/lib/db/generated/client";
 import { SOURCE_GAPS } from "./pipeline";
+import { periodOptions } from "./period";
 
 export type ResearchFilters = {
   ticker?: string; q?: string; categories?: string[]; priorities?: string[]; statuses?: string[];
-  directions?: string[]; from?: string; latest?: boolean; watchlist?: boolean; sort?: "newest" | "oldest" | "priority";
+  directions?: string[]; from?: string; before?: string; latest?: boolean; watchlist?: boolean; sort?: "newest" | "oldest" | "priority";
   page?: number;
 };
 
@@ -19,7 +20,12 @@ export async function listResearch(filters: ResearchFilters, userId: string) {
   if (filters.priorities?.length) where.priority = { in: filters.priorities };
   if (filters.statuses?.length) where.status = { in: filters.statuses };
   if (filters.directions?.length) where.direction = { in: filters.directions };
-  if (filters.from) { const date = new Date(filters.from); if (!Number.isNaN(date.getTime())) where.publishedAt = { gte: date }; }
+  if (filters.from || filters.before) {
+    const publishedAt: { gte?: Date; lt?: Date } = {};
+    if (filters.from) { const date = new Date(filters.from); if (!Number.isNaN(date.getTime())) publishedAt.gte = date; }
+    if (filters.before) { const date = new Date(filters.before); if (!Number.isNaN(date.getTime())) publishedAt.lt = date; }
+    where.publishedAt = publishedAt;
+  }
   if (filters.q) where.OR = [{ title: { contains: filters.q } }, { summary: { contains: filters.q } }, { tickers: { some: { stockCode: { contains: filters.q.toUpperCase() } } } }];
   if (filters.latest) {
     const lastTwo = await prisma.researchRun.findMany({ where: { status: "SUCCESS", dryRun: false }, orderBy: { endedAt: "desc" }, take: 2, select: { endedAt: true } });
@@ -35,6 +41,14 @@ export async function listResearch(filters: ResearchFilters, userId: string) {
     }),
   ]);
   return { total, page, events };
+}
+
+export async function researchAvailablePeriods() {
+  const [oldest, newest] = await Promise.all([
+    prisma.intelligenceEvent.findFirst({ where: { publishedAt: { not: null } }, orderBy: { publishedAt: "asc" }, select: { publishedAt: true } }),
+    prisma.intelligenceEvent.findFirst({ where: { publishedAt: { not: null } }, orderBy: { publishedAt: "desc" }, select: { publishedAt: true } }),
+  ]);
+  return periodOptions(oldest?.publishedAt ?? null, newest?.publishedAt ?? null);
 }
 
 export async function intelligenceOverview(userId: string) {
