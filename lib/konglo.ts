@@ -61,6 +61,24 @@ const CURATED_PROFILES: readonly KongloProfile[] = [
   { slug: "tahir", rank: 7, name: "Tahir & keluarga", netWorthUsd: 9.8e9, holderName: "TAHIR", candidateCodes: ["MAYA", "SONA", "MPRO"] },
   { slug: "marina-budiman", rank: 8, name: "Marina Budiman", netWorthUsd: 8.2e9, holderName: "MARINA BUDIMAN", candidateCodes: ["DCII"] },
   { slug: "dewi-kam", rank: 17, name: "Dewi Kam", netWorthUsd: 4.3e9, candidateCodes: [], groupExposure: [{ code: "BYAN", sourceUrl: "https://www.forbes.com/profile/dewi-kam/" }] },
+  { slug: "sri-prakash-lohia", rank: 10, name: "Sri Prakash Lohia", netWorthUsd: 8e9, candidateCodes: [], groupExposure: [
+    { code: "INDR", holderNames: ["INDORAMA HOLDINGS B.V."], holder: "Indorama Holdings B.V. · Indorama Corporation", sourceUrl: "https://www.indorama.com/news/indorama-partners-with-pt-bank-dbs-indonesia-for-usd-20-million-sustainabilitylinked-trade-finance-facility" },
+  ] },
+  { slug: "agoes-projosasmito", rank: 13, name: "Agoes Projosasmito", netWorthUsd: 5e9, candidateCodes: [], reportedDirect: [
+    { code: "AMMN", percentage: 0.3988, ownershipAsOf: "31 Desember 2025", sourceUrl: "https://www.amman.co.id/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6NDk4MiwicHVyIjoiYmxvYl9pZCJ9fQ%3D%3D--f967e5138cdb0cb5fbcc19b1c35a4a0a4c27bbcd/FY%202025%20FINANCIAL%20STATEMENTS.pdf?disposition=inline" },
+  ], groupExposure: [
+    { code: "AMMN", holderNames: ["PT AP INVESTMENT"], holder: "PT AP Investment · bagian manfaat Agoes belum diverifikasi untuk 2026", sourceUrl: "https://www.amman.co.id/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6NDk4MiwicHVyIjoiYmxvYl9pZCJ9fQ%3D%3D--f967e5138cdb0cb5fbcc19b1c35a4a0a4c27bbcd/FY%202025%20FINANCIAL%20STATEMENTS.pdf?disposition=inline" },
+    ...["MEDC", "BUMI", "BRMS"].map((code) => ({ code, holder: "Forbes melaporkan kepentingan; porsi terkini belum terverifikasi", sourceUrl: "https://www.forbes.com/profile/agoes-projosasmito/" })),
+  ] },
+  { slug: "lim-hariyanto-wijaya-sarwono", rank: 14, name: "Lim Hariyanto Wijaya Sarwono", netWorthUsd: 4.9e9, wealthNote: "Saham PT Harita Jayaraya adalah saham perusahaan grup; bagian ekonomi pribadi Lim tidak sama dengan seluruh saham entitas.", candidateCodes: [], groupExposure: [
+    ...["NCKL", "CITA", "TIRT"].map((code) => ({ code, holderNames: ["HARITA JAYARAYA"], holder: "PT Harita Jayaraya · keluarga Lim", sourceUrl: "https://api.tbpnickel.com/storage/images/PDF/laporan%20tahunan%202024/Harita%20Nickel%202024%20Annual%20Report.pdf" })),
+  ] },
+  { slug: "theodore-rachmat", rank: 15, name: "Theodore Rachmat", netWorthUsd: 4.45e9, holderName: "T PERMADI RACHMAT", identitySourceUrl: "https://triputra-group.com/tentang-kami/profil/", candidateCodes: ["AADI", "ADRO", "ASSA", "DSNG", "TAPG"], groupExposure: [
+    ...["ASSA", "DRMA", "DSNG", "TAPG"].map((code) => ({ code, holderNames: ["PT TRIPUTRA INVESTINDO ARYA"], holder: "PT Triputra Investindo Arya · entitas grup Triputra", sourceUrl: "https://triputra-group.com/tentang-kami/profil/" })),
+  ] },
+  { slug: "chairul-tanjung", rank: 16, name: "Chairul Tanjung", netWorthUsd: 4.4e9, candidateCodes: [], groupExposure: [
+    ...["MEGA", "BBHI"].map((code) => ({ code, holderNames: ["PT MEGA CORPORA"], holder: "PT Mega Corpora · CT Corpora", sourceUrl: "https://bankmega.com/id/tentang-kami/hubungan-investor-new/" })),
+  ] },
   { slug: "garibaldi-thohir", rank: 19, name: "Garibaldi Thohir & keluarga", netWorthUsd: 3.8e9, holderName: "GARIBALDI THOHIR", candidateCodes: ["MBMA", "ADRO", "TRIM", "AADI", "ESSA", "PALM", "MDKA", "MGLV"] },
   { slug: "edwin-soeryadjaya", rank: 45, name: "Edwin Soeryadjaya & keluarga", netWorthUsd: 1.2e9, holderName: "EDWIN SOERYADJAYA", candidateCodes: ["MBMA", "ADRO", "SRTG", "AADI"] },
   { slug: "hary-tanoesoedibjo", rank: 48, name: "Hary Tanoesoedibjo", netWorthUsd: 1e9, holderName: "HARY TANOESOEDIBJO", candidateCodes: ["BHIT"], groupExposure: [
@@ -101,10 +119,31 @@ const CURATED_PROFILES: readonly KongloProfile[] = [
   { slug: "setiawan-family", rank: 22, name: "Keluarga Setiawan", netWorthUsd: 3.6e9, candidateCodes: [], groupExposure: [
     { code: "KLBF", holderNames: ["PT SANTA SEHA SANADI"], holder: "PT Santa Seha Sanadi · Poppy Hadiman Setiawan (relasi 2024)", sourceUrl: "https://www.kalbe.co.id/api-content/File/GetFile/AR%20KLBF%202024.pdf" },
   ] },
+  { slug: "susilo-wonowidjojo-family", rank: 25, name: "Susilo Wonowidjojo & keluarga", netWorthUsd: 3.2e9, wealthNote: "Saham PT Suryaduta dan PT Suryamitra adalah posisi entitas keluarga; Susilo dilaporkan memiliki 19,85% PT Suryaduta, bukan seluruh 69,29% GGRM.", candidateCodes: [], groupExposure: [
+    { code: "GGRM", holderNames: ["PT SURYADUTA INVESTAMA", "PT SURYAMITRA KUSUMA"], holder: "PT Suryaduta Investama + PT Suryamitra Kusuma · keluarga Wonowidjojo", sourceUrl: "https://gudanggaramtbk.com/tentang-kami/" },
+  ] },
+  { slug: "ciliandra-fangiono-family", rank: 27, name: "Ciliandra Fangiono & family", netWorthUsd: 3.05e9, wealthNote: "First Resources dan PT Ciliandra Perkasa berada dalam struktur grup keluarga Fangiono; porsi manfaat tiap penerima trust tidak dapat ditentukan dari laporan.", candidateCodes: [], groupExposure: [
+    { code: "ANJT", holderNames: ["FIRST RESOURCES LIMITED", "CILIANDRA PERKASA"], holder: "First Resources + PT Ciliandra Perkasa · trust keluarga Fangiono", sourceUrl: "https://www.first-resources.com/wp-content/uploads/2026/06/ANJ-AR-SR-2025.pdf" },
+  ] },
+  { slug: "hamami-family", rank: 37, name: "Hamami family", netWorthUsd: 1.7e9, candidateCodes: [], groupExposure: [
+    { code: "ABMM", holderNames: ["PT TIARA MARGA TRAKINDO"], holder: "PT Tiara Marga Trakindo · grup Hamami", sourceUrl: "https://www.abm-investama.com/upload/2025_ABMM_AR_2025.pdf" },
+  ] },
+  { slug: "djoko-susanto", rank: 30, name: "Djoko Susanto", netWorthUsd: 2.7e9, wealthNote: "PT Sigmantara Alfindo adalah pemegang saham AMRT yang terhubung dengan keluarga Djoko Susanto; seluruh saham entitas tidak boleh dihitung sebagai milik pribadi Djoko.", candidateCodes: [], groupExposure: [
+    { code: "AMRT", holderNames: ["SIGMANTARA ALFINDO"], holder: "PT Sigmantara Alfindo · keluarga Djoko Susanto", sourceUrl: "https://alfamart.co.id/storage/annual-report/July2025/zkhkrsugc3gCo4L4NSh9.pdf" },
+  ] },
+  { slug: "alexander-ramlie", rank: 35, name: "Alexander Ramlie", netWorthUsd: 2.3e9, candidateCodes: [], reportedDirect: [
+    { code: "AMMN", percentage: 0.2562, ownershipAsOf: "31 Desember 2025", sourceUrl: "https://www.amman.co.id/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6NDk4MiwicHVyIjoiYmxvYl9pZCJ9fQ%3D%3D--f967e5138cdb0cb5fbcc19b1c35a4a0a4c27bbcd/FY%202025%20FINANCIAL%20STATEMENTS.pdf?disposition=inline" },
+  ] },
+  { slug: "soegiarto-adikoesoemo", rank: 42, name: "Soegiarto Adikoesoemo", netWorthUsd: 1.35e9, candidateCodes: [], groupExposure: [
+    { code: "AKRA", holderNames: ["ARTHAKENCANA RAYATAMA PT"], holder: "PT Arthakencana Rayatama · Soegiarto dan keluarga", sourceUrl: "https://www.akr.co.id/gcg/gcg-organs/board-of-commissioners" },
+  ] },
+  { slug: "irwan-hidayat-family", rank: 46, name: "Irwan Hidayat & family", netWorthUsd: 1.15e9, wealthNote: "PT Hotel Candi Baru dimiliki sejumlah anggota keluarga Hidayat; persentase saham entitas tidak sama dengan bagian pribadi Irwan.", candidateCodes: [], groupExposure: [
+    { code: "SIDO", holderNames: ["PT HOTEL CANDI BARU"], holder: "PT Hotel Candi Baru · keluarga Hidayat", sourceUrl: "https://investor.sidomuncul.co.id/misc/ar/AR-2024.pdf" },
+  ] },
   { slug: "jenny-quantero-engki-wibowo", rank: 41, name: "Jenny Quantero & Engki Wibowo", netWorthUsd: 1.4e9, holderNames: ["JENNY QUANTERO", "ENGKI WIBOWO"], candidateCodes: ["BYAN", "MYOH"] },
   { slug: "happy-hapsoro", name: "Happy Hapsoro", holderName: "HAPSORO", candidateCodes: ["RAJA", "MINA", "SINI", "UANG", "ARKO"] },
   { slug: "bakrie", name: "Keluarga Bakrie", candidateCodes: [], groupExposure: [
-    { code: "BNBR", sourceUrl: BAKRIE_SOURCE },
+    { code: "BNBR", holderNames: ["PT BAKRIE CAPITAL INDONESIA"], holder: "PT Bakrie Capital Indonesia · entitas keluarga Bakrie", sourceUrl: BAKRIE_SOURCE },
     { code: "VKTR", holderNames: ["BAKRIE & BROTHERS TBK, PT", "Bakrie Metal Industries, PT"], holder: "BNBR + PT Bakrie Metal Industries", sourceUrl: BAKRIE_SOURCE },
     { code: "VIVA", holderNames: ["PT. Bakrie Global Ventura"], holder: "PT Bakrie Global Ventura", sourceUrl: BAKRIE_SOURCE },
     { code: "BUMI", holderNames: ["PT BAKRIE CAPITAL INDONESIA"], holder: "PT Bakrie Capital Indonesia", sourceUrl: BAKRIE_SOURCE },
@@ -210,7 +249,7 @@ export function kongloHoldings(profile: KongloProfile): KongloHolding[] {
     const resolvedShares = complete ? Math.round(named.reduce((sum, row) => sum + (row?.shares ?? 0), 0) * (stakeMultiplier ?? 1)) : shares ?? null;
     return [{ code, name: company.name, percentage: resolvedPercentage, ownershipAsOf: complete ? OWNERSHIP_DATE : ownershipAsOf ?? null,
       shares: resolvedShares,
-      price: null, priceAsOf: null, marketCap: company.marketCap,
+      price: null, priceAsOf: company.holdingsDate, marketCap: company.marketCap,
       indicativeValue: valueFromMarketCap(resolvedPercentage, company.marketCap), kind: "group", holder: holder ?? "Entitas grup · porsi belum terverifikasi", sourceUrl,
       snapshotSourceUrl: complete ? OWNERSHIP_DOCUMENT : undefined }];
   });
