@@ -37,6 +37,7 @@ export default async function KongloDetailPage({ params }: PageProps<"/konglo/[s
       {KONGLO_PHOTOS[profile.slug] && <a href={KONGLO_PHOTOS[profile.slug].sourceUrl} target="_blank" rel="noopener noreferrer" className="mt-1 inline-block text-micro text-dim hover:text-cyan">Foto: {KONGLO_PHOTOS[profile.slug].credit} ↗</a>}
       <p className="mt-2 max-w-4xl text-xs leading-relaxed text-dim">Peta saham BEI yang tercatat atas nama pribadi dan entitas terkait. Persentase saham dikalikan kapitalisasi pasar dalam katalog. Nilai entitas ditampilkan terpisah; saham anak dan induk dalam satu rantai dapat tumpang tindih, sehingga jumlahnya bukan kekayaan ekonomis pribadi.</p>
       <a href={FORBES_LIST_URL} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1 text-micro text-cyan hover:underline">Forbes Indonesia 50 Richest · {FORBES_LIST_DATE} <ArrowUpRight className="h-3 w-3" aria-hidden="true" /></a>
+      {profile.identitySourceUrl && <a href={profile.identitySourceUrl} target="_blank" rel="noopener noreferrer" className="ml-4 inline-flex items-center gap-1 text-micro text-cyan hover:underline">Laporan emiten · verifikasi identitas <ArrowUpRight className="h-3 w-3" aria-hidden="true" /></a>}
     </header>
 
     <div className="grid grid-cols-2 gap-px border-b border-rule bg-rule xl:grid-cols-4">
@@ -67,7 +68,7 @@ export default async function KongloDetailPage({ params }: PageProps<"/konglo/[s
           <div className="flex min-w-0 items-center gap-3"><CompanyLogo code={item.code} logoUrl={company?.logoUrl ?? null} /><div className="min-w-0"><Link href={`/asset/${item.code}`} className="font-bold text-cyan hover:underline">{item.code} ↗</Link><p className="truncate text-xs text-dim" title={item.name}>{item.name}</p><p className="mt-1 text-micro text-dim">{item.kind === "direct" ? "Saham pribadi" : "Saham entitas / deemed interest"} · {item.holder} · {item.ownershipAsOf ?? "tanggal N/D"}</p></div></div>
           <div className="min-w-0 text-xs sm:text-right"><p className="font-display font-bold tabular-nums text-ink-hi">{item.percentage === null ? "Persentase N/D" : `${item.percentage.toLocaleString("id-ID", { maximumFractionDigits: 4 })}% · ${item.shares === null ? "jumlah N/D" : `${formatShares(item.shares)} lembar`}`}</p><p className="mt-1 text-dim">Kap. pasar {formatRupiahCompact(item.marketCap)}</p><p className="mt-1 text-ink-hi">Nilai saham {formatRupiahCompact(item.indicativeValue)}</p><SourceLink href={item.sourceUrl}>{item.snapshotSourceUrl ? "Sumber keterkaitan" : "Sumber kepemilikan"}</SourceLink>{item.snapshotSourceUrl && <span className="ml-3"><SourceLink href={item.snapshotSourceUrl}>Snapshot KSEI/BEI</SourceLink></span>}</div>
         </li>;
-      })}</ol> : <p className="p-4 text-xs text-dim">Belum ada saham langsung &gt;1% atau keterkaitan grup yang dapat dipastikan dari sumber ini.</p>}
+      })}</ol> : <p className="p-4 text-xs text-dim">Kepemilikan saham BEI atau keterkaitan grup belum dapat dipastikan dari sumber yang tersedia.</p>}
     </section>
   </main>;
 }

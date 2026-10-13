@@ -8,10 +8,11 @@ import { KongloPortrait } from "@/components/konglo/KongloPortrait";
 
 export const metadata: Metadata = { title: "Konglo — IDX Terminal" };
 export const dynamic = "force-dynamic";
-const HIGHLIGHT_SLUGS = ["haji-isam", "prajogo-pangestu", "bakrie"] as const;
+const HIGHLIGHT_SLUGS = ["haji-isam", "prajogo-pangestu", "bakrie", "garibaldi-thohir", "anthoni-salim"] as const;
 
 export default async function KongloPage() {
   await requireUser();
+  const holdingsBySlug = new Map(KONGLO_PROFILES.map((profile) => [profile.slug, kongloHoldings(profile)]));
 
   return <main className="min-w-0 flex-1 bg-panel">
     <header className="border-b border-rule px-4 py-4 sm:px-6">
@@ -21,20 +22,22 @@ export default async function KongloPage() {
     </header>
     <section aria-labelledby="konglo-highlights" className="border-b border-rule bg-panel-hi px-4 py-4 sm:px-6">
       <h2 id="konglo-highlights" className="text-micro font-bold uppercase tracking-widest text-amber">Sorotan konglomerasi</h2>
-      <div className="mt-3 grid min-w-0 gap-3 md:grid-cols-3">{HIGHLIGHT_SLUGS.map((slug) => {
+      <div className="konglo-tape market-tape-window mt-3" aria-label="Sorotan konglomerasi bergerak">
+        <div className="konglo-tape-track market-tape-track">{[0, 1].map((copy) => <div key={copy} className="market-tape-group" aria-hidden={copy === 1 ? true : undefined}>{HIGHLIGHT_SLUGS.map((slug) => {
         const profile = KONGLO_PROFILES.find((item) => item.slug === slug);
         if (!profile) return null;
-        const holdings = kongloHoldings(profile);
-        return <Link key={slug} href={`/konglo/${slug}`} className="group flex min-w-0 flex-col border border-rule bg-panel p-3 transition-colors hover:border-amber-dim hover:bg-panel-hi">
+        const holdings = holdingsBySlug.get(slug) ?? [];
+        return <Link key={slug} tabIndex={copy === 1 ? -1 : undefined} href={`/konglo/${slug}`} className="group flex min-w-0 flex-col border border-rule bg-panel p-3 transition-colors hover:border-amber-dim hover:bg-panel-hi">
           <span className="flex min-w-0 items-center gap-3"><KongloPortrait slug={slug} name={profile.name} /><span className="min-w-0 flex-1"><strong className="block truncate font-display text-sm text-ink-hi">{profile.name}</strong><span className="mt-1 block text-micro text-dim">{holdings.length} emiten terkait · {profile.rank ? `Forbes #${profile.rank}` : "nilai Forbes N/D"}</span></span><ArrowRight aria-hidden="true" className="h-4 w-4 shrink-0 text-amber" /></span>
           <span className="mt-3 flex flex-wrap gap-1">{holdings.map((item) => <span key={`${item.kind}-${item.code}`} className="border border-rule-hi px-1.5 py-0.5 text-micro text-cyan">{item.code}</span>)}{profile.pendingExposure?.map((item) => <span key={`pending-${item.code}`} className="border border-amber/50 px-1.5 py-0.5 text-micro text-amber">{item.code} · rencana</span>)}</span>
           {profile.netWorthUsd !== undefined && <span className="mt-3 block font-display text-sm text-ink-hi">{formatWealth(profile.netWorthUsd)} <span className="ml-2 text-micro text-dim">{formatWealthRupiahEstimate(profile.netWorthUsd)}</span></span>}
         </Link>;
-      })}</div>
+      })}</div>)}</div>
+      </div>
     </section>
     <ol className="divide-y divide-rule">
       {KONGLO_PROFILES.map((profile, index) => {
-        const holdings = kongloHoldings(profile);
+        const holdings = holdingsBySlug.get(profile.slug) ?? [];
         const summary = kongloPortfolioSummary(holdings);
         const directCount = holdings.filter((holding) => holding.kind === "direct").length;
         const groupOnly = profile.netWorthUsd === undefined && summary.indicativeValue === null && summary.groupValue !== null;
@@ -46,7 +49,7 @@ export default async function KongloPage() {
             <KongloPortrait slug={profile.slug} name={profile.name} />
             <span className="min-w-0 flex-1">
               <span className="block font-display text-sm font-bold text-ink-hi">{profile.name}</span>
-              <span className="mt-1 block text-micro text-dim">{profile.rank ? `Forbes #${profile.rank} · ` : ""}{directCount} saham langsung &gt;1% · {holdings.length - directCount} keterkaitan grup</span>
+              <span className="mt-1 block text-micro text-dim">{profile.rank ? `Forbes #${profile.rank} · ` : ""}{holdings.length ? `${directCount} posisi saham langsung · ${holdings.length - directCount} keterkaitan lain` : "Kepemilikan saham BEI belum terpetakan dari sumber yang tersedia"}</span>
               <span className="mt-2 flex flex-wrap gap-1">{holdings.map((holding) => <span key={`${holding.kind}-${holding.code}`} className="border border-rule-hi px-1.5 py-0.5 text-micro text-cyan">{holding.code} {holding.percentage === null ? "N/D" : `${holding.percentage.toLocaleString("id-ID", { maximumFractionDigits: 4 })}%`}</span>)}{profile.pendingExposure?.map((item) => <span key={`pending-${item.code}`} className="border border-amber/50 px-1.5 py-0.5 text-micro text-amber">{item.code} · rencana</span>)}</span>
               <span className="mt-2 block text-micro text-dim sm:hidden">{wealthLabel} · <strong className="font-display text-ink-hi">{wealth}</strong>{profile.netWorthUsd !== undefined && <span className="ml-2 text-ink">{formatWealthRupiahEstimate(profile.netWorthUsd)}</span>}</span>
             </span>

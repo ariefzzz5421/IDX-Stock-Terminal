@@ -1,6 +1,6 @@
 import "server-only";
 import { getCompanyCatalogEntry } from "@/lib/company-catalog";
-import { OWNERSHIP_AS_OF, OWNERSHIP_SOURCE, codesForNamedShareholder, shareholdersFor } from "@/lib/shareholders";
+import { OWNERSHIP_AS_OF, OWNERSHIP_DOCUMENT, codesForNamedShareholder, shareholdersFor } from "@/lib/shareholders";
 
 export const FORBES_LIST_URL = "https://www.forbes.com/lists/indonesia-billionaires/?view=pc";
 export const FORBES_LIST_DATE = "10 Desember 2025";
@@ -12,7 +12,11 @@ export type KongloProfile = {
   /** Forbes 2025 USD estimate; family figures belong to the family. */
   netWorthUsd?: number;
   wealthNote?: string;
+  /** Issuer document confirming a Forbes name or family maps to the legal shareholder name. */
+  identitySourceUrl?: string;
   holderName?: string;
+  /** Named family members reported separately in the same official ownership snapshot. */
+  holderNames?: readonly string[];
   candidateCodes: readonly string[];
   reportedDirect?: readonly { code: string; percentage: number; ownershipAsOf: string; sourceUrl: string }[];
   groupExposure?: readonly { code: string; sourceUrl: string; percentage?: number; shares?: number; ownershipAsOf?: string; holder?: string; holderNames?: readonly string[]; stakeMultiplier?: number }[];
@@ -57,7 +61,7 @@ const CURATED_PROFILES: readonly KongloProfile[] = [
   { slug: "tahir", rank: 7, name: "Tahir & keluarga", netWorthUsd: 9.8e9, holderName: "TAHIR", candidateCodes: ["MAYA", "SONA", "MPRO"] },
   { slug: "marina-budiman", rank: 8, name: "Marina Budiman", netWorthUsd: 8.2e9, holderName: "MARINA BUDIMAN", candidateCodes: ["DCII"] },
   { slug: "dewi-kam", rank: 17, name: "Dewi Kam", netWorthUsd: 4.3e9, candidateCodes: [], groupExposure: [{ code: "BYAN", sourceUrl: "https://www.forbes.com/profile/dewi-kam/" }] },
-  { slug: "garibaldi-thohir", rank: 19, name: "Garibaldi Thohir & keluarga", netWorthUsd: 3.8e9, holderName: "GARIBALDI THOHIR", candidateCodes: ["MBMA", "ADRO", "TRIM", "AADI", "ESSA", "PALM", "MDKA"] },
+  { slug: "garibaldi-thohir", rank: 19, name: "Garibaldi Thohir & keluarga", netWorthUsd: 3.8e9, holderName: "GARIBALDI THOHIR", candidateCodes: ["MBMA", "ADRO", "TRIM", "AADI", "ESSA", "PALM", "MDKA", "MGLV"] },
   { slug: "edwin-soeryadjaya", rank: 45, name: "Edwin Soeryadjaya & keluarga", netWorthUsd: 1.2e9, holderName: "EDWIN SOERYADJAYA", candidateCodes: ["MBMA", "ADRO", "SRTG", "AADI"] },
   { slug: "hary-tanoesoedibjo", rank: 48, name: "Hary Tanoesoedibjo", netWorthUsd: 1e9, holderName: "HARY TANOESOEDIBJO", candidateCodes: ["BHIT"], groupExposure: [
     { code: "BMTR", holderNames: ["PT. MNC ASIA HOLDING TBK"], holder: "PT MNC Asia Holding Tbk", sourceUrl: "https://www.mncland.com/storage/app/uploads/public/66a/c5d/2b6/66ac5d2b691c4746826619.pdf" },
@@ -78,6 +82,26 @@ const CURATED_PROFILES: readonly KongloProfile[] = [
   { slug: "tanoko-family", rank: 9, name: "Wijono & Hermanto Tanoko & keluarga", netWorthUsd: 8.1e9, candidateCodes: [], groupExposure: [
     { code: "AVIA", holderNames: ["PT TANCORP SURYA SENTOSA", "PT WAHANA LANCAR REJEKI"], holder: "PT Tancorp Surya Sentosa + PT Wahana Lancar Rejeki", sourceUrl: "https://avianbrands.com/tentang-kami/managemen/hermanto-tanoko" },
   ] },
+  { slug: "haryanto-tjiptodihardjo", rank: 11, name: "Haryanto Tjiptodihardjo", netWorthUsd: 6.2e9, holderName: "HARYANTO TJIPTODIHARDJO", candidateCodes: ["IMPC"] },
+  { slug: "jogi-hendra-atmadja-family", rank: 24, name: "Jogi Hendra Atmadja & keluarga", netWorthUsd: 3.5e9, holderName: "JOGI HENDRA ATMADJA", candidateCodes: ["MYOR"], identitySourceUrl: "https://mayoraindah.co.id/assets/upload/file/ar-mayora-2025-30042026-03.pdf" },
+  { slug: "peter-sondakh", rank: 26, name: "Peter Sondakh", netWorthUsd: 3.1e9, candidateCodes: [], groupExposure: [
+    { code: "BWPT", holderNames: ["RAJAWALI CAPITAL INTERNATIONAL, PT."], holder: "PT Rajawali Capital International · Peter Sondakh pemilik manfaat akhir", sourceUrl: "https://www.eaglehighplantations.com/wp-content/uploads/2025/07/Sukuk-Mudharabah-Berkelanjutan-I-Tahap-I-Tahun-2025.pdf" },
+  ] },
+  { slug: "hilmi-panigoro-family", rank: 28, name: "Hilmi Panigoro & keluarga", netWorthUsd: 2.9e9, candidateCodes: [], reportedDirect: [
+    { code: "MEDC", percentage: 0.15, ownershipAsOf: "31 Desember 2025", sourceUrl: "https://www.medcoenergi.com/uploads/areports/2025/MEDC_AR2025_ENG.pdf" },
+  ] },
+  { slug: "manoj-punjabi", rank: 31, name: "Manoj Punjabi", netWorthUsd: 2.6e9, holderName: "MANOJ DHAMOO PUNJABI", candidateCodes: ["FILM"], identitySourceUrl: "https://mdentertainment.com/wp-content/uploads/2024/10/MD-Keterbukaan-Informasi-HMETD-IND.pdf" },
+  { slug: "bambang-sutantio", rank: 34, name: "Bambang Sutantio", netWorthUsd: 2.35e9, holderName: "BAMBANG SUTANTIO", candidateCodes: ["CMRY"], identitySourceUrl: "https://cimory.com/uploads/investors/Interactive%20AR%20CMRY%202025_8MB.pdf" },
+  { slug: "eddy-kusnadi-sariaatmadja-family", rank: 36, name: "Eddy Kusnadi Sariaatmadja & keluarga", netWorthUsd: 1.8e9, holderName: "RD EDDY K SARIAATMADJA", candidateCodes: ["EMTK"], identitySourceUrl: "https://cms.emtek.co.id/media/annual_report_attachment_en/gcib/AR-EMTEK-2025.pdf", groupExposure: [
+    { code: "EMTK", holderNames: ["PT ADIKARSA SARANA"], holder: "PT Adikarsa Sarana · perusahaan yang dikendalikan Eddy", sourceUrl: "https://cms.emtek.co.id/media/annual_report_attachment_en/gcib/AR-EMTEK-2025.pdf" },
+  ] },
+  { slug: "ciputra-family", rank: 38, name: "Keluarga Ciputra", netWorthUsd: 1.6e9, candidateCodes: [], groupExposure: [
+    { code: "CTRA", holderNames: ["PT SANG PELOPOR"], holder: "PT Sang Pelopor · keluarga Ciputra", sourceUrl: "https://ciputradevelopment.com/wp-content/uploads/2026/05/Laporan_Tahunan_2025_CTRA.pdf" },
+  ] },
+  { slug: "setiawan-family", rank: 22, name: "Keluarga Setiawan", netWorthUsd: 3.6e9, candidateCodes: [], groupExposure: [
+    { code: "KLBF", holderNames: ["PT SANTA SEHA SANADI"], holder: "PT Santa Seha Sanadi · Poppy Hadiman Setiawan (relasi 2024)", sourceUrl: "https://www.kalbe.co.id/api-content/File/GetFile/AR%20KLBF%202024.pdf" },
+  ] },
+  { slug: "jenny-quantero-engki-wibowo", rank: 41, name: "Jenny Quantero & Engki Wibowo", netWorthUsd: 1.4e9, holderNames: ["JENNY QUANTERO", "ENGKI WIBOWO"], candidateCodes: ["BYAN", "MYOH"] },
   { slug: "happy-hapsoro", name: "Happy Hapsoro", holderName: "HAPSORO", candidateCodes: ["RAJA", "MINA", "SINI", "UANG", "ARKO"] },
   { slug: "bakrie", name: "Keluarga Bakrie", candidateCodes: [], groupExposure: [
     { code: "BNBR", sourceUrl: BAKRIE_SOURCE },
@@ -158,15 +182,18 @@ function valueFromMarketCap(percentage: number | null, marketCap: number | null)
 }
 
 export function kongloHoldings(profile: KongloProfile): KongloHolding[] {
-  const directCodes = profile.holderName ? [...new Set([...profile.candidateCodes, ...codesForNamedShareholder(profile.holderName)])] : [];
+  const directNames = profile.holderNames ?? (profile.holderName ? [profile.holderName] : []);
+  const directCodes = directNames.length ? [...new Set([...profile.candidateCodes, ...directNames.flatMap(codesForNamedShareholder)])] : [];
   const direct: KongloHolding[] = directCodes.flatMap((code) => {
-    const holder = shareholdersFor(code).find((row) => row.name.toUpperCase() === profile.holderName);
+    const holders = shareholdersFor(code).filter((row) => directNames.includes(row.name.toUpperCase()));
     const company = getCompanyCatalogEntry(code);
-    if (!holder || !company) return [];
+    if (!holders.length || !company) return [];
+    const percentage = holders.reduce((sum, row) => sum + row.percentage, 0);
+    const shares = holders.reduce((sum, row) => sum + row.shares, 0);
     const price = company.closingPrice && company.closingPrice > 0 ? company.closingPrice : null;
-    return [{ code, name: company.name, percentage: holder.percentage, ownershipAsOf: OWNERSHIP_DATE, shares: holder.shares, price,
-      priceAsOf: price ? company.holdingsDate : null, marketCap: company.marketCap, indicativeValue: valueFromMarketCap(holder.percentage, company.marketCap),
-      kind: "direct", holder: holder.name, sourceUrl: OWNERSHIP_SOURCE }];
+    return [{ code, name: company.name, percentage, ownershipAsOf: OWNERSHIP_DATE, shares, price,
+      priceAsOf: price ? company.holdingsDate : null, marketCap: company.marketCap, indicativeValue: valueFromMarketCap(percentage, company.marketCap),
+      kind: "direct", holder: holders.map((row) => row.name).join(" + "), sourceUrl: OWNERSHIP_DOCUMENT }];
   });
   const reported: KongloHolding[] = (profile.reportedDirect ?? []).flatMap((item) => {
     const company = getCompanyCatalogEntry(item.code);
@@ -185,7 +212,7 @@ export function kongloHoldings(profile: KongloProfile): KongloHolding[] {
       shares: resolvedShares,
       price: null, priceAsOf: null, marketCap: company.marketCap,
       indicativeValue: valueFromMarketCap(resolvedPercentage, company.marketCap), kind: "group", holder: holder ?? "Entitas grup · porsi belum terverifikasi", sourceUrl,
-      snapshotSourceUrl: complete ? OWNERSHIP_SOURCE : undefined }];
+      snapshotSourceUrl: complete ? OWNERSHIP_DOCUMENT : undefined }];
   });
   return [...direct, ...reported, ...group];
 }

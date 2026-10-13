@@ -98,6 +98,11 @@ body {
 .market-tape-group > a { flex: 0 0 12rem; }
 @keyframes market-tape-drift { from { transform: translateX(-50%); } to { transform: translateX(0); } }
 @media (prefers-reduced-motion: reduce) { .market-tape-track { animation: none; } .market-tape-window { overflow-x: auto; } }
+.konglo-tape .market-tape-group { gap: .75rem; padding-right: .75rem; }
+.konglo-tape .market-tape-group > a { flex: 0 0 clamp(17rem, 28vw, 24rem); }
+.konglo-tape .market-tape-track { animation-duration: 42s; }
+.konglo-tape:hover .market-tape-track, .konglo-tape:focus-within .market-tape-track { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .konglo-tape .market-tape-track { animation: none; } .konglo-tape .market-tape-group[aria-hidden="true"] { display: none; } }
 .business-home-company-trigger { display: none; }
 .business-home-company-sidebar { display: none; }
 .business-primary { height: min(70vh, 42rem); min-height: 26rem; }
