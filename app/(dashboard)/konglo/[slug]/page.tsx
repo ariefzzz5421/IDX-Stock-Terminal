@@ -28,6 +28,7 @@ export default async function KongloDetailPage({ params }: PageProps<"/konglo/[s
     ? [{ code: item.code, shares: item.shares, percentage: item.percentage, value: item.indicativeValue, kind: item.kind, holder: item.holder }] : []);
   const isForbes = profile.netWorthUsd !== undefined;
   const groupOnly = !isForbes && summary.indicativeValue === null && summary.groupValue !== null;
+  const marketCapDates = [...new Set(holdings.map((item) => item.priceAsOf).filter(Boolean))].join(", ") || "N/D";
 
   return <main className="min-w-0 flex-1 bg-panel">
     <header className="border-b border-rule px-4 py-4 sm:px-6">
@@ -42,8 +43,8 @@ export default async function KongloDetailPage({ params }: PageProps<"/konglo/[s
 
     <div className="grid grid-cols-2 gap-px border-b border-rule bg-rule xl:grid-cols-4">
       <Metric label={isForbes ? "Net worth · Forbes 2025" : groupOnly ? "Est. nilai saham grup" : "Est. nilai saham langsung"} value={isForbes ? formatWealth(profile.netWorthUsd) : formatRupiahCompact(groupOnly ? summary.groupValue : summary.indicativeValue)} secondary={isForbes ? formatWealthRupiahEstimate(profile.netWorthUsd) : undefined} note={profile.wealthNote ?? (isForbes ? `Forbes · ${FORBES_LIST_DATE}` : groupOnly ? "Nilai saham entitas terkait; bagian pribadi keluarga belum terverifikasi" : "Nilai saham langsung yang terverifikasi; bukan seluruh harta bersih")} />
-      <Metric label="Nilai saham pribadi" value={formatRupiahCompact(summary.indicativeValue)} note={`${summary.valuedCount} posisi langsung · ${summary.directCount} saham teridentifikasi`} />
-      <Metric label="Nilai saham entitas" value={formatRupiahCompact(summary.groupValue)} note={`${summary.groupValuedCount} posisi grup bernilai; bukan milik pribadi sepenuhnya`} />
+      <Metric label="Nilai saham pribadi" value={formatRupiahCompact(summary.indicativeValue)} note={`${summary.valuedCount} posisi langsung · ${summary.directCount} saham teridentifikasi · kap. pasar ${marketCapDates}`} />
+      <Metric label="Nilai saham entitas" value={formatRupiahCompact(summary.groupValue)} note={`${summary.groupValuedCount} posisi grup bernilai · kap. pasar ${marketCapDates}; bukan milik pribadi sepenuhnya`} />
       <Metric label="Lembar pribadi tercatat" value={summary.sharesKnownCount ? formatShares(summary.totalShares) : "N/D"} note={`${summary.sharesKnownCount} dari ${summary.directCount} posisi dengan jumlah tepat`} />
     </div>
     {isForbes && <p className="border-b border-rule px-4 py-2 text-micro text-dim sm:px-6">EST rupiah = angka Forbes 2025 × <a href={WEALTH_FX_SOURCE} target="_blank" rel="noopener noreferrer" className="text-cyan hover:underline">JISDOR BI ↗</a> Rp {WEALTH_USD_IDR_RATE.toLocaleString("id-ID")}/US$ ({WEALTH_FX_DATE}); bukan penilaian kekayaan terbaru.</p>}

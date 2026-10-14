@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { KONGLO_PROFILES, kongloHoldings, kongloPortfolioSummary } from "../lib/konglo";
+import { shareholdersFor } from "../lib/shareholders";
 
 function profile(slug: string) {
   const found = KONGLO_PROFILES.find((item) => item.slug === slug);
@@ -21,12 +22,39 @@ test("new issuer-backed mappings resolve against the dated KSEI snapshot", () =>
     "soegiarto-adikoesoemo": [["AKRA", 64.63]],
     "irwan-hidayat-family": [["SIDO", 77.59]],
     "bakrie": [["BNBR", 25.31]],
+    "haji-isam": [["PACK", 20.04], ["RANS", 1.4]],
+    "mochtar-riady-family": [["LPKR", 20.25]],
+    "arini-subianto-family": [["DSNG", 1.77]],
+    "hartati-murdaya": [["MKPI", 47.45]],
+    "eddy-katuari-family": [["LTLS", 3.15]],
   };
 
   for (const [slug, positions] of Object.entries(expected)) {
     const holdings = kongloHoldings(profile(slug));
     for (const [code, percentage] of positions) {
       assert.ok(holdings.some((holding) => holding.code === code && Math.abs((holding.percentage ?? 0) - percentage) < 0.0001), `${slug}: ${code} ${percentage}%`);
+    }
+  }
+});
+
+test("all 50 dated Forbes ranks are unique and every legal holder resolves to its issuer row", () => {
+  const ranked = KONGLO_PROFILES.filter((item) => item.rank !== undefined);
+  assert.deepEqual(ranked.map((item) => item.rank), Array.from({ length: 50 }, (_, index) => index + 1));
+  assert.equal(new Set(KONGLO_PROFILES.map((item) => item.slug)).size, KONGLO_PROFILES.length);
+
+  for (const person of KONGLO_PROFILES) {
+    const holdings = kongloHoldings(person);
+    for (const relation of person.groupExposure ?? []) {
+      for (const holderName of relation.holderNames ?? []) {
+        assert.ok(shareholdersFor(relation.code).some((row) => row.name.toUpperCase() === holderName.toUpperCase()),
+          `${person.name}: ${relation.code} / ${holderName} hilang dari snapshot KSEI`);
+      }
+    }
+    for (const holding of holdings) {
+      assert.ok(holding.percentage === null || holding.percentage > 0 && holding.percentage <= 100,
+        `${person.name}: persentase ${holding.code} tidak valid`);
+      assert.ok(holding.indicativeValue === null || holding.priceAsOf,
+        `${person.name}: nilai ${holding.code} tanpa tanggal kapitalisasi`);
     }
   }
 });

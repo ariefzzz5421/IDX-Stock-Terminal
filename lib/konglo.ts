@@ -35,32 +35,35 @@ const CURATED_PROFILES: readonly KongloProfile[] = [
     { code: "BELI", holderNames: ["PT GLOBAL INVESTAMA ANDALAN"], holder: "PT Global Investama Andalan", sourceUrl: "https://about.blibli.com/investor-relations/prospectus/Preliminary%20Prospectus%20IPO%20-%20PT%20Global%20Digital%20Niaga%20Tbk.pdf" },
   ] },
   { slug: "widjaja-family", rank: 3, name: "Keluarga Widjaja", netWorthUsd: 28.3e9, candidateCodes: [], groupExposure: [
-    { code: "DSSA", holderNames: ["PT SINAR MAS TUNGGAL"], holder: "PT Sinar Mas Tunggal", sourceUrl: "https://dssa.co.id/documents/Annual_Report_DSSA_2025.pdf" },
+    { code: "DSSA", holderNames: ["PT. SINAR MAS TUNGGAL"], holder: "PT Sinar Mas Tunggal", sourceUrl: "https://dssa.co.id/documents/Annual_Report_DSSA_2025.pdf" },
     { code: "SMMA", holderNames: ["SINAR MAS CAKRAWALA"], holder: "Sinar Mas Cakrawala", sourceUrl: "https://sinarmas.com/en/financial-services.html" },
     { code: "BSIM", holderNames: ["PT SINAR MAS MULTIARTHA Tbk"], holder: "PT Sinar Mas Multiartha", sourceUrl: "https://sinarmas.com/en/financial-services.html" },
-    { code: "INKP", holderNames: ["APP PURINUSA EKAPERSADA", "PT APP PURINUSA EKAPERSADA"], holder: "APP Purinusa Ekapersada", sourceUrl: "https://www.sinarmas.com/pulp-and-paper.html" },
-    { code: "TKIM", holderNames: ["APP PURINUSA EKAPERSADA"], holder: "APP Purinusa Ekapersada", sourceUrl: "https://www.sinarmas.com/pulp-and-paper.html" },
-    { code: "BSDE", holderNames: ["PARAGA ARTAMIDA, PT", "PT EKACENTRA USAHAMAJU"], holder: "PT Paraga Artamida + PT Ekacentra Usahamaju", sourceUrl: "https://www.sinarmasland.com/about-us/history-bumi-serpong-damai" },
+    { code: "INKP", holderNames: ["PT APP PURINUSA EKAPERSADA"], holder: "APP Purinusa Ekapersada", sourceUrl: "https://www.sinarmas.com/pulp-and-paper.html" },
+    { code: "TKIM", holderNames: ["PT APP PURINUSA EKAPERSADA"], holder: "APP Purinusa Ekapersada", sourceUrl: "https://www.sinarmas.com/pulp-and-paper.html" },
+    { code: "BSDE", holderNames: ["PT PARAGA ARTAMIDA", "PT EKACENTRA USAHAMAJU"], holder: "PT Paraga Artamida + PT Ekacentra Usahamaju", sourceUrl: "https://www.sinarmasland.com/about-us/history-bumi-serpong-damai" },
     { code: "DUTI", holderNames: ["BUMI SERPONG DAMAI TBK PT"], holder: "PT Bumi Serpong Damai Tbk", sourceUrl: "https://www.sinarmasland.com/about-us/history-bumi-serpong-damai" },
   ] },
   { slug: "prajogo-pangestu", rank: 2, name: "Prajogo Pangestu", netWorthUsd: 39.8e9, holderName: "PRAJOGO PANGESTU", candidateCodes: ["BRPT", "TPIA", "CUAN"], groupExposure: [
     { code: "BREN", holderNames: ["PT Barito Pacific Tbk"], holder: "PT Barito Pacific Tbk", sourceUrl: "https://www.barito-pacific.com/uploads/investors/annual-report-260513100241BRPT%20-%20AR%202025%20-%20260513_compressed.pdf" },
-    { code: "TPIA", holderNames: ["BARITO PACIFIC TBK"], holder: "PT Barito Pacific Tbk", sourceUrl: "https://barito-pacific.com/newsroom/pt-barito-pacific-tbk-idx-brpt-announces-its-audited-consolidated-performance-for-the-full-year-of-2025" },
+    { code: "TPIA", holderNames: ["PT BARITO PACIFIC TBK"], holder: "PT Barito Pacific Tbk", sourceUrl: "https://barito-pacific.com/newsroom/pt-barito-pacific-tbk-idx-brpt-announces-its-audited-consolidated-performance-for-the-full-year-of-2025" },
     { code: "CDIA", holderNames: ["PT CHANDRA ASRI PACIFIC TBK"], holder: "PT Chandra Asri Pacific Tbk", sourceUrl: "https://www.barito-pacific.com/uploads/investors/annual-report-260513100241BRPT%20-%20AR%202025%20-%20260513_compressed.pdf" },
-    { code: "PTRO", holderNames: ["PT. KREASI JASA PERSADA", "PT PETRINDO JAYA KREASI TBK"], holder: "PT Kreasi Jasa Persada + PT Petrindo Jaya Kreasi Tbk", sourceUrl: "https://www.petrindo.co.id/wp-content/uploads/2026/04/30April2026_CUAN_Annual-Report-2025.pdf" },
+    { code: "PTRO", holderNames: ["KREASI JASA PERSADA PT", "PT PETRINDO JAYA KREASI TBK"], holder: "PT Kreasi Jasa Persada + PT Petrindo Jaya Kreasi Tbk", sourceUrl: "https://www.petrindo.co.id/wp-content/uploads/2026/04/30April2026_CUAN_Annual-Report-2025.pdf" },
   ] },
   { slug: "franky-widjaja", name: "Franky Oesman Widjaja", wealthNote: "Forbes menilai keluarga Widjaja US$28,3 miliar; angka itu bukan kekayaan pribadi Franky.", holderName: "FRANKY OESMAN WIDJAJA", candidateCodes: ["BOLA"], groupExposure: [{ code: "DSSA", percentage: 59.9, shares: 4615523200, ownershipAsOf: "31 Desember 2025", holder: "PT Sinar Mas Tunggal · deemed interest Franky", sourceUrl: "https://dssa.co.id/documents/Annual_Report_DSSA_2025.pdf" }] },
   { slug: "low-tuck-kwong", rank: 4, name: "Low Tuck Kwong", netWorthUsd: 24.9e9, holderName: "LOW TUCK KWONG", candidateCodes: ["BYAN", "MYOH", "MAHA"] },
   { slug: "anthoni-salim", rank: 5, name: "Anthoni (Antony) Salim & keluarga", netWorthUsd: 13.6e9, holderName: "ANTHONI SALIM", candidateCodes: ["DNET", "EMTK", "DCII", "BBCA"], groupExposure: [
     { code: "INDF", holderNames: ["FIRST PACIFIC INVESTMENT MANAGEMENT LTD"], holder: "First Pacific Investment Management Ltd", sourceUrl: "https://www.indofood.com/page/shareholders-composition" },
     { code: "ICBP", holderNames: ["INDOFOOD SUKSES MAKMUR TBK"], holder: "PT Indofood Sukses Makmur Tbk", sourceUrl: "https://www.indofood.com/page/company-group-structure" },
-    { code: "SIMP", holderNames: ["INDOFOOD AGRI RESOURCES LTD.", "INDOFOOD SUKSES MAKMUR TBK"], holder: "Indofood Agri Resources + PT Indofood Sukses Makmur", sourceUrl: "https://www.indofood.com/page/company-group-structure" },
+    { code: "SIMP", holderNames: ["INDOFOOD AGRI RESOURCES LTD", "INDOFOOD SUKSES MAKMUR TBK"], holder: "Indofood Agri Resources + PT Indofood Sukses Makmur", sourceUrl: "https://www.indofood.com/page/company-group-structure" },
     { code: "LSIP", holderNames: ["PT SALIM IVOMAS PRATAMA TBK"], holder: "PT Salim Ivomas Pratama Tbk", sourceUrl: "https://www.indofood.com/page/company-group-structure" },
   ] },
   { slug: "otto-toto-sugiri", rank: 6, name: "Otto Toto Sugiri", netWorthUsd: 11.3e9, holderName: "OTTO TOTO SUGIRI", candidateCodes: ["DCII"] },
   { slug: "tahir", rank: 7, name: "Tahir & keluarga", netWorthUsd: 9.8e9, holderName: "TAHIR", candidateCodes: ["MAYA", "SONA", "MPRO"] },
   { slug: "marina-budiman", rank: 8, name: "Marina Budiman", netWorthUsd: 8.2e9, holderName: "MARINA BUDIMAN", candidateCodes: ["DCII"] },
   { slug: "dewi-kam", rank: 17, name: "Dewi Kam", netWorthUsd: 4.3e9, candidateCodes: [], groupExposure: [{ code: "BYAN", sourceUrl: "https://www.forbes.com/profile/dewi-kam/" }] },
+  { slug: "mochtar-riady-family", rank: 20, name: "Mochtar Riady & keluarga", netWorthUsd: 3.75e9, wealthNote: "PT Inti Anugerah Pratama terkait keluarga Riady menurut laporan LPKR 2024; James T. Riady disebut sebagai pemilik manfaat. Porsi manfaat Mochtar pribadi pada 2026 belum terverifikasi.", candidateCodes: [], groupExposure: [
+    ...["LPKR", "LPLI", "LPPS", "MLPL", "LPGI"].map((code) => ({ code, holderNames: ["INTI ANUGERAH PRATAMA, PT"], holder: "PT Inti Anugerah Pratama · keluarga Riady", sourceUrl: "https://www.lippokarawaci.co.id/uploads/file/PG_LPKR_2024AR_BOOK_REV005_uploaded.pdf" })),
+  ] },
   { slug: "sri-prakash-lohia", rank: 10, name: "Sri Prakash Lohia", netWorthUsd: 8e9, candidateCodes: [], groupExposure: [
     { code: "INDR", holderNames: ["INDORAMA HOLDINGS B.V."], holder: "Indorama Holdings B.V. · Indorama Corporation", sourceUrl: "https://www.indorama.com/news/indorama-partners-with-pt-bank-dbs-indonesia-for-usd-20-million-sustainabilitylinked-trade-finance-facility" },
   ] },
@@ -82,17 +85,14 @@ const CURATED_PROFILES: readonly KongloProfile[] = [
   { slug: "garibaldi-thohir", rank: 19, name: "Garibaldi Thohir & keluarga", netWorthUsd: 3.8e9, holderName: "GARIBALDI THOHIR", candidateCodes: ["MBMA", "ADRO", "TRIM", "AADI", "ESSA", "PALM", "MDKA", "MGLV"] },
   { slug: "edwin-soeryadjaya", rank: 45, name: "Edwin Soeryadjaya & keluarga", netWorthUsd: 1.2e9, holderName: "EDWIN SOERYADJAYA", candidateCodes: ["MBMA", "ADRO", "SRTG", "AADI"] },
   { slug: "hary-tanoesoedibjo", rank: 48, name: "Hary Tanoesoedibjo", netWorthUsd: 1e9, holderName: "HARY TANOESOEDIBJO", candidateCodes: ["BHIT"], groupExposure: [
-    { code: "BMTR", holderNames: ["PT. MNC ASIA HOLDING TBK"], holder: "PT MNC Asia Holding Tbk", sourceUrl: "https://www.mncland.com/storage/app/uploads/public/66a/c5d/2b6/66ac5d2b691c4746826619.pdf" },
-    { code: "MNCN", holderNames: ["PT GLOBAL MEDIACOM TBK", "PT. MNC ASIA HOLDING TBK"], holder: "PT Global Mediacom + PT MNC Asia Holding", sourceUrl: "https://www.mncland.com/storage/app/uploads/public/66a/c5d/2b6/66ac5d2b691c4746826619.pdf" },
-    { code: "KPIG", holderNames: ["PT. MNC ASIA HOLDING TBK"], holder: "PT MNC Asia Holding Tbk", sourceUrl: "https://www.mncland.com/storage/app/uploads/public/60b/8e1/385/60b8e1385d8b9612017326.pdf" },
+    { code: "BMTR", holderNames: ["PT MNC ASIA HOLDING TBK"], holder: "PT MNC Asia Holding Tbk", sourceUrl: "https://www.mncland.com/storage/app/uploads/public/66a/c5d/2b6/66ac5d2b691c4746826619.pdf" },
+    { code: "MNCN", holderNames: ["PT GLOBAL MEDIACOM TBK", "PT MNC ASIA HOLDING TBK"], holder: "PT Global Mediacom + PT MNC Asia Holding", sourceUrl: "https://www.mncland.com/storage/app/uploads/public/66a/c5d/2b6/66ac5d2b691c4746826619.pdf" },
+    { code: "KPIG", holderNames: ["PT MNC ASIA HOLDING TBK"], holder: "PT MNC Asia Holding Tbk", sourceUrl: "https://www.mncland.com/storage/app/uploads/public/60b/8e1/385/60b8e1385d8b9612017326.pdf" },
     { code: "MSIN", holderNames: ["PT GLOBAL MEDIACOM TBK"], holder: "PT Global Mediacom Tbk", sourceUrl: "https://www.mncland.com/storage/app/uploads/public/66a/c5d/2b6/66ac5d2b691c4746826619.pdf" },
-    { code: "BCAP", holderNames: ["PT. MNC ASIA HOLDING TBK"], holder: "PT MNC Asia Holding Tbk", sourceUrl: "https://www.mncland.com/storage/app/uploads/public/66a/c5d/2b6/66ac5d2b691c4746826619.pdf" },
+    { code: "BCAP", holderNames: ["PT MNC ASIA HOLDING TBK"], holder: "PT MNC Asia Holding Tbk", sourceUrl: "https://www.mncland.com/storage/app/uploads/public/66a/c5d/2b6/66ac5d2b691c4746826619.pdf" },
     { code: "BABP", holderNames: ["PT MNC KAPITAL INDONESIA TBK"], holder: "PT MNC Kapital Indonesia Tbk", sourceUrl: "https://www.mncland.com/storage/app/uploads/public/66a/c5d/2b6/66ac5d2b691c4746826619.pdf" },
   ] },
-  { slug: "haji-isam", name: "Haji Isam (Samsudin Andi Arsyad)", candidateCodes: [], reportedDirect: [
-    { code: "PACK", percentage: 20.05, ownershipAsOf: "18 September 2026", sourceUrl: HAJI_SOURCE },
-    { code: "RANS", percentage: 1.4, ownershipAsOf: "31 Agustus 2026", sourceUrl: HAJI_SOURCE },
-  ], groupExposure: [
+  { slug: "haji-isam", name: "Haji Isam (Samsudin Andi Arsyad)", holderName: "SAMSUDIN ANDI ARSYAD", candidateCodes: ["PACK", "RANS"], groupExposure: [
     { code: "JARR", holderNames: ["ESHAN AGRO SENTOSA PT"], holder: "PT Eshan Agro Sentosa · Jhonlin Group", sourceUrl: "https://www.idxchannel.com/playlists/siapa-pemilik-saham-jarr-punya-konglomerat-kalsel-intip-info-kepemilikannya" },
     { code: "PGUN", holderNames: ["PT ARAYA AGRO LESTARI", "PT CITRA AGRO RAYA"], holder: "PT Araya Agro Lestari + PT Citra Agro Raya · anak Haji Isam", sourceUrl: HAJI_SOURCE },
     { code: "TEBE", holderNames: ["PT. DUA SAMUDERA PERKASA"], holder: "PT Dua Samudera Perkasa · Jhonlin Group", sourceUrl: "https://www.idxchannel.com/playlists/keluarga-haji-isam-perluas-sayap-dari-tambang-ke-bisnis-kfc" },
@@ -137,6 +137,24 @@ const CURATED_PROFILES: readonly KongloProfile[] = [
   { slug: "soegiarto-adikoesoemo", rank: 42, name: "Soegiarto Adikoesoemo", netWorthUsd: 1.35e9, candidateCodes: [], groupExposure: [
     { code: "AKRA", holderNames: ["ARTHAKENCANA RAYATAMA PT"], holder: "PT Arthakencana Rayatama · Soegiarto dan keluarga", sourceUrl: "https://www.akr.co.id/gcg/gcg-organs/board-of-commissioners" },
   ] },
+  { slug: "arini-subianto-family", rank: 33, name: "Arini Subianto & keluarga", netWorthUsd: 2.4e9, wealthNote: "PT Persada Capital Investama dimiliki keluarga mendiang Subianto menurut laporan AADI kuartal I 2026; porsi pribadi Arini dari tiap saham entitas belum dipisahkan.", candidateCodes: [], groupExposure: [
+    ...["AADI", "TAPG", "MPMX", "SSIA", "DSNG"].map((code) => ({ code, holderNames: ["PT PERSADA CAPITAL INVESTAMA"], holder: "PT Persada Capital Investama · keluarga Subianto", sourceUrl: "https://www.idx.id/Portals/0/StaticData/ListedCompanies/Corporate_Actions/New_Info_JSX/Jenis_Informasi/01_Laporan_Keuangan/02_Soft_Copy_Laporan_Keuangan/Laporan%20Keuangan%20Tahun%202026/TW1/AADI/FS%20Adaro%20Andalan%20Indonesia%20-%2031%20March%202026.pdf" })),
+  ] },
+  { slug: "hartati-murdaya", rank: 44, name: "Hartati Murdaya", netWorthUsd: 1.25e9, wealthNote: "Kepemilikan MKPI tercatat atas PT Karuna Paramita Propertindo, entitas terkait keluarga Murdaya; porsi manfaat Hartati pribadi tidak dipisahkan.", candidateCodes: [], groupExposure: [
+    { code: "MKPI", holderNames: ["PT.Karuna Paramita Propertindo"], holder: "PT Karuna Paramita Propertindo · keluarga Murdaya", sourceUrl: "https://www.golfpondokindah.com/document/2025_Annual_Report.pdf" },
+  ] },
+  { slug: "eddy-katuari-family", rank: 49, name: "Eddy Katuari & keluarga", netWorthUsd: 0.995e9, wealthNote: "PT Lumbung Artakencana tercantum sebagai entitas grup Wings pada laporan Bank Mas 2024, yang juga menyebut Eddy William Katuari sebagai salah satu pemilik grup. Saham LTLS adalah posisi badan hukum, bukan porsi pribadi Eddy.", candidateCodes: [], groupExposure: [
+    { code: "LTLS", holderNames: ["PT Lumbung Artakencana"], holder: "PT Lumbung Artakencana · grup Wings", sourceUrl: "https://www.bankmas.co.id/cms/storage/app/media/Laporan%20Tahunan/laporan-tahunan-bank-mas-2024-audit-report-202504.pdf" },
+  ] },
+  { slug: "husodo-angkosubroto-family", rank: 39, name: "Husodo Angkosubroto & keluarga", netWorthUsd: 1.5e9, wealthNote: "Laporan SIPD menyebut keluarga Angkosubroto sebagai pemilik manfaat akhir melalui PT Great Giant Pineapple; bagian pribadi Husodo tidak diungkap.", candidateCodes: [], groupExposure: [
+    { code: "SIPD", holderNames: ["GREAT GIANT PINEAPPLE"], holder: "PT Great Giant Pineapple · keluarga Angkosubroto", sourceUrl: "https://www.sreeyasewu.com/getFile?src=uploads%2Fpdf%2FAnnual-and-Sustainability-Report-2024.pdf" },
+  ] },
+  { slug: "sjamsul-nursalim-family", rank: 29, name: "Sjamsul Nursalim & keluarga", netWorthUsd: 2.8e9, wealthNote: "Denham adalah perusahaan dalam grup Giti; bagian ekonomi Sjamsul pribadi tidak ditentukan dari saham yang terdaftar.", candidateCodes: [], groupExposure: [
+    { code: "GJTL", holderNames: ["DENHAM PTE LTD"], holder: "Denham Pte Ltd · grup Giti Tire / keluarga Nursalim", sourceUrl: "https://www.gt-tires.com/wp-content/uploads/2025/05/GT-AR-2024.pdf" },
+  ] },
+  { slug: "eddy-sugianto", rank: 47, name: "Eddy Sugianto", netWorthUsd: 1.1e9, wealthNote: "Eddy memiliki 92,43% PT Edika Agung Mandiri menurut laporan MAHA 2024; nilai yang ditampilkan untuk MAHA dan MCOL adalah posisi bruto entitas, bukan porsi bersih pribadi.", candidateCodes: [], groupExposure: [
+    ...["MAHA", "MCOL"].map((code) => ({ code, holderNames: ["EDIKA AGUNG MANDIRI PT"], holder: "PT Edika Agung Mandiri · pengendali Eddy Sugianto", sourceUrl: "https://mha.co.id/fileIR/AR/AR/MAHA%20-%20AR%26SR%202024.pdf" })),
+  ] },
   { slug: "irwan-hidayat-family", rank: 46, name: "Irwan Hidayat & family", netWorthUsd: 1.15e9, wealthNote: "PT Hotel Candi Baru dimiliki sejumlah anggota keluarga Hidayat; persentase saham entitas tidak sama dengan bagian pribadi Irwan.", candidateCodes: [], groupExposure: [
     { code: "SIDO", holderNames: ["PT HOTEL CANDI BARU"], holder: "PT Hotel Candi Baru · keluarga Hidayat", sourceUrl: "https://investor.sidomuncul.co.id/misc/ar/AR-2024.pdf" },
   ] },
@@ -148,15 +166,15 @@ const CURATED_PROFILES: readonly KongloProfile[] = [
     { code: "VIVA", holderNames: ["PT. Bakrie Global Ventura"], holder: "PT Bakrie Global Ventura", sourceUrl: BAKRIE_SOURCE },
     { code: "BUMI", holderNames: ["PT BAKRIE CAPITAL INDONESIA"], holder: "PT Bakrie Capital Indonesia", sourceUrl: BAKRIE_SOURCE },
     { code: "UNSP", holderNames: ["PT BAKRIE CAPITAL INDONESIA"], holder: "PT Bakrie Capital Indonesia", sourceUrl: BAKRIE_SOURCE },
-    { code: "ENRG", holderNames: ["PT BAKRIE CAPITAL INDONESIA", "PT BAKRIE KALILA INVESTMENT"], holder: "PT Bakrie Capital Indonesia + PT Bakrie Kalila Investment", sourceUrl: BAKRIE_SOURCE },
+    { code: "ENRG", holderNames: ["PT BAKRIE CAPITAL INDONESIA", "Bakrie Kalila Investment, PT"], holder: "PT Bakrie Capital Indonesia + PT Bakrie Kalila Investment", sourceUrl: BAKRIE_SOURCE },
     { code: "BRMS", holder: "Entitas terkait Grup Bakrie · porsi kepemilikan N/D", sourceUrl: BAKRIE_ENTITIES_SOURCE },
     { code: "DEWA", holder: "Entitas terkait Grup Bakrie · porsi kepemilikan N/D", sourceUrl: BAKRIE_ENTITIES_SOURCE },
     { code: "ELTY", holder: "Entitas terkait Grup Bakrie · porsi kepemilikan N/D", sourceUrl: BAKRIE_ENTITIES_SOURCE },
     { code: "MDIA", holder: "Entitas terkait Grup Bakrie · porsi kepemilikan N/D", sourceUrl: BAKRIE_ENTITIES_SOURCE },
   ] },
-  { slug: "hashim-djojohadikusumo", name: "Hashim Djojohadikusumo", candidateCodes: [], groupExposure: [
+  { slug: "hashim-djojohadikusumo", name: "Hashim Djojohadikusumo", wealthNote: "Estimasi WIFI mengalikan 45% kepemilikan PT Arsari Sentra Data di PT Investasi Sukses Bersama menurut laporan WIFI 2025 dengan posisi WIFI pada snapshot KSEI September 2026. Porsi perantara setelah 2025 belum diverifikasi kembali.", candidateCodes: [], groupExposure: [
     { code: "COIN", sourceUrl: "https://market.bisnis.com/read/20251217/192/1937426/investasi-baru-arsari-group-milik-hashim-coin-hingga-blok-migas-natuna" },
-    { code: "WIFI", holderNames: ["PT. INVESTASI SUKSES BERSAMA"], stakeMultiplier: 0.45, holder: "PT Arsari Sentra Data 45% × PT Investasi Sukses Bersama", sourceUrl: "https://legacy.pasardana.id/news/2025/1/10/pt-arsari-sentra-data-miliki-22-55-wifi-secara-tidak-langsung-melalui-kepemilikan-45-00-pt-investasi-sukses-bersama/" },
+    { code: "WIFI", holderNames: ["INVESTASI SUKSES BERSAMA PT"], stakeMultiplier: 0.45, holder: "PT Arsari Sentra Data 45% (laporan WIFI 2025) × PT Investasi Sukses Bersama (KSEI September 2026)", sourceUrl: "https://www.surge.co.id/pdf/Investor%20Relations/Annual%20Report%202025/Annual_Report_2025_new.pdf" },
   ] },
 ];
 
@@ -237,7 +255,7 @@ export function kongloHoldings(profile: KongloProfile): KongloHolding[] {
   const reported: KongloHolding[] = (profile.reportedDirect ?? []).flatMap((item) => {
     const company = getCompanyCatalogEntry(item.code);
     return company ? [{ code: item.code, name: company.name, percentage: item.percentage,
-      ownershipAsOf: item.ownershipAsOf, shares: null, price: null, priceAsOf: null, marketCap: company.marketCap,
+      ownershipAsOf: item.ownershipAsOf, shares: null, price: null, priceAsOf: company.holdingsDate, marketCap: company.marketCap,
       indicativeValue: valueFromMarketCap(item.percentage, company.marketCap), kind: "direct", holder: profile.name, sourceUrl: item.sourceUrl }] : [];
   });
   const group: KongloHolding[] = (profile.groupExposure ?? []).flatMap(({ code, sourceUrl, percentage, shares, ownershipAsOf, holder, holderNames, stakeMultiplier }) => {
