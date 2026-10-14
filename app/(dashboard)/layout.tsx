@@ -17,6 +17,10 @@ import { FooterClock } from "@/components/terminal/FooterClock";
 import { BiRateFooter } from "@/components/terminal/BiRateFooter";
 import { MobileExtensionDock } from "@/components/terminal/MobileExtensionDock";
 import { ThemeControl } from "@/components/profile/ThemeControl";
+import { ExtensionSettings } from "@/components/terminal/ExtensionSettings";
+import { cookies } from "next/headers";
+import { TRENDING_EXTENSION_COOKIE } from "@/lib/trending-extension";
+import { VOLUME_EXTENSION_COOKIE, WATCHLIST_EXTENSION_COOKIE } from "@/lib/mobile-extensions";
 
 const codes = COMPANY_CATALOG.map((stock) => stock.code).sort();
 const searchStocks = COMPANY_CATALOG.map(({ code, name }) => ({ code, name }));
@@ -31,6 +35,9 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
 
   const user = await requireUser();
   const language = await getUiLanguage();
+  const extensionCookies = await cookies();
+  const initialExtensions = { trending: extensionCookies.get(TRENDING_EXTENSION_COOKIE)?.value === "on", watchlist: extensionCookies.get(WATCHLIST_EXTENSION_COOKIE)?.value === "on", volume: extensionCookies.get(VOLUME_EXTENSION_COOKIE)?.value === "on" };
+  const extensionSettingsKey = `${initialExtensions.trending}-${initialExtensions.watchlist}-${initialExtensions.volume}`;
   await ensureStockCatalog();
 
   return (
@@ -66,6 +73,7 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
 
         <div className="col-start-2 row-start-1 flex items-stretch bg-panel sm:col-start-3 xl:col-start-5">
           <ThemeControl compact />
+          <ExtensionSettings key={extensionSettingsKey} compact initial={initialExtensions} />
           <UserBadge
             username={user.username}
             displayName={user.profile?.displayName ?? null}

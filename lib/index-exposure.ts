@@ -13,6 +13,11 @@ export type IndonesiaIndexSnapshot = {
   totalConstituents: number;
   indexMarketCap: number;
   marketCapUnit: "USD_BILLION" | "IDR_MILLION";
+  countryMarketCapUsdBillion: number;
+  globalMarketCapUsdBillion: number;
+  countryWeightPct: number;
+  countryWeightMethod: "derived" | "published";
+  globalIndexUrl: string;
   topWeightPct: number;
   capLabel: string;
   sourceUrl: string;
@@ -53,8 +58,13 @@ export const INDONESIA_INDEX_SNAPSHOTS: IndonesiaIndexSnapshot[] = [
     title: "MSCI Indonesia Index",
     snapshotDate: "2026-09-30",
     totalConstituents: 9,
-    indexMarketCap: 53.35581,
+    indexMarketCap: 53.35,
     marketCapUnit: "USD_BILLION",
+    countryMarketCapUsdBillion: 53.35,
+    globalMarketCapUsdBillion: 12_280,
+    countryWeightPct: 53.35 / 12_280 * 100,
+    countryWeightMethod: "derived",
+    globalIndexUrl: "https://www.msci.com/indexes/index/891800/msci-em-emerging-markets-index-2",
     topWeightPct: 100,
     capLabel: "Kapitalisasi pasar free-float (USD miliar)",
     sourceUrl: "https://www.msci.com/indexes/index/105767/msci-indonesia-index",
@@ -80,10 +90,15 @@ export const INDONESIA_INDEX_SNAPSHOTS: IndonesiaIndexSnapshot[] = [
     totalConstituents: 39,
     indexMarketCap: 1_438_733_356,
     marketCapUnit: "IDR_MILLION",
+    countryMarketCapUsdBillion: 80.511,
+    globalMarketCapUsdBillion: 10_655.879,
+    countryWeightPct: 0.76,
+    countryWeightMethod: "published",
+    globalIndexUrl: "https://research.ftserussell.com/Analytics/FactSheets/temp/66e55299-fd35-4342-87f5-a3ef6b24c547.pdf",
     topWeightPct: 75.10,
     capLabel: "Net market cap (Rp juta)",
     sourceUrl: "https://research.ftserussell.com/Analytics/FactSheets/temp/95c623d6-3e0d-4a72-a9de-48d4c9ebaed0.pdf",
-    indexUrl: "https://research.ftserussell.com/analytics/factsheets",
+    indexUrl: "https://research.ftserussell.com/Analytics/FactSheets/temp/95c623d6-3e0d-4a72-a9de-48d4c9ebaed0.pdf",
     pdfUrl: "https://research.ftserussell.com/Analytics/FactSheets/temp/95c623d6-3e0d-4a72-a9de-48d4c9ebaed0.pdf",
     pdfDate: "2026-05-29",
     constituents: [

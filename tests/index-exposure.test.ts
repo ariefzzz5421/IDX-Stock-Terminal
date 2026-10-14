@@ -25,3 +25,14 @@ test("snapshot values are positive, sourced, and tied to known IDX tickers", () 
     }
   }
 });
+
+test("Indonesia share of global benchmarks is dated and does not imply fund AUM", () => {
+  const [msci, ftse] = INDONESIA_INDEX_SNAPSHOTS;
+  assert.equal(msci.countryWeightMethod, "derived");
+  assert.ok(Math.abs(msci.countryWeightPct - 0.4345) < 0.001);
+  assert.equal(msci.countryMarketCapUsdBillion, msci.indexMarketCap);
+  assert.equal(ftse.countryWeightMethod, "published");
+  assert.equal(ftse.countryWeightPct, 0.76);
+  assert.equal(ftse.countryMarketCapUsdBillion, 80.511);
+  assert.ok(ftse.countryMarketCapUsdBillion < ftse.globalMarketCapUsdBillion);
+});

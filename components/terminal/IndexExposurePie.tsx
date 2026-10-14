@@ -39,6 +39,10 @@ export function IndexExposurePie({ snapshot }: { snapshot: IndonesiaIndexSnapsho
         <button type="button" onClick={() => changeMode("flow")} aria-pressed={mode === "flow"} className={`min-h-9 px-2.5 py-1 font-semibold ${mode === "flow" ? "bg-amber text-void" : "text-dim hover:text-ink-hi"}`}>Arus asing</button>
       </div>
     </div>
+    <div className="mt-4 flex flex-wrap items-end justify-between gap-3 border border-cyan/40 bg-cyan/5 px-4 py-3">
+      <div><p className="text-micro font-bold uppercase tracking-wider text-cyan">Kapitalisasi Indonesia dalam indeks</p><strong className="mt-1 block font-display text-2xl font-black tabular-nums text-ink-hi sm:text-3xl">US${pct.format(snapshot.countryMarketCapUsdBillion)}B</strong></div>
+      <p className="text-micro text-dim">AUM dana & arus masuk terverifikasi: N/D</p>
+    </div>
     {mode === "flow" ? <div className="mt-3 flex min-h-56 flex-col items-center justify-center border border-rule bg-panel px-4 text-center" role="status"><strong className="font-display text-base text-amber">Coming soon</strong><p className="mt-2 max-w-md text-xs leading-5 text-dim">Data arus beli dan jual asing belum tersedia dari sumber transaksi yang terverifikasi.</p></div> : <div className="mt-3 grid min-w-0 gap-3 sm:grid-cols-[minmax(0,14rem)_minmax(0,1fr)] sm:items-center">
       <div className="relative mx-auto aspect-square w-full max-w-[14rem]">
         <svg viewBox="0 0 240 240" className="h-full w-full" role="group" aria-label={`Bobot ${snapshot.title}: ${pct.format(listedWeight)} persen pada saham yang ditampilkan`}>
