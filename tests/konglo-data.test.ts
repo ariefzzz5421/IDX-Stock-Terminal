@@ -22,6 +22,7 @@ test("new issuer-backed mappings resolve against the dated KSEI snapshot", () =>
     "soegiarto-adikoesoemo": [["AKRA", 64.63]],
     "irwan-hidayat-family": [["SIDO", 77.59]],
     "bakrie": [["BNBR", 25.31]],
+    "martua-sitorus": [["CMNT", 87.37]],
     "haji-isam": [["PACK", 20.04], ["RANS", 1.4]],
     "mochtar-riady-family": [["LPKR", 20.25]],
     "arini-subianto-family": [["DSNG", 1.77]],
@@ -34,6 +35,19 @@ test("new issuer-backed mappings resolve against the dated KSEI snapshot", () =>
     for (const [code, percentage] of positions) {
       assert.ok(holdings.some((holding) => holding.code === code && Math.abs((holding.percentage ?? 0) - percentage) < 0.0001), `${slug}: ${code} ${percentage}%`);
     }
+  }
+});
+
+test("profiles with missing data retain sourced context without overstating ownership", () => {
+  const dewi = kongloHoldings(profile("dewi-kam"));
+  assert.ok(dewi.some((holding) => holding.code === "BYAN" && holding.percentage === null && holding.indicativeValue === null));
+
+  for (const slug of ["bachtiar-karim-family", "sukanto-tanoto", "putera-sampoerna-family", "sulistyo-family", "husain-djojonegoro-family"]) {
+    assert.equal(kongloHoldings(profile(slug)).length, 0, `${slug} tidak boleh mendapat ticker tanpa bukti posisi terkini`);
+  }
+
+  for (const slug of ["dewi-kam", "bachtiar-karim-family", "sukanto-tanoto", "martua-sitorus", "putera-sampoerna-family", "sulistyo-family", "husain-djojonegoro-family"]) {
+    assert.ok((profile(slug).researchSources?.length ?? 0) > 0, `${slug} harus memiliki sumber audit`);
   }
 });
 

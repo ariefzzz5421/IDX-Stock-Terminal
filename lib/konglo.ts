@@ -14,6 +14,8 @@ export type KongloProfile = {
   wealthNote?: string;
   /** Issuer document confirming a Forbes name or family maps to the legal shareholder name. */
   identitySourceUrl?: string;
+  /** Source links explaining ownership status or why a candidate ticker is excluded. */
+  researchSources?: readonly { label: string; url: string }[];
   holderName?: string;
   /** Named family members reported separately in the same official ownership snapshot. */
   holderNames?: readonly string[];
@@ -60,9 +62,24 @@ const CURATED_PROFILES: readonly KongloProfile[] = [
   { slug: "otto-toto-sugiri", rank: 6, name: "Otto Toto Sugiri", netWorthUsd: 11.3e9, holderName: "OTTO TOTO SUGIRI", candidateCodes: ["DCII"] },
   { slug: "tahir", rank: 7, name: "Tahir & keluarga", netWorthUsd: 9.8e9, holderName: "TAHIR", candidateCodes: ["MAYA", "SONA", "MPRO"] },
   { slug: "marina-budiman", rank: 8, name: "Marina Budiman", netWorthUsd: 8.2e9, holderName: "MARINA BUDIMAN", candidateCodes: ["DCII"] },
-  { slug: "dewi-kam", rank: 17, name: "Dewi Kam", netWorthUsd: 4.3e9, candidateCodes: [], groupExposure: [{ code: "BYAN", sourceUrl: "https://www.forbes.com/profile/dewi-kam/" }] },
+  { slug: "dewi-kam", rank: 17, name: "Dewi Kam", netWorthUsd: 4.3e9, wealthNote: "Forbes 2025 mengaitkan kekayaan Dewi Kam dengan kepentingan minoritas di BYAN. Porsi dan entitas pemegang manfaatnya tidak dapat diverifikasi dari snapshot BEI/KSEI September 2026; nilai saham karena itu N/D.", candidateCodes: [], groupExposure: [{ code: "BYAN", holder: "Forbes melaporkan kepentingan minoritas; entitas dan porsi terkini N/D", sourceUrl: "https://www.forbes.com/profile/dewi-kam/?list=rtb" }], researchSources: [
+    { label: "Profil Forbes · kepentingan BYAN", url: "https://www.forbes.com/profile/dewi-kam/?list=rtb" },
+  ] },
+  { slug: "bachtiar-karim-family", rank: 18, name: "Bachtiar Karim & family", netWorthUsd: 4.2e9, wealthNote: "Forbes 2025 mencatat kekayaan keluarga. Bachtiar memimpin Musim Mas yang dijalankan bersama saudara-saudaranya; tidak ada posisi saham BEI yang terpetakan dari snapshot September 2026.", candidateCodes: [], researchSources: [
+    { label: "Forbes · keluarga Karim dan Musim Mas", url: "https://www.forbes.com/sites/gloriaharaito/2023/06/01/indonesian-palm-oil-billionaire-bachtiar-karims-son-is-building-a-property-group-to-diversify-the-familys-business-empire/" },
+    { label: "Musim Mas · profil perusahaan", url: "https://www.musimmas.com/id/tentang-kami/" },
+  ] },
   { slug: "mochtar-riady-family", rank: 20, name: "Mochtar Riady & keluarga", netWorthUsd: 3.75e9, wealthNote: "PT Inti Anugerah Pratama terkait keluarga Riady menurut laporan LPKR 2024; James T. Riady disebut sebagai pemilik manfaat. Porsi manfaat Mochtar pribadi pada 2026 belum terverifikasi.", candidateCodes: [], groupExposure: [
     ...["LPKR", "LPLI", "LPPS", "MLPL", "LPGI"].map((code) => ({ code, holderNames: ["INTI ANUGERAH PRATAMA, PT"], holder: "PT Inti Anugerah Pratama · keluarga Riady", sourceUrl: "https://www.lippokarawaci.co.id/uploads/file/PG_LPKR_2024AR_BOOK_REV005_uploaded.pdf" })),
+  ] },
+  { slug: "sukanto-tanoto", rank: 21, name: "Sukanto Tanoto", netWorthUsd: 3.7e9, wealthNote: "Forbes 2025 mencatat estimasi kekayaan US$3,7 miliar. RGE mengonfirmasi Sukanto Tanoto sebagai pendiri dan pemilik grup privat; tidak ada posisi saham BEI yang berhasil dipetakan pada snapshot September 2026. INRU tidak diatribusikan karena pemegang terdaftar terbesarnya adalah Allied Hill Limited.", candidateCodes: [], researchSources: [
+    { label: "RGE · konfirmasi kepemilikan grup", url: "https://www.rgei.com/id/tentang-kami/faqs/siapa-pemilik-rge-dan-bagaimana-susunan-manajemen-perusahaan" },
+    { label: "TPL · keterbukaan informasi", url: "https://www.tobapulp.com/investors/disclosure-information/" },
+  ] },
+  { slug: "martua-sitorus", rank: 23, name: "Martua Sitorus", netWorthUsd: 3.55e9, wealthNote: "CMNT: WH Investments tercatat memiliki 87,37%; laporan tahunan Cemindo 2025 menyebut Martua Sitorus sebagai pemilik manfaat melalui entitas itu. Angka saham grup bukan seluruh kekayaan pribadi; nilai indikatif memakai kapitalisasi pasar bertanggal.", candidateCodes: [], groupExposure: [
+    { code: "CMNT", holderNames: ["WH INVESTMENTS PTE. LTD."], holder: "WH Investments Pte. Ltd. · pemilik manfaat dikonfirmasi emiten", sourceUrl: "https://cms.cemindo.com/storage/2219/AR-SR-2025-CMNT.pdf" },
+  ], researchSources: [
+    { label: "Laporan tahunan Cemindo 2025 · pemilik manfaat", url: "https://cms.cemindo.com/storage/2219/AR-SR-2025-CMNT.pdf" },
   ] },
   { slug: "sri-prakash-lohia", rank: 10, name: "Sri Prakash Lohia", netWorthUsd: 8e9, candidateCodes: [], groupExposure: [
     { code: "INDR", holderNames: ["INDORAMA HOLDINGS B.V."], holder: "Indorama Holdings B.V. · Indorama Corporation", sourceUrl: "https://www.indorama.com/news/indorama-partners-with-pt-bank-dbs-indonesia-for-usd-20-million-sustainabilitylinked-trade-finance-facility" },
@@ -109,6 +126,17 @@ const CURATED_PROFILES: readonly KongloProfile[] = [
     { code: "MEDC", percentage: 0.15, ownershipAsOf: "31 Desember 2025", sourceUrl: "https://www.medcoenergi.com/uploads/areports/2025/MEDC_AR2025_ENG.pdf" },
   ] },
   { slug: "manoj-punjabi", rank: 31, name: "Manoj Punjabi", netWorthUsd: 2.6e9, holderName: "MANOJ DHAMOO PUNJABI", candidateCodes: ["FILM"], identitySourceUrl: "https://mdentertainment.com/wp-content/uploads/2024/10/MD-Keterbukaan-Informasi-HMETD-IND.pdf" },
+  { slug: "putera-sampoerna-family", rank: 32, name: "Putera Sampoerna & family", netWorthUsd: 2.5e9, wealthNote: "Keluarga Sampoerna menjual seluruh 66% saham SGRO pada November 2025 kepada unit POSCO. Snapshot BEI/KSEI September 2026 mencatat AGPA Pte. Ltd. sebagai pemegang 98,70%; posisi itu tidak diatribusikan kepada keluarga Sampoerna.", candidateCodes: [], researchSources: [
+    { label: "Forbes · penjualan saham SGRO", url: "https://www.forbes.com/sites/yessarrosendar/2025/12/10/tobacco-heir-putera-sampoerna-exits-palm-oil-eyes-new-frontiers/" },
+    { label: "KSEI · pengumuman SGRO/AGPA", url: "https://web.ksei.co.id/Announcement/Files/189905_ksei_1484_jku_0126_202601211209.pdf" },
+  ] },
+  { slug: "sulistyo-family", rank: 40, name: "Sulistyo family", netWorthUsd: 1.45e9, wealthNote: "Winarko dan Vilia Sulistyo termasuk penjual saham FASW saat perubahan pengendali pada 2019. Snapshot September 2026 menampilkan Siam Kraft dan SCGP Solutions sebagai pemegang terdaftar; tidak ada posisi FASW keluarga Sulistyo saat ini yang terverifikasi.", candidateCodes: [], researchSources: [
+    { label: "Fajar Paper · laporan perubahan pengendali 2019", url: "https://www.fajarpaper.com/report-on-material-information-or-facts-2/" },
+    { label: "Fajar Paper · keterbukaan transaksi 2024", url: "https://www.fajarpaper.com/report-on-material-information-or-facts-6/" },
+  ] },
+  { slug: "husain-djojonegoro-family", rank: 50, name: "Husain Djojonegoro & family", netWorthUsd: 0.92e9, wealthNote: "Forbes 2025 mencatat estimasi kekayaan keluarga sebesar US$920 juta. Tidak ada posisi saham BEI yang dapat dicocokkan secara andal dengan nama ini di snapshot BEI/KSEI September 2026; saham perusahaan keluarga yang tidak tercatat tidak dihitung.", candidateCodes: [], researchSources: [
+    { label: "Forbes · Indonesia's 50 Richest 2025", url: FORBES_LIST_URL },
+  ] },
   { slug: "bambang-sutantio", rank: 34, name: "Bambang Sutantio", netWorthUsd: 2.35e9, holderName: "BAMBANG SUTANTIO", candidateCodes: ["CMRY"], identitySourceUrl: "https://cimory.com/uploads/investors/Interactive%20AR%20CMRY%202025_8MB.pdf" },
   { slug: "eddy-kusnadi-sariaatmadja-family", rank: 36, name: "Eddy Kusnadi Sariaatmadja & keluarga", netWorthUsd: 1.8e9, holderName: "RD EDDY K SARIAATMADJA", candidateCodes: ["EMTK"], identitySourceUrl: "https://cms.emtek.co.id/media/annual_report_attachment_en/gcib/AR-EMTEK-2025.pdf", groupExposure: [
     { code: "EMTK", holderNames: ["PT ADIKARSA SARANA"], holder: "PT Adikarsa Sarana · perusahaan yang dikendalikan Eddy", sourceUrl: "https://cms.emtek.co.id/media/annual_report_attachment_en/gcib/AR-EMTEK-2025.pdf" },

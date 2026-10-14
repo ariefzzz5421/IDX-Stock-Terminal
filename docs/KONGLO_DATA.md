@@ -47,7 +47,7 @@ Foreign-flow transaction data and its API are intentionally marked **Coming soon
 
 ## Profile-by-profile check, 14 October 2026
 
-All **50 Forbes 2025 ranks** were checked against the [dated Forbes list](https://www.forbes.com/lists/indonesia-billionaires/?view=pc). Each mapped percentage was re-read from the embedded **30 September 2026** BEI/KSEI holder snapshot; an automated test now fails if a configured legal-holder name does not exist in the stated issuer row. This verifies the displayed registered-holder arithmetic, not the full beneficial ownership chain. **43** Forbes profiles have at least one quantified position, **1** has a company connection without a defensible current percentage, and **6** have no verified IDX position in this snapshot. There are also **5** extra profiles outside the Forbes top 50.
+All **50 Forbes 2025 ranks** were checked against the [dated Forbes list](https://www.forbes.com/lists/indonesia-billionaires/?view=pc). Each mapped percentage was re-read from the embedded **30 September 2026** BEI/KSEI holder snapshot; an automated test now fails if a configured legal-holder name does not exist in the stated issuer row. This verifies the displayed registered-holder arithmetic, not the full beneficial ownership chain. **44** Forbes profiles have at least one quantified position, **1** has a company connection without a defensible current percentage, and **5** have no verified IDX position in this snapshot. There are also **5** extra profiles outside the Forbes top 50.
 
 `D` means shares registered to the named person, `E` means shares registered to a connected legal entity, and `?` means an unquantified connection. A listed entity's entire position is **not** the person's economic stake. Source links for each relationship and both source dates are on the profile detail page. The catalog's market-cap date is shown beside indicative values; a September ownership percentage multiplied by an August market cap is not a live October valuation.
 
@@ -69,13 +69,13 @@ All **50 Forbes 2025 ranks** were checked against the [dated Forbes list](https:
 | 14 | Lim Hariyanto | E: NCKL, CITA, TIRT |
 | 15 | Theodore Rachmat | D: AADI, ADRO, ASSA, DSNG, TAPG; E: ASSA, DRMA, DSNG, TAPG |
 | 16 | Chairul Tanjung | E: MEGA, BBHI |
-| 17 | Dewi Kam | ?: BYAN; [Forbes](https://www.forbes.com/profile/dewi-kam/?list=indonesia-billionaires) confirms a minority interest, but the September registered-holder row cannot independently establish which legal entity and her current beneficial portion |
-| 18 | Bachtiar Karim | No verified registered IDX position |
+| 17 | Dewi Kam | ?: BYAN; [Forbes live profile](https://www.forbes.com/profile/dewi-kam/?list=rtb) says her wealth mainly comes from a minority stake, but the September registered-holder snapshot does not identify the legal entity or current beneficial percentage |
+| 18 | Bachtiar Karim & family | No mapped IDX holder in the September snapshot. Forbes reports the family business Musim Mas, alongside private property activity; no ticker is assigned without a documented listed holding. |
 | 19 | Garibaldi Thohir | D: MBMA, ADRO, TRIM, AADI, ESSA, PALM, MDKA, MGLV |
 | 20 | Mochtar Riady | E: LPKR, LPLI, LPPS, MLPL, LPGI; family entity, not Mochtar's personal percentage |
-| 21 | Sukanto Tanoto | No verified registered IDX position; [Forbes](https://www.forbes.com/profile/sukanto-tanoto/) describes the private/overseas RGE group |
+| 21 | Sukanto Tanoto | No verified registered IDX position; [RGE confirms he owns the privately held group](https://www.rgei.com/id/tentang-kami/faqs/siapa-pemilik-rge-dan-bagaimana-susunan-manajemen-perusahaan). INRU is not attributed because the September snapshot names Allied Hill Limited as its major holder. |
 | 22 | Setiawan | E: KLBF |
-| 23 | Martua Sitorus | No verified registered IDX position |
+| 23 | Martua Sitorus | E: CMNT, WH Investments Pte. Ltd. 87.37%; [Cemindo's 2025 annual report](https://cms.cemindo.com/storage/2219/AR-SR-2025-CMNT.pdf) names Martua as beneficial owner through WH Investments, and the September 2026 snapshot confirms the same registered holder. This is group ownership, not a personal net-worth calculation. |
 | 24 | Jogi Hendra Atmadja | D: MYOR |
 | 25 | Susilo Wonowidjojo | E: GGRM |
 | 26 | Peter Sondakh | E: BWPT |
@@ -84,7 +84,7 @@ All **50 Forbes 2025 ranks** were checked against the [dated Forbes list](https:
 | 29 | Sjamsul Nursalim | E: GJTL |
 | 30 | Djoko Susanto | E: AMRT |
 | 31 | Manoj Punjabi | D: FILM |
-| 32 | Putera Sampoerna | No current verified IDX position. Former SGRO was acquired through AGPA and renamed Prime Agri Resources; [KSEI's January 2026 notice](https://web.ksei.co.id/Announcement/Files/189905_ksei_1484_jku_0126_202601211209.pdf) and the September holder snapshot do not support assigning AGPA's shares to Sampoerna. |
+| 32 | Putera Sampoerna & family | No current verified IDX position. [Forbes reported the family sold its entire 66% SGRO stake in November 2025](https://www.forbes.com/sites/yessarrosendar/2025/12/10/tobacco-heir-putera-sampoerna-exits-palm-oil-eyes-new-frontiers/); the September 2026 holder snapshot lists AGPA Pte. Ltd. at 98.70%, not Sampoerna. |
 | 33 | Arini Subianto | E: AADI, TAPG, MPMX, SSIA, DSNG |
 | 34 | Bambang Sutantio | D: CMRY |
 | 35 | Alexander Ramlie | D: AMMN (2025 issuer report, below 1% KSEI publication threshold) |
@@ -92,7 +92,7 @@ All **50 Forbes 2025 ranks** were checked against the [dated Forbes list](https:
 | 37 | Hamami | E: ABMM |
 | 38 | Ciputra | E: CTRA |
 | 39 | Husodo Angkosubroto | E: SIPD |
-| 40 | Sulistyo | No current verified IDX position. FASW's September holder list is Siam Kraft and SCGP Solutions; the historic family association is not used as a current stake. |
+| 40 | Sulistyo family | No current verified IDX position. [Fajar Paper's material disclosure](https://www.fajarpaper.com/report-on-material-information-or-facts-2/) confirms Winarko and Vilia Sulistyo were among the sellers in the 2019 change of control; the September 2026 holder snapshot names Siam Kraft and SCGP Solutions. |
 | 41 | Jenny Quantero & Engki Wibowo | D: BYAN, MYOH |
 | 42 | Soegiarto Adikoesoemo | E: AKRA |
 | 43 | Lim Chai Hock | D: BYAN |
@@ -102,7 +102,7 @@ All **50 Forbes 2025 ranks** were checked against the [dated Forbes list](https:
 | 47 | Eddy Sugianto | E: MAHA, MCOL |
 | 48 | Hary Tanoesoedibjo | E: BMTR, MNCN, KPIG, MSIN, BCAP, BABP |
 | 49 | Eddy Katuari | E: LTLS; [Bank Mas 2024 report](https://www.bankmas.co.id/cms/storage/app/media/Laporan%20Tahunan/laporan-tahunan-bank-mas-2024-audit-report-202504.pdf) identifies Lumbung Artakencana as a Wings group entity and Eddy as one of its owners; current personal stake is not inferred |
-| 50 | Husain Djojonegoro | No verified registered IDX position |
+| 50 | Husain Djojonegoro & family | No verified registered IDX position in the September snapshot. Forbes 2025 estimate US$920 million is retained as a dated family estimate; no unlisted company is presented as an IDX holding. |
 
 Extra profiles: Franky Widjaja (D: BOLA; E: DSSA), Haji Isam (D: PACK **20.04%**, RANS **1.40%**; E: JARR, PGUN, TEBE; BYAN agreement pending), Happy Hapsoro (D: RAJA, MINA, SINI, UANG, ARKO), Bakrie family (E: BNBR, VKTR, VIVA, BUMI, UNSP, ENRG; unquantified: BRMS, DEWA, ELTY, MDIA), Hashim Djojohadikusumo (E: WIFI via an intermediate entity at the [issuer's reported 2025 intermediate percentage](https://www.surge.co.id/pdf/Investor%20Relations/Annual%20Report%202025/Annual_Report_2025_new.pdf) and September 2026 registered WIFI position; COIN connection unquantified). Neither Haji Isam nor the Bakrie family receives an invented Forbes net-worth figure. Their cards show only dated gross listed-equity estimates, with overlapping parent/subsidiary exposures possible.
 
