@@ -7,6 +7,8 @@ import { sendDiscordEmbed } from "./discord";
 import { getAlertSettings, discordWebhookConfigured } from "./store";
 import { buildMarketSignals, type Cap, type MarketMode } from "./market-rules";
 import { nextRetryDelayMs } from "./rules";
+import { marketStatus } from "@/lib/market-session";
+import { jakartaDate } from "./market-rules";
 
 export { buildMarketSignals } from "./market-rules";
 
@@ -44,11 +46,11 @@ export async function previewMarketEmbeds() {
 const RETRIES = 6;
 export async function dispatchMarketDeliveries(limit=20) {
   const settings = await getAlertSettings();
-  if (!settings.enabled || !discordWebhookConfigured()) return { sent: 0, failed: 0 };
+  if (!settings.enabled || !discordWebhookConfigured() || !marketStatus().isOpen) return { sent: 0, failed: 0 };
   const now = new Date();
   const jobs = await prisma.discordAlertDelivery.findMany({
     where: {
-      kind: { in: ["MARKET_DIGEST", "MARKET_LIMIT"] },
+      kind: { in: ["MARKET_VOLUME", "MARKET_ARA", "MARKET_ARB"] },
       OR: [
         { status: "PENDING" },
         { status: "RETRY", nextAttemptAt: { lte: now } },
@@ -61,9 +63,11 @@ export async function dispatchMarketDeliveries(limit=20) {
   let sent = 0, failed = 0;
   for (const job of jobs) {
     // Do not flush unsent alerts when a feature has been disabled.
-    if (!(job.kind === "MARKET_DIGEST" ? settings.marketDigestEnabled : settings.priceLimitsEnabled) ||
-        job.createdAt < settings.enabledAt ||
-        job.createdAt < new Date(now.getTime() - (job.kind === "MARKET_LIMIT" ? 24 : 48) * 60 * 60_000)) {
+    const allowed = job.kind === "MARKET_VOLUME" ? settings.marketVolumeEnabled :
+      job.kind === "MARKET_ARA" ? settings.marketAraEnabled : settings.marketArbEnabled;
+    if (!allowed || job.createdAt < settings.enabledAt ||
+        job.createdAt < new Date(now.getTime() - 15 * 60_000) ||
+        !job.marketKey?.startsWith("market:" + jakartaDate(now) + ":")) {
       await prisma.discordAlertDelivery.updateMany({
         where: { id: job.id, status: job.status, updatedAt: job.updatedAt },
         data: { status: "SKIPPED", lastError: "Feature disabled, cutoff reset or market signal expired" },
@@ -133,7 +137,7 @@ export async function runMarketAlertsSafely(mode:MarketMode) {
 
 export async function retryMarketDeliveries() {
   await prisma.discordAlertDelivery.updateMany({
-    where: {kind:{in:["MARKET_DIGEST","MARKET_LIMIT"]},status:{in:["RETRY","FAILED"]}},
+    where: {kind:{in:["MARKET_VOLUME","MARKET_ARA","MARKET_ARB"]},status:{in:["RETRY","FAILED"]}},
     data: {status:"RETRY", attempts:0, nextAttemptAt:new Date()},
   });
   return dispatchMarketDeliveries();

@@ -1,4 +1,4 @@
-// One-shot external worker. Run via cron on a VPS every 5 minutes on trading days.
+// One-shot VPS worker. Schedule every five minutes. Backend enforces sessions/slots.
 // No Discord webhook URL is needed on the VPS.
 const base = process.env.IDX_TERMINAL_URL ?? "https://idx-stock-terminal.vercel.app";
 const secret = process.env.MARKET_ALERT_SECRET ?? "";

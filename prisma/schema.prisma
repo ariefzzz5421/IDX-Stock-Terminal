@@ -321,7 +321,10 @@ model DiscordAlertSettings {
   includePreliminary Boolean @default(false)
   marketDigestEnabled Boolean @default(true)
   priceLimitsEnabled Boolean @default(true)
-  marketTopCount Int @default(5)
+  marketTopCount Int @default(10)
+  marketVolumeEnabled Boolean @default(true)
+  marketAraEnabled Boolean @default(true)
+  marketArbEnabled Boolean @default(true)
   enabledAt DateTime @default(now())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

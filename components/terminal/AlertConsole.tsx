@@ -47,7 +47,7 @@ export function AlertConsole({ initial, webhookConfigured }: { initial: AlertSna
   }
 
   const counts = initial.deliveries.reduce((summary, item) => {
-    if (["EVENT", "MARKET_DIGEST", "MARKET_LIMIT"].includes(item.kind)) summary[item.status] = (summary[item.status] ?? 0) + 1;
+    if (["EVENT", "MARKET_VOLUME", "MARKET_ARA", "MARKET_ARB"].includes(item.kind)) summary[item.status] = (summary[item.status] ?? 0) + 1;
     return summary;
   }, {} as Record<string, number>);
 
@@ -88,21 +88,11 @@ export function AlertConsole({ initial, webhookConfigured }: { initial: AlertSna
       </div>
       {feedback && <p role="status" className={"mt-4 flex items-center gap-2 border px-3 py-2 text-xs " + (feedback.ok ? "border-cyan text-cyan" : "border-down text-down")}>{feedback.ok ? <CheckCircle2 className="h-4 w-4" /> : <TriangleAlert className="h-4 w-4" />}{feedback.text}</p>}
 
-      <div className="mt-8 border-t border-rule pt-5">
-        <h3 className="text-sm font-bold text-ink-hi">Mekanisme alert otomatis</h3>
-        <ol className="mt-3 space-y-3 text-xs leading-6 text-ink">
-          <li><strong>01 / Scanner</strong> — KSEI dipindai melalui cron yang sudah ada sekitar 08.00 dan 21.00 WIB, Senin–Jumat. Waktu eksekusi dapat bergeser.</li>
-          <li><strong>02 / Intelligence</strong> — Dokumen diproses menjadi event NEW atau UPDATED beserta versi, prioritas, dan status verifikasi.</li>
-          <li><strong>03 / Filters</strong> — Hanya event baru setelah aktivasi yang sesuai prioritas dan status diproses. Event lama tidak dikirim otomatis.</li>
-          <li><strong>04 / Delivery</strong> — Tiap versi dibuat satu outbox entry. Discord menerima title, ticker, prioritas, status, sumber resmi, dan link ke riset.</li>
-          <li><strong>05 / Retry</strong> — Kegagalan sementara dicoba ulang dengan exponential backoff (maksimum enam percobaan). Retry otomatis dicek saat scanner selanjutnya; admin dapat menggunakan Retry failed.</li>
-        </ol>
-      </div>
     </section>
 
     <aside className="min-w-0 bg-panel p-4 sm:p-6">
       <h2 className="flex items-center gap-2 font-display text-lg font-bold text-ink-hi"><BellRing className="h-5 w-5 text-amber" /> Delivery history</h2>
-      <p className="mt-2 text-xs text-dim">40 pengiriman terbaru, termasuk tes. Refresh halaman untuk memuat status terbaru.</p>
+      <p className="mt-2 text-xs text-dim">40 pengiriman terakhir.</p>
       <div className="mt-4 grid grid-cols-3 gap-px bg-rule">
         {[["Sent", counts.SENT ?? 0], ["Retry", (counts.RETRY ?? 0) + (counts.PENDING ?? 0)], ["Failed", counts.FAILED ?? 0]].map(([label, count]) =>
           <div key={String(label)} className="bg-panel-hi px-3 py-3"><div className="text-micro uppercase tracking-widest text-dim">{label}</div><div className="mt-1 font-display text-xl font-bold text-ink-hi">{count}</div></div>)}
@@ -120,15 +110,6 @@ export function AlertConsole({ initial, webhookConfigured }: { initial: AlertSna
           {item.status === "RETRY" && <p className="mt-1 text-micro text-amber">Next eligible retry: {date(item.nextAttemptAt)} (checked during next delivery pass)</p>}
           {item.eventId && <a href={"/ai-analyst/research/" + encodeURIComponent(item.eventId)} className="mt-2 inline-flex items-center gap-1 text-micro text-cyan hover:underline">Open research <ExternalLink className="h-3 w-3" /></a>}
         </article>)}
-      </div>
-      <div className="mt-5 border border-rule bg-panel-hi p-3 text-xs leading-6 text-ink">
-        <h3 className="font-bold text-ink-hi">Setup checklist</h3>
-        <p>1. Set <code>DISCORD_WEBHOOK_URL</code> (Production) in Vercel, then redeploy.</p>
-        <p>2. Set <code>AI_ANALYST_ADMIN_USERNAMES</code> to your signed-in username.</p>
-        <p>3. Ensure <code>CRON_SECRET</code>, <code>OPENAI_API_KEY</code>, and database connection work.</p>
-        <p>4. Apply the new Supabase Prisma migration before enabling production deployment.</p>
-        <p>5. Click <strong>Test Discord Alert</strong> and confirm Discord displays a test message.</p>
-        <p className="mt-2 text-dim">Price/volume real-time alerts and comprehensive BEI/OJK/MSCI coverage are not implemented here. Source availability limits what can trigger an alert.</p>
       </div>
     </aside>
   </div>;

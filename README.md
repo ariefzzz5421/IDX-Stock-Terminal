@@ -368,3 +368,43 @@ cron jobs. For more frequent indicative checks use your own VPS:
 
 Breaking news beyond the existing sourced KSEI corporate-intelligence pipeline
 remains unavailable until a verified BEI/OJK disclosure feed is added.
+
+
+## Intraday Discord alerts (VPS-scheduled)
+
+The latest Alert Center has three default-enabled rules: **Top 10 volume** at
+09:05, 10:05, 11:05, 14:05, 15:05 WIB; **Top 10 indicative ARA** and
+**Top 10 indicative ARB** every five minutes from :05 through :55 while
+the regular BEI session is open. Friday lunch (11:30–14:00), weekday
+lunch, closed sessions and weekends are suppressed by `marketStatus()`.
+Set `MARKET_HOLIDAY_DATES` on Vercel to the official BEI holiday
+dates (comma-separated YYYY-MM-DD); this must be maintained as BEI
+updates the calendar. Empty ARA/ARB lists do not generate misleading alerts.
+
+The website **does not** host a 5-minute recurring scheduler on Vercel Hobby.
+Set `MARKET_ALERT_SECRET` to a separate random 32+ character value in
+Vercel and your private VPS configuration. Schedule from the VPS:
+
+```cron
+CRON_TZ=Asia/Jakarta
+*/5 9-15 * * 1-5 cd /srv/IDX-Stock-Terminal && /usr/bin/node scripts/market-alert-worker.mjs >> /var/log/idx-market.log 2>&1
+```
+
+Also set `IDX_TERMINAL_URL=https://idx-stock-terminal.vercel.app`
+and the same `MARKET_ALERT_SECRET` in the VPS environment. Ensure your
+cron supports `CRON_TZ` (or set the VPS timezone to Asia/Jakarta).
+This worker calls a bearer-protected server endpoint and keeps the
+Discord webhook private on Vercel. Running this cron via VPS is a
+separate deployment step; merging code alone does not start the worker.
+
+The source is the **delayed TradingView IDX scanner**. Its `fetchedAt`
+is the website's observation timestamp, **not a proven latest trade tick
+or trading-date timestamp**. Alerts explicitly say delayed/indicative,
+are suppressed on unavailable or older-than-three-minute cached observations,
+and do not claim exchange-confirmed ARA/ARB. Users needing guaranteed
+intraday quote freshness must replace this source with a licensed feed
+containing authoritative per-quote timestamps.
+
+Corporate intelligence still runs through the existing morning/evening
+KSEI research crons, including outside market hours. Confirmed events are
+dispatched when detected, not continuously at the time of publication.
