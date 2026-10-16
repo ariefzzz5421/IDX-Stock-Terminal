@@ -129,3 +129,33 @@ export async function runMarketAlertsSafely(mode:MarketMode) {
     return {queued:0,sent:0,failed:0,message:"Market alert scan unavailable"};
   }
 }
+
+export async function retryMarketDeliveries() {
+  await prisma.discordAlertDelivery.updateMany({
+    where: {kind:{in:["MARKET_DIGEST","MARKET_LIMIT"]},status:{in:["RETRY","FAILED"]}},
+    data: {status:"RETRY", attempts:0, nextAttemptAt:new Date()},
+  });
+  return dispatchMarketDeliveries();
+}
+
+export async function sendMarketPreviewTest() {
+  const recent = await prisma.discordAlertDelivery.findFirst({
+    where: {kind:"TEST",createdAt:{gte:new Date(Date.now()-60_000)}},
+    select:{id:true},
+  });
+  if (recent) throw new Error("Wait at least 60 seconds between test messages.");
+  const preview = await previewMarketEmbeds();
+  const first = preview.previews.find(item => item.type === "MARKET_DIGEST") ?? preview.previews[0];
+  if (!first) throw new Error("Market preview unavailable; check BEI data source.");
+  const entry = await prisma.discordAlertDelivery.create({
+    data: {kind:"TEST",destination:"discord:market",status:"SENDING",attempts:1,
+      displayTitle:"Market preview test · " + (preview.date ?? "unknown date")},
+  });
+  const outcome = await sendDiscordEmbed(first.embed,"market");
+  await prisma.discordAlertDelivery.update({
+    where:{id:entry.id},
+    data:{status:outcome.ok?"SENT":"FAILED",sentAt:outcome.ok?new Date():null,
+      lastError:outcome.ok?null:outcome.error},
+  });
+  return outcome.ok ? {ok:true,date:preview.date} : {ok:false,error:outcome.error};
+}

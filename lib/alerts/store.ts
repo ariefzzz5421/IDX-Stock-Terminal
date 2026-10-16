@@ -46,6 +46,11 @@ export async function updateAlertSettings(input: { enabled: boolean; minimumPrio
   return saved;
 }
 
+export async function updateMarketSettings(input: {marketDigestEnabled:boolean;priceLimitsEnabled:boolean;marketTopCount:5|10}) {
+  const previous = await getAlertSettings();
+  return prisma.discordAlertSettings.update({where:{id:previous.id},data:input});
+}
+
 export async function syncDiscordOutbox() {
   const settings = await getAlertSettings();
   if (!settings.enabled || !discordWebhookConfigured()) return 0;
@@ -198,12 +203,15 @@ export async function getAlertDashboard() {
       minimumPriority: settings.minimumPriority,
       includePreliminary: settings.includePreliminary,
       enabledAt: settings.enabledAt.toISOString(),
+      marketDigestEnabled: settings.marketDigestEnabled,
+      priceLimitsEnabled: settings.priceLimitsEnabled,
+      marketTopCount: settings.marketTopCount,
     },
     deliveries: logs.map((log) => ({
       id: log.id, kind: log.kind, status: log.status, attempts: log.attempts,
       createdAt: log.createdAt.toISOString(), sentAt: log.sentAt?.toISOString() ?? null,
       nextAttemptAt: log.nextAttemptAt.toISOString(), lastError: log.lastError,
-      title: log.version?.title ?? "Test message", priority: log.version?.priority ?? null,
+      title: log.version?.title ?? log.displayTitle ?? "Test message", priority: log.version?.priority ?? null,
       eventId: log.version?.eventId ?? null,
     })),
   };

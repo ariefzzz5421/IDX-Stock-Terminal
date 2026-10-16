@@ -1,7 +1,8 @@
 import { isResearchAdmin } from "@/lib/intelligence/access";
 import {
-  updateAlertSettings, sendDiscordTest, retryDiscordAlerts,
+  updateAlertSettings, updateMarketSettings, sendDiscordTest, retryDiscordAlerts,
 } from "@/lib/alerts/store";
+import { sendMarketPreviewTest, runMarketAlertsSafely, retryMarketDeliveries } from "@/lib/alerts/market";
 import { PRIORITIES, type AlertPriority } from "@/lib/alerts/rules";
 
 export const dynamic = "force-dynamic";
@@ -21,8 +22,23 @@ export async function PATCH(request: Request) {
   const rejected = await guard(request);
   if (rejected) return rejected;
   const input = await request.json().catch(() => null) as null | {
-    enabled?: unknown; minimumPriority?: unknown; includePreliminary?: unknown;
+    scope?:unknown; enabled?: unknown; minimumPriority?: unknown; includePreliminary?: unknown;
+    marketDigestEnabled?:unknown; priceLimitsEnabled?:unknown; marketTopCount?:unknown;
   };
+  if (input?.scope === "market") {
+    if (typeof input.marketDigestEnabled !== "boolean" || typeof input.priceLimitsEnabled !== "boolean" ||
+        (input.marketTopCount !== 5 && input.marketTopCount !== 10)) {
+      return Response.json({error:"Invalid market settings"}, {status:400});
+    }
+    try {
+      const settings = await updateMarketSettings({
+        marketDigestEnabled:input.marketDigestEnabled, priceLimitsEnabled:input.priceLimitsEnabled,
+        marketTopCount:input.marketTopCount,
+      });
+      return Response.json({ok:true, settings:{marketDigestEnabled:settings.marketDigestEnabled,
+        priceLimitsEnabled:settings.priceLimitsEnabled,marketTopCount:settings.marketTopCount}});
+    } catch {return Response.json({error:"Unable to save market alert settings"},{status:503});}
+  }
   if (!input || typeof input.enabled !== "boolean" ||
       typeof input.includePreliminary !== "boolean" ||
       typeof input.minimumPriority !== "string" ||
@@ -49,11 +65,14 @@ export async function POST(request: Request) {
   const rejected = await guard(request);
   if (rejected) return rejected;
   const input = await request.json().catch(() => null) as { action?: unknown } | null;
-  if (input?.action !== "test" && input?.action !== "retry") {
+  if (!["test","retry","market-test","market-scan"].includes(String(input?.action))) {
     return Response.json({ error: "Unknown action" }, { status: 400 });
   }
   try {
-    const result = input.action === "test" ? await sendDiscordTest() : await retryDiscordAlerts();
+    const result = input.action === "test" ? await sendDiscordTest()
+      : input.action === "market-test" ? await sendMarketPreviewTest()
+      : input.action === "market-scan" ? await runMarketAlertsSafely("close")
+      : { ...(await retryDiscordAlerts()), market: await retryMarketDeliveries() };
     return Response.json(result, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Alert request failed";

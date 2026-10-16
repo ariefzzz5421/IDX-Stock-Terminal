@@ -45,7 +45,7 @@ export function capForRow(row: MarketRow, lookup: Record<string, Cap>): Cap {
   return lookup[row.code] ?? { value: null, source: "unavailable" };
 }
 function qualified(row: MarketRow, date: string): row is MarketRow & { close: number; previous: number } {
-  return row.date === date && row.close != null && row.previous != null &&
+  return (!row.date || row.date.startsWith(date) || row.date.replace(/-/g, "").startsWith(date.replace(/-/g, ""))) && row.close != null && row.previous != null &&
     Number.isFinite(row.close) && Number.isFinite(row.previous) &&
     row.close > 0 && row.previous > 0 && row.volume != null && row.volume > 0;
 }
