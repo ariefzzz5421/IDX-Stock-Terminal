@@ -1,4 +1,5 @@
 import "server-only";
+import { prepareDiscordAlerts, processDiscordAlerts } from "@/lib/alerts/store";
 import { cronAuthorized } from "./security";
 import { runResearch } from "./pipeline";
 import type { ResearchSession } from "./schedule";
@@ -7,7 +8,9 @@ export async function handleResearchCron(request: Request, session: ResearchSess
   if (!process.env.CRON_SECRET || process.env.CRON_SECRET.length < 32) return Response.json({ error: "Cron not configured" }, { status: 503 });
   if (!cronAuthorized(request.headers.get("authorization"), process.env.CRON_SECRET)) return Response.json({ error: "Unauthorized" }, { status: 401 });
   try {
+    await prepareDiscordAlerts();
     const result = await runResearch({ dryRun: false, scheduled: true, session });
+    await processDiscordAlerts();
     return Response.json(result, { status: result.status === "FAILED" ? 503 : 200, headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Scan failed";

@@ -5,7 +5,7 @@
   "scripts": {
     "predev": "node scripts/postinstall-db.mjs",
     "dev": "next dev",
-    "build": "node scripts/build.mjs",
+    "build": "npm run test:alerts && node scripts/build.mjs",
     "start": "next start",
     "lint": "eslint",
     "test:intelligence": "node --import tsx --test tests/intelligence.test.ts",
@@ -20,7 +20,8 @@
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset",
     "logos:sync": "tsx scripts/logos-sync.ts",
-    "logos:check": "tsx scripts/logos-check.ts"
+    "logos:check": "tsx scripts/logos-check.ts",
+    "test:alerts": "node --import tsx --test tests/discord-alerts.test.ts"
   },
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "7.10.0",
