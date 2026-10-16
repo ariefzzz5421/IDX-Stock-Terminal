@@ -28,7 +28,7 @@ test("snapshot with too few issuers does not create live notifications",()=>{
   assert.equal(signals.length,0);
 });
 test("preview is labeled and does not require current trading date",()=>{
-  const out=buildMarketSignals({rows:[sample("ABCD",120,100)],date:"2026-10-15",lookup:{},now:new Date("2026-10-16T14:00:00Z"),mode:"close",count:5,digestEnabled:true,limitsEnabled:false,preview:true});
+  const out=buildMarketSignals({rows:[sample("ABCD",120,100,"2026-10-15")],date:"2026-10-15",lookup:{},now:new Date("2026-10-16T14:00:00Z"),mode:"close",count:5,digestEnabled:true,limitsEnabled:false,preview:true});
   assert.equal(out.length,1);
   assert.match(String(out[0].embed.title),/PREVIEW ONLY/);
 });
