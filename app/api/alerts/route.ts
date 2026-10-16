@@ -69,9 +69,10 @@ export async function POST(request: Request) {
     return Response.json({ error: "Unknown action" }, { status: 400 });
   }
   try {
-    const result = input.action === "test" ? await sendDiscordTest()
-      : input.action === "market-test" ? await sendMarketPreviewTest()
-      : input.action === "market-scan" ? await runMarketAlertsSafely("close")
+    const action = input?.action;
+    const result = action === "test" ? await sendDiscordTest()
+      : action === "market-test" ? await sendMarketPreviewTest()
+      : action === "market-scan" ? await runMarketAlertsSafely("close")
       : { ...(await retryDiscordAlerts()), market: await retryMarketDeliveries() };
     return Response.json(result, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
