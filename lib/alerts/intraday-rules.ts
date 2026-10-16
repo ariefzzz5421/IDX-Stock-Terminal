@@ -13,7 +13,7 @@ export type IntradaySignal = {
 export type IntradayOptions = {
   now: Date; fetchedAt: string | null; stocks: IntradayStock[];
   volumeEnabled: boolean; araEnabled: boolean; arbEnabled: boolean;
-  marketTopCount: number; holidays?: string[];
+  marketTopCount: number; holidays?: string[]; preview?: boolean;
 };
 
 // The fetch timestamp is the time *our server observed* the delayed scanner, not an exchange tick.
@@ -28,7 +28,7 @@ export function intradaySlot(now: Date, fetchedAt: string | null, holidays: stri
   const minuteOfHour = clock.minute % 60;
   // External VPS invokes every five minutes; allow a short grace period for scheduler jitter.
   const bucket = Math.floor(minuteOfHour / 5) * 5;
-  if (bucket === 0 && clock.minutes < 9 * 60 + 5) return null;
+  if (bucket === 0) return null;
   const hour = Math.floor(clock.minutes / 60);
   const key = String(hour).padStart(2, "0") + ":" + String(bucket).padStart(2, "0");
   return { date, key, hourly: bucket === 5, market: market.label, observedAt: fetchedAt };
@@ -63,7 +63,9 @@ function baseEmbed(title: string, color: number, description: string, observedAt
   };
 }
 export function buildIntradaySignals(options: IntradayOptions): IntradaySignal[] {
-  const slot = intradaySlot(options.now, options.fetchedAt, options.holidays);
+  const slot = options.preview ? {date: jakartaDate(options.now), key: "PREVIEW", hourly: true,
+    market: "Preview", observedAt: options.fetchedAt ?? options.now.toISOString()} :
+    intradaySlot(options.now, options.fetchedAt, options.holidays);
   if (!slot || options.stocks.length < 50) return [];
   const filtered = options.stocks.filter(validRow);
   if (filtered.length < 50) return [];
@@ -76,8 +78,8 @@ export function buildIntradaySignals(options: IntradayOptions): IntradaySignal[]
       "\n   Vol " + compactVolume(r.volume) + " shares · MCap " + marketCapText(r.marketCap)
     ).join("\n").slice(0, 4000);
     signals.push({kind:"MARKET_VOLUME",key:"market:"+slot.date+":"+slot.key+":VOLUME",
-      title:"Top "+count+" Volume · "+slot.key+" WIB",
-      embed: baseEmbed("IDX · TOP "+count+" VOLUME · "+slot.key+" WIB",0x38bdf8,description,slot.observedAt,slot.date)});
+      title:(options.preview ? "PREVIEW · " : "")+"Top "+count+" Volume · "+slot.key+" WIB",
+      embed: baseEmbed((options.preview ? "PREVIEW ONLY · " : "")+"IDX · TOP "+count+" VOLUME · "+slot.key+" WIB",0x38bdf8,description,slot.observedAt,slot.date)});
   }
   if (options.araEnabled || options.arbEnabled) {
     const limits = filtered.map(row => ({...row,limit:indicativeLimitStatus(row.code,row.lastPrice,row.changePct)}))
@@ -95,8 +97,8 @@ export function buildIntradaySignals(options: IntradayOptions): IntradaySignal[]
       ).join("\n").slice(0,3900);
       signals.push({kind:"MARKET_"+side as "MARKET_ARA"|"MARKET_ARB",
         key:"market:"+slot.date+":"+slot.key+":"+side,
-        title:"Top "+count+" "+side+" (indicative) · "+slot.key+" WIB",
-        embed:baseEmbed("IDX · TOP "+count+" "+side+" (INDICATIVE) · "+slot.key+" WIB",
+        title:(options.preview ? "PREVIEW · " : "")+"Top "+count+" "+side+" (indicative) · "+slot.key+" WIB",
+        embed:baseEmbed((options.preview ? "PREVIEW ONLY · " : "")+"IDX · TOP "+count+" "+side+" (INDICATIVE) · "+slot.key+" WIB",
           color,description,slot.observedAt,slot.date)});
     }
   }

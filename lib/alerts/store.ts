@@ -46,7 +46,7 @@ export async function updateAlertSettings(input: { enabled: boolean; minimumPrio
   return saved;
 }
 
-export async function updateMarketSettings(input: {marketDigestEnabled:boolean;priceLimitsEnabled:boolean;marketTopCount:5|10}) {
+export async function updateMarketSettings(input: {marketVolumeEnabled:boolean;marketAraEnabled:boolean;marketArbEnabled:boolean;marketTopCount:10}) {
   const previous = await getAlertSettings();
   return prisma.discordAlertSettings.update({where:{id:previous.id},data:input});
 }
@@ -206,6 +206,9 @@ export async function getAlertDashboard() {
       marketDigestEnabled: settings.marketDigestEnabled,
       priceLimitsEnabled: settings.priceLimitsEnabled,
       marketTopCount: settings.marketTopCount,
+      marketVolumeEnabled: settings.marketVolumeEnabled,
+      marketAraEnabled: settings.marketAraEnabled,
+      marketArbEnabled: settings.marketArbEnabled,
     },
     deliveries: logs.map((log) => ({
       id: log.id, kind: log.kind, status: log.status, attempts: log.attempts,

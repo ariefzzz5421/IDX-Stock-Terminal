@@ -21,8 +21,7 @@ export default async function AlertPage() {
       <div className="flex items-center gap-2 text-amber"><BellRing className="h-5 w-5" /><span className="text-micro font-bold uppercase tracking-[0.18em]">Delivery / intelligence</span></div>
       <h1 className="mt-2 font-display text-2xl font-bold text-ink-hi">Alert Center</h1>
       <p className="mt-2 max-w-3xl text-xs leading-6 text-dim">
-        Notifikasi Discord untuk riset korporasi baru dan pembaruan material. Memakai scanner KSEI dan cron yang sama seperti
-        <Link href="/ai-analyst" className="ml-1 text-cyan hover:underline">AI Analyst</Link>; bukan feed harga real-time.
+        Market movers, indikasi ARA/ARB, dan pengumuman emiten melalui Discord. <Link href="/ai-analyst" className="ml-1 text-cyan hover:underline">AI Analyst</Link>
       </p>
     </header>
     {!admin ? <section className="m-4 max-w-3xl border border-rule bg-panel-hi p-5 sm:m-6">

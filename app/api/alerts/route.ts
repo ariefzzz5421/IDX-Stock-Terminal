@@ -2,7 +2,8 @@ import { isResearchAdmin } from "@/lib/intelligence/access";
 import {
   updateAlertSettings, updateMarketSettings, sendDiscordTest, retryDiscordAlerts,
 } from "@/lib/alerts/store";
-import { sendMarketPreviewTest, runMarketAlertsSafely, retryMarketDeliveries } from "@/lib/alerts/market";
+import { retryMarketDeliveries } from "@/lib/alerts/market";
+import { sendIntradayPreviewTest, runIntradayAlertsSafely } from "@/lib/alerts/intraday";
 import { PRIORITIES, type AlertPriority } from "@/lib/alerts/rules";
 
 export const dynamic = "force-dynamic";
@@ -23,20 +24,20 @@ export async function PATCH(request: Request) {
   if (rejected) return rejected;
   const input = await request.json().catch(() => null) as null | {
     scope?:unknown; enabled?: unknown; minimumPriority?: unknown; includePreliminary?: unknown;
-    marketDigestEnabled?:unknown; priceLimitsEnabled?:unknown; marketTopCount?:unknown;
+    marketVolumeEnabled?:unknown; marketAraEnabled?:unknown; marketArbEnabled?:unknown; marketTopCount?:unknown;
   };
   if (input?.scope === "market") {
-    if (typeof input.marketDigestEnabled !== "boolean" || typeof input.priceLimitsEnabled !== "boolean" ||
-        (input.marketTopCount !== 5 && input.marketTopCount !== 10)) {
+    if (typeof input.marketVolumeEnabled !== "boolean" || typeof input.marketAraEnabled !== "boolean" ||
+        typeof input.marketArbEnabled !== "boolean" || input.marketTopCount !== 10) {
       return Response.json({error:"Invalid market settings"}, {status:400});
     }
     try {
       const settings = await updateMarketSettings({
-        marketDigestEnabled:input.marketDigestEnabled, priceLimitsEnabled:input.priceLimitsEnabled,
-        marketTopCount:input.marketTopCount,
+        marketVolumeEnabled:input.marketVolumeEnabled, marketAraEnabled:input.marketAraEnabled,
+        marketArbEnabled:input.marketArbEnabled, marketTopCount:10,
       });
-      return Response.json({ok:true, settings:{marketDigestEnabled:settings.marketDigestEnabled,
-        priceLimitsEnabled:settings.priceLimitsEnabled,marketTopCount:settings.marketTopCount}});
+      return Response.json({ok:true, settings:{marketVolumeEnabled:settings.marketVolumeEnabled,
+        marketAraEnabled:settings.marketAraEnabled,marketArbEnabled:settings.marketArbEnabled,marketTopCount:10}});
     } catch {return Response.json({error:"Unable to save market alert settings"},{status:503});}
   }
   if (!input || typeof input.enabled !== "boolean" ||
@@ -71,8 +72,8 @@ export async function POST(request: Request) {
   try {
     const action = input?.action;
     const result = action === "test" ? await sendDiscordTest()
-      : action === "market-test" ? await sendMarketPreviewTest()
-      : action === "market-scan" ? await runMarketAlertsSafely("close")
+      : action === "market-test" ? await sendIntradayPreviewTest()
+      : action === "market-scan" ? await runIntradayAlertsSafely()
       : { ...(await retryDiscordAlerts()), market: await retryMarketDeliveries() };
     return Response.json(result, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
