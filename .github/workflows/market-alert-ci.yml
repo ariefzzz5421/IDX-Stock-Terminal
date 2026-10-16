@@ -1,0 +1,37 @@
+name: Market alert checks
+
+on:
+  pull_request:
+    paths:
+      - "lib/alerts/**"
+      - "app/api/alerts/**"
+      - "app/(dashboard)/alert/**"
+      - "components/terminal/AlertConsole.tsx"
+      - "components/terminal/MarketAlertControls.tsx"
+      - "prisma/**"
+      - "tests/**"
+      - "package.json"
+      - ".github/workflows/market-alert-ci.yml"
+  workflow_dispatch:
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      SESSION_SECRET: "ci-internal-long-secret-abcdef0123456789abcdef012345"
+      AUTH_REQUIRED: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Install dependencies and generate Prisma clients
+        run: npm ci
+      - name: Validate both Prisma schemas
+        run: |
+          npx prisma validate
+          npx prisma validate --config prisma.supabase.config.ts
+      - name: Test market alerts and compile Next.js
+        run: npm run build

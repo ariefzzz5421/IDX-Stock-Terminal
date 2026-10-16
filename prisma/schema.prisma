@@ -319,6 +319,9 @@ model DiscordAlertSettings {
   enabled Boolean @default(true)
   minimumPriority String @default("HIGH")
   includePreliminary Boolean @default(false)
+  marketDigestEnabled Boolean @default(true)
+  priceLimitsEnabled Boolean @default(true)
+  marketTopCount Int @default(5)
   enabledAt DateTime @default(now())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -328,6 +331,9 @@ model DiscordAlertSettings {
 model DiscordAlertDelivery {
   id String @id @default(cuid())
   versionId String?
+  marketKey String? @unique
+  payloadJson String?
+  displayTitle String?
   destination String @default("discord:primary")
   kind String @default("EVENT")
   status String @default("PENDING")

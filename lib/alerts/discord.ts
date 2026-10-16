@@ -1,5 +1,7 @@
 import "server-only";
 import { isDiscordWebhookUrl, safeHttpsUrl } from "./rules";
+import { getCompanyCatalogEntry } from "@/lib/company-catalog";
+import { marketCapText } from "./market-rules";
 
 type EventMessage = {
   title: string;
@@ -28,13 +30,14 @@ export function eventEmbed(event: EventMessage) {
     color: event.priority === "CRITICAL" ? 0xef4444 : event.priority === "HIGH" ? 0xf59e0b : 0x38bdf8,
     fields: [
       { name: "Ticker", value: preventMentions(ticker).slice(0, 1024), inline: true },
+      { name: "Market cap (reference)", value: event.codes.map(code => code + ": " + marketCapText(getCompanyCatalogEntry(code)?.marketCap ?? null)).join("\n").slice(0, 1024) || "N/D", inline: false },
       { name: "Priority", value: event.priority, inline: true },
       { name: "Verification", value: event.status, inline: true },
       { name: "Category", value: preventMentions(event.category), inline: true },
       { name: "Change", value: preventMentions(event.changeType), inline: true },
       { name: "Official source", value: source ? "[Read source document](" + source + ")" : "URL unavailable", inline: false },
     ],
-    footer: { text: "IDX Terminal · Materiality, not a trading signal · Research feed may be incomplete" },
+    footer: { text: "MCap from stored issuer catalog, may be stale · Not a trading signal" },
     timestamp: new Date().toISOString(),
   };
 }
@@ -43,8 +46,8 @@ export type WebhookOutcome =
   | { ok: true }
   | { ok: false; error: string; permanent: boolean; retryAfterMs: number };
 
-export async function sendDiscordEmbed(embed: ReturnType<typeof eventEmbed> | Record<string, unknown>): Promise<WebhookOutcome> {
-  const url = process.env.DISCORD_WEBHOOK_URL?.trim() ?? "";
+export async function sendDiscordEmbed(embed: ReturnType<typeof eventEmbed> | Record<string, unknown>, target: "primary" | "market" = "primary"): Promise<WebhookOutcome> {
+  const url = (target === "market" ? process.env.DISCORD_MARKET_WEBHOOK_URL?.trim() || process.env.DISCORD_WEBHOOK_URL?.trim() : process.env.DISCORD_WEBHOOK_URL?.trim()) ?? "";
   if (!isDiscordWebhookUrl(url)) {
     return { ok: false, error: "Missing or invalid DISCORD_WEBHOOK_URL", permanent: true, retryAfterMs: 0 };
   }

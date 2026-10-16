@@ -3,7 +3,7 @@ export type AlertPriority = (typeof PRIORITIES)[number];
 
 export function eligiblePriorities(minimum: AlertPriority): string[] {
   const index = PRIORITIES.indexOf(minimum);
-  return PRIORITIES.slice(0, index < 0 ? 1 : index);
+  return PRIORITIES.slice(0, index < 0 ? 1 : index + 1);
 }
 
 export function isAlertEligible(
@@ -17,7 +17,7 @@ export function isAlertEligible(
 }
 
 export function nextRetryDelayMs(attempt: number, retryAfterMs = 0): number {
-  const backoff = Math.min(6 * 60 * 60_000, 60_000 * 2 ** Math.max(0, Math.min(attempt - 1, 8)));
+  const backoff = Math.min(6 * 60 * 60_000, 60_000 * 2 ** Math.max(0, Math.min(attempt - 1, 9)));
   return Math.max(backoff, Math.min(Math.max(0, retryAfterMs), 24 * 60 * 60_000));
 }
 

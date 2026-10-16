@@ -1,5 +1,6 @@
 import "server-only";
 import { prepareDiscordAlerts, processDiscordAlerts } from "@/lib/alerts/store";
+import { runMarketAlertsSafely } from "@/lib/alerts/market";
 import { cronAuthorized } from "./security";
 import { runResearch } from "./pipeline";
 import type { ResearchSession } from "./schedule";
@@ -11,6 +12,7 @@ export async function handleResearchCron(request: Request, session: ResearchSess
     await prepareDiscordAlerts();
     const result = await runResearch({ dryRun: false, scheduled: true, session });
     await processDiscordAlerts();
+    if (session === "evening") await runMarketAlertsSafely("close");
     return Response.json(result, { status: result.status === "FAILED" ? 503 : 200, headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Scan failed";
