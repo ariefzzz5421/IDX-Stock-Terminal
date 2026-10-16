@@ -26,9 +26,10 @@ export function MarketAlertControls({initial,configured,marketChannel}:{
   const [selected,setSelected]=useState(0);
   const [busy,setBusy]=useState<string|null>(null);
   const [notice,setNotice]=useState<string|null>(null);
+  const [error,setError]=useState(false);
 
   async function action(task:"save"|"preview"|"test"|"scan") {
-    setBusy(task);setNotice(null);
+    setBusy(task);setNotice(null);setError(false);
     try {
       const route=task==="preview"?"/api/alerts/market/preview":"/api/alerts";
       const response=await fetch(route,task==="preview"?{method:"GET",cache:"no-store",credentials:"same-origin"}:{
@@ -43,7 +44,7 @@ export function MarketAlertControls({initial,configured,marketChannel}:{
       if(!response.ok||data.ok===false)throw new Error(data.error??"Request failed");
       if(task==="preview"){setPreview(data as MarketPreview);setSelected(0);setNotice(data.message);}
       else {setNotice(task==="save"?"Market settings saved.":task==="test"?"Marked PREVIEW market embed sent to Discord.":String(data.message??"Market scan completed. Check delivery history."));router.refresh();}
-    } catch(error) {setNotice(error instanceof Error?error.message:"Unable to load market alert data.");}
+    } catch(error) {setError(true);setNotice(error instanceof Error?error.message:"Unable to load market alert data.");}
     finally {setBusy(null);}
   }
   const selectedEmbed=preview?.previews[selected]?.embed;
@@ -80,7 +81,7 @@ export function MarketAlertControls({initial,configured,marketChannel}:{
       <button type="button" className={button} onClick={()=>void action("test")} disabled={busy!==null||!configured}><Send className="h-4 w-4"/>Send market preview test</button>
       <button type="button" className={button} onClick={()=>void action("scan")} disabled={busy!==null||!configured||!initial.enabled}><BellRing className="h-4 w-4"/>Run EOD check</button>
     </div>
-    {notice&&<p role="status" className="mt-3 border border-rule bg-panel-hi p-3 text-xs text-cyan"><CheckCircle2 className="mr-2 inline h-4 w-4"/>{notice}</p>}
+    {notice&&<p role="status" className={"mt-3 border border-rule bg-panel-hi p-3 text-xs "+(error?"text-down":"text-cyan")}>{!error&&<CheckCircle2 className="mr-2 inline h-4 w-4"/>}{notice}</p>}
     <div className="mt-5 grid min-w-0 gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
       <div className="min-w-0">
         <h3 className="text-sm font-bold text-ink-hi">Sourced Discord embed preview</h3>

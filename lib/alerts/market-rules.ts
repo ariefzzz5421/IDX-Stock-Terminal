@@ -128,6 +128,7 @@ export function buildMarketSignals(args: {
           { name: "Market cap (estimate)", value: marketCapText(row.cap.value), inline: true },
           { name: "Market cap source", value: row.cap.source, inline: false },
           { name: "BEI summary date", value: date + " WIB · no per-tick timestamp", inline: false },
+          { name: "Official source", value: "[BEI Ringkasan Saham](https://www.idx.co.id/id/data-pasar/ringkasan-perdagangan/ringkasan-saham/)", inline: false },
         ],
         footer: {text:"Indicative only · Limited board coverage · Price data may be delayed"},
         timestamp: now.toISOString(),

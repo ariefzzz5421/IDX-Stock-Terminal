@@ -62,10 +62,11 @@ export async function dispatchMarketDeliveries(limit=20) {
   for (const job of jobs) {
     // Do not flush unsent alerts when a feature has been disabled.
     if (!(job.kind === "MARKET_DIGEST" ? settings.marketDigestEnabled : settings.priceLimitsEnabled) ||
-        job.createdAt < settings.enabledAt) {
+        job.createdAt < settings.enabledAt ||
+        job.createdAt < new Date(now.getTime() - (job.kind === "MARKET_LIMIT" ? 24 : 48) * 60 * 60_000)) {
       await prisma.discordAlertDelivery.updateMany({
         where: { id: job.id, status: job.status, updatedAt: job.updatedAt },
-        data: { status: "SKIPPED", lastError: "Feature disabled or alert cutoff reset" },
+        data: { status: "SKIPPED", lastError: "Feature disabled, cutoff reset or market signal expired" },
       });
       continue;
     }
