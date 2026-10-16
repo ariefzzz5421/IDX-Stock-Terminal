@@ -1,7 +1,7 @@
 import "server-only";
 import { prisma } from "@/lib/db/prisma";
 import { eventEmbed, sendDiscordEmbed } from "./discord";
-import { eligiblePriorities, nextRetryDelayMs, type AlertPriority } from "./rules";
+import { eligiblePriorities, isAlertEligible, nextRetryDelayMs, type AlertPriority } from "./rules";
 
 const DESTINATION = "discord:primary";
 const MAX_ATTEMPTS = 6;
@@ -27,7 +27,7 @@ export async function prepareDiscordAlerts(): Promise<void> {
 
 export async function updateAlertSettings(input: { enabled: boolean; minimumPriority: AlertPriority; includePreliminary: boolean }) {
   const previous = await getAlertSettings();
-  return prisma.discordAlertSettings.update({
+  const saved = await prisma.discordAlertSettings.update({
     where: { id: previous.id },
     data: {
       enabled: input.enabled,
@@ -36,6 +36,14 @@ export async function updateAlertSettings(input: { enabled: boolean; minimumPrio
       ...(!previous.enabled && input.enabled ? { enabledAt: new Date() } : {}),
     },
   });
+  // A disabled or tightened filter must never flush previously queued messages.
+  if (!saved.enabled) {
+    await prisma.discordAlertDelivery.updateMany({
+      where: { kind: "EVENT", status: { in: ["PENDING", "RETRY", "FAILED"] } },
+      data: { status: "SKIPPED", lastError: "Notifications disabled by administrator" },
+    });
+  }
+  return saved;
 }
 
 export async function syncDiscordOutbox() {
@@ -91,12 +99,20 @@ export async function dispatchDiscordOutbox(limit = 10) {
   let sent = 0, failed = 0;
   for (const job of jobs) {
     if (!job.version) continue;
+    const version = job.version;
+    if (version.createdAt < settings.enabledAt ||
+        !isAlertEligible(version.priority, version.status, settings.minimumPriority as AlertPriority, settings.includePreliminary)) {
+      await prisma.discordAlertDelivery.updateMany({
+        where: { id: job.id, status: job.status, updatedAt: job.updatedAt },
+        data: { status: "SKIPPED", lastError: "Not eligible under current alert configuration" },
+      });
+      continue;
+    }
     const claimed = await prisma.discordAlertDelivery.updateMany({
       where: { id: job.id, status: job.status, updatedAt: job.updatedAt },
       data: { status: "SENDING", attempts: { increment: 1 } },
     });
     if (claimed.count !== 1) continue;
-    const version = job.version;
     const outcome = await sendDiscordEmbed(eventEmbed({
       title: version.title, summary: version.summary, category: version.event.category,
       priority: version.priority, status: version.status, changeType: version.changeType,
