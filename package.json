@@ -5,7 +5,7 @@
   "scripts": {
     "predev": "node scripts/postinstall-db.mjs",
     "dev": "next dev",
-    "build": "node scripts/build.mjs",
+    "build": "npm run test:alerts && node scripts/build.mjs",
     "start": "next start",
     "lint": "eslint",
     "test:intelligence": "node --import tsx --test tests/intelligence.test.ts",
