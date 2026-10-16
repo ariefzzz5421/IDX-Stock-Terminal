@@ -236,6 +236,7 @@ model IntelligenceEventVersion {
   event IntelligenceEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
   sources IntelligenceSource[]
   notifications ResearchNotification[]
+  deliveries DiscordAlertDelivery[]
   @@unique([eventId, eventVersion])
   @@index([publishedAt(sort: Desc)])
   @@map("intelligence_event_versions")
@@ -309,4 +310,36 @@ model ResearchNotification {
   @@unique([userId, versionId])
   @@index([userId, readAt])
   @@map("research_notifications")
+}
+
+
+// Discord notifications are global admin-managed settings and an idempotent outbox.
+model DiscordAlertSettings {
+  id String @id @default("default")
+  enabled Boolean @default(true)
+  minimumPriority String @default("HIGH")
+  includePreliminary Boolean @default(false)
+  enabledAt DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@map("discord_alert_settings")
+}
+
+model DiscordAlertDelivery {
+  id String @id @default(cuid())
+  versionId String?
+  destination String @default("discord:primary")
+  kind String @default("EVENT")
+  status String @default("PENDING")
+  attempts Int @default(0)
+  nextAttemptAt DateTime @default(now())
+  lastError String?
+  sentAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  version IntelligenceEventVersion? @relation(fields: [versionId], references: [id], onDelete: Cascade)
+  @@unique([destination, versionId])
+  @@index([status, nextAttemptAt])
+  @@index([createdAt])
+  @@map("discord_alert_deliveries")
 }
