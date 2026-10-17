@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { intradaySlot, buildIntradaySignals, tradedValueFor } from "../lib/alerts/intraday-rules";
+import { safeLogoSvg } from "../lib/alerts/svg-safety";
 function at(iso:string){return new Date(iso);}
 const stocks=Array.from({length:80},(_,i)=>({
   code:"A"+String(i).padStart(3,"0"),name:"Issuer "+i,lastPrice:100+i,
@@ -62,4 +63,11 @@ test("market embeds contain per-issuer rows and value-source labels",()=>{
   assert.match(String(volume.embed.description),/Est\. Value/);
   const e=volume.embed as { _marketRows?:unknown[] };
   assert.equal(e._marketRows?.length,10);
+});
+
+test("trusted SVG data accepts static shapes but rejects active or external content",()=>{
+  assert.equal(safeLogoSvg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><path fill="#fff" d="M0 0h40v40H0z"/></svg>'),true);
+  assert.equal(safeLogoSvg('<svg><script>alert(1)</script></svg>'),false);
+  assert.equal(safeLogoSvg('<svg><image href="https://evil.test/track"/></svg>'),false);
+  assert.equal(safeLogoSvg('<svg onload="evil()"></svg>'),false);
 });
