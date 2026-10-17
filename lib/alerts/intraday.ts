@@ -5,6 +5,7 @@ import { getAlertSettings, discordWebhookConfigured } from "./store";
 import { buildIntradaySignals, intradaySlot, type IntradayStock } from "./intraday-rules";
 import { dispatchMarketDeliveries } from "./market";
 import { sendDiscordEmbed } from "./discord";
+import { fetchOptionalMsnMarketCaps } from "@/lib/market-data/msn-metadata";
 
 function holidayDates() {
   return (process.env.MARKET_HOLIDAY_DATES ?? "").split(",")
@@ -14,8 +15,24 @@ function transform(stocks: Awaited<ReturnType<typeof getMarketActivity>>["allSto
   return stocks.map(s => ({
     code:s.code, name:s.name, lastPrice:s.lastPrice, volume:s.volume,
     marketCap:s.marketCap, changePct:s.changes.day,
+    turnover:s.turnover,logoUrl:s.logoUrl,capSource:"TradingView/catalog",
   }));
 }
+
+/** Metadata fallback is optional and never replaces alert-critical price/volume. */
+async function enrichMarketCaps(stocks:IntradayStock[]):Promise<IntradayStock[]> {
+  const needsCap=stocks.filter(s=>!s.marketCap || s.marketCap<=0)
+    .sort((a,b)=>b.volume-a.volume).slice(0,20);
+  if (!needsCap.length) return stocks;
+  const metadata=await fetchOptionalMsnMarketCaps(needsCap.map(s=>s.code));
+  if(!metadata.size) return stocks;
+  return stocks.map(s=>{
+    const cap=metadata.get(s.code);
+    return cap && (!s.marketCap || s.marketCap<=0)
+      ? {...s,marketCap:cap.marketCap,capSource:cap.source}:s;
+  });
+}
+
 export async function runIntradayAlerts() {
   const settings = await getAlertSettings();
   const now = new Date();
@@ -26,8 +43,9 @@ export async function runIntradayAlerts() {
   if (!intradaySlot(now,now.toISOString(),holidayDates()))
     return {queued:0,sent:0,failed:0,message:"Market closed, break, holiday or outside scheduled slot"};
   const snapshot = await getMarketActivity();
+  const stocks = await enrichMarketCaps(transform(snapshot.allStocks));
   const signals = buildIntradaySignals({
-    now, fetchedAt:snapshot.fetchedAt,stocks:transform(snapshot.allStocks),
+    now, fetchedAt:snapshot.fetchedAt,stocks,
     volumeEnabled:settings.marketVolumeEnabled,
     araEnabled:settings.marketAraEnabled,arbEnabled:settings.marketArbEnabled,
     marketTopCount:settings.marketTopCount,holidays:holidayDates(),
@@ -54,8 +72,9 @@ export async function runIntradayAlertsSafely() {
 export async function previewIntradayAlerts() {
   const snapshot = await getMarketActivity();
   const now = new Date();
+  const stocks = await enrichMarketCaps(transform(snapshot.allStocks));
   const signals = buildIntradaySignals({
-    now,fetchedAt:snapshot.fetchedAt,stocks:transform(snapshot.allStocks),preview:true,
+    now,fetchedAt:snapshot.fetchedAt,stocks,preview:true,
     volumeEnabled:true,araEnabled:true,arbEnabled:true,marketTopCount:10,
   });
   return {

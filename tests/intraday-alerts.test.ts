@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { intradaySlot, buildIntradaySignals } from "../lib/alerts/intraday-rules";
+import { intradaySlot, buildIntradaySignals, tradedValueFor } from "../lib/alerts/intraday-rules";
 function at(iso:string){return new Date(iso);}
 const stocks=Array.from({length:80},(_,i)=>({
   code:"A"+String(i).padStart(3,"0"),name:"Issuer "+i,lastPrice:100+i,
@@ -43,4 +43,23 @@ test("once-per-time-slot keys; preview never enters normal market key namespace"
   const p=build("2026-10-17T02:05:00Z",{preview:true});
   assert.ok(p.length>0);
   assert.match(String(p[0].embed.title),/PREVIEW ONLY/);
+});
+
+test("estimated IDR traded value equals volume in shares multiplied by price",()=>{
+  const input={code:"BBCA",name:"Bank",lastPrice:5175,volume:1_200_000,
+    marketCap:700e12,changePct:1.5};
+  assert.deepEqual(tradedValueFor(input),{value:6_210_000_000,source:"estimated"});
+  assert.deepEqual(tradedValueFor({...input,turnover:6_100_000_000}),
+    {value:6_100_000_000,source:"reported"});
+  assert.deepEqual(tradedValueFor({...input,lastPrice:null,turnover:0}),
+    {value:null,source:"unavailable"});
+});
+test("market embeds contain per-issuer rows and value-source labels",()=>{
+  const result=build("2026-10-16T02:05:00Z");
+  const volume=result.find(x=>x.kind==="MARKET_VOLUME");
+  assert.ok(volume);
+  assert.equal(volume.rows.length,10);
+  assert.match(String(volume.embed.description),/Est\. Value/);
+  const e=volume.embed as { _marketRows?:unknown[] };
+  assert.equal(e._marketRows?.length,10);
 });

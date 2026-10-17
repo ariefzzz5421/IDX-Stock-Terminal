@@ -394,3 +394,31 @@ containing authoritative per-quote timestamps.
 Corporate intelligence still runs through the existing morning/evening
 KSEI research crons, including outside market hours. Confirmed events are
 dispatched when detected, not continuously at the time of publication.
+
+## Market alert issuer logos, traded value, and metadata fallback
+
+The admin `/alert` preview reuses `CompanyLogo`: manual overrides from
+`data/logo-overrides.json`, bundled issuer catalog, then ticker monogram.
+Discord webhooks cannot place ten separate logos beside ten text rows.
+The market webhook therefore attempts to attach a generated PNG market card
+with issuer logos, price, percentage change, volume, value and market cap.
+If card rendering or logo loading fails, the standard text embed is still sent.
+
+**Value** is the TradingView `Value.Traded` amount in IDR if provided.
+**Est. Value** equals last price x volume in shares when reported turnover
+is missing. Estimates can differ from actual traded turnover because
+transaction prices change throughout the session.
+
+**Optional metadata fallback (disabled by default).** The ticker-to-MSN-ID
+map is downloaded from the MIT-licensed [0xrsydn/idx-cli](https://github.com/0xrsydn/idx-cli)
+repository, pinned to commit `1adf6e4cec9134b4268f6f859a5c8a916cfff550`.
+The GitHub repository is a Rust CLI, **not a hosted live market-data API**.
+Only enable `MSN_METADATA_FALLBACK_ENABLED=true` and set
+`MSN_FINANCE_API_KEY` as a server-only Vercel secret if you have authorized
+access to the MSN endpoint. The endpoint is unofficial and may rate-limit or
+change. Missing market caps may be enriched; intraday price, change, volume
+and trade timestamps are never substituted from MSN/GitHub metadata.
+No key is hardcoded. Existing data-source/market-session safeguards remain.
+
+To verify: `/alert` → Embed preview → Send preview test. Non-trading-day
+previews intentionally show delayed snapshot data labeled PREVIEW ONLY.
