@@ -17,7 +17,23 @@ const compact=(value:number)=>new Intl.NumberFormat("id-ID",{
   notation:"compact",maximumFractionDigits:1,
 }).format(value);
 const money=(value:number|null)=>value===null?"N/D":marketCapText(value);
-const logoHostnames=new Set(["s3-symbol-logo.tradingview.com","storage.invezgo.com"]);
+const logoHostnames=new Set([
+  "s3-symbol-logo.tradingview.com",
+  "storage.invezgo.com",
+  "bumiresources.com",
+  "www.adaroindonesia.com",
+]);
+
+/** SVG from allowlisted logo hosts only. Block active/external content. */
+export function safeLogoSvg(svg: string): boolean {
+  const trimmed = svg.replace(/^\uFEFF/, "").trim();
+  if (!/<svg(?:\s|>)/i.test(trimmed) || trimmed.length > 120_000) return false;
+  // Restrict external references and active content before sending to Satori.
+  if (/<\s*(?:script|foreignObject|iframe|object|embed|image|use|a)\b/i.test(trimmed)) return false;
+  if (/\bon\w+\s*=|@import|<\?xml-stylesheet|<!DOCTYPE|<!ENTITY/i.test(trimmed)) return false;
+  if (/\b(?:href|xlink:href)\s*=|url\s*\(\s*['"]?\s*(?:https?:|data:|\/\/)/i.test(trimmed)) return false;
+  return true;
+}
 
 /** Download only trusted image domains; bad/unsupported images become monograms. */
 async function logoData(code:string):Promise<string|null> {
@@ -28,9 +44,13 @@ async function logoData(code:string):Promise<string|null> {
     const result=await fetch(image.url,{signal:AbortSignal.timeout(2500),cache:"force-cache"});
     if(!result.ok) return null;
     const type=(result.headers.get("content-type")??"").split(";")[0].trim();
-    if(!["image/png","image/jpeg","image/webp"].includes(type)) return null;
+    if(!["image/png","image/jpeg","image/webp","image/svg+xml"].includes(type)) return null;
     const bytes=await result.arrayBuffer();
     if(bytes.byteLength<1||bytes.byteLength>120_000) return null;
+    if (type==="image/svg+xml") {
+      const svg=new TextDecoder().decode(bytes);
+      if(!safeLogoSvg(svg)) return null;
+    }
     return "data:"+type+";base64,"+Buffer.from(bytes).toString("base64");
   } catch { return null; }
 }
