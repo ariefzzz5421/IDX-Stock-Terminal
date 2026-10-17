@@ -87,3 +87,15 @@ test("trusted SVG data accepts static shapes but rejects active or external cont
   assert.equal(safeLogoSvg('<svg><image href="https://evil.test/track"/></svg>'),false);
   assert.equal(safeLogoSvg('<svg onload="evil()"></svg>'),false);
 });
+
+test("indicative ARA and ARB emit two separate top-10 embeds only at hourly :05",()=>{
+  const source=stocks.map((row,i)=>i===0
+    ? {...row,code:"BBCA",lastPrice:135,changePct:35}
+    : i===1 ? {...row,code:"BBRI",lastPrice:85,changePct:-15} : row);
+  const due=build("2026-10-16T02:05:00Z",{stocks:source});
+  assert.deepEqual(due.map(x=>x.kind).sort(),["MARKET_ARA","MARKET_ARB"]);
+  assert.equal(due.find(x=>x.kind==="MARKET_ARA")?.key,"market:2026-10-16:09:05:ARA");
+  assert.equal(due.find(x=>x.kind==="MARKET_ARB")?.key,"market:2026-10-16:09:05:ARB");
+  assert.equal(build("2026-10-16T02:00:00Z",{stocks:source}).filter(x=>x.kind!=="MARKET_VOLUME").length,0);
+  assert.equal(build("2026-10-16T02:10:00Z",{stocks:source}).length,0);
+});
