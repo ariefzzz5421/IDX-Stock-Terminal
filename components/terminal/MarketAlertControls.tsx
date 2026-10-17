@@ -62,7 +62,7 @@ export function MarketAlertControls({initial,configured,marketChannel}:{initial:
         <div className="grid gap-2 sm:grid-cols-3">
           {[{name:"Top 10 Volume",sub:"Hourly · :00 WIB",value:volume,change:setVolume},
             {name:"Top 10 ARA",sub:"Hourly · :05 WIB · Indicative",value:ara,change:setAra},
-            {name:"Top 10 ARB",sub:"Every 5 min · Indicative",value:arb,change:setArb}
+            {name:"Top 10 ARB",sub:"Hourly · :05 WIB · Indicative",value:arb,change:setArb}
           ].map(s=><label key={s.name} className={item+" cursor-pointer"}>
             <input className="mt-1 h-4 w-4 accent-amber" type="checkbox" checked={s.value}
               onChange={e=>s.change(e.target.checked)}/>
