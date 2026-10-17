@@ -358,42 +358,52 @@ exchange-confirmed events.
 
 ## Intraday Discord alerts (VPS-scheduled)
 
-The latest Alert Center has three default-enabled rules: **Top 10 volume** at
-09:05, 10:05, 11:05, 14:05, 15:05 WIB; **Top 10 indicative ARA** and
-**Top 10 indicative ARB** every five minutes from :05 through :55 while
-the regular BEI session is open. Friday lunch (11:30–14:00), weekday
-lunch, closed sessions and weekends are suppressed by `marketStatus()`.
-Set `MARKET_HOLIDAY_DATES` on Vercel to the official BEI holiday
-dates (comma-separated YYYY-MM-DD); this must be maintained as BEI
-updates the calendar. Empty ARA/ARB lists do not generate misleading alerts.
+The Alert Center defaults to Top 10 Volume, Top 10 ARA (indicative), and
+Top 10 ARB (indicative). Two scheduled checks per trading hour:
+- **Volume** at 09:00 / 10:00 / 11:00 / 14:00 / 15:00 WIB.
+- **ARA and ARB** at 09:05 / 10:05 / 11:05 / 14:05 / 15:05 WIB.
+- **No other minute** creates a market signal; ARA/ARB events are skipped when
+  no stock meets the indicative price-bound classification.
 
-The website **does not** host a 5-minute recurring scheduler on Vercel Hobby.
+Backend `marketStatus()` blocks all market notifications outside regular
+BEI active sessions: Mon–Thu 09:00–12:00 and 13:30–15:50,
+Fri 09:00–11:30 and 14:00–15:50 (WIB). It also rejects weekends.
+Set `MARKET_HOLIDAY_DATES` on Vercel to official BEI non-trading dates,
+comma-separated as YYYY-MM-DD, and keep it updated. A calendar clock alone
+does not verify an unexpected exchange closure.
+
+The website **does not** host a recurring hourly scheduler on Vercel Hobby.
 Set `MARKET_ALERT_SECRET` to a separate random 32+ character value in
-Vercel and your private VPS configuration. Schedule from the VPS:
+Vercel Production and the VPS private `/etc/idx-terminal/market-alert.env`.
+Set `IDX_TERMINAL_URL=https://idx-stock-terminal.vercel.app` on VPS.
+The VPS worker calls only the protected Vercel API; no database or webhook
+secret is required on VPS.
 
-```cron
-CRON_TZ=Asia/Jakarta
-*/5 9-15 * * 1-5 cd /srv/IDX-Stock-Terminal && /usr/bin/node scripts/market-alert-worker.mjs >> /var/log/idx-market.log 2>&1
+On Ubuntu with systemd, install `deploy/idx-market-alert.service` and
+`deploy/idx-market-alert.timer`. The timer contains **two OnCalendar entries**
+per hour (:00 and :05), scheduled in `Asia/Jakarta`. It remains active
+across terminal disconnects/reboots:
+
+```bash
+cd /home/sentinel/IDX-Stock-Terminal
+git pull --ff-only
+sudo cp deploy/idx-market-alert.service deploy/idx-market-alert.timer /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now idx-market-alert.timer
+systemctl list-timers --all idx-market-alert.timer
 ```
 
-Also set `IDX_TERMINAL_URL=https://idx-stock-terminal.vercel.app`
-and the same `MARKET_ALERT_SECRET` in the VPS environment. Ensure your
-cron supports `CRON_TZ` (or set the VPS timezone to Asia/Jakarta).
-This worker calls a bearer-protected server endpoint and keeps the
-Discord webhook private on Vercel. Running this cron via VPS is a
-separate deployment step; merging code alone does not start the worker.
+Check `systemctl cat idx-market-alert.timer` if an older version is already
+installed. If Node.js is not `/usr/bin/node`, change ExecStart in the
+service file to the absolute path returned by `command -v node`.
 
-The source is the **delayed TradingView IDX scanner**. Its `fetchedAt`
-is the website's observation timestamp, **not a proven latest trade tick
-or trading-date timestamp**. Alerts explicitly say delayed/indicative,
-are suppressed on unavailable or older-than-three-minute cached observations,
-and do not claim exchange-confirmed ARA/ARB. Users needing guaranteed
-intraday quote freshness must replace this source with a licensed feed
-containing authoritative per-quote timestamps.
-
-Corporate intelligence still runs through the existing morning/evening
-KSEI research crons, including outside market hours. Confirmed events are
-dispatched when detected, not continuously at the time of publication.
+The TradingView scanner supplies delayed/indicative price and volume data,
+not verified live exchange ticks. Alerts can be skipped if the source is
+unavailable or incomplete; the server fetch timestamp does **not** prove a
+new market trade. Dedupe by date + hour + category prevents repeat sends.
+Corporate-action intelligence runs independently on the existing Vercel
+morning/evening KSEI cron, even when the market is closed, as new verified
+events are detected.
 
 ## Market alert issuer logos, traded value, and metadata fallback
 

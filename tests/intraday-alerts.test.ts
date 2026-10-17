@@ -12,15 +12,31 @@ function build(iso:string,extra:Record<string,unknown>={}) {
   return buildIntradaySignals({now,fetchedAt:now.toISOString(),stocks,
     marketTopCount:10,volumeEnabled:true,araEnabled:true,arbEnabled:true,...extra});
 }
-test("hourly volume exactly the first five-minute bucket :05",()=>{
-  const t="2026-10-16T02:05:00Z"; // Fri 09:05 WIB
-  const r=build(t);
-  assert.equal(r.filter(x=>x.kind==="MARKET_VOLUME").length,1);
-  assert.match(String(r[0].embed.description),/MCap Rp/);
-  assert.match(String(r[0].embed.description),/Vol/);
-  assert.equal(build("2026-10-16T02:10:00Z").filter(x=>x.kind==="MARKET_VOLUME").length,0);
-  assert.equal(build("2026-10-16T03:05:00Z").filter(x=>x.kind==="MARKET_VOLUME").length,1);
-  assert.equal(build("2026-10-16T07:05:00Z").filter(x=>x.kind==="MARKET_VOLUME").length,1);
+test("Top 10 volume is sent hourly at :00, not at :05 or :10",()=>{
+  const atNine=build("2026-10-16T02:00:00Z"); // Fri 09:00 WIB
+  assert.deepEqual(atNine.map(x=>x.kind),["MARKET_VOLUME"]);
+  assert.equal(atNine[0].key,"market:2026-10-16:09:00:VOLUME");
+  assert.match(String(atNine[0].embed.description),/MCap Rp/);
+  assert.match(String(atNine[0].embed.description),/Vol/);
+  assert.equal(build("2026-10-16T02:05:00Z").some(x=>x.kind==="MARKET_VOLUME"),false);
+  assert.equal(build("2026-10-16T02:10:00Z").length,0);
+  assert.equal(build("2026-10-16T03:00:00Z").filter(x=>x.kind==="MARKET_VOLUME").length,1);
+  assert.equal(build("2026-10-16T07:00:00Z").filter(x=>x.kind==="MARKET_VOLUME").length,1);
+  assert.equal(build("2026-10-16T08:00:00Z").filter(x=>x.kind==="MARKET_VOLUME").length,1);
+});
+test("ARA and ARB indicative are due only at :05 per active hour",()=>{
+  const atNine=intradaySlot(at("2026-10-16T02:00:00Z"),"2026-10-16T02:00:00Z");
+  const atNineFive=intradaySlot(at("2026-10-16T02:05:00Z"),"2026-10-16T02:05:00Z");
+  assert.ok(atNine);
+  assert.equal(atNine.hourly,true);
+  assert.equal(atNine.limitsDue,false);
+  assert.ok(atNineFive);
+  assert.equal(atNineFive.hourly,false);
+  assert.equal(atNineFive.limitsDue,true);
+  assert.equal(atNineFive.key,"09:05");
+  assert.equal(intradaySlot(at("2026-10-16T02:10:00Z"),"2026-10-16T02:10:00Z"),null);
+  // The price-limit feed must not fabricate alerts when no ticker has hit a limit.
+  assert.equal(build("2026-10-16T02:05:00Z").length,0);
 });
 test("no market alerts outside sessions and Friday lunch",()=>{
   assert.equal(build("2026-10-16T04:35:00Z").length,0); // Fri 11:35 break
@@ -36,10 +52,10 @@ test("stale snapshot and partial/invalid volume fail closed",()=>{
   assert.equal(build("2026-10-16T02:05:00Z",{stocks:stocks.slice(0,25)}).length,0);
 });
 test("once-per-time-slot keys; preview never enters normal market key namespace",()=>{
-  const first=build("2026-10-16T02:05:01Z");
-  const repeat=build("2026-10-16T02:08:30Z");
+  const first=build("2026-10-16T02:00:01Z");
+  const repeat=build("2026-10-16T02:02:30Z");
   assert.equal(first[0].key,repeat[0].key);
-  const other=build("2026-10-16T03:05:00Z");
+  const other=build("2026-10-16T03:00:00Z");
   assert.notEqual(first[0].key,other[0].key);
   const p=build("2026-10-17T02:05:00Z",{preview:true});
   assert.ok(p.length>0);
@@ -56,7 +72,7 @@ test("estimated IDR traded value equals volume in shares multiplied by price",()
     {value:null,source:"unavailable"});
 });
 test("market embeds contain per-issuer rows and value-source labels",()=>{
-  const result=build("2026-10-16T02:05:00Z");
+  const result=build("2026-10-16T02:00:00Z");
   const volume=result.find(x=>x.kind==="MARKET_VOLUME");
   assert.ok(volume);
   assert.equal(volume.rows.length,10);
@@ -70,4 +86,16 @@ test("trusted SVG data accepts static shapes but rejects active or external cont
   assert.equal(safeLogoSvg('<svg><script>alert(1)</script></svg>'),false);
   assert.equal(safeLogoSvg('<svg><image href="https://evil.test/track"/></svg>'),false);
   assert.equal(safeLogoSvg('<svg onload="evil()"></svg>'),false);
+});
+
+test("indicative ARA and ARB emit two separate top-10 embeds only at hourly :05",()=>{
+  const source=stocks.map((row,i)=>i===0
+    ? {...row,code:"BBCA",lastPrice:135,changePct:35}
+    : i===1 ? {...row,code:"BBRI",lastPrice:85,changePct:-15} : row);
+  const due=build("2026-10-16T02:05:00Z",{stocks:source});
+  assert.deepEqual(due.map(x=>x.kind).sort(),["MARKET_ARA","MARKET_ARB"]);
+  assert.equal(due.find(x=>x.kind==="MARKET_ARA")?.key,"market:2026-10-16:09:05:ARA");
+  assert.equal(due.find(x=>x.kind==="MARKET_ARB")?.key,"market:2026-10-16:09:05:ARB");
+  assert.equal(build("2026-10-16T02:00:00Z",{stocks:source}).filter(x=>x.kind!=="MARKET_VOLUME").length,0);
+  assert.equal(build("2026-10-16T02:10:00Z",{stocks:source}).length,0);
 });
