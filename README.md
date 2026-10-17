@@ -333,42 +333,28 @@ Test the pure notification rules with
 `node --import tsx --test tests/discord-alerts.test.ts`.
 
 
-## BEI market alerts with issuer market caps
+## Discord alert release status
 
-The admin-only **/alert** page includes:
-- Daily TOP GAINERS and TOP LOSERS digest (5 or 10 rows), after market close.
-- ARA / ARB **indicative only** notifications, one per ticker / side / BEI date.
-- Embeds with stock price, percent change, market cap (Rp) and date/source.
-- Admin-only sourced preview (no send), send market preview test, and manual close scan.
-- Optional market-specific Discord webhook via \`DISCORD_MARKET_WEBHOOK_URL\`.
-- Corporate action embeds also include reference market cap from stored catalog; this figure may be stale.
+The latest intraday alert implementation is included on `main` (PR #7). For
+production rollout, deploy the **latest main commit** to the Vercel project
+`idx-stock-terminal`, then verify `/alert` as an admin. A GitHub merge
+does **not** by itself guarantee that Vercel has published the new commit.
 
-**Data integrity:** market prices, previous close and trading date come from the BEI
-Ringkasan Saham endpoint; no current-day notifications are created if the official
-date is old, the summary has under 50 rows, or price/volume is missing. Capitalization
-is computed as *listed shares × reported close* when available; otherwise from
-TradingView/cached catalog, labeled as an estimate. No guessing of missing numbers.
-The current ARA/ARB algorithm covers selected boards only and is NOT a verified
-BEI trading-status feed. It uses latest dated BEI summary, which may be delayed.
+Before enabling the VPS worker, confirm the following:
+- Vercel Production has `DISCORD_WEBHOOK_URL` and a separate
+  `MARKET_ALERT_SECRET` (32+ characters); the latter must match the VPS.
+- Vercel's production migrations have completed and the alert settings page
+  loads successfully.
+- `MARKET_HOLIDAY_DATES` contains official IDX non-trading dates, kept current.
+- The VPS cron and timezone are configured **separately**, with logs available.
+  Do not assume a Vercel deployment schedules 5-minute recurring jobs.
+- An admin preview test arrives in Discord, and out-of-session market checks
+  produce **no** market notifications.
 
-**Scheduling:** Vercel's *existing evening research cron* handles the close digest
-and one end-of-day ARA/ARB pass. Vercel Hobby does **not** support every-five-minute
-cron jobs. For more frequent indicative checks use your own VPS:
-
-1. Set \`MARKET_ALERT_SECRET\` (random 32+ character secret) in Vercel **Production**.
-2. Set the SAME secret in a private environment on your VPS, as well as
-   \`IDX_TERMINAL_URL=https://idx-stock-terminal.vercel.app\`. Never expose it in a public script.
-3. Run \`node scripts/market-alert-worker.mjs\` from your VPS with the two variables.
-4. Schedule it every 5 minutes during BEI sessions, e.g. cron:
-   \`CRON_TZ=Asia/Jakarta\`, followed by \`*/5 9-15 * * 1-5 cd /srv/IDX-Stock-Terminal && /usr/bin/node scripts/market-alert-worker.mjs >> /var/log/idx-market.log 2>&1\`.
-   **Verify timezone support** on your VPS cron implementation; holiday detection
-   is based on matching official trading date, not a complete holiday calendar.
-5. Dedupe and retry use the existing \`discord_alert_deliveries\` outbox with
-   a unique \`marketKey\`. The VPS does not need any webhook URLs or database credentials.
-
-Breaking news beyond the existing sourced KSEI corporate-intelligence pipeline
-remains unavailable until a verified BEI/OJK disclosure feed is added.
-
+The top-10 intraday source is the delayed TradingView IDX scanner, not a
+licensed low-latency feed. Neither a fresh server fetch nor a 200 HTTP response
+guarantees a fresh exchange tick. Do not treat indicative ARA/ARB as
+exchange-confirmed events.
 
 ## Intraday Discord alerts (VPS-scheduled)
 
