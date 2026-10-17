@@ -29,12 +29,16 @@ export function intradaySlot(now: Date, fetchedAt: string | null, holidays: stri
   const sourceAge = now.getTime() - Date.parse(fetchedAt);
   if (!Number.isFinite(sourceAge) || sourceAge < -60_000 || sourceAge > 180_000) return null;
   const minuteOfHour = clock.minute % 60;
-  // External VPS invokes every five minutes; allow a short grace period for scheduler jitter.
-  const bucket = Math.floor(minuteOfHour / 5) * 5;
-  if (bucket === 0) return null;
+  // The scheduler runs hourly at :00 (volume) and :05 (ARA / ARB).
+  // Accept a short delay from systemd AccuracySec / outbound request latency,
+  // but never send at :10, :15, or any other minute.
+  const volumeDue = minuteOfHour >= 0 && minuteOfHour < 3;
+  const limitsDue = minuteOfHour >= 5 && minuteOfHour < 8;
+  if (!volumeDue && !limitsDue) return null;
   const hour = Math.floor(clock.minutes / 60);
-  const key = String(hour).padStart(2, "0") + ":" + String(bucket).padStart(2, "0");
-  return { date, key, hourly: bucket === 5, market: market.label, observedAt: fetchedAt };
+  const bucket = volumeDue ? "00" : "05";
+  const key = String(hour).padStart(2, "0") + ":" + bucket;
+  return { date, key, hourly: volumeDue, limitsDue, market: market.label, observedAt: fetchedAt };
 }
 
 function validRow(s: IntradayStock) {
@@ -80,7 +84,7 @@ function baseEmbed(title: string, color: number, description: string, observedAt
   };
 }
 export function buildIntradaySignals(options: IntradayOptions): IntradaySignal[] {
-  const slot = options.preview ? {date: jakartaDate(options.now), key: "PREVIEW", hourly: true,
+  const slot = options.preview ? {date: jakartaDate(options.now), key: "PREVIEW", hourly: true, limitsDue: true,
     market: "Preview", observedAt: options.fetchedAt ?? options.now.toISOString()} :
     intradaySlot(options.now, options.fetchedAt, options.holidays);
   if (!slot || options.stocks.length < 50) return [];
@@ -101,7 +105,7 @@ export function buildIntradaySignals(options: IntradayOptions): IntradaySignal[]
       rows:top,
       embed: {...baseEmbed((options.preview ? "PREVIEW ONLY · " : "")+"IDX · TOP "+count+" VOLUME · "+slot.key+" WIB",0x38bdf8,description,slot.observedAt,slot.date),_marketRows:top}});
   }
-  if (options.araEnabled || options.arbEnabled) {
+  if (slot.limitsDue && (options.araEnabled || options.arbEnabled)) {
     const limits = filtered.map(row => ({...row,limit:indicativeLimitStatus(row.code,row.lastPrice,row.changePct)}))
       .filter(row=>row.limit!==null);
     for(const [side,enabled,color] of [

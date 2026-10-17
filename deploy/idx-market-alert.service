@@ -1,0 +1,17 @@
+[Unit]
+Description=IDX Terminal market alert scan
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=sentinel
+Group=sentinel
+WorkingDirectory=/home/sentinel/IDX-Stock-Terminal
+EnvironmentFile=/etc/idx-terminal/market-alert.env
+ExecStart=/usr/bin/node /home/sentinel/IDX-Stock-Terminal/scripts/market-alert-worker.mjs
+TimeoutStartSec=55
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+PrivateTmp=true
