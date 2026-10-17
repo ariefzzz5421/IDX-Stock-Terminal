@@ -52,15 +52,52 @@ export async function sendDiscordEmbed(embed: ReturnType<typeof eventEmbed> | Re
     return { ok: false, error: "Missing or invalid DISCORD_WEBHOOK_URL", permanent: true, retryAfterMs: 0 };
   }
   try {
+    // _marketRows is internal data, never a Discord embed field.
+    const { _marketRows, ...cleanEmbed } = embed as Record<string, unknown>;
+    let payload: Record<string, unknown> = {
+      username: "IDX Stock Terminal",
+      allowed_mentions: { parse: [] },
+      embeds: [cleanEmbed],
+    };
+    let body: BodyInit = JSON.stringify(payload);
+    let headers: HeadersInit | undefined = { "Content-Type": "application/json" };
+
+    if (target === "market" && Array.isArray(_marketRows) && _marketRows.length > 0) {
+      // Discord embeds cannot place one logo beside every text row; attach a
+      // generated PNG alongside the fully readable text embed. Image failure
+      // must not prevent the text notification from being delivered.
+      try {
+        const { renderMarketCard } = await import("./market-card");
+        const verified = _marketRows.slice(0,10).filter((row: unknown) => {
+          if (!row || typeof row !== "object") return false;
+          const v = row as Record<string, unknown>;
+          return typeof v.code === "string" && /^[A-Z0-9]{4,6}$/.test(v.code) &&
+            typeof v.lastPrice === "number" && Number.isFinite(v.lastPrice) &&
+            typeof v.volume === "number" && Number.isFinite(v.volume) &&
+            typeof v.changePct === "number" && Number.isFinite(v.changePct);
+        });
+        if (verified.length > 0) {
+          const bytes = await renderMarketCard(String(cleanEmbed.title ?? "IDX Market"),
+            verified as Parameters<typeof renderMarketCard>[1]);
+          const filename = "idx-market-card.png";
+          payload = { ...payload, embeds: [{ ...cleanEmbed,
+            image: { url: "attachment://" + filename } }] };
+          const form = new FormData();
+          form.append("payload_json", JSON.stringify(payload));
+          form.append("files[0]", new Blob([new Uint8Array(bytes)], {type:"image/png"}), filename);
+          body = form;
+          headers = undefined;
+        }
+      } catch (error) {
+        console.warn("[alerts] image card unavailable; using text embed",
+          error instanceof Error ? error.name : "unknown");
+      }
+    }
     const response = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: "IDX Stock Terminal",
-        allowed_mentions: { parse: [] },
-        embeds: [embed],
-      }),
-      signal: AbortSignal.timeout(10_000),
+      ...(headers ? {headers} : {}),
+      body,
+      signal: AbortSignal.timeout(15_000),
       cache: "no-store",
     });
     if (response.ok) return { ok: true };

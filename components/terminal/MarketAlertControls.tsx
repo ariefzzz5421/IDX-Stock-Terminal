@@ -3,9 +3,17 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Activity, Eye, Send, Settings2, BellRing } from "lucide-react";
+import { CompanyLogo } from "./CompanyLogo";
 
 type Initial = {enabled:boolean;marketVolumeEnabled:boolean;marketAraEnabled:boolean;marketArbEnabled:boolean;marketTopCount:number};
-type Embed = {title?:string;description?:string;color?:number;url?:string;fields?:{name:string;value:string}[];footer?:{text?:string}};
+type IssuerRow = {code:string;lastPrice:number;changePct:number;volume:number;
+  tradedValue:number|null;valueSource:"reported"|"estimated"|"unavailable";
+  marketCap:number|null;logoUrl?:string|null;capSource?:string};
+type Embed = {title?:string;description?:string;color?:number;url?:string;
+  fields?:{name:string;value:string}[];footer?:{text?:string};_marketRows?:IssuerRow[]};
+const idr=(v:number|null)=>v===null||!Number.isFinite(v)?"N/D":
+  "Rp"+new Intl.NumberFormat("id-ID",{notation:"compact",maximumFractionDigits:2}).format(v);
+const qty=(v:number)=>new Intl.NumberFormat("id-ID",{notation:"compact",maximumFractionDigits:1}).format(v);
 type Preview = {message:string;previews:{type:string;title:string;embed:Embed}[]};
 const button="inline-flex items-center gap-2 border border-rule-hi px-3 py-2 text-xs font-bold uppercase tracking-wider text-ink-hi hover:border-amber disabled:opacity-40";
 const item="flex gap-3 border border-rule bg-panel-hi p-3 text-sm text-ink-hi";
@@ -77,7 +85,25 @@ export function MarketAlertControls({initial,configured,marketChannel}:{initial:
             <div className="w-1 shrink-0 rounded-md" style={{backgroundColor:"#"+(embed.color??0x5865f2).toString(16).padStart(6,"0")}}/>
             <div className="min-w-0 space-y-3">
               <p className="font-bold">{embed.title}</p>
-              <p className="whitespace-pre-wrap break-words text-xs">{embed.description}</p>
+              
+              {embed._marketRows?.length ? <div className="min-w-0 space-y-2">
+                {embed._marketRows.map((r,i)=><div key={r.code}
+                  className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 border-b border-[#414651] py-2 text-xs">
+                  <span className="w-4 shrink-0 text-[#9ca3af]">{i+1}</span>
+                  <CompanyLogo code={r.code} logoUrl={r.logoUrl} size="sm" />
+                  <strong className="w-12">{r.code}</strong>
+                  <span>{idr(r.lastPrice)}</span>
+                  <span className={r.changePct>=0?"text-[#64d9a6]":"text-[#ff8c92]"}>
+                    {r.changePct>=0?"+":""}{r.changePct.toFixed(2)}%
+                  </span>
+                  <span className="text-[#bbc9d9]">Vol {qty(r.volume)}</span>
+                  <span className="text-[#bbc9d9]">
+                    {r.valueSource==="reported"?"Value":"Est. Value"} {idr(r.tradedValue)}
+                  </span>
+                  <span className="text-[#bbc9d9]">MCap {idr(r.marketCap)}</span>
+                </div>)}
+              </div>:<p className="whitespace-pre-wrap break-words text-xs">{embed.description}</p>}
+
               {embed.fields?.map((f,i)=><p key={i} className="text-xs text-[#b9bcca]">{f.name}: {f.value}</p>)}
               <p className="text-micro text-[#9ca3af]">{embed.footer?.text}</p>
             </div>

@@ -5,10 +5,13 @@ import { jakartaDate, marketCapText, rupiah } from "./market-rules";
 export type IntradayStock = {
   code: string; name: string; lastPrice: number | null; volume: number;
   marketCap: number | null; changePct: number | null;
+  turnover?: number | null; logoUrl?: string | null; capSource?: string;
 };
+export type MarketIssuerRow = IntradayStock & {tradedValue:number | null;valueSource:"reported"|"estimated"|"unavailable"};
 export type IntradaySignal = {
   kind: "MARKET_VOLUME" | "MARKET_ARA" | "MARKET_ARB";
   key: string; title: string; embed: Record<string, unknown>;
+  rows: MarketIssuerRow[];
 };
 export type IntradayOptions = {
   now: Date; fetchedAt: string | null; stocks: IntradayStock[];
@@ -46,6 +49,20 @@ function changeText(pct: number): string {
 function compactVolume(shares: number): string {
   return new Intl.NumberFormat("id-ID", { notation: "compact", maximumFractionDigits: 1 }).format(shares);
 }
+export function tradedValueFor(stock: IntradayStock): {value:number|null; source:"reported"|"estimated"|"unavailable"} {
+  if(stock.turnover !== undefined && stock.turnover !== null && Number.isFinite(stock.turnover) && stock.turnover > 0)
+    return {value:stock.turnover,source:"reported"};
+  if(stock.lastPrice !== null && Number.isFinite(stock.lastPrice) && stock.lastPrice>0 &&
+     Number.isFinite(stock.volume) && stock.volume>0 && Number.isFinite(stock.lastPrice*stock.volume))
+    return {value:stock.lastPrice*stock.volume,source:"estimated"};
+  return {value:null,source:"unavailable"};
+}
+function marketRows(items:IntradayStock[]):MarketIssuerRow[] {
+  return items.map(s=>{
+    const traded=tradedValueFor(s);
+    return {...s,tradedValue:traded.value,valueSource:traded.source};
+  });
+}
 function footer(observedAt: string): string {
   const observed = new Intl.DateTimeFormat("id-ID", {
     timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit",
@@ -72,14 +89,17 @@ export function buildIntradaySignals(options: IntradayOptions): IntradaySignal[]
   const count = options.marketTopCount === 5 ? 5 : 10;
   const signals: IntradaySignal[] = [];
   if (options.volumeEnabled && slot.hourly) {
-    const top = [...filtered].sort((a, b) => b.volume - a.volume || a.code.localeCompare(b.code)).slice(0,count);
+    const top = marketRows([...filtered].sort((a, b) => b.volume - a.volume || a.code.localeCompare(b.code)).slice(0,count));
     const description = top.map((r,i) =>
       (i+1) + ". **" + r.code + "** · " + rupiah(r.lastPrice) + " · " + changeText(r.changePct!) +
-      "\n   Vol " + compactVolume(r.volume) + " shares · MCap " + marketCapText(r.marketCap)
+      "\n   Vol " + compactVolume(r.volume) + " shares · " +
+      (r.valueSource==="reported"?"Value ":"Est. Value ") + marketCapText(r.tradedValue) +
+      " · MCap " + marketCapText(r.marketCap)
     ).join("\n").slice(0, 4000);
     signals.push({kind:"MARKET_VOLUME",key:"market:"+slot.date+":"+slot.key+":VOLUME",
       title:(options.preview ? "PREVIEW · " : "")+"Top "+count+" Volume · "+slot.key+" WIB",
-      embed: baseEmbed((options.preview ? "PREVIEW ONLY · " : "")+"IDX · TOP "+count+" VOLUME · "+slot.key+" WIB",0x38bdf8,description,slot.observedAt,slot.date)});
+      rows:top,
+      embed: {...baseEmbed((options.preview ? "PREVIEW ONLY · " : "")+"IDX · TOP "+count+" VOLUME · "+slot.key+" WIB",0x38bdf8,description,slot.observedAt,slot.date),_marketRows:top}});
   }
   if (options.araEnabled || options.arbEnabled) {
     const limits = filtered.map(row => ({...row,limit:indicativeLimitStatus(row.code,row.lastPrice,row.changePct)}))
@@ -88,18 +108,21 @@ export function buildIntradaySignals(options: IntradayOptions): IntradaySignal[]
       ["ARA",options.araEnabled,0x22c55e],["ARB",options.arbEnabled,0xef4444]
     ] as const) {
       if(!enabled) continue;
-      const top = limits.filter(s=>s.limit === side+"_INDICATIVE")
-        .sort((a,b)=>side==="ARA"?b.volume-a.volume:a.volume-b.volume).slice(0,count);
+      const top = marketRows(limits.filter(s=>s.limit === side+"_INDICATIVE")
+        .sort((a,b)=>side==="ARA"?b.volume-a.volume:a.volume-b.volume).slice(0,count));
       if (!top.length) continue; // no fabricated ARA/ARB events
       const description = top.map((r,i) =>
         (i+1) + ". **" + r.code + "** · " + rupiah(r.lastPrice) + " · " + changeText(r.changePct!) +
-        "\n   MCap " + marketCapText(r.marketCap)
+        "\n   Vol " + compactVolume(r.volume) + " shares · " +
+        (r.valueSource==="reported"?"Value ":"Est. Value ") + marketCapText(r.tradedValue) +
+        " · MCap " + marketCapText(r.marketCap)
       ).join("\n").slice(0,3900);
       signals.push({kind:"MARKET_"+side as "MARKET_ARA"|"MARKET_ARB",
         key:"market:"+slot.date+":"+slot.key+":"+side,
         title:(options.preview ? "PREVIEW · " : "")+"Top "+count+" "+side+" (indicative) · "+slot.key+" WIB",
-        embed:baseEmbed((options.preview ? "PREVIEW ONLY · " : "")+"IDX · TOP "+count+" "+side+" (INDICATIVE) · "+slot.key+" WIB",
-          color,description,slot.observedAt,slot.date)});
+        rows:top,
+        embed:{...baseEmbed((options.preview ? "PREVIEW ONLY · " : "")+"IDX · TOP "+count+" "+side+" (INDICATIVE) · "+slot.key+" WIB",
+          color,description,slot.observedAt,slot.date),_marketRows:top}});
     }
   }
   return signals;
