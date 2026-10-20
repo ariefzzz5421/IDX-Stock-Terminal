@@ -64,9 +64,11 @@ export type WebhookOutcome =
   | { ok: false; error: string; permanent: boolean; retryAfterMs: number };
 
 export async function sendDiscordEmbed(embed: ReturnType<typeof eventEmbed> | Record<string, unknown>, target: "primary" | "market" = "primary"): Promise<WebhookOutcome> {
-  const url = (target === "market" ? process.env.DISCORD_MARKET_WEBHOOK_URL?.trim() || process.env.DISCORD_WEBHOOK_URL?.trim() : process.env.DISCORD_WEBHOOK_URL?.trim()) ?? "";
+  const url = (target === "market"
+    ? process.env.DISCORD_MARKET_WEBHOOK_URL?.trim() || process.env.DISCORD_WEBHOOK_URL?.trim()
+    : process.env.DISCORD_INTELLIGENCE_WEBHOOK_URL?.trim() || process.env.DISCORD_WEBHOOK_URL?.trim()) ?? "";
   if (!isDiscordWebhookUrl(url)) {
-    return { ok: false, error: "Missing or invalid DISCORD_WEBHOOK_URL", permanent: true, retryAfterMs: 0 };
+    return { ok: false, error: "Missing or invalid Discord webhook URL", permanent: true, retryAfterMs: 0 };
   }
   try {
     // _marketRows is internal data, never a Discord embed field.
