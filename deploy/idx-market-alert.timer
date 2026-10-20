@@ -1,10 +1,10 @@
 [Unit]
-Description=IDX hourly volume (:00), ARA and ARB (:05) alerts while BEI open
+Description=IDX hourly Volume (:00 from 10 WIB) and ARA/ARB (:10), active BEI sessions only
 
 [Timer]
-# systemd calendar syntax is timezone-aware; backend handles lunch/closed/holidays.
-OnCalendar=Mon..Fri *-*-* 09..15:00:00 Asia/Jakarta
-OnCalendar=Mon..Fri *-*-* 09..15:05:00 Asia/Jakarta
+# systemd timezone-aware calendar. Backend skips lunch, holidays and closed markets.
+OnCalendar=Mon..Fri *-*-* 10..15:00:00 Asia/Jakarta
+OnCalendar=Mon..Fri *-*-* 10..15:10:00 Asia/Jakarta
 AccuracySec=10s
 Persistent=false
 Unit=idx-market-alert.service
