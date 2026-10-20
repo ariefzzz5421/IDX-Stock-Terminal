@@ -123,6 +123,8 @@ export async function dispatchDiscordOutbox(limit = 10) {
       priority: version.priority, status: version.status, changeType: version.changeType,
       sourceUrl: version.sourceUrl, eventId: version.eventId,
       codes: [...new Set(version.event.tickers.map((ticker) => ticker.stockCode))],
+      analysisJson: version.analysisJson, announcementAt: version.announcementAt,
+      effectiveAt: version.effectiveAt, publishedAt: version.publishedAt, direction: version.direction,
     }));
     if (outcome.ok) {
       sent++;
