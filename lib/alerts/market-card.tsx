@@ -99,7 +99,7 @@ export async function renderMarketCard(title:string,rows:IssuerCardRow[]):Promis
       </div>)}
       <div style={{display:"flex",justifyContent:"space-between",marginTop:20,color:"#8299b5",fontSize:13}}>
         <span>TradingView IDX scanner · delayed/indicative · not verified live ticks</span>
-        <span>Source-based snapshot</span>
+        <span>IDX Terminal · idx-stock-terminal.vercel.app</span>
       </div>
     </div>,{width:1060,height:995}
   );

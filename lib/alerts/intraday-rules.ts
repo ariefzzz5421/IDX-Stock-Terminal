@@ -29,14 +29,14 @@ export function intradaySlot(now: Date, fetchedAt: string | null, holidays: stri
   const sourceAge = now.getTime() - Date.parse(fetchedAt);
   if (!Number.isFinite(sourceAge) || sourceAge < -60_000 || sourceAge > 180_000) return null;
   const minuteOfHour = clock.minute % 60;
-  // The scheduler runs hourly at :00 (volume) and :05 (ARA / ARB).
+  // The scheduler runs hourly at :00 (volume) and :10 (ARA / ARB), starting 10:00 WIB.
   // Accept a short delay from systemd AccuracySec / outbound request latency,
-  // but never send at :10, :15, or any other minute.
-  const volumeDue = minuteOfHour >= 0 && minuteOfHour < 3;
-  const limitsDue = minuteOfHour >= 5 && minuteOfHour < 8;
+  // but never send at :05, :15, or any other off-slot minute.
+  const volumeDue = clock.hour >= 10 && minuteOfHour < 3;
+  const limitsDue = clock.hour >= 10 && minuteOfHour >= 10 && minuteOfHour < 13;
   if (!volumeDue && !limitsDue) return null;
   const hour = Math.floor(clock.minutes / 60);
-  const bucket = volumeDue ? "00" : "05";
+  const bucket = volumeDue ? "00" : "10";
   const key = String(hour).padStart(2, "0") + ":" + bucket;
   return { date, key, hourly: volumeDue, limitsDue, market: market.label, observedAt: fetchedAt };
 }
@@ -73,12 +73,32 @@ function footer(observedAt: string): string {
   }).format(new Date(observedAt));
   return "TradingView scanner · delayed/indicative · observed " + observed + " WIB · Not live tick data";
 }
+export const IDX_TERMINAL_MARKET_URL = "https://idx-stock-terminal.vercel.app/market";
+
+/**
+ * Keep each issuer's three lines together and separate issuers with one
+ * blank line. Discord's embed fields are intentionally avoided so Session
+ * and Source retain their own spacing on narrow mobile screens.
+ */
+export function issuerDescription(rows: MarketIssuerRow[]): string {
+  return rows.map((r,i) => {
+    const valueLabel = r.valueSource === "reported" ? "Value" : "Est. Value";
+    return (i + 1) + ". **" + r.code + "** · " + rupiah(r.lastPrice) +
+      " · " + changeText(r.changePct ?? 0) +
+      "\nVol " + compactVolume(r.volume) + " shares · " + valueLabel + " " + marketCapText(r.tradedValue) +
+      "\nMCap " + marketCapText(r.marketCap);
+  }).join("\n\n");
+}
+
 function baseEmbed(title: string, color: number, description: string, observedAt: string, date: string) {
+  // IDX Terminal is the report link; footer still clearly credits TradingView
+  // as the delayed market-data scanner, never as an official BEI live feed.
+  const spacedDescription = description +
+    "\n\n**Session**\n" + date + " WIB" +
+    "\n\n**Source**\n[IDX Terminal](" + IDX_TERMINAL_MARKET_URL + ")";
   return {
-    title, description, color,
-    url: "https://idx-stock-terminal.vercel.app/market",
-    fields: [{ name: "Session", value: date + " WIB", inline: true },
-      { name: "Source", value: "TradingView IDX scanner (delayed; exchange timestamp unavailable)", inline: false }],
+    title, description: spacedDescription.slice(0, 4096), color,
+    url: IDX_TERMINAL_MARKET_URL,
     footer: { text: footer(observedAt) },
     timestamp: observedAt,
   };
@@ -94,12 +114,7 @@ export function buildIntradaySignals(options: IntradayOptions): IntradaySignal[]
   const signals: IntradaySignal[] = [];
   if (options.volumeEnabled && slot.hourly) {
     const top = marketRows([...filtered].sort((a, b) => b.volume - a.volume || a.code.localeCompare(b.code)).slice(0,count));
-    const description = top.map((r,i) =>
-      (i+1) + ". **" + r.code + "** · " + rupiah(r.lastPrice) + " · " + changeText(r.changePct!) +
-      "\n   Vol " + compactVolume(r.volume) + " shares · " +
-      (r.valueSource==="reported"?"Value ":"Est. Value ") + marketCapText(r.tradedValue) +
-      " · MCap " + marketCapText(r.marketCap)
-    ).join("\n").slice(0, 4000);
+    const description = issuerDescription(top);
     signals.push({kind:"MARKET_VOLUME",key:"market:"+slot.date+":"+slot.key+":VOLUME",
       title:(options.preview ? "PREVIEW · " : "")+"Top "+count+" Volume · "+slot.key+" WIB",
       rows:top,
@@ -115,12 +130,7 @@ export function buildIntradaySignals(options: IntradayOptions): IntradaySignal[]
       const top = marketRows(limits.filter(s=>s.limit === side+"_INDICATIVE")
         .sort((a,b)=>side==="ARA"?b.volume-a.volume:a.volume-b.volume).slice(0,count));
       if (!top.length) continue; // no fabricated ARA/ARB events
-      const description = top.map((r,i) =>
-        (i+1) + ". **" + r.code + "** · " + rupiah(r.lastPrice) + " · " + changeText(r.changePct!) +
-        "\n   Vol " + compactVolume(r.volume) + " shares · " +
-        (r.valueSource==="reported"?"Value ":"Est. Value ") + marketCapText(r.tradedValue) +
-        " · MCap " + marketCapText(r.marketCap)
-      ).join("\n").slice(0,3900);
+      const description = issuerDescription(top);
       signals.push({kind:"MARKET_"+side as "MARKET_ARA"|"MARKET_ARB",
         key:"market:"+slot.date+":"+slot.key+":"+side,
         title:(options.preview ? "PREVIEW · " : "")+"Top "+count+" "+side+" (indicative) · "+slot.key+" WIB",

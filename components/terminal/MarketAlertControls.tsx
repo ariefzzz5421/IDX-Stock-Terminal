@@ -61,8 +61,8 @@ export function MarketAlertControls({initial,configured,marketChannel}:{initial:
       <div className="min-w-0">
         <div className="grid gap-2 sm:grid-cols-3">
           {[{name:"Top 10 Volume",sub:"Hourly · :00 WIB",value:volume,change:setVolume},
-            {name:"Top 10 ARA",sub:"Hourly · :05 WIB · Indicative",value:ara,change:setAra},
-            {name:"Top 10 ARB",sub:"Hourly · :05 WIB · Indicative",value:arb,change:setArb}
+            {name:"Top 10 ARA",sub:"Hourly · :10 WIB · Indicative",value:ara,change:setAra},
+            {name:"Top 10 ARB",sub:"Hourly · :10 WIB · Indicative",value:arb,change:setArb}
           ].map(s=><label key={s.name} className={item+" cursor-pointer"}>
             <input className="mt-1 h-4 w-4 accent-amber" type="checkbox" checked={s.value}
               onChange={e=>s.change(e.target.checked)}/>
@@ -113,8 +113,8 @@ export function MarketAlertControls({initial,configured,marketChannel}:{initial:
       <aside className="h-fit border border-rule bg-panel-hi p-4 text-xs text-ink">
         <h3 className="font-bold text-ink-hi">Alert Schedule · WIB</h3>
         <div className="mt-3 space-y-2 text-dim">
-          <p><strong className="text-ink-hi">Volume</strong> · 09:00 / 10:00 / 11:00 / 14:00 / 15:00</p>
-          <p><strong className="text-ink-hi">ARA / ARB</strong> · 09:05 / 10:05 / 11:05 / 14:05 / 15:05</p>
+          <p><strong className="text-ink-hi">Volume</strong> · 10:00 / 11:00 / 14:00 / 15:00</p>
+          <p><strong className="text-ink-hi">ARA / ARB</strong> · 10:10 / 11:10 / 14:10 / 15:10</p>
           <p><strong className="text-ink-hi">Corporate Action</strong> · saat terdeteksi, termasuk di luar jam pasar</p>
           <p><strong className="text-ink-hi">Market closed / break</strong> · tidak mengirim</p>
         </div>
