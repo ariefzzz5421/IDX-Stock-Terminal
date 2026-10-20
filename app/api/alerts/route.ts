@@ -80,7 +80,7 @@ export async function POST(request: Request) {
     const message = error instanceof Error ? error.message : "Alert request failed";
     // Only predictable, non-sensitive messages are returned to browsers.
     if (message.includes("60 seconds")) return Response.json({ error: message }, { status: 429 });
-    if (message.startsWith("Configure DISCORD_WEBHOOK_URL")) return Response.json({ error: message }, { status: 503 });
+    if (message.startsWith("Configure DISCORD_")) return Response.json({ error: message }, { status: 503 });
     console.error("[alerts] action failed", message);
     return Response.json({ error: "Action failed. Check migrations, Vercel logs and Discord connection." }, { status: 503 });
   }
