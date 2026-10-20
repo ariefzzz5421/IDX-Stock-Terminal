@@ -7,7 +7,7 @@ const DESTINATION = "discord:primary";
 const MAX_ATTEMPTS = 6;
 
 export function discordWebhookConfigured(): boolean {
-  return Boolean(process.env.DISCORD_WEBHOOK_URL?.trim());
+  return Boolean(process.env.DISCORD_INTELLIGENCE_WEBHOOK_URL?.trim() || process.env.DISCORD_WEBHOOK_URL?.trim());
 }
 
 export async function getAlertSettings() {
@@ -158,7 +158,7 @@ export async function processDiscordAlerts(): Promise<void> {
 }
 
 export async function sendDiscordTest() {
-  if (!discordWebhookConfigured()) throw new Error("Configure DISCORD_WEBHOOK_URL in Vercel first.");
+  if (!discordWebhookConfigured()) throw new Error("Configure DISCORD_INTELLIGENCE_WEBHOOK_URL or DISCORD_WEBHOOK_URL in Vercel first.");
   const recent = await prisma.discordAlertDelivery.findFirst({
     where: { kind: "TEST", createdAt: { gte: new Date(Date.now() - 60_000) } },
     select: { id: true },
