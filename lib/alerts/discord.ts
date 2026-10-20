@@ -2,6 +2,7 @@ import "server-only";
 import { isDiscordWebhookUrl, safeHttpsUrl } from "./rules";
 import { getCompanyCatalogEntry } from "@/lib/company-catalog";
 import { marketCapText } from "./market-rules";
+import { intelligenceReportFields, parseReportAnalysis, textForDiscord } from "./intelligence-report";
 
 type EventMessage = {
   title: string;
@@ -13,6 +14,11 @@ type EventMessage = {
   sourceUrl: string;
   eventId: string;
   codes: string[];
+  analysisJson?: string | null;
+  announcementAt?: Date | null;
+  effectiveAt?: Date | null;
+  publishedAt?: Date | null;
+  direction?: string | null;
 };
 
 const preventMentions = (value: string) =>
@@ -20,24 +26,35 @@ const preventMentions = (value: string) =>
 
 export function eventEmbed(event: EventMessage) {
   const source = safeHttpsUrl(event.sourceUrl);
-  const ticker = event.codes.length ? event.codes.join(", ") : "Unknown";
+  const ticker = event.codes.length ? event.codes.join(", ") : "N/D";
   const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://idx-stock-terminal.vercel.app";
   const deepLink = new URL("/ai-analyst/research/" + encodeURIComponent(event.eventId), base);
+  const analysis = parseReportAnalysis(event.analysisJson);
+  const detailFields = intelligenceReportFields({
+    ...analysis,
+    announcementAt: event.announcementAt,
+    effectiveAt: event.effectiveAt,
+    publishedAt: event.publishedAt,
+    direction: event.direction,
+  });
+  const verification = event.status === "PRELIMINARY"
+    ? "INDIKASI AWAL — belum final, perlu konfirmasi lanjutan."
+    : "CONFIRMED — fakta dalam dokumen sumber; bukan berarti transaksi telah selesai.";
   return {
-    title: ("IDX · " + preventMentions(event.title)).slice(0, 256),
-    description: preventMentions(event.summary).slice(0, 3900),
+    title: ("IDX Material Intelligence · " + preventMentions(event.title)).slice(0, 256),
+    description: (textForDiscord(event.summary, 1000) + "\n\n" + verification).slice(0, 1200),
     url: deepLink.toString(),
     color: event.priority === "CRITICAL" ? 0xef4444 : event.priority === "HIGH" ? 0xf59e0b : 0x38bdf8,
     fields: [
-      { name: "Ticker", value: preventMentions(ticker).slice(0, 1024), inline: true },
-      { name: "Market cap (reference)", value: event.codes.map(code => code + ": " + marketCapText(getCompanyCatalogEntry(code)?.marketCap ?? null)).join("\n").slice(0, 1024) || "N/D", inline: false },
-      { name: "Priority", value: event.priority, inline: true },
-      { name: "Verification", value: event.status, inline: true },
-      { name: "Category", value: preventMentions(event.category), inline: true },
-      { name: "Change", value: preventMentions(event.changeType), inline: true },
-      { name: "Official source", value: source ? "[Read source document](" + source + ")" : "URL unavailable", inline: false },
+      { name: "Ticker / kategori", value: textForDiscord(ticker + " · " + event.category.replaceAll("_", " "), 400), inline: false },
+      { name: "Prioritas / verifikasi", value: event.priority + " · " + event.status, inline: true },
+      { name: "Delta", value: textForDiscord(event.changeType, 80), inline: true },
+      ...detailFields,
+      { name: "Arah dampak", value: textForDiscord(event.direction ?? "UNCERTAIN", 50), inline: true },
+      { name: "Market cap (referensi)", value: textForDiscord(event.codes.map(code => code + ": " + marketCapText(getCompanyCatalogEntry(code)?.marketCap ?? null)).join("\n"), 900), inline: false },
+      { name: "Sumber asli", value: source ? "[Buka keterbukaan sumber](" + source + ")" : "Dokumen sumber tidak tersedia", inline: false },
     ],
-    footer: { text: "MCap from stored issuer catalog, may be stale · Not a trading signal" },
+    footer: { text: "Hanya sumber yang berhasil diproses · market cap katalog bisa tertunda · bukan rekomendasi investasi" },
     timestamp: new Date().toISOString(),
   };
 }
@@ -47,9 +64,11 @@ export type WebhookOutcome =
   | { ok: false; error: string; permanent: boolean; retryAfterMs: number };
 
 export async function sendDiscordEmbed(embed: ReturnType<typeof eventEmbed> | Record<string, unknown>, target: "primary" | "market" = "primary"): Promise<WebhookOutcome> {
-  const url = (target === "market" ? process.env.DISCORD_MARKET_WEBHOOK_URL?.trim() || process.env.DISCORD_WEBHOOK_URL?.trim() : process.env.DISCORD_WEBHOOK_URL?.trim()) ?? "";
+  const url = (target === "market"
+    ? process.env.DISCORD_MARKET_WEBHOOK_URL?.trim() || process.env.DISCORD_WEBHOOK_URL?.trim()
+    : process.env.DISCORD_INTELLIGENCE_WEBHOOK_URL?.trim() || process.env.DISCORD_WEBHOOK_URL?.trim()) ?? "";
   if (!isDiscordWebhookUrl(url)) {
-    return { ok: false, error: "Missing or invalid DISCORD_WEBHOOK_URL", permanent: true, retryAfterMs: 0 };
+    return { ok: false, error: "Missing or invalid Discord webhook URL", permanent: true, retryAfterMs: 0 };
   }
   try {
     // _marketRows is internal data, never a Discord embed field.

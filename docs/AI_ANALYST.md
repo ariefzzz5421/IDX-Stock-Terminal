@@ -49,3 +49,15 @@ The cron routes require `Authorization: Bearer <CRON_SECRET>`. The manual route 
 Materiality is a transparent 0–100 score with transaction-to-market-cap size, potential dilution, control, debt/governance, index relevance, official evidence, and newness. Priority is separate from share-price direction. When a denominator or amount is unavailable, that component contributes zero rather than a made-up figure. A `CONFIRMED` card means quoted statements in the official disclosure were verified; it does not turn a proposed deal into a completed one. The detail page retains the precise stage and original document link.
 
 The scanner is intentionally event-driven: it reads disclosure lists, not every ticker. It cannot guarantee coverage outside the connected KSEI schedule categories. PDF text extraction can fail for scanned images; those documents remain unavailable until OCR or manual review is added. Token counts are logged per run. Optional `OPENAI_INPUT_USD_PER_MILLION` and `OPENAI_OUTPUT_USD_PER_MILLION` display an admin-only cost estimate; otherwise cost is N/D.
+
+## Discord — source-dated material intelligence (20 October 2026)
+
+Corporate intelligence events can be sent to a dedicated Discord channel. Configure **DISCORD_INTELLIGENCE_WEBHOOK_URL** in Vercel Production with a **newly regenerated** server-only Discord webhook. It overrides DISCORD_WEBHOOK_URL for intelligence events and the admin Test Discord Alert. DISCORD_MARKET_WEBHOOK_URL remains available for separate market alerts. Never commit webhook secrets or give them a NEXT_PUBLIC_ prefix.
+
+Each report embed includes source announcement/effective dates when available (otherwise N/D), the event's new/updated status, what changed, materiality, likely market impact, what to monitor next, ticker, priority, verification state, official source link and a drill-down link to IDX Terminal. Price direction is not guaranteed.
+
+The existing event-version outbox sends only newly eligible event versions, with retries and delivery history. It does NOT copy the ChatGPT conversation's scheduled report: the independent pipeline must discover, fetch and verify sources before publishing an alert.
+
+**Activation:** After replacing any previously shared webhook, set DISCORD_INTELLIGENCE_WEBHOOK_URL in Vercel Production. Confirm OPENAI_API_KEY, OPENAI_MODEL, CRON_SECRET and database variables are configured, then redeploy. Sign in as an admin listed under AI_ANALYST_ADMIN_USERNAMES. Open /alert, enable Discord alerts, select minimum priority and whether to include preliminary events, save, and run Test Discord Alert. Check delivery history for the actual result.
+
+**Coverage limitation:** Only currently connected KSEI disclosures generate notifications. IDX announcements, UMA/FCA, the entire warrant universe, MSCI, FTSE and VanEck GDX/GDXJ index changes are NOT currently scanned. No message is not evidence of no material development.

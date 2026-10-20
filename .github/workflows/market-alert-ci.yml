@@ -33,5 +33,7 @@ jobs:
         run: |
           npx prisma validate
           npx prisma validate --config prisma.supabase.config.ts
-      - name: Test market alerts and compile Next.js
+      - name: Unit test Discord report and alert eligibility
+        run: npx tsx --test tests/discord-alerts.test.ts tests/intelligence-discord-report.test.ts
+      - name: Compile Next.js
         run: npm run build
