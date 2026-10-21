@@ -27,8 +27,8 @@ export async function renderMarketCard(title:string,rows:IssuerCardRow[]):Promis
   const logos=await Promise.all(top.map(r=>issuerLogoData(r.code)));
   const items=[
     {title:"#",width:66},{title:"EMITEN",width:273},{title:"HARGA",width:156},
-    {title:"PERUBAHAN",width:156},{title:"VOLUME",width:160},
-    {title:"NILAI TRANSAKSI",width:220},{title:"KAPITALISASI PASAR",width:239},
+    {title:"PERUBAHAN",width:156},{title:"VALUE (IDR)",width:220},
+    {title:"VOLUME SHARES",width:160},{title:"KAPITALISASI PASAR",width:239},
   ];
   const png=new ImageResponse(
     <PremiumFrame title={art.heading} clock={art.clock}
@@ -39,7 +39,7 @@ export async function renderMarketCard(title:string,rows:IssuerCardRow[]):Promis
         background:"linear-gradient(125deg,#061523 0%,#071b29 100%)"}}>
         <div style={{display:"flex",width:"100%",height:43,alignItems:"center",paddingLeft:10}}>
           {items.map((item,i)=><span key={item.title}
-            style={{width:item.width,flexShrink:0,fontSize:i===6?14:17,
+            style={{width:item.width,flexShrink:0,fontSize:i>=5?14:17,
               letterSpacing:i===6?1:2.1,color:"#cbd6e2",fontWeight:500}}>
               {item.title}
             </span>)}
@@ -66,13 +66,13 @@ export async function renderMarketCard(title:string,rows:IssuerCardRow[]):Promis
               {r.changePct<0?"▼ ":r.changePct>0?"▲ ":"• "}{decimalPct(r.changePct)}
             </span>
           </div>
-          <div style={cell(160)}><span style={txt}>{volume(r.volume)}</span></div>
           <div style={{...cell(220),flexDirection:"column",alignItems:"flex-start",justifyContent:"center"}}>
             <span style={txt}>{money(r.tradedValue)}</span>
             <span style={{fontSize:13,color:"#98b0bd"}}>
               {r.valueSource==="reported"?"Dilaporkan":r.valueSource==="estimated"?"Estimasi":"Belum tersedia"}
             </span>
           </div>
+          <div style={cell(160)}><span style={txt}>{volume(r.volume)}</span></div>
           <div style={{...cell(239),borderRight:"none"}}>
             <span style={{...txt,fontSize:22}}>{money(r.marketCap)}</span>
           </div>

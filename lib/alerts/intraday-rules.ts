@@ -88,9 +88,10 @@ export const IDX_TERMINAL_MARKET_URL = "https://idx-stock-terminal.vercel.app/ma
 export function issuerDescription(rows: MarketIssuerRow[]): string {
   return rows.map((r,i) => {
     const valueLabel = r.valueSource === "reported" ? "Value" : "Est. Value";
-    return (i + 1) + ". **" + r.code + "** · " + rupiah(r.lastPrice) +
-      " · " + changeText(r.changePct ?? 0) +
-      "\nVol " + compactVolume(r.volume) + " shares · " + valueLabel + " " + marketCapText(r.tradedValue) +
+    return (i + 1) + ". **" + r.code + "** " + rupiah(r.lastPrice) +
+      " ~ " + changeText(r.changePct ?? 0) +
+      "\n" + valueLabel + " " + marketCapText(r.tradedValue) +
+      " | Volume Shares " + compactVolume(r.volume) +
       "\nMCap " + marketCapText(r.marketCap);
   }).join("\n\n");
 }
@@ -117,7 +118,13 @@ export function buildIntradaySignals(options: IntradayOptions): IntradaySignal[]
   const count = options.marketTopCount === 5 ? 5 : 10;
   const signals: IntradaySignal[] = [];
   if (options.volumeEnabled && slot.hourly) {
-    const top = marketRows([...filtered].sort((a, b) => b.volume - a.volume || a.code.localeCompare(b.code)).slice(0,count));
+    // Highest turnover in IDR wins, using the provider-reported traded value
+    // where available or the explicitly labeled price × shares estimate.
+    const top = marketRows(filtered)
+      .filter(r=>r.tradedValue!==null && r.tradedValue>0)
+      .sort((a,b)=>(b.tradedValue??0)-(a.tradedValue??0) || a.code.localeCompare(b.code))
+      .slice(0,count);
+    if (!top.length) return signals;
     const description = issuerDescription(top);
     signals.push({kind:"MARKET_VOLUME",key:"market:"+slot.date+":"+slot.key+":VOLUME",
       title:(options.preview ? "PREVIEW · " : "")+"Top "+count+" Volume · "+slot.key+" WIB",

@@ -1,4 +1,4 @@
-// One-shot VPS worker. Invoke at :00 and :10 from 10:00 WIB. Backend enforces active sessions and dedupe.
+// One-shot VPS worker. Invoke at :00/:10 during sessions and 16:30 for BEI official close; server validates data and dedupe.
 // No Discord webhook URL is needed on the VPS.
 const base = process.env.IDX_TERMINAL_URL ?? "https://idx-stock-terminal.vercel.app";
 const secret = process.env.MARKET_ALERT_SECRET ?? "";

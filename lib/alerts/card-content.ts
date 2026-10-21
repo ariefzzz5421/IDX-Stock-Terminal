@@ -1,6 +1,7 @@
 /** Pure formatting rules shared by the server-side Discord image renderers. */
-export type MarketCardKind = "VOLUME" | "ARA" | "ARB" | "GAINERS" | "LOSERS" | "MARKET";
+export type MarketCardKind = "VOLUME" | "ARA" | "ARB" | "GAINERS" | "LOSERS" | "CLOSING" | "MARKET";
 const TYPES: Array<[MarketCardKind, RegExp]> = [
+  ["CLOSING", /\bCLOSING\b/i],
   ["VOLUME", /\bVOLUME\b/i],
   ["ARA", /\bARA\b/i],
   ["ARB", /\bARB\b/i],
@@ -14,7 +15,7 @@ export function marketCardHeading(title: string) {
   const preview = /\bPREVIEW\b/i.test(title);
   return {
     kind: type,
-    heading: type === "MARKET" ? "MARKET SNAPSHOT" : "TOP 10 " + type,
+    heading: type === "MARKET" ? "MARKET SNAPSHOT" : type === "CLOSING" ? "CLOSING SUMMARY" : "TOP 10 " + type,
     clock: clock ? clock + " WIB" : "SNAPSHOT",
     preview,
     accent: type === "ARB" || type === "LOSERS" ? "#ff6577" :

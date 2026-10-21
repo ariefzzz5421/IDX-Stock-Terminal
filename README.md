@@ -464,3 +464,25 @@ on new eligible KSEI intelligence events; no fabricated corporate test
 news or historical re-sends are created. Both delayed-data and
 market-cap estimate qualifications are still available via the
 linked research and the image footers.
+
+## Value-ranked intraday and 16:30 WIB closing digest
+
+- Top 10 Volume is now ranked by **IDR traded value**, prioritizing scanner-reported turnover, falling back to a clearly labeled price × share estimate when necessary.
+- The premium PNG and Discord text place **Value (IDR)** before **Volume Shares** and format ticker rows as `MNCN Rp91 ~ +7,06%`.
+- Regular market slots are unchanged: Volume at 10:00/11:00/14:00/15:00 and indicative ARA/ARB at 10:10/11:10/14:10/15:10 WIB.
+- A new **one-message closing summary** runs at 16:30 WIB only on eligible exchange days: Top 10 by transaction value, indicative ARA/ARB lists, and Top 5 gainers/losers, with the gold/navy image card.
+- The closing summary uses **official BEI stock records with the current trading date**, at least 50 complete issuers, and refuses to send stale data. Weekends and dates listed in `MARKET_HOLIDAY_DATES` are skipped. If BEI's official same-day stock summary has not published by 16:30, it **skips** that date rather than inventing data or sending yesterday's summary.
+- Closing alerts have one persistent dedupe key per date. Intraday alerts never flush during the closing window.
+
+**VPS update required after production is READY:** The new 16:30 systemd schedule is in `deploy/idx-market-alert.timer`. Deploying Vercel does not change the timer installed on Vultr:
+
+```bash
+cd /home/sentinel/IDX-Stock-Terminal
+git pull --ff-only
+sudo cp deploy/idx-market-alert.timer /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl restart idx-market-alert.timer
+systemctl list-timers --all idx-market-alert.timer
+```
+
+The endpoint, `MARKET_ALERT_SECRET` and Discord webhook remain unchanged. Corporate Action alerts use their independent scanner.
