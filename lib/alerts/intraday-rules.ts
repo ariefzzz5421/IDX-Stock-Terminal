@@ -48,7 +48,10 @@ function validRow(s: IntradayStock) {
     Number.isFinite(s.volume) && s.volume > 0;
 }
 function changeText(pct: number): string {
-  return (pct >= 0 ? "+" : "") + pct.toFixed(2) + "%";
+  const change = new Intl.NumberFormat("id-ID", {
+    minimumFractionDigits: 2, maximumFractionDigits: 2,
+  }).format(pct);
+  return (pct >= 0 ? "+" : "") + change + "%";
 }
 function compactVolume(shares: number): string {
   return new Intl.NumberFormat("id-ID", { notation: "compact", maximumFractionDigits: 1 }).format(shares);
@@ -67,11 +70,13 @@ function marketRows(items:IntradayStock[]):MarketIssuerRow[] {
     return {...s,tradedValue:traded.value,valueSource:traded.source};
   });
 }
-function footer(observedAt: string): string {
-  const observed = new Intl.DateTimeFormat("id-ID", {
-    timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit",
-  }).format(new Date(observedAt));
-  return "TradingView scanner · delayed/indicative · observed " + observed + " WIB · Not live tick data";
+export function formattedTradingDate(date: string): string {
+  // This input is the authoritative WIB date selected by the session filter,
+  // never the VPS/server's local timezone.
+  const atWibMidnight = new Date(date + "T00:00:00+07:00");
+  return new Intl.DateTimeFormat("id-ID", {
+    timeZone: "Asia/Jakarta", day: "numeric", month: "long", year: "numeric",
+  }).format(atWibMidnight);
 }
 export const IDX_TERMINAL_MARKET_URL = "https://idx-stock-terminal.vercel.app/market";
 
@@ -91,15 +96,14 @@ export function issuerDescription(rows: MarketIssuerRow[]): string {
 }
 
 function baseEmbed(title: string, color: number, description: string, observedAt: string, date: string) {
-  // IDX Terminal is the report link; footer still clearly credits TradingView
-  // as the delayed market-data scanner, never as an official BEI live feed.
+  // Link the full report instead of displaying a long technical footer.
+  // The report/image still identifies the underlying data-provider limitations.
   const spacedDescription = description +
-    "\n\n**Session**\n" + date + " WIB" +
+    "\n\n**Date**\n" + formattedTradingDate(date) +
     "\n\n**Source**\n[IDX Terminal](" + IDX_TERMINAL_MARKET_URL + ")";
   return {
     title, description: spacedDescription.slice(0, 4096), color,
     url: IDX_TERMINAL_MARKET_URL,
-    footer: { text: footer(observedAt) },
     timestamp: observedAt,
   };
 }
