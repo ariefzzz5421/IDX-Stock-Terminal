@@ -112,7 +112,7 @@ test("Discord market alert is readable on mobile with one blank line between sto
   const body=String(alert.embed.description);
   const rows=issuerDescription(alert.rows);
   assert.match(rows,/1\. \*\*A/);
-  assert.match(rows,/\nVol [^\n]+ shares · (?:Value|Est\. Value) Rp[^\n]+\nMCap Rp/);
+  assert.match(rows,/\n(?:Value|Est\. Value) Rp[^\n]+ \| Volume Shares [^\n]+\nMCap Rp/);
   assert.match(rows,/\nMCap Rp[^\n]+\n\n2\. \*\*/);
   assert.ok(!rows.includes("\n\n\n")); // only one empty row between emitters
   assert.match(body,/\n\n\*\*Date\*\*\n16 Oktober 2026\n\n\*\*Source\*\*\n\[IDX Terminal\]\(https:\/\/idx-stock-terminal\.vercel\.app\/market\)/);
@@ -126,4 +126,19 @@ test("Date label is computed in WIB rather than the VPS timezone",()=>{
   assert.equal(formattedTradingDate("2026-10-21"),"21 Oktober 2026");
   assert.equal(formattedTradingDate("2026-11-10"),"10 November 2026");
   assert.equal(formattedTradingDate("2026-01-01"),"1 Januari 2026");
+});
+
+test("Top 10 volume is ranked by traded IDR value rather than number of shares",()=>{
+  const candidates=stocks.map((r,i)=>({
+    ...r,volume:i===0?999_000_000:10_000_000+i*100,
+    turnover:i===1?900_000_000_000:i===0?100_000_000:i*1_000_000,
+  }));
+  const result=build("2026-10-16T03:00:00Z",{stocks:candidates});
+  const top=result.find(x=>x.kind==="MARKET_VOLUME");
+  assert.ok(top);
+  assert.equal(top.rows[0].code,"A001");
+  assert.notEqual(top.rows[0].code,"A000");
+  assert.match(String(top.embed.description),/1\. \*\*A001\*\* Rp/);
+  assert.match(String(top.embed.description),/ ~ \+2,00%/);
+  assert.ok(!String(top.embed.description).includes("**A001** ·"));
 });

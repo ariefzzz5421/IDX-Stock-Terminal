@@ -9,7 +9,7 @@ export type MarketRow = {
 };
 export type Cap = { value: number | null; source: string };
 export type MarketSignal = {
-  key: string; kind: "MARKET_DIGEST" | "MARKET_LIMIT";
+  key: string; kind: "MARKET_DIGEST" | "MARKET_LIMIT" | "MARKET_CLOSE";
   title: string; embed: Record<string, unknown>;
 };
 

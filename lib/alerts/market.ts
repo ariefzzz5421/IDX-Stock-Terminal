@@ -9,6 +9,7 @@ import { buildMarketSignals, type Cap, type MarketMode } from "./market-rules";
 import { nextRetryDelayMs } from "./rules";
 import { marketStatus } from "@/lib/market-session";
 import { jakartaDate } from "./market-rules";
+import { closingSlot } from "./closing-rules";
 
 export { buildMarketSignals } from "./market-rules";
 
@@ -46,11 +47,17 @@ export async function previewMarketEmbeds() {
 const RETRIES = 6;
 export async function dispatchMarketDeliveries(limit=20) {
   const settings = await getAlertSettings();
-  if (!settings.enabled || !discordWebhookConfigured() || !marketStatus().isOpen) return { sent: 0, failed: 0 };
+  if (!settings.enabled || !discordWebhookConfigured()) return { sent: 0, failed: 0 };
   const now = new Date();
+  const holidays=(process.env.MARKET_HOLIDAY_DATES ?? "").split(",").map(x=>x.trim());
+  const closing=Boolean(closingSlot(now,holidays));
+  const open=marketStatus(now).isOpen && !holidays.includes(jakartaDate(now));
+  if (!open && !closing) return { sent: 0, failed: 0 };
   const jobs = await prisma.discordAlertDelivery.findMany({
     where: {
-      kind: { in: ["MARKET_VOLUME", "MARKET_ARA", "MARKET_ARB"] },
+      // Closing is never flushed during a live session; intraday jobs are
+      // never allowed to leak into the after-hours 16:30 digest.
+      kind: { in: closing ? ["MARKET_CLOSE"] : ["MARKET_VOLUME", "MARKET_ARA", "MARKET_ARB"] },
       OR: [
         { status: "PENDING" },
         { status: "RETRY", nextAttemptAt: { lte: now } },
@@ -63,7 +70,8 @@ export async function dispatchMarketDeliveries(limit=20) {
   let sent = 0, failed = 0;
   for (const job of jobs) {
     // Do not flush unsent alerts when a feature has been disabled.
-    const allowed = job.kind === "MARKET_VOLUME" ? settings.marketVolumeEnabled :
+    const allowed = job.kind === "MARKET_CLOSE" || job.kind === "MARKET_VOLUME"
+      ? settings.marketVolumeEnabled :
       job.kind === "MARKET_ARA" ? settings.marketAraEnabled : settings.marketArbEnabled;
     if (!allowed || job.createdAt < settings.enabledAt ||
         job.createdAt < new Date(now.getTime() - 15 * 60_000) ||

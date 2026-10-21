@@ -6,6 +6,8 @@ import { buildIntradaySignals, intradaySlot, type IntradayStock } from "./intrad
 import { dispatchMarketDeliveries } from "./market";
 import { sendDiscordEmbed } from "./discord";
 import { fetchOptionalMsnMarketCaps } from "@/lib/market-data/msn-metadata";
+import { closingSlot } from "./closing-rules";
+import { runClosingDigestSafely } from "./closing";
 
 function holidayDates() {
   return (process.env.MARKET_HOLIDAY_DATES ?? "").split(",")
@@ -101,4 +103,11 @@ export async function sendIntradayPreviewTest() {
     lastError:result.ok?null:result.error,
   }});
   return result.ok ? {ok:true} : {ok:false,error:result.error};
+}
+
+/** Shared protected VPS endpoint, with one additional after-close slot. */
+export async function runScheduledMarketAlertsSafely() {
+  const holidays=holidayDates();
+  if(closingSlot(new Date(),holidays)) return runClosingDigestSafely();
+  return runIntradayAlertsSafely();
 }

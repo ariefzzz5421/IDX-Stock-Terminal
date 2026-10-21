@@ -1,5 +1,5 @@
 import { cronAuthorized } from "@/lib/intelligence/security";
-import { runIntradayAlertsSafely } from "@/lib/alerts/intraday";
+import { runScheduledMarketAlertsSafely } from "@/lib/alerts/intraday";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
