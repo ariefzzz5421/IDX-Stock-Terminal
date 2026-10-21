@@ -41,6 +41,20 @@ export function eventEmbed(event: EventMessage) {
     ? "INDIKASI AWAL — belum final, perlu konfirmasi lanjutan."
     : "CONFIRMED — fakta dalam dokumen sumber; bukan berarti transaksi telah selesai.";
   return {
+    _corporateCard: {
+      title:event.title, summary:event.summary, category:event.category,
+      priority:event.priority, status:event.status,
+      codes:[...new Set(event.codes)].map(ticker=>({
+        ticker, name:getCompanyCatalogEntry(ticker)?.name ?? ticker,
+        marketCap:getCompanyCatalogEntry(ticker)?.marketCap ?? null,
+      })),
+      sourceUrl:source,
+      publishedAt:event.publishedAt?.toISOString()??null,
+      announcementAt:event.announcementAt?.toISOString()??null,
+      effectiveAt:event.effectiveAt?.toISOString()??null,
+      whatChanged:analysis.whatChanged??null,
+      materiality:analysis.materiality??null,
+    },
     title: ("IDX Material Intelligence · " + preventMentions(event.title)).slice(0, 256),
     description: (textForDiscord(event.summary, 1000) + "\n\n" + verification).slice(0, 1200),
     url: deepLink.toString(),
@@ -72,7 +86,7 @@ export async function sendDiscordEmbed(embed: ReturnType<typeof eventEmbed> | Re
   }
   try {
     // _marketRows is internal data, never a Discord embed field.
-    const { _marketRows, ...cleanEmbed } = embed as Record<string, unknown>;
+    const { _marketRows, _corporateCard, ...cleanEmbed } = embed as Record<string, unknown>;
     if (target === "market") {
       // Sent time, not stale scanner observation time. Keep corporate alerts
       // untouched. Strip legacy long footers even from queued older payloads.
@@ -115,6 +129,30 @@ export async function sendDiscordEmbed(embed: ReturnType<typeof eventEmbed> | Re
         }
       } catch (error) {
         console.warn("[alerts] image card unavailable; using text embed",
+          error instanceof Error ? error.name : "unknown");
+      }
+    }
+    if (target === "primary" && _corporateCard && typeof _corporateCard === "object" &&
+        !Array.isArray(_corporateCard)) {
+      // Render a real one-event corporate brief. Keep the article summary,
+      // issuer research analysis and original disclosure URL in text fields.
+      // Failure to generate the image must never suppress the disclosure.
+      try {
+        const { renderCorporateCard } = await import("./corporate-card");
+        const card = _corporateCard as Parameters<typeof renderCorporateCard>[0];
+        if (typeof card.title === "string" && typeof card.summary === "string" &&
+            Array.isArray(card.codes) && card.codes.length > 0) {
+          const bytes = await renderCorporateCard(card);
+          const filename = "idx-corporate-action.png";
+          payload = {...payload,embeds:[{...cleanEmbed,image:{url:"attachment://"+filename}}]};
+          const form=new FormData();
+          form.append("payload_json",JSON.stringify(payload));
+          form.append("files[0]",new Blob([new Uint8Array(bytes)],{type:"image/png"}),filename);
+          body=form;
+          headers=undefined;
+        }
+      } catch(error) {
+        console.warn("[alerts] corporate card unavailable; sending full article text only",
           error instanceof Error ? error.name : "unknown");
       }
     }

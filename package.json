@@ -21,7 +21,7 @@
     "db:reset": "prisma migrate reset",
     "logos:sync": "tsx scripts/logos-sync.ts",
     "logos:check": "tsx scripts/logos-check.ts",
-    "test:alerts": "node --import tsx --test tests/discord-alerts.test.ts tests/market-alerts.test.ts tests/intraday-alerts.test.ts"
+    "test:alerts": "node --import tsx --test tests/discord-alerts.test.ts tests/market-alerts.test.ts tests/intraday-alerts.test.ts tests/premium-card.test.ts"
   },
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "7.10.0",
