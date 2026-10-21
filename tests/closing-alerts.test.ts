@@ -31,7 +31,7 @@ test("summary ranks top 10 by BEI turnover, retains ARA/ARB and gainers/losers",
   assert.match(String(out.embed.description),/Top ARB \(indikatif\)/);
   assert.match(String(out.embed.description),/Top Gainers/);
   assert.match(String(out.embed.description),/Top Losers/);
-  assert.match(String(out.embed.description),/\*\*Date\*\*\n21 Oktober 2026/);
+  assert.match(String(out.embed.description),/\*\*Date\*\*\n\n21 Oktober 2026/);
 });
 test("closing fails closed for old BEI dates and incomplete source",()=>{
   assert.equal(buildClosingDigest({now:atClose,date:"2026-10-20",rows,lookup:{}}),null);
