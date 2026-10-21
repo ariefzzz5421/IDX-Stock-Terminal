@@ -95,6 +95,15 @@ export function buildMarketSignals(args: {
         kind: "MARKET_DIGEST",
         title: "IDX " + type + " · " + date,
         embed: {
+          // When this official EOD digest is enabled, use the same premium
+          // image renderer as hourly volume and indicative limit alerts.
+          _marketRows: items.map(item => ({
+            code:item.code, lastPrice:item.close,changePct:item.changePct,
+            volume:item.volume ?? 0,marketCap:item.cap.value,
+            tradedValue:item.value && item.value>0 ? item.value :
+              item.close * (item.volume ?? 0),
+            valueSource:item.value && item.value>0 ? "reported" : "estimated",
+          })),
           title: headline + "IDX MARKET · TOP " + type,
           description: items.map((item, i) => (i + 1) + ". " + formatRow(item)).join("\n").slice(0, 4000),
           color, url: link,

@@ -434,3 +434,33 @@ No key is hardcoded. Existing data-source/market-session safeguards remain.
 
 To verify: `/alert` → Embed preview → Send preview test. Non-trading-day
 previews intentionally show delayed snapshot data labeled PREVIEW ONLY.
+
+## Premium navy-gold Discord cards
+
+Discord market alerts (Top 10 Volume and indicative ARA/ARB) now render a
+high-resolution, data-driven navy/gold image at **1448 x 1086**. The same
+renderer supports existing official-summary GAINERS/LOSERS when those
+digests are enabled. This change does not create new market jobs, alter
+the VPS timer or claim real-time trade timestamps.
+
+Corporate intelligence event alerts also include a navy/gold image card.
+Each card is generated from the **one real detected event**, not a
+four-company mockup. It shows issuer logo/name, category, actual
+announcement/effective date if provided, reference market cap, genuine
+source headline, the stored disclosure summary, and analysis context.
+The text embed retains the complete research fields and the **original
+document/article source URL**, which remains clickable in Discord.
+Unavailable fields are shown as N/D, never guessed. Multiple tickers
+may share one event; an individual disclosure is not silently batched
+with unrelated companies.
+
+Images are rendered on the Vercel backend at delivery and attached as
+Discord webhook files. If image or logo rendering fails, the original
+readable text alert is sent as a fallback. The decorative IDX-themed
+building illustration does not embed static sample issuer data.
+
+Test with an admin-initiated market alert preview. Corporate images appear
+on new eligible KSEI intelligence events; no fabricated corporate test
+news or historical re-sends are created. Both delayed-data and
+market-cap estimate qualifications are still available via the
+linked research and the image footers.
