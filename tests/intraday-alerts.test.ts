@@ -114,7 +114,7 @@ test("Discord market alert is readable on mobile with one blank line between sto
   assert.match(rows,/1\. \*\*A/);
   assert.match(rows,/\nVol [^\n]+ shares · (?:Value|Est\. Value) Rp[^\n]+\nMCap Rp/);
   assert.match(rows,/\nMCap Rp[^\n]+\n\n2\. \*\*/);
-  assert.ok(!rows.includes("\\n\\n\\n")); // only one empty row between emitters
+  assert.ok(!rows.includes("\n\n\n")); // only one empty row between emitters
   assert.match(body,/\n\n\*\*Date\*\*\n16 Oktober 2026\n\n\*\*Source\*\*\n\[IDX Terminal\]\(https:\/\/idx-stock-terminal\.vercel\.app\/market\)/);
   assert.ok(!body.includes("TradingView scanner"));
   assert.equal(Object.hasOwn(alert.embed,"footer"),false);
