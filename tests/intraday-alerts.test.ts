@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { intradaySlot, buildIntradaySignals, issuerDescription, tradedValueFor } from "../lib/alerts/intraday-rules";
+import { intradaySlot, buildIntradaySignals, formattedTradingDate, issuerDescription, tradedValueFor } from "../lib/alerts/intraday-rules";
 import { safeLogoSvg } from "../lib/alerts/svg-safety";
 function at(iso:string){return new Date(iso);}
 const stocks=Array.from({length:80},(_,i)=>({
@@ -107,14 +107,23 @@ test("indicative ARA and ARB emit separate Top 10 embeds at 10:10 only",()=>{
   assert.equal(build("2026-10-16T03:05:00Z",{stocks:source}).length,0);
   assert.equal(build("2026-10-16T03:15:00Z",{stocks:source}).length,0);
 });
-test("mobile embed separates issuers, Session and Source and links IDX Terminal",()=>{
-  const ten=build("2026-10-16T03:00:00Z")[0];
-  const body=String(ten.embed.description);
-  assert.match(body,/Vol .*shares .*Value|Vol .*shares .*Est\. Value/);
-  assert.match(body,/MCap Rp[^\n]+\n\n2\. \*\*/);
-  assert.match(body,/\n\n\*\*Session\*\*\n2026-10-16 WIB\n\n\*\*Source\*\*\n\[IDX Terminal\]\(https:\/\/idx-stock-terminal\.vercel\.app\/market\)/);
-  assert.equal(Object.hasOwn(ten.embed,"fields"),false);
+test("Discord market alert is readable on mobile with one blank line between stocks",()=>{
+  const alert=build("2026-10-16T03:00:00Z")[0];
+  const body=String(alert.embed.description);
+  const rows=issuerDescription(alert.rows);
+  assert.match(rows,/1\. \*\*A/);
+  assert.match(rows,/\nVol [^\n]+ shares · (?:Value|Est\. Value) Rp[^\n]+\nMCap Rp/);
+  assert.match(rows,/\nMCap Rp[^\n]+\n\n2\. \*\*/);
+  assert.ok(!rows.includes("\\n\\n\\n")); // only one empty row between emitters
+  assert.match(body,/\n\n\*\*Date\*\*\n16 Oktober 2026\n\n\*\*Source\*\*\n\[IDX Terminal\]\(https:\/\/idx-stock-terminal\.vercel\.app\/market\)/);
+  assert.ok(!body.includes("TradingView scanner"));
+  assert.equal(Object.hasOwn(alert.embed,"footer"),false);
+  assert.equal(Object.hasOwn(alert.embed,"fields"),false);
   assert.equal(issuerDescription([]),"");
-  assert.ok(Array.isArray((ten.embed as {_marketRows?:unknown[]})._marketRows));
-  assert.equal(String((ten.embed as {footer?:{text:string}}).footer?.text).includes("TradingView"),true);
+  assert.ok(Array.isArray((alert.embed as {_marketRows?:unknown[]})._marketRows));
+});
+test("Date label is computed in WIB rather than the VPS timezone",()=>{
+  assert.equal(formattedTradingDate("2026-10-21"),"21 Oktober 2026");
+  assert.equal(formattedTradingDate("2026-11-10"),"10 November 2026");
+  assert.equal(formattedTradingDate("2026-01-01"),"1 Januari 2026");
 });
