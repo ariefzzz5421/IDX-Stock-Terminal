@@ -73,6 +73,12 @@ export async function sendDiscordEmbed(embed: ReturnType<typeof eventEmbed> | Re
   try {
     // _marketRows is internal data, never a Discord embed field.
     const { _marketRows, ...cleanEmbed } = embed as Record<string, unknown>;
+    if (target === "market") {
+      // Sent time, not stale scanner observation time. Keep corporate alerts
+      // untouched. Strip legacy long footers even from queued older payloads.
+      delete cleanEmbed.footer;
+      cleanEmbed.timestamp = new Date().toISOString();
+    }
     let payload: Record<string, unknown> = {
       username: "IDX Stock Terminal",
       allowed_mentions: { parse: [] },
