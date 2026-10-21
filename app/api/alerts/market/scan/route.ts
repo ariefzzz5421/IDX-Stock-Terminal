@@ -9,6 +9,6 @@ export async function POST(request: Request) {
   if (!cronAuthorized(request.headers.get("authorization"), process.env.MARKET_ALERT_SECRET)) {
     return Response.json({error:"Unauthorized"}, {status:401});
   }
-  const result = await runIntradayAlertsSafely();
+  const result = await runScheduledMarketAlertsSafely();
   return Response.json(result,{headers:{"Cache-Control":"no-store"}});
 }
