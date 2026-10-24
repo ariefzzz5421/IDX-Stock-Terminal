@@ -87,9 +87,13 @@ subscribeLive(codes, cb)    // push updates
 | [iTick](https://itick.org)        | WebSocket | Live streaming quotes, `region=ID`, free tier     |
 | [Invezgo](https://invezgo.com)    | REST      | Prices, broker summary, foreign flow              |
 
-Pick one with `MARKET_DATA_PROVIDER` in `.env`. The browser never sees a provider key —
-only server code touches them. If a provider is selected but its key is missing, the app
-logs a warning and falls back to `mock` rather than showing you an empty screen.
+Pick a primary with `MARKET_DATA_PROVIDER` in `.env`. Optional real-provider
+fallbacks can be configured with `MARKET_DATA_FALLBACKS=goapi,itick`, but they remain
+**disabled by default** until their response mappings, IDX coverage, and licensing
+are verified with your own API keys. The browser never sees server API credentials.
+Production **never falls back to synthetic/mock prices**. Missing or failing
+providers leave last saved quotes clearly marked as stored, or display N/D.
+See [market data reliability](docs/MARKET_DATA_RELIABILITY.md).
 
 > **Heads up on the three real adapters.** Their endpoint paths and response field
 > mappings are a best-effort implementation and have **not** been verified against live
