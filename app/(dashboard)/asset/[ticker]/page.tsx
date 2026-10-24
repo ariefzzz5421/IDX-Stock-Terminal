@@ -13,6 +13,7 @@ import { requireUser } from "@/lib/auth/session";
 import { marketData } from "@/lib/market-data";
 import { getCompanyDetails } from "@/lib/market-data/company-details";
 import { selectDailyTrading } from "@/lib/market-data/daily-trading";
+import { quoteFreshness } from "@/lib/market-data/reliability";
 import { companySummaryId } from "@/lib/company-summary-id";
 import { Panel } from "@/components/terminal/Panel";
 import { ResizableSplit } from "@/components/terminal/ResizableSplit";
@@ -76,7 +77,7 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
     intelligencePromise,
   ]);
   const namedShareholders = shareholdersFor(code);
-  const dailyTrading = selectDailyTrading(details?.dailyTrading, quote, marketData.name);
+  const dailyTrading = selectDailyTrading(details?.dailyTrading, quote, quote?.source ?? marketData.name);
   const dailyDate = dailyTrading.date ? new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeZone: "Asia/Jakarta" }).format(new Date(`${dailyTrading.date}T12:00:00+07:00`)) : "N/D";
   const dailySourceHref = dailyTrading.source.startsWith("BEI") ? "https://www.idx.co.id/id/data-pasar/ringkasan-perdagangan/ringkasan-saham/" : dailyTrading.source === "Yahoo Finance" ? `https://finance.yahoo.com/quote/${code}.JK/` : null;
 
@@ -95,6 +96,12 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
       : null;
   const tradingDate = new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeZone: "Asia/Jakarta" }).format(fresh.updatedAt);
   const tradingTime = new Intl.DateTimeFormat("id-ID", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Jakarta" }).format(fresh.updatedAt);
+  const sourceLabel = quote ? ({ yahoo: "Yahoo Finance", goapi: "GoAPI", itick: "iTick", invezgo: "Invezgo", mock: "MOCK / DEMO" } as Record<string, string>)[quote.source ?? ""] ?? quote.source ?? marketData.name : "Database (harga terakhir tersimpan)";
+  const priceStatus = quote
+    ? quoteFreshness(quote) === "stale" ? "Stale · periksa tanggal transaksi"
+      : quoteFreshness(quote) === "timestamp-unverified" ? "Waktu perdagangan belum terverifikasi"
+      : "Delayed · satu sumber, belum diverifikasi silang"
+    : fresh.lastPrice == null ? "Harga tidak tersedia" : "Stored · bukan harga live";
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-px">
@@ -122,7 +129,8 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
               <div className={`mt-1.5 text-sm font-medium ${directionClass(change)}`}>
                 <span className="text-micro text-dim">1D</span> &nbsp; {formatChange(change)} &nbsp; {formatPct(fresh.lastChangePct)}
               </div>
-              <p className="mt-1 text-micro text-dim">{tradingDate} · penutupan sebelumnya {formatPrice(fresh.prevClose)}</p>
+              <p className="mt-1 text-micro text-dim">{quote?.timestampVerified === false ? "Waktu pengambilan" : quote ? "Timestamp provider" : "Terakhir tersimpan"}: {tradingDate} · penutupan sebelumnya {formatPrice(fresh.prevClose)}</p>
+              <p className="mt-1 text-micro text-amber">Sumber: {sourceLabel} · {priceStatus}</p>
             </div>
           </div>
           <div className="flex justify-end sm:justify-self-end">
@@ -135,7 +143,7 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
           <Stat k="Volume · sesi harian" v={dailyTrading.volume === null ? "N/D" : `${new Intl.NumberFormat("id-ID").format(dailyTrading.volume)} lembar`} />
           <Stat k={dailyTrading.estimatedValue ? "Estimasi nilai transaksi · harian" : "Nilai transaksi · harian"} v={dailyTrading.value === null ? "N/D" : formatValue(dailyTrading.value)} />
           <Stat k="Kapitalisasi pasar" v={formatValue(fresh.marketCap)} />
-          <Stat k="Snapshot harga" v={`${tradingDate} · ${tradingTime} WIB${quote ? " · tertunda" : " · tersimpan"}`} />
+          <Stat k={quote?.timestampVerified === false ? "Waktu pengambilan (bukan waktu transaksi)" : quote ? "Timestamp harga (tertunda)" : "Waktu terakhir tersimpan"} v={`${fresh.lastPrice == null ? "N/D" : `${tradingDate} · ${tradingTime} WIB`}`} />
         </dl>
         <p className="mt-4 text-micro leading-relaxed text-dim">Volume dan nilai: {dailySourceHref ? <a href={dailySourceHref} target="_blank" rel="noopener noreferrer" className="text-cyan hover:underline">{dailyTrading.source} ↗</a> : dailyTrading.source} · sesi {dailyDate}{dailyTrading.estimatedValue ? " · nilai ≈ volume × harga terakhir, bukan total transaksi resmi" : ""}. Data dapat tertunda.</p>
       </section>
