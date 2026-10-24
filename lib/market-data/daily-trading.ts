@@ -18,7 +18,7 @@ function jakartaDay(timestamp: number): string {
 
 /** Do not present yesterday's exact BEI total as today's running volume. */
 export function selectDailyTrading(official: OfficialDay, quote: Quote | null, provider: string): DailyTrading {
-  const quoteDate = quote && Number.isFinite(quote.timestamp) ? jakartaDay(quote.timestamp) : null;
+  const quoteDate = quote && quote.timestampVerified !== false && Number.isFinite(quote.timestamp) ? jakartaDay(quote.timestamp) : null;
   if (official?.date && /^\d{4}-\d{2}-\d{2}$/.test(official.date) && (!quoteDate || official.date >= quoteDate) && (official.volume !== null || official.value !== null)) {
     return { date: official.date, volume: official.volume, value: official.value, source: "BEI · Ringkasan Saham", estimatedValue: false };
   }
