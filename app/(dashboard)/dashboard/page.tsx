@@ -36,7 +36,7 @@ export default async function DashboardPage() {
   const fetchedLabel = activity.fetchedAt
     ? new Intl.DateTimeFormat("id-ID", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Jakarta" }).format(new Date(activity.fetchedAt)) + " WIB"
     : "N/D";
-  const snapshotMeta = hasSnapshot ? `TradingView · delayed · diambil ${fetchedLabel} (bukan waktu transaksi)` : copy.stored;
+  const snapshotMeta = hasSnapshot ? `TradingView · delayed · snapshot diproses ${fetchedLabel} (bukan waktu transaksi)` : copy.stored;
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
