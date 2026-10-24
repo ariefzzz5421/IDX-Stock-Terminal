@@ -33,6 +33,10 @@ export default async function DashboardPage() {
   ]);
   const snapshot = snapshotBoards(activity);
   const hasSnapshot = activity.allStocks.length > 0;
+  const fetchedLabel = activity.fetchedAt
+    ? new Intl.DateTimeFormat("id-ID", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Jakarta" }).format(new Date(activity.fetchedAt)) + " WIB"
+    : "N/D";
+  const snapshotMeta = hasSnapshot ? `TradingView · delayed · snapshot diproses ${fetchedLabel} (bukan waktu transaksi)` : copy.stored;
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
@@ -63,17 +67,17 @@ export default async function DashboardPage() {
       }
       right={
         <div className="grid min-h-0 h-full gap-px lg:grid-cols-2 xl:pr-8">
-          <Panel title="Top gainers" headerClassName="panel-header-gain" meta={hasSnapshot ? `${copy.delayed} · change %` : copy.stored}>
+          <Panel title="Top gainers" headerClassName="panel-header-gain" meta={hasSnapshot ? `${snapshotMeta} · change %` : copy.stored}>
             <StockTable language={language} rows={hasSnapshot ? snapshot.gainers.slice(0, 8) : gainers} rank showDailyValue emptyMessage={copy.noPrice} />
           </Panel>
 
-          <Panel title="Top losers" headerClassName="panel-header-loss" meta={hasSnapshot ? `${copy.delayed} · change %` : copy.stored}>
+          <Panel title="Top losers" headerClassName="panel-header-loss" meta={hasSnapshot ? `${snapshotMeta} · change %` : copy.stored}>
             <StockTable language={language} rows={hasSnapshot ? snapshot.losers.slice(0, 8) : losers} rank showDailyValue emptyMessage={copy.noPrice} />
           </Panel>
 
           <Panel
             title="Top volume"
-            meta={hasSnapshot ? `${snapshot.activeByVolume.length} ${copy.stocks} · TradingView · volume & nilai transaksi harian` : language === "id" ? `${counts.quoted} dari ${counts.total} harga tersimpan` : `${counts.quoted} of ${counts.total} stored quotes`}
+            meta={hasSnapshot ? `${snapshot.activeByVolume.length} ${copy.stocks} · ${snapshotMeta}` : language === "id" ? `${counts.quoted} dari ${counts.total} harga tersimpan` : `${counts.quoted} of ${counts.total} stored quotes`}
             className="lg:col-span-2"
           >
             <>

@@ -3,6 +3,7 @@ import "server-only";
 import { prisma } from "@/lib/db/prisma";
 import { marketData } from "./index";
 import type { Quote } from "./types";
+import { quoteFreshness } from "./reliability";
 
 /**
  * Pull fresh quotes for `codes` and write them back to the `stocks` table, so
@@ -23,8 +24,11 @@ export async function refreshQuotes(codes: string[]): Promise<Quote[]> {
     return [];
   }
 
+  // Unknown acquisition times and stale provider ticks must not be persisted as
+  // current prices: downstream ranking/alerts may read this stocks table.
+  const persistable = quotes.filter((quote) => quote.timestampVerified === true && quoteFreshness(quote) !== "stale");
   await Promise.all(
-    quotes.map((quote) =>
+    persistable.map((quote) =>
       prisma.stock.update({
         where: { code: quote.code },
         data: {

@@ -5,10 +5,11 @@
   "scripts": {
     "predev": "node scripts/postinstall-db.mjs",
     "dev": "next dev",
-    "build": "npm run test:alerts && node scripts/build.mjs",
+    "build": "npm run test:alerts && npm run test:market-data && node scripts/build.mjs",
     "start": "next start",
     "lint": "eslint",
     "test:intelligence": "node --import tsx --test tests/intelligence.test.ts",
+    "test:market-data": "node --import tsx --test tests/market-reliability.test.ts",
     "postinstall": "prisma generate && prisma generate --config prisma.supabase.config.ts && node scripts/postinstall-db.mjs",
     "db:setup": "prisma migrate deploy && npm run db:seed",
     "db:migrate": "prisma migrate dev",

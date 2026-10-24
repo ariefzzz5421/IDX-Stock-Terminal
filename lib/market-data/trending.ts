@@ -75,17 +75,21 @@ export const getMarketActivity = cache(async (): Promise<MarketActivity> => {
       if (!company) return [];
       const turnover = metric(rawTurnover) ?? 0;
       const volume = metric(rawVolume) ?? 0;
-      if (turnover <= 0 && volume <= 0) return [];
+      const lastPrice = metric(rawPrice);
+      const dayChange = metric(rawDay);
+      // Discard nonsensical scanner records rather than rendering false movers.
+      if (turnover < 0 || volume < 0 || (turnover === 0 && volume === 0)) return [];
+      if (lastPrice === null || lastPrice <= 0 || (dayChange !== null && Math.abs(dayChange) > 1000)) return [];
       const cap = metric(rawCap);
       return [{
         code: company.code,
         name: company.name,
         logoUrl: company.logoUrl,
-        lastPrice: metric(rawPrice),
+        lastPrice,
         turnover,
         volume,
         marketCap: cap && cap > 0 ? cap : company.marketCap,
-        changes: { day: metric(rawDay), week: metric(rawWeek), month: metric(rawMonth) },
+        changes: { day: dayChange, week: metric(rawWeek), month: metric(rawMonth) },
       }];
     });
     const rankedVolume = [...stocks].filter((stock) => stock.volume > 0)

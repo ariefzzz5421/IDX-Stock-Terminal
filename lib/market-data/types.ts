@@ -16,6 +16,10 @@ export type Quote = {
   value: number;
   /** Epoch milliseconds. */
   timestamp: number;
+  /** Actual upstream that supplied the quote; do not infer from global router name. */
+  source?: string;
+  /** True only when timestamp represents upstream quote/trade time, not fetch time. */
+  timestampVerified?: boolean;
 };
 
 export type Candle = {

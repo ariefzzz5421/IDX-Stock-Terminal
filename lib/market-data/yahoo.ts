@@ -94,6 +94,7 @@ function mapQuote(body: YahooChart, code: string): Quote | null {
     // Yahoo doesn't report turnover, so approximate it.
     value: (meta.regularMarketVolume ?? 0) * price,
     timestamp: meta.regularMarketTime ? meta.regularMarketTime * 1000 : Date.now(),
+    timestampVerified: typeof meta.regularMarketTime === "number" && Number.isFinite(meta.regularMarketTime) && meta.regularMarketTime > 0,
   };
 }
 
