@@ -30,7 +30,7 @@ export function MarketAlertControls({initial,configured,marketChannel}:{initial:
   const [message,setMessage]=useState("");
   const [error,setError]=useState(false);
 
-  async function call(action:"save"|"preview"|"test"|"scan") {
+  async function call(action:"save"|"preview"|"test"|"trending-test"|"scan") {
     setBusy(true);setMessage("");setError(false);
     try {
       const isPreview=action==="preview";
@@ -40,12 +40,12 @@ export function MarketAlertControls({initial,configured,marketChannel}:{initial:
         ...(!isPreview?{headers:{"Content-Type":"application/json"},
           body:JSON.stringify(action==="save"
             ? {scope:"market",marketVolumeEnabled:volume,marketAraEnabled:ara,marketArbEnabled:arb,marketTrendingEnabled:trending,marketTopCount:10}
-            : {action:action==="test"?"market-test":"market-scan"})}:{}),
+            : {action:action==="test"?"market-test":action==="trending-test"?"trending-test":"market-scan"})}:{}),
       });
       const data=await response.json();
       if(!response.ok||data.ok===false)throw new Error(data.error??"Request failed");
       if(isPreview){setPreview(data);setSelected(0);setMessage(data.message);}
-      else {setMessage(action==="save"?"Pengaturan tersimpan.":action==="test"?"Preview terkirim ke Discord.":String(data.message??"Scan selesai."));router.refresh();}
+      else {setMessage(action==="save"?"Pengaturan tersimpan.":(action==="test"||action==="trending-test")?"Preview terkirim ke Discord.":String(data.message??"Scan selesai."));router.refresh();}
     } catch(e) {setError(true);setMessage(e instanceof Error?e.message:"Unable to load market alerts.");}
     finally {setBusy(false);}
   }
@@ -60,7 +60,7 @@ export function MarketAlertControls({initial,configured,marketChannel}:{initial:
     </div>
     <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.55fr)]">
       <div className="min-w-0">
-        <div className="grid gap-2 sm:grid-cols-3">
+        <div className="grid gap-2 sm:grid-cols-2">
           {[{name:"Top 10 Volume (by Value)",sub:"Hourly · :00 WIB · ranked IDR",value:volume,change:setVolume},
             {name:"Top 10 ARA",sub:"Hourly · :10 WIB · Indicative",value:ara,change:setAra},
             {name:"Top 10 ARB",sub:"Hourly · :10 WIB · Indicative",value:arb,change:setArb},
@@ -75,6 +75,7 @@ export function MarketAlertControls({initial,configured,marketChannel}:{initial:
           <button className={button} type="button" disabled={busy} onClick={()=>void call("save")}><Settings2 className="h-4 w-4"/>Save rules</button>
           <button className={button} type="button" disabled={busy} onClick={()=>void call("preview")}><Eye className="h-4 w-4"/>Embed preview</button>
           <button className={button} type="button" disabled={busy||!configured} onClick={()=>void call("test")}><Send className="h-4 w-4"/>Send preview test</button>
+          <button className={button} type="button" disabled={busy||!configured} onClick={()=>void call("trending-test")}><Send className="h-4 w-4"/>Test Trending</button>
           <button className={button} type="button" disabled={busy||!configured||!initial.enabled} onClick={()=>void call("scan")}><BellRing className="h-4 w-4"/>Check now</button>
         </div>
         {message&&<p role="status" className={"mt-3 text-xs "+(error?"text-down":"text-cyan")}>{message}</p>}
