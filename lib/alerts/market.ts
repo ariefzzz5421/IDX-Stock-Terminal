@@ -4,7 +4,7 @@ import { getLatestIdxStockSummary } from "@/lib/market-data/idx-official";
 import { getMarketActivity } from "@/lib/market-data/trending";
 import { getCompanyCatalogEntry } from "@/lib/company-catalog";
 import { sendDiscordEmbed } from "./discord";
-import { getAlertSettings, discordWebhookConfigured } from "./store";
+import { getAlertSettings, marketWebhookConfigured } from "./store";
 import { buildMarketSignals, type Cap, type MarketMode } from "./market-rules";
 import { nextRetryDelayMs } from "./rules";
 import { marketStatus } from "@/lib/market-session";
@@ -47,7 +47,7 @@ export async function previewMarketEmbeds() {
 const RETRIES = 6;
 export async function dispatchMarketDeliveries(limit=20) {
   const settings = await getAlertSettings();
-  if (!settings.enabled || !discordWebhookConfigured()) return { sent: 0, failed: 0 };
+  if (!settings.enabled || !marketWebhookConfigured()) return { sent: 0, failed: 0 };
   const now = new Date();
   const holidays=(process.env.MARKET_HOLIDAY_DATES ?? "").split(",").map(x=>x.trim());
   const closing=Boolean(closingSlot(now,holidays));
@@ -57,7 +57,7 @@ export async function dispatchMarketDeliveries(limit=20) {
     where: {
       // Closing is never flushed during a live session; intraday jobs are
       // never allowed to leak into the after-hours 16:30 digest.
-      kind: { in: closing ? ["MARKET_CLOSE"] : ["MARKET_VOLUME", "MARKET_ARA", "MARKET_ARB"] },
+      kind: { in: closing ? ["MARKET_CLOSE"] : ["MARKET_VOLUME", "MARKET_ARA", "MARKET_ARB", "MARKET_TRENDING"] },
       OR: [
         { status: "PENDING" },
         { status: "RETRY", nextAttemptAt: { lte: now } },
@@ -72,6 +72,7 @@ export async function dispatchMarketDeliveries(limit=20) {
     // Do not flush unsent alerts when a feature has been disabled.
     const allowed = job.kind === "MARKET_CLOSE" || job.kind === "MARKET_VOLUME"
       ? settings.marketVolumeEnabled :
+      job.kind === "MARKET_TRENDING" ? settings.marketTrendingEnabled :
       job.kind === "MARKET_ARA" ? settings.marketAraEnabled : settings.marketArbEnabled;
     if (!allowed || job.createdAt < settings.enabledAt ||
         job.createdAt < new Date(now.getTime() - 15 * 60_000) ||
@@ -113,7 +114,7 @@ export async function dispatchMarketDeliveries(limit=20) {
 
 export async function runMarketAlerts(mode: MarketMode) {
   const settings = await getAlertSettings();
-  if (!settings.enabled || !discordWebhookConfigured()) return {queued:0,sent:0,failed:0,message:"Alerts disabled or webhook missing"};
+  if (!settings.enabled || !marketWebhookConfigured()) return {queued:0,sent:0,failed:0,message:"Alerts disabled or webhook missing"};
   if (!settings.marketDigestEnabled && !settings.priceLimitsEnabled) return {queued:0,sent:0,failed:0,message:"Market alerts disabled"};
   const snapshot = await marketSnapshot();
   if (!snapshot.date) return {queued:0,sent:0,failed:0,message:"Official BEI summary unavailable"};
@@ -145,7 +146,7 @@ export async function runMarketAlertsSafely(mode:MarketMode) {
 
 export async function retryMarketDeliveries() {
   await prisma.discordAlertDelivery.updateMany({
-    where: {kind:{in:["MARKET_VOLUME","MARKET_ARA","MARKET_ARB"]},status:{in:["RETRY","FAILED"]}},
+    where: {kind:{in:["MARKET_VOLUME","MARKET_ARA","MARKET_ARB","MARKET_TRENDING"]},status:{in:["RETRY","FAILED"]}},
     data: {status:"RETRY", attempts:0, nextAttemptAt:new Date()},
   });
   return dispatchMarketDeliveries();

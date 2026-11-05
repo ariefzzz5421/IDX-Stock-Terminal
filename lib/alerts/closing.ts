@@ -2,7 +2,7 @@ import "server-only";
 import { prisma } from "@/lib/db/prisma";
 import { getLatestIdxStockSummary } from "@/lib/market-data/idx-official";
 import { getCompanyCatalogEntry } from "@/lib/company-catalog";
-import { getAlertSettings,discordWebhookConfigured } from "./store";
+import { getAlertSettings,marketWebhookConfigured } from "./store";
 import { jakartaDate, type Cap } from "./market-rules";
 import { buildClosingDigest,closingSlot } from "./closing-rules";
 import { dispatchMarketDeliveries } from "./market";
@@ -15,7 +15,7 @@ export async function runClosingDigest() {
   const holidays=(process.env.MARKET_HOLIDAY_DATES??"").split(",").map(s=>s.trim());
   if(!closingSlot(now,holidays)) return {queued:0,sent:0,failed:0,message:"Not the 16:30 WIB closing slot or exchange holiday"};
   const settings=await getAlertSettings();
-  if(!settings.enabled || !settings.marketVolumeEnabled || !discordWebhookConfigured())
+  if(!settings.enabled || !settings.marketVolumeEnabled || !marketWebhookConfigured())
     return {queued:0,sent:0,failed:0,message:"Closing digest disabled or webhook missing"};
   const official=await getLatestIdxStockSummary();
   if(!official.available || official.date!==jakartaDate(now) || official.rows.length<50)

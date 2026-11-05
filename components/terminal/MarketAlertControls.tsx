@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Activity, Eye, Send, Settings2, BellRing } from "lucide-react";
 import { CompanyLogo } from "./CompanyLogo";
 
-type Initial = {enabled:boolean;marketVolumeEnabled:boolean;marketAraEnabled:boolean;marketArbEnabled:boolean;marketTopCount:number};
+type Initial = {enabled:boolean;marketVolumeEnabled:boolean;marketAraEnabled:boolean;marketArbEnabled:boolean;marketTrendingEnabled:boolean;marketTopCount:number};
 type IssuerRow = {code:string;lastPrice:number;changePct:number;volume:number;
   tradedValue:number|null;valueSource:"reported"|"estimated"|"unavailable";
   marketCap:number|null;logoUrl?:string|null;capSource?:string};
@@ -23,13 +23,14 @@ export function MarketAlertControls({initial,configured,marketChannel}:{initial:
   const [volume,setVolume]=useState(initial.marketVolumeEnabled);
   const [ara,setAra]=useState(initial.marketAraEnabled);
   const [arb,setArb]=useState(initial.marketArbEnabled);
+  const [trending,setTrending]=useState(initial.marketTrendingEnabled);
   const [preview,setPreview]=useState<Preview|null>(null);
   const [selected,setSelected]=useState(0);
   const [busy,setBusy]=useState(false);
   const [message,setMessage]=useState("");
   const [error,setError]=useState(false);
 
-  async function call(action:"save"|"preview"|"test"|"scan") {
+  async function call(action:"save"|"preview"|"test"|"trending-test"|"scan") {
     setBusy(true);setMessage("");setError(false);
     try {
       const isPreview=action==="preview";
@@ -38,13 +39,13 @@ export function MarketAlertControls({initial,configured,marketChannel}:{initial:
         credentials:"same-origin",cache:"no-store",
         ...(!isPreview?{headers:{"Content-Type":"application/json"},
           body:JSON.stringify(action==="save"
-            ? {scope:"market",marketVolumeEnabled:volume,marketAraEnabled:ara,marketArbEnabled:arb,marketTopCount:10}
-            : {action:action==="test"?"market-test":"market-scan"})}:{}),
+            ? {scope:"market",marketVolumeEnabled:volume,marketAraEnabled:ara,marketArbEnabled:arb,marketTrendingEnabled:trending,marketTopCount:10}
+            : {action:action==="test"?"market-test":action==="trending-test"?"trending-test":"market-scan"})}:{}),
       });
       const data=await response.json();
       if(!response.ok||data.ok===false)throw new Error(data.error??"Request failed");
       if(isPreview){setPreview(data);setSelected(0);setMessage(data.message);}
-      else {setMessage(action==="save"?"Pengaturan tersimpan.":action==="test"?"Preview terkirim ke Discord.":String(data.message??"Scan selesai."));router.refresh();}
+      else {setMessage(action==="save"?"Pengaturan tersimpan.":(action==="test"||action==="trending-test")?"Preview terkirim ke Discord.":String(data.message??"Scan selesai."));router.refresh();}
     } catch(e) {setError(true);setMessage(e instanceof Error?e.message:"Unable to load market alerts.");}
     finally {setBusy(false);}
   }
@@ -59,10 +60,11 @@ export function MarketAlertControls({initial,configured,marketChannel}:{initial:
     </div>
     <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.55fr)]">
       <div className="min-w-0">
-        <div className="grid gap-2 sm:grid-cols-3">
+        <div className="grid gap-2 sm:grid-cols-2">
           {[{name:"Top 10 Volume (by Value)",sub:"Hourly · :00 WIB · ranked IDR",value:volume,change:setVolume},
             {name:"Top 10 ARA",sub:"Hourly · :10 WIB · Indicative",value:ara,change:setAra},
-            {name:"Top 10 ARB",sub:"Hourly · :10 WIB · Indicative",value:arb,change:setArb}
+            {name:"Top 10 ARB",sub:"Hourly · :10 WIB · Indicative",value:arb,change:setArb},
+            {name:"Top 10 Trending",sub:"Hourly · :30 WIB · Market Tape / share volume",value:trending,change:setTrending}
           ].map(s=><label key={s.name} className={item+" cursor-pointer"}>
             <input className="mt-1 h-4 w-4 accent-amber" type="checkbox" checked={s.value}
               onChange={e=>s.change(e.target.checked)}/>
@@ -73,6 +75,7 @@ export function MarketAlertControls({initial,configured,marketChannel}:{initial:
           <button className={button} type="button" disabled={busy} onClick={()=>void call("save")}><Settings2 className="h-4 w-4"/>Save rules</button>
           <button className={button} type="button" disabled={busy} onClick={()=>void call("preview")}><Eye className="h-4 w-4"/>Embed preview</button>
           <button className={button} type="button" disabled={busy||!configured} onClick={()=>void call("test")}><Send className="h-4 w-4"/>Send preview test</button>
+          <button className={button} type="button" disabled={busy||!configured} onClick={()=>void call("trending-test")}><Send className="h-4 w-4"/>Test Trending</button>
           <button className={button} type="button" disabled={busy||!configured||!initial.enabled} onClick={()=>void call("scan")}><BellRing className="h-4 w-4"/>Check now</button>
         </div>
         {message&&<p role="status" className={"mt-3 text-xs "+(error?"text-down":"text-cyan")}>{message}</p>}
@@ -115,6 +118,7 @@ export function MarketAlertControls({initial,configured,marketChannel}:{initial:
         <div className="mt-3 space-y-2 text-dim">
           <p><strong className="text-ink-hi">Turnover (IDR)</strong> · 10:00 / 11:00 / 14:00 / 15:00</p>
           <p><strong className="text-ink-hi">ARA / ARB</strong> · 10:10 / 11:10 / 14:10 / 15:10</p>
+          <p><strong className="text-ink-hi">Trending</strong> · :30 setiap jam mulai 10:30, hanya selama sesi BEI aktif</p>
            <p><strong className="text-ink-hi">Closing summary</strong> · 16:30 WIB, hanya jika ringkasan resmi BEI hari itu tersedia</p>
           <p><strong className="text-ink-hi">Corporate Action</strong> · saat terdeteksi, termasuk di luar jam pasar</p>
           <p><strong className="text-ink-hi">Market closed / break</strong> · tidak mengirim</p>

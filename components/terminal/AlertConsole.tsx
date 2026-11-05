@@ -47,7 +47,7 @@ export function AlertConsole({ initial, webhookConfigured }: { initial: AlertSna
   }
 
   const counts = initial.deliveries.reduce((summary, item) => {
-    if (["EVENT", "MARKET_VOLUME", "MARKET_ARA", "MARKET_ARB"].includes(item.kind)) summary[item.status] = (summary[item.status] ?? 0) + 1;
+    if (["EVENT", "MARKET_VOLUME", "MARKET_ARA", "MARKET_ARB", "MARKET_TRENDING", "MARKET_CLOSE", "MARKET_NEWS"].includes(item.kind)) summary[item.status] = (summary[item.status] ?? 0) + 1;
     return summary;
   }, {} as Record<string, number>);
 

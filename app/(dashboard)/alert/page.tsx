@@ -3,7 +3,7 @@ import Link from "next/link";
 import { BellRing, ShieldAlert } from "lucide-react";
 import { requireUser } from "@/lib/auth/session";
 import { isResearchAdmin } from "@/lib/intelligence/access";
-import { discordWebhookConfigured, getAlertDashboard } from "@/lib/alerts/store";
+import { discordWebhookConfigured, marketWebhookConfigured, getAlertDashboard } from "@/lib/alerts/store";
 import { AlertConsole } from "@/components/terminal/AlertConsole";
 import { MarketAlertControls } from "@/components/terminal/MarketAlertControls";
 
@@ -29,7 +29,7 @@ export default async function AlertPage() {
       <p className="mt-3 text-sm leading-6">Masuk sebagai akun admin yang tercantum di <code>AI_ANALYST_ADMIN_USERNAMES</code> pada environment Vercel. Pengaturan, pengujian, dan delivery logs tidak ditampilkan ke pengguna biasa.</p>
       <p className="mt-3 text-xs text-dim">Scan corporate intelligence berlangsung Senin–Jumat sekitar 08.00 dan 21.00 WIB. Pengiriman hanya untuk perubahan yang cocok dengan filter.</p>
     </section> : snapshot ? <>
-      <MarketAlertControls initial={snapshot.settings} configured={configured}
+      <MarketAlertControls initial={snapshot.settings} configured={marketWebhookConfigured()}
         marketChannel={Boolean(process.env.DISCORD_MARKET_WEBHOOK_URL?.trim())}/>
       <AlertConsole initial={snapshot} webhookConfigured={configured} />
     </> : null}
