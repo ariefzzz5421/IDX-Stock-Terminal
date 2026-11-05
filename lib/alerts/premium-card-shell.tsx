@@ -24,9 +24,57 @@ export async function issuerLogoData(ticker: string): Promise<string|null> {
   }catch{return null;}
 }
 
-// Gold-lit architecture illustration contains no stock data and is safe
-// to reuse with actual records rather than embedding a static mockup.
-const buildingSvg='<svg xmlns="http://www.w3.org/2000/svg" width="530" height="250" viewBox="0 0 530 250"><defs><linearGradient id="g" x1="0" x2="1" y1="1" y2="0"><stop stop-color="#071827"/><stop offset=".65" stop-color="#1c303a"/><stop offset="1" stop-color="#6a593c"/></linearGradient><linearGradient id="w" x1="0" x2="1"><stop stop-color="#182b36"/><stop offset="1" stop-color="#5a4b35"/></linearGradient></defs><rect width="530" height="250" fill="url(#g)"/><g opacity=".8"><path d="M145 45 L326 0 L490 0 L490 250 L145 250Z" fill="url(#w)" stroke="#c09d63" stroke-width="1"/><path d="M145 45 L198 28 L198 250 L145 250Z" fill="#152b36"/><g stroke="#b68f58" stroke-opacity=".24" stroke-width="3"><path d="M173 35 V250 M221 25 V250 M261 15 V250 M301 5 V250 M341 0 V250 M381 0 V250 M421 0 V250 M461 0 V250"/><path d="M152 63 H490 M152 102 H490 M152 142 H490 M152 182 H490 M152 221 H490"/></g></g><g fill="#c6a36a" font-family="Arial,sans-serif" font-weight="bold" text-anchor="middle"><circle cx="385" cy="67" r="39" fill="none" stroke="#c5a56b" stroke-width="3"/><path d="M353 72 Q380 25 411 62 Q397 46 361 100" fill="none" stroke="#d9b779" stroke-width="4"/><text x="389" y="137" font-size="34" letter-spacing="2">IDX</text></g><path d="M0 229 L61 206 L100 213 L147 162 L193 185 L232 142 L289 160 L339 103 L386 132 L430 83 L472 94 L530 21" fill="none" stroke="#aa7b35" stroke-opacity=".3" stroke-width="9"/><path d="M0 229 L61 206 L100 213 L147 162 L193 185 L232 142 L289 160 L339 103 L386 132 L430 83 L472 94 L530 21" fill="none" stroke="#ffd388" stroke-width="2.5"/></svg>';
+// Original vector depiction of the Indonesia Stock Exchange facade, inspired
+// by the user's selected gold/navy mockup. No third-party stock photograph.
+// Keep all issuer numbers out of this decorative header artwork.
+const buildingSvg = String.raw`<svg xmlns="http://www.w3.org/2000/svg" width="680" height="270" viewBox="0 0 680 270">
+<defs>
+  <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+    <stop stop-color="#011523"/><stop offset=".53" stop-color="#062338"/><stop offset="1" stop-color="#3e352a"/>
+  </linearGradient>
+  <linearGradient id="facade" x1="0" y1="1" x2=".9" y2="0">
+    <stop stop-color="#142d39"/><stop offset=".36" stop-color="#243843"/>
+    <stop offset=".72" stop-color="#726349"/><stop offset="1" stop-color="#ba935e"/>
+  </linearGradient>
+  <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+    <stop stop-color="#071723"/><stop offset=".48" stop-color="#1a3643"/><stop offset="1" stop-color="#3e5357"/>
+  </linearGradient>
+  <linearGradient id="fade" x1="0" y1="0" x2="1" y2="0">
+    <stop stop-color="#00111d" stop-opacity="1"/>
+    <stop offset=".24" stop-color="#00111d" stop-opacity=".5"/>
+    <stop offset=".68" stop-color="#00111d" stop-opacity="0"/>
+  </linearGradient>
+  <radialGradient id="halo"><stop stop-color="#ecc584" stop-opacity=".29"/><stop offset="1" stop-color="#ecc584" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="680" height="270" fill="url(#sky)"/>
+<circle cx="534" cy="44" r="188" fill="url(#halo)"/>
+<!-- Tower blocks and narrow vertical glass mullions evoke the SCBD BEI frontage. -->
+<path d="M226 72 L388 0 L510 0 L510 270 L226 270 Z" fill="#071a26" stroke="#a58d6a" stroke-width="1.4"/>
+<path d="M287 48 L405 6 L405 270 L287 270 Z" fill="url(#glass)" stroke="#a98b59" stroke-opacity=".43"/>
+<path d="M415 0 L553 0 L650 47 L650 270 L415 270 Z" fill="url(#facade)" stroke="#ad8a53" stroke-opacity=".65"/>
+<path d="M226 72 L288 48 L288 270 L226 270 Z" fill="#071825"/>
+<path d="M478 10 L586 30 L586 270 L478 270Z" fill="url(#glass)" fill-opacity=".52"/>
+<g stroke="#c59c65" stroke-opacity=".23" stroke-width="2.5">
+  <path d="M253 62 V270 M286 48 V270 M324 36 V270 M362 20 V270 M399 8 V270 M434 0 V270 M474 8 V270 M510 14 V270 M551 23 V270 M586 30 V270 M620 39 V270"/>
+  <path d="M225 97 H648 M225 139 H648 M225 181 H648 M225 224 H648"/>
+</g>
+<g stroke="#5a7e90" stroke-opacity=".32" stroke-width="1">
+  <path d="M250 0 V270 M268 0 V270 M304 0 V270 M340 0 V270 M376 0 V270 M450 0 V270 M488 0 V270 M526 0 V270 M563 0 V270 M598 0 V270"/>
+  <path d="M230 74 H660 M230 113 H660 M230 153 H660 M230 194 H660 M230 238 H660"/>
+</g>
+<!-- IDX exchange globe and signage on the lit front facade. -->
+<g transform="translate(492 75)">
+  <circle r="42" fill="#2b2d2b" stroke="#bca179" stroke-width="3"/>
+  <circle r="35" fill="#664835" fill-opacity=".24" stroke="#dbbb86" stroke-opacity=".52"/>
+  <path d="M-25 17 C-6 -33 14 -33 31 -4 M-25 -8 C-2 17 13 21 30 -10 M-5 -33 C1 -2 3 17 5 34 M-34 1 C-8 -12 12 -10 34 1" stroke="#e7c187" stroke-width="3" fill="none"/>
+  <text x="0" y="79" font-family="Arial,sans-serif" font-size="39" font-weight="700" fill="#e9c286" text-anchor="middle" letter-spacing="1">IDX</text>
+  <text x="0" y="97" font-family="Arial,sans-serif" font-size="8" fill="#c7b48c" text-anchor="middle" letter-spacing="1">INDONESIA STOCK EXCHANGE</text>
+</g>
+<!-- Gold moving-market line echoing the original chosen design. -->
+<path d="M42 234 L116 215 L159 225 L220 164 L273 184 L321 127 L370 146 L414 103 L466 116 L519 54 L559 84 L613 43 L680 0" stroke="#f9bf62" stroke-width="9" stroke-opacity=".17" fill="none"/>
+<path d="M42 234 L116 215 L159 225 L220 164 L273 184 L321 127 L370 146 L414 103 L466 116 L519 54 L559 84 L613 43 L680 0" stroke="#f6c378" stroke-width="2.6" fill="none"/>
+<rect width="680" height="270" fill="url(#fade)"/>
+</svg>`;
 const BUILDING="data:image/svg+xml;base64,"+Buffer.from(buildingSvg).toString("base64");
 
 export function IssuerMark({ticker,data,size=48}:{ticker:string;data:string|null;size?:number}) {
@@ -39,20 +87,21 @@ export function IssuerMark({ticker,data,size=48}:{ticker:string;data:string|null
     <span style={{fontSize:size*.26,color:"#1f4963",fontWeight:800}}>{ticker.slice(0,3)}</span>}
  </div>;
 }
-export function PremiumFrame({title,clock,accent,subtitle,preview,footer,children}:{
+export function PremiumFrame({title,clock,accent,subtitle,preview,footer,children,spacious=false,headingFont}:{
  title:string;clock?:string;accent?:string;subtitle?:string;preview?:boolean;footer:string;children:ReactNode;
+ spacious?:boolean;headingFont?:string;
 }) {
- return <div style={{display:"flex",width:"100%",height:"100%",padding:19,
+ return <div style={{display:"flex",width:"100%",height:"100%",padding:spacious?21:19,
     color:"#f7f7f7",fontFamily:"Arial,sans-serif",
     background:"linear-gradient(130deg,#051827 0%,#00111c 52%,#1b1b21 85%,#302418 100%)"}}>
    <div style={{display:"flex",width:"100%",height:"100%",flexDirection:"column",
-     border:"2px solid #ad864b",borderRadius:28,position:"relative",padding:"26px 32px 22px",
+     border:"2px solid #ad864b",borderRadius:28,position:"relative",padding:spacious?"26px 36px 28px":"26px 32px 22px",
      background:"linear-gradient(135deg,#031522 0%,#000d17 53%,#061723 100%)",overflow:"hidden"}}>
-    <div style={{display:"flex",height:206,position:"relative",flexDirection:"column"}}>
+    <div style={{display:"flex",height:spacious?212:206,position:"relative",flexDirection:"column"}}>
       {/* decorative skyline never replaces stock data */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={BUILDING} width={500} height={235} alt=""
-        style={{position:"absolute",right:-30,top:-26,opacity:.76,objectFit:"cover"}}/>
+      <img src={BUILDING} width={spacious?665:575} height={270} alt=""
+        style={{position:"absolute",right:spacious?-42:-35,top:-26,opacity:.94,objectFit:"cover"}}/>
       <div style={{display:"flex",alignItems:"center",height:46}}>
         <div style={{display:"flex",alignItems:"flex-end",height:28,marginRight:14}}>
           {[12,19,27,36].map((h,i)=><div key={i}
@@ -61,10 +110,10 @@ export function PremiumFrame({title,clock,accent,subtitle,preview,footer,childre
         <span style={{fontSize:24,fontWeight:750,letterSpacing:5,color:"#edc27d"}}>IDX</span>
         <span style={{fontSize:23,fontWeight:400,letterSpacing:5,color:"#dbe3e7",marginLeft:12}}>STOCK TERMINAL</span>
       </div>
-      <div style={{display:"flex",flexDirection:"row",alignItems:"baseline",marginTop:34,maxWidth:1050}}>
+      <div style={{display:"flex",flexDirection:"row",alignItems:"baseline",marginTop:spacious?32:34,maxWidth:1180,position:"relative"}}>
         <span style={{fontSize:49,fontWeight:800,color:"#f7f7f6",marginRight:19}}>IDX ·</span>
-        <span style={{fontSize:title.length>25?43:51,fontWeight:800,color:accent??"#f0c87e",marginRight:17}}>{title}</span>
-        {clock&&<span style={{fontSize:41,fontWeight:650,color:"#d8e4f1"}}>· {clock}</span>}
+        <span style={{fontSize:title.length>25?43:spacious?55:51,fontWeight:800,fontFamily:headingFont??"Arial,sans-serif",color:accent??"#f0c87e",marginRight:17}}>{title}</span>
+        {clock&&<span style={{fontSize:spacious?42:41,fontWeight:spacious?750:650,color:"#d8e4f1"}}>· {clock}</span>}
       </div>
       {subtitle&&<span style={{fontSize:17,letterSpacing:4,color:"#d6b777",marginTop:13}}>{subtitle}</span>}
       {preview&&<span style={{fontSize:19,color:"#ffb1ab",fontWeight:700,marginTop:7}}>PREVIEW ONLY · bukan data live terverifikasi</span>}
@@ -72,11 +121,11 @@ export function PremiumFrame({title,clock,accent,subtitle,preview,footer,childre
     <div style={{display:"flex",flexDirection:"column",flexGrow:1,minHeight:0}}>
       {children}
     </div>
-    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",height:34,marginTop:10}}>
-      <span style={{fontSize:15,letterSpacing:3,color:"#d4b47d"}}>{footer}</span>
+    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",height:spacious?56:34,marginTop:spacious?14:10,paddingTop:spacious?10:0,borderTop:spacious?"1px solid #6a583d":"none"}}>
+      <span style={{fontSize:spacious?17:15,letterSpacing:spacious?2:3,color:"#d4b47d"}}>{footer}</span>
       <div style={{display:"flex",alignItems:"center"}}>
         <div style={{width:44,height:2,background:"#f6cb85",marginRight:17}}/>
-        <span style={{fontSize:16,letterSpacing:4,color:"#ebc47f"}}>IDX STOCK TERMINAL</span>
+        <span style={{fontSize:spacious?17:16,letterSpacing:4,color:"#ebc47f"}}>IDX STOCK TERMINAL</span>
       </div>
     </div>
    </div>
