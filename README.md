@@ -551,3 +551,9 @@ To route news to Discord **#market-news-alert**:
 
 **Permissions note:** webhook URL values are private server environment
 secrets. Never commit them or paste them into a public issue.
+
+## Discord market image refresh — November 2026
+
+The existing data-driven **Top 10 Volume, ARA/ARB, Trending, Gainers/Losers and Closing** images now share an expanded 1600 × 1200 premium navy/gold card (no changes to the scanners or VPS schedules). The header includes an original *stylized* image of the IDX exchange facade to the right of the WIB time. It is an illustration rather than a claimed documentary photograph. Column labels and the main market heading use **Oswald Bold**, loaded at render time from the pinned Fontsource CDN (SIL Open Font License 1.1) with the previous system-font fallback when the font provider cannot be reached. Wider columns, clearer issuer logos, a little more row space and an independently padded footer make the exported Discord card easier to read. No financial figures are built into the decorative header: every issuer row still comes from source-backed alert payloads.
+
+The Corporate Action renderer keeps its existing article/source detail structure, format and output size; only the shared building artwork improves. After deploying the website, no Vultr timer, market webhook or environment variable change is necessary for this design-only update.
