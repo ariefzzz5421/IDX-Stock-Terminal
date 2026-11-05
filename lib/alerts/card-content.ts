@@ -1,7 +1,8 @@
 /** Pure formatting rules shared by the server-side Discord image renderers. */
-export type MarketCardKind = "VOLUME" | "ARA" | "ARB" | "GAINERS" | "LOSERS" | "CLOSING" | "MARKET";
+export type MarketCardKind = "VOLUME" | "ARA" | "ARB" | "GAINERS" | "LOSERS" | "CLOSING" | "TRENDING" | "MARKET";
 const TYPES: Array<[MarketCardKind, RegExp]> = [
   ["CLOSING", /\bCLOSING\b/i],
+  ["TRENDING", /\bTRENDING\b/i],
   ["VOLUME", /\bVOLUME\b/i],
   ["ARA", /\bARA\b/i],
   ["ARB", /\bARB\b/i],

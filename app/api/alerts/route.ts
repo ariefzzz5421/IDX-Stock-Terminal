@@ -5,6 +5,8 @@ import {
 import { retryMarketDeliveries } from "@/lib/alerts/market";
 import { sendIntradayPreviewTest, runIntradayAlertsSafely } from "@/lib/alerts/intraday";
 import { PRIORITIES, type AlertPriority } from "@/lib/alerts/rules";
+import { sendTrendingPreviewTest } from "@/lib/alerts/trending";
+import { sendMarketNewsTest, retryMarketNews } from "@/lib/alerts/news";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -24,20 +26,20 @@ export async function PATCH(request: Request) {
   if (rejected) return rejected;
   const input = await request.json().catch(() => null) as null | {
     scope?:unknown; enabled?: unknown; minimumPriority?: unknown; includePreliminary?: unknown;
-    marketVolumeEnabled?:unknown; marketAraEnabled?:unknown; marketArbEnabled?:unknown; marketTopCount?:unknown;
+    marketVolumeEnabled?:unknown; marketAraEnabled?:unknown; marketArbEnabled?:unknown; marketTrendingEnabled?:unknown; marketTopCount?:unknown;
   };
   if (input?.scope === "market") {
     if (typeof input.marketVolumeEnabled !== "boolean" || typeof input.marketAraEnabled !== "boolean" ||
-        typeof input.marketArbEnabled !== "boolean" || input.marketTopCount !== 10) {
+        typeof input.marketArbEnabled !== "boolean" || typeof input.marketTrendingEnabled !== "boolean" || input.marketTopCount !== 10) {
       return Response.json({error:"Invalid market settings"}, {status:400});
     }
     try {
       const settings = await updateMarketSettings({
         marketVolumeEnabled:input.marketVolumeEnabled, marketAraEnabled:input.marketAraEnabled,
-        marketArbEnabled:input.marketArbEnabled, marketTopCount:10,
+        marketArbEnabled:input.marketArbEnabled, marketTrendingEnabled:input.marketTrendingEnabled,marketTopCount:10,
       });
       return Response.json({ok:true, settings:{marketVolumeEnabled:settings.marketVolumeEnabled,
-        marketAraEnabled:settings.marketAraEnabled,marketArbEnabled:settings.marketArbEnabled,marketTopCount:10}});
+        marketAraEnabled:settings.marketAraEnabled,marketArbEnabled:settings.marketArbEnabled,marketTrendingEnabled:settings.marketTrendingEnabled,marketTopCount:10}});
     } catch {return Response.json({error:"Unable to save market alert settings"},{status:503});}
   }
   if (!input || typeof input.enabled !== "boolean" ||
@@ -66,13 +68,16 @@ export async function POST(request: Request) {
   const rejected = await guard(request);
   if (rejected) return rejected;
   const input = await request.json().catch(() => null) as { action?: unknown } | null;
-  if (!["test","retry","market-test","market-scan"].includes(String(input?.action))) {
+  if (!["test","retry","market-test","market-scan","trending-test","news-test","news-retry"].includes(String(input?.action))) {
     return Response.json({ error: "Unknown action" }, { status: 400 });
   }
   try {
     const action = input?.action;
     const result = action === "test" ? await sendDiscordTest()
       : action === "market-test" ? await sendIntradayPreviewTest()
+      : action === "trending-test" ? await sendTrendingPreviewTest()
+      : action === "news-test" ? await sendMarketNewsTest()
+      : action === "news-retry" ? await retryMarketNews()
       : action === "market-scan" ? await runIntradayAlertsSafely()
       : { ...(await retryDiscordAlerts()), market: await retryMarketDeliveries() };
     return Response.json(result, { headers: { "Cache-Control": "no-store" } });

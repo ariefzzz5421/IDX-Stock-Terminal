@@ -1,6 +1,7 @@
 import { prepareDiscordAlerts, processDiscordAlerts } from "@/lib/alerts/store";
 import { isResearchAdmin } from "@/lib/intelligence/access";
 import { runResearch } from "@/lib/intelligence/pipeline";
+import { processMarketNews } from "@/lib/alerts/news";
 
 export const maxDuration = 300;
 export const dynamic = "force-dynamic";
@@ -12,7 +13,10 @@ export async function POST(request: Request) {
   try {
     if (body.dryRun !== true) await prepareDiscordAlerts();
     const result = await runResearch({ dryRun: body.dryRun === true, scheduled: false });
-    if (body.dryRun !== true) await processDiscordAlerts();
+    if (body.dryRun !== true) {
+      await processDiscordAlerts();
+      await processMarketNews();
+    }
     return Response.json(result, { status: result.status === "FAILED" ? 503 : 200, headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     return Response.json({ error: error instanceof Error ? error.message : "Scan failed" }, { status: 409 });

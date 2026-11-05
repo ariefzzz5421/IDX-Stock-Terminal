@@ -9,6 +9,9 @@ const MAX_ATTEMPTS = 6;
 export function discordWebhookConfigured(): boolean {
   return Boolean(process.env.DISCORD_INTELLIGENCE_WEBHOOK_URL?.trim() || process.env.DISCORD_WEBHOOK_URL?.trim());
 }
+export function marketWebhookConfigured(): boolean {
+  return Boolean(process.env.DISCORD_MARKET_WEBHOOK_URL?.trim() || process.env.DISCORD_WEBHOOK_URL?.trim());
+}
 
 export async function getAlertSettings() {
   return prisma.discordAlertSettings.upsert({
@@ -46,7 +49,7 @@ export async function updateAlertSettings(input: { enabled: boolean; minimumPrio
   return saved;
 }
 
-export async function updateMarketSettings(input: {marketVolumeEnabled:boolean;marketAraEnabled:boolean;marketArbEnabled:boolean;marketTopCount:10}) {
+export async function updateMarketSettings(input: {marketVolumeEnabled:boolean;marketAraEnabled:boolean;marketArbEnabled:boolean;marketTrendingEnabled:boolean;marketTopCount:10}) {
   const previous = await getAlertSettings();
   return prisma.discordAlertSettings.update({where:{id:previous.id},data:input});
 }
@@ -211,6 +214,7 @@ export async function getAlertDashboard() {
       marketVolumeEnabled: settings.marketVolumeEnabled,
       marketAraEnabled: settings.marketAraEnabled,
       marketArbEnabled: settings.marketArbEnabled,
+      marketTrendingEnabled: settings.marketTrendingEnabled,
     },
     deliveries: logs.map((log) => ({
       id: log.id, kind: log.kind, status: log.status, attempts: log.attempts,

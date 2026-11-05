@@ -490,3 +490,64 @@ systemctl list-timers --all idx-market-alert.timer
 ```
 
 The endpoint, `MARKET_ALERT_SECRET` and Discord webhook remain unchanged. Corporate Action alerts use their independent scanner.
+
+
+## Hourly Top Trending & dedicated AI Market News (November 2026)
+
+The **Market Tape / Top 10 Trending** source is the existing
+\`getMarketActivity().byMarketCap.all\` dataset used by the draggable Trending
+panel on IDX Terminal. It is ranked by **volume of shares**, NOT by IDR traded
+value (the separate Top 10 Volume alert ranks by IDR turnover). It sends a
+navy/gold Top 10 card with ticker logo, price/%, transaction value, share
+volume, and reference market cap. Default: **ON**, configurable in /alert.
+
+- The VPS systemd timer gains \`:30\` at hours 10..15 WIB. The **backend**
+  confirms open regular BEI session (Mon-Thu 10:30, 11:30, 13:30, 14:30,
+  15:30; Fri 10:30, 14:30, 15:30). Lunch breaks, close, weekends, and
+  configured \`MARKET_HOLIDAY_DATES\` never produce market alerts.
+- Snapshots older than three minutes, incomplete issuer lists (<10), or
+  unavailable scanner responses are skipped. Each date+slot is deduplicated
+  in the existing persistent Discord delivery table.
+- Existing \`:00\` Volume, \`:10\` indicative ARA/ARB, and \`16:30\` BEI
+  official closing summary remain unchanged.
+- **VPS ACTION after production READY:** update the timer only, retaining the
+  existing \`MARKET_ALERT_SECRET\` and service file:
+
+\`\`\`bash
+cd /home/sentinel/IDX-Stock-Terminal && git pull --ff-only
+sudo cp deploy/idx-market-alert.timer /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl restart idx-market-alert.timer
+systemctl list-timers --all idx-market-alert.timer
+\`\`\`
+
+**Market News channel:** AI Analyst's "Latest Source Reports" are not the same
+as fully verified, high-priority corporate intelligence events. The original
+corporate Discord outbox sends only new eligible CONFIRMED HIGH/CRITICAL
+events by default. A newly discovered KSEI/source document may appear on the
+website without ever meeting those filters; creating a Discord channel alone
+does not route webhooks to that channel.
+
+The new **dedicated source-alert outbox** sends recently discovered official
+document records (first fetched in the last 3 hours) with their real source
+title, original link, publication date (if known), and AI summary (if
+available). It never labels an unanalyzed document as a confirmed market
+event and never backfills old archives. Deduplication uses source document ID.
+News can be sent even when the market is closed (it runs after scheduled
+AI scans at ~08:00/21:00 WIB or authorized manual non-dry-run scans).
+No instant breaking-news coverage is promised.
+
+To route news to Discord **#market-news-alert**:
+1. Open that channel > Edit Channel > Integrations > Webhooks > Create Webhook.
+2. In **IDX Stock Terminal Vercel Production** set the server-only
+   \`DISCORD_MARKET_NEWS_WEBHOOK_URL\` to the *full* new Discord webhook URL.
+   It does not fall back to the stock-alert webhook by design.
+3. Redeploy Production and visit \`/alert\` > **Market News / AI Sources** >
+   **Test Market News**. Review the last delivery status and error there.
+4. If the original corporate reports should also go into that channel,
+   optionally set \`DISCORD_INTELLIGENCE_WEBHOOK_URL\` to a separate
+   webhook created for the same destination channel. Existing high/critical
+   corporate notifications are separate from the source discovery feed.
+
+**Permissions note:** webhook URL values are private server environment
+secrets. Never commit them or paste them into a public issue.

@@ -5,6 +5,8 @@ Description=IDX turnover-ranked market alerts (:00/:10) and official closing sum
 # systemd timezone-aware calendar. Backend skips lunch, holidays and closed markets.
 OnCalendar=Mon..Fri *-*-* 10..15:00:00 Asia/Jakarta
 OnCalendar=Mon..Fri *-*-* 10..15:10:00 Asia/Jakarta
+# Top Trending from Market Tape (active BEI sessions only)
+OnCalendar=Mon..Fri *-*-* 10..15:30:00 Asia/Jakarta
 OnCalendar=Mon..Fri *-*-* 16:30:00 Asia/Jakarta
 AccuracySec=10s
 Persistent=false

@@ -77,10 +77,12 @@ export type WebhookOutcome =
   | { ok: true }
   | { ok: false; error: string; permanent: boolean; retryAfterMs: number };
 
-export async function sendDiscordEmbed(embed: ReturnType<typeof eventEmbed> | Record<string, unknown>, target: "primary" | "market" = "primary"): Promise<WebhookOutcome> {
-  const url = (target === "market"
-    ? process.env.DISCORD_MARKET_WEBHOOK_URL?.trim() || process.env.DISCORD_WEBHOOK_URL?.trim()
-    : process.env.DISCORD_INTELLIGENCE_WEBHOOK_URL?.trim() || process.env.DISCORD_WEBHOOK_URL?.trim()) ?? "";
+export async function sendDiscordEmbed(embed: ReturnType<typeof eventEmbed> | Record<string, unknown>, target: "primary" | "market" | "news" = "primary"): Promise<WebhookOutcome> {
+  const url = (target === "news"
+    ? process.env.DISCORD_MARKET_NEWS_WEBHOOK_URL?.trim()
+    : target === "market"
+      ? process.env.DISCORD_MARKET_WEBHOOK_URL?.trim() || process.env.DISCORD_WEBHOOK_URL?.trim()
+      : process.env.DISCORD_INTELLIGENCE_WEBHOOK_URL?.trim() || process.env.DISCORD_WEBHOOK_URL?.trim()) ?? "";
   if (!isDiscordWebhookUrl(url)) {
     return { ok: false, error: "Missing or invalid Discord webhook URL", permanent: true, retryAfterMs: 0 };
   }

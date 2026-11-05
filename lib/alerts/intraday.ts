@@ -1,13 +1,15 @@
 import "server-only";
 import { prisma } from "@/lib/db/prisma";
 import { getMarketActivity } from "@/lib/market-data/trending";
-import { getAlertSettings, discordWebhookConfigured } from "./store";
+import { getAlertSettings, marketWebhookConfigured } from "./store";
 import { buildIntradaySignals, intradaySlot, type IntradayStock } from "./intraday-rules";
 import { dispatchMarketDeliveries } from "./market";
 import { sendDiscordEmbed } from "./discord";
 import { fetchOptionalMsnMarketCaps } from "@/lib/market-data/msn-metadata";
 import { closingSlot } from "./closing-rules";
 import { runClosingDigestSafely } from "./closing";
+import { runTrendingAlertsSafely } from "./trending";
+import { trendingSlot, buildTrendingSignal } from "./trending-rules";
 
 function holidayDates() {
   return (process.env.MARKET_HOLIDAY_DATES ?? "").split(",")
@@ -38,7 +40,7 @@ async function enrichMarketCaps(stocks:IntradayStock[]):Promise<IntradayStock[]>
 export async function runIntradayAlerts() {
   const settings = await getAlertSettings();
   const now = new Date();
-  if (!settings.enabled || !discordWebhookConfigured()) return { queued:0,sent:0,failed:0,message:"Alerts disabled" };
+  if (!settings.enabled || !marketWebhookConfigured()) return { queued:0,sent:0,failed:0,message:"Alerts disabled" };
   if (!settings.marketVolumeEnabled && !settings.marketAraEnabled && !settings.marketArbEnabled)
     return { queued:0,sent:0,failed:0,message:"Market rules disabled" };
   // Session/holiday filter happens before any network call or dispatch.
@@ -79,10 +81,14 @@ export async function previewIntradayAlerts() {
     now,fetchedAt:snapshot.fetchedAt,stocks,preview:true,
     volumeEnabled:true,araEnabled:true,arbEnabled:true,marketTopCount:10,
   });
+  const trending=buildTrendingSignal({
+    now,fetchedAt:snapshot.fetchedAt,stocks:snapshot.byMarketCap.all,preview:true
+  });
   return {
     date:now.toISOString().slice(0,10),source:"TradingView IDX scanner (delayed)",
     message:"PREVIEW ONLY · Provider trade timestamps unavailable; prices may reflect an earlier session.",
-    previews:signals.map(s=>({type:s.kind,title:s.title,embed:s.embed})),
+    previews:[...signals.map(s=>({type:s.kind,title:s.title,embed:s.embed})),
+      ...(trending?[{type:trending.kind,title:trending.title,embed:trending.embed}]:[])],
   };
 }
 export async function sendIntradayPreviewTest() {
@@ -108,6 +114,8 @@ export async function sendIntradayPreviewTest() {
 /** Shared protected VPS endpoint, with one additional after-close slot. */
 export async function runScheduledMarketAlertsSafely() {
   const holidays=holidayDates();
-  if(closingSlot(new Date(),holidays)) return runClosingDigestSafely();
+  const now=new Date();
+  if(closingSlot(now,holidays)) return runClosingDigestSafely();
+  if(trendingSlot(now,now.toISOString(),holidays)) return runTrendingAlertsSafely();
   return runIntradayAlertsSafely();
 }
