@@ -3,7 +3,7 @@ import {
   updateAlertSettings, updateMarketSettings, sendDiscordTest, retryDiscordAlerts,
 } from "@/lib/alerts/store";
 import { retryMarketDeliveries } from "@/lib/alerts/market";
-import { sendIntradayPreviewTest, runIntradayAlertsSafely } from "@/lib/alerts/intraday";
+import { sendIntradayPreviewTest, runScheduledMarketAlertsSafely } from "@/lib/alerts/intraday";
 import { PRIORITIES, type AlertPriority } from "@/lib/alerts/rules";
 import { sendTrendingPreviewTest } from "@/lib/alerts/trending";
 import { sendMarketNewsTest, retryMarketNews } from "@/lib/alerts/news";
@@ -78,7 +78,7 @@ export async function POST(request: Request) {
       : action === "trending-test" ? await sendTrendingPreviewTest()
       : action === "news-test" ? await sendMarketNewsTest()
       : action === "news-retry" ? await retryMarketNews()
-      : action === "market-scan" ? await runIntradayAlertsSafely()
+      : action === "market-scan" ? await runScheduledMarketAlertsSafely()
       : { ...(await retryDiscordAlerts()), market: await retryMarketDeliveries() };
     return Response.json(result, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
