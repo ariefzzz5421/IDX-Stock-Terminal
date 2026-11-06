@@ -611,3 +611,30 @@ The original `app/favicon.ico` was removed to avoid an outdated competing
 favicon. Some browsers may cache the old icon; open a fresh tab or hard refresh
 after deployment. No VPS update is needed for these branding/presentation
 changes.
+
+## Discord market alerts: compact pipe separators (6 November 2026)
+
+All market-mover text embeds (Top Volume, indicative ARA/ARB, Market Tape Trending, top-value closing summary and optional official BEI gainers/losers) use one consistent issuer format:
+
+```text
+#10. DEWA | Rp 218 | -5,22%
+MCap | 13,09T
+Volume Transaksi | Rp 47,35 M
+Volume Shares | 217,2 Jt Shares
+```
+
+Rank/ticker, price, percentage and value text are **bold using Discord Markdown**; no emoji
+or colored arrow is inserted in text. One blank line separates issuers. Discord does
+not support inline font colors for ordinary embed descriptions, while the image
+still uses actual green/red percentages.
+
+The PNG columns read `CHANGE` and `VOLUME TX` instead of the older
+`PERUBAHAN` / `VALUE (IDR)` / `VOL TX`. Its Oswald Bold font is used for
+the main title, column headers, and ticker codes; the numeric cells use a
+normal bold sans-serif. The `Dilaporkan` sublabel stays hidden for
+source-reported transaction values. A real estimated value retains its
+`Estimasi` marker to prevent misrepresenting the data source.
+
+No market data sources, ranking rules, market-hours scheduling, discord channel
+destinations, or VPS timer behavior are changed. Old messages already in Discord
+remain unchanged; this formatting affects newly generated alerts.
