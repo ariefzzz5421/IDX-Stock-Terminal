@@ -161,6 +161,7 @@ Every variable is documented inline in `.env.example`.
 | `/dashboard` | Watchlist, top gainers, top losers, most active |
 | `/watchlist` | Everything you follow, with up/down counts |
 | `/top10` | Top 10 gainers, losers and turnover |
+| `/bei/ringkasan` | Official BEI End-of-Day stock summary: last close, share volume, actual IDR value, frequency; unavailable when full official data cannot be verified |
 | `/foreign-flow` | Net foreign accumulation and distribution |
 | `/hot` | Biggest moves among actively traded names |
 | `/market` | The full board, searchable and paged |
@@ -638,3 +639,13 @@ source-reported transaction values. A real estimated value retains its
 No market data sources, ranking rules, market-hours scheduling, discord channel
 destinations, or VPS timer behavior are changed. Old messages already in Discord
 remain unchanged; this formatting affects newly generated alerts.
+
+
+## Mobile stock boards and official EOD reference (6 November 2026)
+
+- Stock tables use spacious mobile cards inside narrow panels, showing ticker, issuer name, **bold last price**, change, **MCAP**, **Volume (shares)** and **Value (IDR)**. Wider panels keep the existing table layout.
+- The label is **Value**, not "Est. nilai"; TradingView `Value.Traded` is shown as provider-reported, while stored/unknown-origin values remain marked **indikatif**. Do not interpret a saved or delayed value as live bourse turnover.
+- **BEI → Ringkasan Saham** (or `/bei/ringkasan`) shows the latest available *validated, complete, dated* official End-of-Day summary, using BEI's upstream `Value` and `Volume` fields without multiplying last price × volume.
+- If BEI's public endpoint is blocked, truncated, missing, or has a wrong date, the page reports the unavailability rather than fabricating numbers. The official source link remains accessible.
+- No extra environment key is required; this is **not** a 10-minute-delay BEI feed. Intraday TradingView/Yahoo sources remain distinct from official BEI End-of-Day data.
+- The public BEI endpoint may have automation/redistribution restrictions; verify terms and adopt licensed feeds before relying on it for public distribution.
