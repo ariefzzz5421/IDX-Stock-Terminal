@@ -84,17 +84,17 @@ export function StockTable({
       <ol className="divide-y divide-rule/70 @min-[48rem]/stocktable:hidden">
         {rows.map((row, index) => (
           <li key={row.code} className="group px-3 py-4 transition-colors hover:bg-panel-hi sm:px-4">
-            <div className={"grid min-w-0 items-start gap-x-2.5 " + (rank ? "grid-cols-[1.1rem_2rem_minmax(0,1fr)_auto]" : "grid-cols-[2rem_minmax(0,1fr)_auto]")}>
+            <div className={"grid min-w-0 items-start gap-x-2.5 " + (rank ? "grid-cols-[1.1rem_2.25rem_minmax(0,1fr)_auto]" : "grid-cols-[2.25rem_minmax(0,1fr)_auto]")}>
               {rank && <span className="pt-1 text-[11px] tabular-nums text-dimmer">{index + 1}</span>}
               <Link href={"/asset/" + row.code} className="mt-0.5 shrink-0" aria-label={"Buka saham " + row.code}>
-                <CompanyLogo code={row.code} logoUrl={row.logoUrl} size="sm" />
+                <CompanyLogo code={row.code} logoUrl={row.logoUrl} size="md" />
               </Link>
               <div className="min-w-0">
                 <Link href={"/asset/" + row.code} className="inline-flex min-w-0 max-w-full flex-wrap items-center gap-x-1.5 gap-y-1 hover:text-amber">
                   <strong className="font-display text-base font-bold tracking-[0.035em] text-ink-hi group-hover:text-amber">{row.code}</strong>
                   <StatusLabel row={row} />
                 </Link>
-                <p className="mt-0.5 truncate text-[11px] leading-4 text-ink" title={row.name}>{row.name}</p>
+                <p className="mt-0.5 line-clamp-2 break-words text-[11px] leading-4 text-ink" title={row.name}>{row.name}</p>
                 <dl className="mt-2 space-y-1">
                   <MobileMetric label="MCAP">{formatCompactMarketCap(row.marketCap)}</MobileMetric>
                   <MobileMetric label="Volume">{formatCompactVolume(row.lastVolume)}</MobileMetric>
@@ -103,7 +103,7 @@ export function StockTable({
                 {action && <div className="mt-2">{action(row)}</div>}
               </div>
               <Link href={"/asset/" + row.code} className="ml-1 flex shrink-0 flex-col items-end gap-1 pt-0.5 text-right tabular-nums">
-                <span className="whitespace-nowrap text-base font-extrabold leading-5 text-ink-hi">{formatPrice(row.lastPrice)}</span>
+                <span className="whitespace-nowrap text-lg font-extrabold leading-6 text-ink-hi">{formatPrice(row.lastPrice)}</span>
                 <span className={"whitespace-nowrap text-[11px] font-semibold leading-4 " + directionClass(row.lastChangePct)}>{formatPct(row.lastChangePct)}</span>
               </Link>
             </div>
