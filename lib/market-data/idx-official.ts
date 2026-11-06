@@ -1,4 +1,5 @@
 import "server-only";
+import { verifiedDailySummaryRows } from "./idx-summary-validation";
 
 const IDX_ORIGIN = "https://www.idx.co.id";
 const REQUEST_TIMEOUT_MS = 3_500;
@@ -187,7 +188,8 @@ async function loadLatestSummary(): Promise<IdxSummaryResult> {
         const mapped = mapSummary(item);
         return mapped ? [mapped] : [];
       });
-      if (rows.length) return { available: true, date, rows };
+      const verified = verifiedDailySummaryRows(rows, date);
+      if (verified.length) return { available: true, date, rows: verified };
     } catch {
       // IDX periodically rejects automated requests. The caller renders an
       // explicit unavailable state instead of inventing a ranking.

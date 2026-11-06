@@ -14,6 +14,8 @@ export type Quote = {
   volumeAvailable?: boolean;
   /** Rupiah traded today. */
   value: number;
+  /** Turnover provenance; never equate last price × volume to exchange-reported turnover. */
+  valueSource?: "reported" | "estimated" | "unavailable";
   /** Epoch milliseconds. */
   timestamp: number;
   /** Actual upstream that supplied the quote; do not infer from global router name. */

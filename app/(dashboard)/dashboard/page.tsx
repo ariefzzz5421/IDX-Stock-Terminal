@@ -89,7 +89,7 @@ export default async function DashboardPage() {
               rank
               emptyMessage={copy.noVolume}
             />
-            <p className="border-t border-rule px-3 py-2 text-micro text-dim">{hasSnapshot ? "Est. nilai transaksi harian dalam rupiah mengikuti Value.Traded dari snapshot TradingView." : "Est. nilai transaksi memakai data harga tersimpan; snapshot pasar saat ini tidak tersedia."} Angka yang tidak tersedia ditampilkan —.</p>
+            <p className="border-t border-rule px-3 py-2 text-micro text-dim">{hasSnapshot ? "Value adalah nilai transaksi dari field Value.Traded snapshot TradingView yang delayed; bandingkan dengan ringkasan resmi BEI setelah penutupan." : "Snapshot pasar tidak tersedia. Value tersimpan bersifat indikatif dan dapat berupa estimasi harga × volume."} Angka yang tidak tersedia ditampilkan —. <Link href="/bei/ringkasan" className="text-cyan hover:underline">Ringkasan Saham BEI ↗</Link></p>
             </>
           </Panel>
         </div>

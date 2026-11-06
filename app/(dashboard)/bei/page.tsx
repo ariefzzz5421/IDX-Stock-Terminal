@@ -46,7 +46,11 @@ export default async function BeiPage({ searchParams }: { searchParams: Promise<
       <p className="text-micro font-bold uppercase tracking-widest text-amber">Bursa Efek Indonesia / daftar saham</p>
       <h1 className="mt-1 font-display text-2xl font-bold text-ink-hi">BEI</h1>
       <p className="mt-2 max-w-3xl text-xs leading-5 text-ink">Daftar dan papan pencatatan dari unduhan resmi BEI tanggal 12 Oktober 2026. Ini arsip bertanggal; perpindahan papan atau pencatatan baru setelah tanggal tersebut belum tercermin.</p>
-      <a href={officialList.source} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-xs text-cyan hover:underline">Daftar Saham BEI ↗</a>
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        <Link href="/bei/ringkasan" className="inline-flex min-h-10 items-center rounded border border-amber bg-amber/10 px-4 text-xs font-bold text-amber hover:bg-amber/20">Lihat Ringkasan Saham BEI →</Link>
+        <a href={officialList.source} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-10 items-center text-xs text-cyan hover:underline">Daftar Saham BEI ↗</a>
+      </div>
+      <p className="mt-2 text-micro text-dim">Ringkasan harian menampilkan volume saham dan nilai transaksi resmi EOD; berbeda dari snapshot delayed intraday.</p>
     </header>
     <section className="grid gap-px bg-rule sm:grid-cols-3">
       <Metric label="Saham dalam daftar BEI" value={officialList.stocks.length} />

@@ -38,6 +38,23 @@ export function formatValue(value: number | null | undefined): string {
   return `Rp ${INT.format(Math.round(value))}`;
 }
 
+/** Mobile market-card abbreviations: mcap is in IDR, volume is in shares. */
+export function formatCompactMarketCap(value: number | null | undefined): string {
+  if (value == null || !Number.isFinite(value) || value <= 0) return "—";
+  if (value >= 1e12) return `${ONE_DECIMAL.format(value / 1e12)}T`;
+  if (value >= 1e9) return `${ONE_DECIMAL.format(value / 1e9)}M`;
+  if (value >= 1e6) return `${ONE_DECIMAL.format(value / 1e6)}Jt`;
+  return INT.format(Math.round(value));
+}
+
+export function formatCompactVolume(value: number | null | undefined): string {
+  if (value == null || !Number.isFinite(value) || value < 0) return "—";
+  if (value >= 1e9) return `${ONE_DECIMAL.format(value / 1e9)}M`;
+  if (value >= 1e6) return `${ONE_DECIMAL.format(value / 1e6)}jt`;
+  if (value >= 1e3) return `${ONE_DECIMAL.format(value / 1e3)}rb`;
+  return INT.format(Math.round(value));
+}
+
 /** Tailwind class for a price direction. Green up, red down, grey flat. */
 export function directionClass(value: number | null | undefined): string {
   if (value == null || !Number.isFinite(value) || value === 0) return "text-dim";
