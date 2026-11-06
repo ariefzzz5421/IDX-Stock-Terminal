@@ -18,7 +18,7 @@ test("Top 10 volume starts at 10:00 WIB and remains hourly in active sessions",(
   const ten=build("2026-10-16T03:00:00Z"); // Friday 10:00
   assert.deepEqual(ten.map(x=>x.kind),["MARKET_VOLUME"]);
   assert.equal(ten[0].key,"market:2026-10-16:10:00:VOLUME");
-  assert.match(String(ten[0].embed.description),/MCap Rp/);
+  assert.match(String(ten[0].embed.description),/MCap \*\*Rp/);
   assert.match(String(ten[0].embed.description),/Vol/);
   assert.equal(build("2026-10-16T03:10:00Z").some(x=>x.kind==="MARKET_VOLUME"),false);
   assert.equal(build("2026-10-16T03:05:00Z").length,0);
@@ -83,7 +83,7 @@ test("market embeds contain per-issuer rows and value-source labels",()=>{
   const volume=result.find(x=>x.kind==="MARKET_VOLUME");
   assert.ok(volume);
   assert.equal(volume.rows.length,10);
-  assert.match(String(volume.embed.description),/Est\. Value/);
+  assert.match(String(volume.embed.description),/Volume Transaksi \*\*Rp[^\n]+\*\* _\(estimasi\)_/);
   const e=volume.embed as { _marketRows?:unknown[] };
   assert.equal(e._marketRows?.length,10);
 });
@@ -111,9 +111,9 @@ test("Discord market alert is readable on mobile with one blank line between sto
   const alert=build("2026-10-16T03:00:00Z")[0];
   const body=String(alert.embed.description);
   const rows=issuerDescription(alert.rows);
-  assert.match(rows,/1\. \*\*A/);
-  assert.match(rows,/\n(?:Value|Est\. Value) Rp[^\n]+ \| Volume Shares [^\n]+\nMCap Rp/);
-  assert.match(rows,/\nMCap Rp[^\n]+\n\n2\. \*\*/);
+  assert.match(rows,/\*\*#1 A/);
+  assert.match(rows,/\nMCap \*\*Rp[^\n]+\*\*\nVolume Transaksi \*\*Rp[^\n]+\*\*[^\n]*\nVolume Shares \*\*[^\n]+ shares\*\*/);
+  assert.match(rows,/\nVolume Shares \*\*[^\n]+ shares\*\*\n\n\*\*#2 /);
   assert.ok(!rows.includes("\n\n\n")); // only one empty row between emitters
   assert.match(body,/\n\n\*\*Date\*\*\n16 Oktober 2026\n\n\*\*Source\*\*\n\[IDX Terminal\]\(https:\/\/idx-stock-terminal\.vercel\.app\/market\)/);
   assert.ok(!body.includes("TradingView scanner"));
@@ -138,7 +138,7 @@ test("Top 10 volume is ranked by traded IDR value rather than number of shares",
   assert.ok(top);
   assert.equal(top.rows[0].code,"A001");
   assert.notEqual(top.rows[0].code,"A000");
-  assert.match(String(top.embed.description),/1\. \*\*A001\*\* Rp/);
-  assert.match(String(top.embed.description),/ ~ \+2,00%/);
-  assert.ok(!String(top.embed.description).includes("**A001** ·"));
+  assert.match(String(top.embed.description),/\*\*#1 A001\*\* ~ \*\*Rp/);
+  assert.match(String(top.embed.description),/ ~ 🟢 \*\*\+2,00%\*\*/);
+  assert.ok(!String(top.embed.description).includes("**#1 A001** ·"));
 });

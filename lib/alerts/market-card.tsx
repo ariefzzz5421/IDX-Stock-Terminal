@@ -13,7 +13,7 @@ export type IssuerCardRow = {
 
 const volume=(v:number)=>new Intl.NumberFormat("id-ID",{notation:"compact",maximumFractionDigits:1}).format(v);
 const money=(v:number|null)=>v===null||!Number.isFinite(v)?"N/D":marketCapText(v);
-const txt={fontSize:23,color:"#f4f7f9",fontWeight:550} as const;
+const txt={fontSize:23,color:"#f4f7f9",fontWeight:700} as const;
 const cell=(width:number,more:Record<string,unknown>={})=>({
   display:"flex" as const,alignItems:"center" as const,width,flexShrink:0,
   paddingLeft:12,borderRight:"1px solid #34475a",...more

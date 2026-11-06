@@ -1,6 +1,6 @@
 import { jakartaNow } from "../market-session";
 import { indicativeLimitStatus } from "../market-data/limit-status";
-import { marketCapText, jakartaDate, capForRow, type Cap, type MarketRow, type MarketSignal, rupiah } from "./market-rules";
+import { jakartaDate, capForRow, discordIssuerHeadline, type Cap, type MarketRow, type MarketSignal } from "./market-rules";
 import { formattedTradingDate, issuerDescription, IDX_TERMINAL_MARKET_URL, type MarketIssuerRow } from "./intraday-rules";
 
 /** Special after-close slot. Weekdays are only candidates; official same-day
@@ -49,11 +49,9 @@ export function buildClosingDigest(args:{
   const arb=byValue.filter(r=>indicativeLimitStatus(r.row.code,r.row.close,r.changePct)==="ARB_INDICATIVE").slice(0,10);
   const gainers=[...ranked].filter(r=>r.changePct>0).sort((a,b)=>b.changePct-a.changePct).slice(0,5);
   const losers=[...ranked].filter(r=>r.changePct<0).sort((a,b)=>a.changePct-b.changePct).slice(0,5);
-  const fmt=(r:typeof ranked[number])=>r.row.code+" "+rupiah(r.row.close)+" ~ "+
-    (r.changePct>=0?"+":"")+new Intl.NumberFormat("id-ID",{
-      minimumFractionDigits:2,maximumFractionDigits:2,
-    }).format(r.changePct)+"%";
-  const brief=(xs:typeof ranked)=>xs.length?xs.map(fmt).join("\n"):"Tidak ada kandidat dari ringkasan ini";
+  const brief=(xs:typeof ranked)=>xs.length
+    ?xs.map((r,i)=>discordIssuerHeadline(i+1,r.row.code,r.row.close,r.changePct)).join("\n")
+    :"Tidak ada kandidat dari ringkasan ini";
   const description=[
     "**Top 10 Nilai Transaksi (IDR)**",issuerDescription(top),
     "**Top ARA (indikatif)**",brief(ara),
