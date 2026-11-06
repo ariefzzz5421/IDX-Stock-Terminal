@@ -1,5 +1,6 @@
 import "server-only";
 import type { ReactNode } from "react";
+import { IdxMark } from "@/components/branding/IdxMark";
 import { resolveLogo } from "@/lib/logos";
 import { safeLogoSvg } from "./svg-safety";
 
@@ -102,13 +103,12 @@ export function PremiumFrame({title,clock,accent,subtitle,preview,footer,childre
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={BUILDING} width={spacious?665:575} height={270} alt=""
         style={{position:"absolute",right:spacious?-42:-35,top:-26,opacity:.94,objectFit:"cover"}}/>
-      <div style={{display:"flex",alignItems:"center",height:46}}>
-        <div style={{display:"flex",alignItems:"flex-end",height:28,marginRight:14}}>
-          {[12,19,27,36].map((h,i)=><div key={i}
-            style={{width:8,height:h,marginRight:5,background:"#e5bb73"}}/>)}
+      <div style={{display:"flex",alignItems:"center",height:52,position:"relative"}}>
+        <IdxMark width={75} height={35} decorative/>
+        <div style={{display:"flex",alignItems:"baseline",marginLeft:15}}>
+          <span style={{fontSize:34,color:"#ff1722",fontWeight:800}}>IDX</span>
+          <span style={{fontSize:31,color:"#f5f5f8",fontWeight:750,marginLeft:10}}>Terminal</span>
         </div>
-        <span style={{fontSize:24,fontWeight:750,letterSpacing:5,color:"#edc27d"}}>IDX</span>
-        <span style={{fontSize:23,fontWeight:400,letterSpacing:5,color:"#dbe3e7",marginLeft:12}}>STOCK TERMINAL</span>
       </div>
       <div style={{display:"flex",flexDirection:"row",alignItems:"baseline",marginTop:spacious?32:34,maxWidth:1180,position:"relative"}}>
         <span style={{fontSize:49,fontWeight:800,color:"#f7f7f6",marginRight:19}}>IDX ·</span>
@@ -125,7 +125,11 @@ export function PremiumFrame({title,clock,accent,subtitle,preview,footer,childre
       <span style={{fontSize:spacious?17:15,letterSpacing:spacious?2:3,color:"#d4b47d"}}>{footer}</span>
       <div style={{display:"flex",alignItems:"center"}}>
         <div style={{width:44,height:2,background:"#f6cb85",marginRight:17}}/>
-        <span style={{fontSize:spacious?17:16,letterSpacing:4,color:"#ebc47f"}}>IDX STOCK TERMINAL</span>
+        <IdxMark width={54} height={26} decorative/>
+        <div style={{display:"flex",alignItems:"baseline",marginLeft:10}}>
+          <span style={{fontSize:23,color:"#ff1822",fontWeight:800}}>IDX</span>
+          <span style={{fontSize:21,color:"#f6f8fa",fontWeight:750,marginLeft:7}}>Terminal</span>
+        </div>
       </div>
     </div>
    </div>

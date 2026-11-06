@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   marketCardHeading, shortCardText, corporateActionLabel,
-  dateWibForCard, decimalPct,
+  dateWibForCard, decimalPct, MARKET_CARD_COLUMN_LABELS, marketValueNote,
 } from "../lib/alerts/card-content";
 
 test("premium card is dynamic across market Volume, ARA, ARB and EOD gainers/losers",()=>{
@@ -33,4 +33,14 @@ test("sanitize article labels and use Indonesian percentage formatting",()=>{
   assert.equal(shortCardText("",50),"N/D");
   assert.equal(decimalPct(-2.96),"-2,96%");
   assert.equal(decimalPct(4.1),"+4,10%");
+});
+test("market card column headings and value qualifiers match the new design",()=>{
+  assert.deepEqual([...MARKET_CARD_COLUMN_LABELS],[
+    "#","EMITEN","HARGA","CHANGE","VOL TX","VOLUME SHARES","KAPITALISASI PASAR"
+  ]);
+  assert.equal(marketValueNote("reported"),null);
+  assert.equal(marketValueNote("estimated"),"Estimasi");
+  assert.equal(marketValueNote("unavailable"),"Belum tersedia");
+  assert.equal(decimalPct(4),"+4,00%");
+  assert.equal(decimalPct(-4),"-4,00%");
 });
