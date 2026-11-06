@@ -14,7 +14,8 @@ function asRow(stock: TrendingStock): StockRow {
     lastPrice: stock.lastPrice,
     lastChangePct: stock.changes.day,
     lastVolume: stock.volume,
-    lastValue: stock.turnover,
+    lastValue: stock.turnover > 0 ? stock.turnover : null,
+    valueSource: stock.turnover > 0 ? "reported" : "unverified",
     marketCap: stock.marketCap,
     marketStatus: indicativeLimitStatus(stock.code, stock.lastPrice, stock.changes.day),
   };
