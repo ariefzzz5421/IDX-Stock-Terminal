@@ -36,7 +36,7 @@ test("sanitize article labels and use Indonesian percentage formatting",()=>{
 });
 test("market card column headings and value qualifiers match the new design",()=>{
   assert.deepEqual([...MARKET_CARD_COLUMN_LABELS],[
-    "#","EMITEN","HARGA","CHANGE","VOL TX","VOLUME SHARES","KAPITALISASI PASAR"
+    "#","EMITEN","HARGA","CHANGE","VOLUME TX","VOLUME SHARES","KAPITALISASI PASAR"
   ]);
   assert.equal(marketValueNote("reported"),null);
   assert.equal(marketValueNote("estimated"),"Estimasi");

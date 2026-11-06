@@ -57,7 +57,7 @@ export function decimalPct(value:number) {
 }
 /** The exact short labels used on the PNG market cards. */
 export const MARKET_CARD_COLUMN_LABELS = [
-  "#","EMITEN","HARGA","CHANGE","VOL TX","VOLUME SHARES","KAPITALISASI PASAR",
+  "#","EMITEN","HARGA","CHANGE","VOLUME TX","VOLUME SHARES","KAPITALISASI PASAR",
 ] as const;
 
 /** No noisy 'Dilaporkan' caption. Keep an explicit estimate warning. */

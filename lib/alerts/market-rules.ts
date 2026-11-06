@@ -38,37 +38,52 @@ export function marketCapText(value: number | null): string {
   return rupiah(value);
 }
 /**
- * Format a stock in a Discord embed. Discord supports bold Markdown but does
- * NOT support assigning red/green font colors to individual text spans.
- * Colored emoji indicates direction in text; the PNG retains real color.
- *
- * No market source or ordering logic belongs in this presentation helper.
+ * Shared Discord market-alert text format for Volume, ARA/ARB, Trending,
+ * closing, and the optional BEI gainers/losers digests. Do not mix image
+ * typography with Markdown: Discord descriptions cannot set a custom font.
  */
+function idNumber(value:number,maximumFractionDigits=2):string {
+  return new Intl.NumberFormat("id-ID",{maximumFractionDigits}).format(value);
+}
+function formattedMarketCap(value:number|null):string {
+  if(value==null || !Number.isFinite(value) || value<=0)return "N/D";
+  // These units follow the existing IDX Terminal IDR formatter:
+  // T=triliun, M=miliar, without a redundant Rp prefix on the MCap line.
+  return marketCapText(value).replace(/^Rp/,"").replace(/\s+([TM])$/,"$1");
+}
+function formattedTransactionValue(value:number|null):string {
+  if(value==null || !Number.isFinite(value) || value<=0)return "N/D";
+  return marketCapText(value).replace(/^Rp/,"Rp ");
+}
+function formattedShares(value:number|null):string {
+  if(value==null || !Number.isFinite(value) || value<0)return "N/D";
+  if(value>=1e9)return idNumber(value/1e9,1)+" M Shares";
+  if(value>=1e6)return idNumber(value/1e6,1)+" Jt Shares";
+  if(value>=1e3)return idNumber(value/1e3,1)+" Rb Shares";
+  return idNumber(value,0)+" Shares";
+}
+
 export function discordIssuerHeadline(rank:number,code:string,price:number|null,changePct:number):string {
-  const symbol=changePct>0?"🟢":changePct<0?"🔴":"⚪";
-  const change=(changePct>=0?"+":"")+new Intl.NumberFormat("id-ID",{
-    minimumFractionDigits:2,maximumFractionDigits:2,
-  }).format(changePct)+"%";
-  // Codes are exchange identifiers, not arbitrary Markdown from a news feed.
+  const change=Number.isFinite(changePct)
+    ?(changePct>=0?"+":"")+new Intl.NumberFormat("id-ID",{
+      minimumFractionDigits:2,maximumFractionDigits:2,
+    }).format(changePct)+"%"
+    :"N/D";
   const ticker=code.replace(/[^A-Z0-9]/g,"").slice(0,6)||"N/D";
-  return "**#"+rank+" "+ticker+"** ~ **"+rupiah(price)+"** ~ "+symbol+" **"+change+"**";
+  const displayPrice=rupiah(price).replace(/^Rp/,"Rp ");
+  return "**#"+rank+". "+ticker+"** | **"+displayPrice+"** | **"+change+"**";
 }
 export function discordIssuerRow(input:{
   rank:number;code:string;price:number|null;changePct:number;
   marketCap:number|null;tradedValue:number|null;volume:number|null;
   valueSource?:"reported"|"estimated"|"unavailable";
 }):string {
-  const traded=marketCapText(input.tradedValue);
-  const shares=input.volume!==null && Number.isFinite(input.volume) && input.volume>=0
-    ?new Intl.NumberFormat("id-ID",{notation:"compact",maximumFractionDigits:1})
-      .format(input.volume).replace(/[\u00a0\u202f]/g," ")
-    :"N/D";
   const qualifier=input.valueSource==="estimated"?" _(estimasi)_":"";
   return [
     discordIssuerHeadline(input.rank,input.code,input.price,input.changePct),
-    "MCap **"+marketCapText(input.marketCap)+"**",
-    "Volume Transaksi **"+traded+"**"+qualifier,
-    "Volume Shares **"+shares+" shares**",
+    "MCap | **"+formattedMarketCap(input.marketCap)+"**",
+    "Volume Transaksi | **"+formattedTransactionValue(input.tradedValue)+"**"+qualifier,
+    "Volume Shares | **"+formattedShares(input.volume)+"**",
   ].join("\n");
 }
 
