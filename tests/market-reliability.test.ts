@@ -35,3 +35,13 @@ test("cross-source comparisons require exchange-time aligned sources", () => {
   assert.equal(compareQuotes(sample(), sample({ timestampVerified: false })), "not-comparable");
   assert.equal(compareQuotes(sample(), sample({ timestamp: now - 3_600_000 })), "not-comparable");
 });
+
+
+test("mobile market metrics format MCAP, shares, and IDR value unambiguously", async () => {
+  const { formatCompactMarketCap, formatCompactVolume, formatValue } = await import("../lib/format");
+  assert.equal(formatCompactMarketCap(2_100_000_000_000), "2,1T");
+  assert.equal(formatCompactVolume(51_200_000), "51,2jt");
+  assert.equal(formatValue(9_900_000_000), "Rp 9,9 miliar");
+  assert.equal(formatCompactMarketCap(null), "—");
+  assert.equal(formatCompactVolume(null), "—");
+});
