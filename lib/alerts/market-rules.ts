@@ -60,7 +60,8 @@ export function discordIssuerRow(input:{
 }):string {
   const traded=marketCapText(input.tradedValue);
   const shares=input.volume!==null && Number.isFinite(input.volume) && input.volume>=0
-    ?new Intl.NumberFormat("id-ID",{notation:"compact",maximumFractionDigits:1}).format(input.volume)
+    ?new Intl.NumberFormat("id-ID",{notation:"compact",maximumFractionDigits:1})
+      .format(input.volume).replace(/[\u00a0\u202f]/g," ")
     :"N/D";
   const qualifier=input.valueSource==="estimated"?" _(estimasi)_":"";
   return [
