@@ -1,6 +1,6 @@
 import { marketStatus, jakartaNow } from "../market-session";
 import { indicativeLimitStatus } from "../market-data/limit-status";
-import { jakartaDate, marketCapText, rupiah } from "./market-rules";
+import { jakartaDate, discordIssuerRow } from "./market-rules";
 
 export type IntradayStock = {
   code: string; name: string; lastPrice: number | null; volume: number;
@@ -47,15 +47,6 @@ function validRow(s: IntradayStock) {
     s.changePct !== null && Number.isFinite(s.changePct) &&
     Number.isFinite(s.volume) && s.volume > 0;
 }
-function changeText(pct: number): string {
-  const change = new Intl.NumberFormat("id-ID", {
-    minimumFractionDigits: 2, maximumFractionDigits: 2,
-  }).format(pct);
-  return (pct >= 0 ? "+" : "") + change + "%";
-}
-function compactVolume(shares: number): string {
-  return new Intl.NumberFormat("id-ID", { notation: "compact", maximumFractionDigits: 1 }).format(shares);
-}
 export function tradedValueFor(stock: IntradayStock): {value:number|null; source:"reported"|"estimated"|"unavailable"} {
   if(stock.turnover !== undefined && stock.turnover !== null && Number.isFinite(stock.turnover) && stock.turnover > 0)
     return {value:stock.turnover,source:"reported"};
@@ -86,14 +77,11 @@ export const IDX_TERMINAL_MARKET_URL = "https://idx-stock-terminal.vercel.app/ma
  * and Source retain their own spacing on narrow mobile screens.
  */
 export function issuerDescription(rows: MarketIssuerRow[]): string {
-  return rows.map((r,i) => {
-    const valueLabel = r.valueSource === "reported" ? "Value" : "Est. Value";
-    return (i + 1) + ". **" + r.code + "** " + rupiah(r.lastPrice) +
-      " ~ " + changeText(r.changePct ?? 0) +
-      "\n" + valueLabel + " " + marketCapText(r.tradedValue) +
-      " | Volume Shares " + compactVolume(r.volume) +
-      "\nMCap " + marketCapText(r.marketCap);
-  }).join("\n\n");
+  return rows.map((r,i)=>discordIssuerRow({
+    rank:i+1,code:r.code,price:r.lastPrice,changePct:r.changePct ?? 0,
+    marketCap:r.marketCap,tradedValue:r.tradedValue,volume:r.volume,
+    valueSource:r.valueSource,
+  })).join("\n\n");
 }
 
 function baseEmbed(title: string, color: number, description: string, observedAt: string, date: string) {

@@ -37,6 +37,40 @@ export function marketCapText(value: number | null): string {
   if (value >= 1e9) return "Rp" + new Intl.NumberFormat("id-ID", { maximumFractionDigits: 2 }).format(value / 1e9) + " M";
   return rupiah(value);
 }
+/**
+ * Format a stock in a Discord embed. Discord supports bold Markdown but does
+ * NOT support assigning red/green font colors to individual text spans.
+ * Colored emoji indicates direction in text; the PNG retains real color.
+ *
+ * No market source or ordering logic belongs in this presentation helper.
+ */
+export function discordIssuerHeadline(rank:number,code:string,price:number|null,changePct:number):string {
+  const symbol=changePct>0?"🟢":changePct<0?"🔴":"⚪";
+  const change=(changePct>=0?"+":"")+new Intl.NumberFormat("id-ID",{
+    minimumFractionDigits:2,maximumFractionDigits:2,
+  }).format(changePct)+"%";
+  // Codes are exchange identifiers, not arbitrary Markdown from a news feed.
+  const ticker=code.replace(/[^A-Z0-9]/g,"").slice(0,6)||"N/D";
+  return "**#"+rank+" "+ticker+"** ~ **"+rupiah(price)+"** ~ "+symbol+" **"+change+"**";
+}
+export function discordIssuerRow(input:{
+  rank:number;code:string;price:number|null;changePct:number;
+  marketCap:number|null;tradedValue:number|null;volume:number|null;
+  valueSource?:"reported"|"estimated"|"unavailable";
+}):string {
+  const traded=marketCapText(input.tradedValue);
+  const shares=input.volume!==null && Number.isFinite(input.volume) && input.volume>=0
+    ?new Intl.NumberFormat("id-ID",{notation:"compact",maximumFractionDigits:1}).format(input.volume)
+    :"N/D";
+  const qualifier=input.valueSource==="estimated"?" _(estimasi)_":"";
+  return [
+    discordIssuerHeadline(input.rank,input.code,input.price,input.changePct),
+    "MCap **"+marketCapText(input.marketCap)+"**",
+    "Volume Transaksi **"+traded+"**"+qualifier,
+    "Volume Shares **"+shares+" shares**",
+  ].join("\n");
+}
+
 export function capForRow(row: MarketRow, lookup: Record<string, Cap>): Cap {
   if (row.listedShares != null && row.listedShares > 0 &&
       row.close != null && row.close > 0 && Number.isFinite(row.listedShares * row.close)) {
@@ -81,9 +115,12 @@ export function buildMarketSignals(args: {
   const link = "https://idx-stock-terminal.vercel.app/market";
   const headline = preview ? "PREVIEW ONLY · " : "";
   const signals: MarketSignal[] = [];
-  const formatRow = (r: (typeof gainers)[number]) =>
-    "**" + r.code + "** · " + rupiah(r.close) + " · " +
-    (r.changePct > 0 ? "+" : "") + r.changePct.toFixed(2) + "% · MCap " + marketCapText(r.cap.value);
+  const formatRow = (r: (typeof gainers)[number],index:number) =>
+    discordIssuerRow({
+      rank:index+1,code:r.code,price:r.close,changePct:r.changePct,
+      marketCap:r.cap.value,tradedValue:r.value,
+      volume:r.volume,valueSource:r.value && r.value>0?"reported":"unavailable",
+    });
   if (mode === "close" && args.digestEnabled) {
     for (const [type, items, color] of [
       ["GAINERS", gainers, 0x22c55e],
@@ -105,7 +142,7 @@ export function buildMarketSignals(args: {
             valueSource:item.value && item.value>0 ? "reported" : "estimated",
           })),
           title: headline + "IDX MARKET · TOP " + type,
-          description: items.map((item, i) => (i + 1) + ". " + formatRow(item)).join("\n").slice(0, 4000),
+          description: items.map((item,i) => formatRow(item,i)).join("\n\n").slice(0,4000),
           color, url: link,
           fields: [
             { name: "As of (BEI summary)", value: date, inline: true },
