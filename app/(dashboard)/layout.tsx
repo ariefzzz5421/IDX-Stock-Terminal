@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { IdxMark } from "@/components/branding/IdxMark";
 import { Suspense } from "react";
 import { isGuest, requireUser } from "@/lib/auth/session";
 import { CommandBar } from "@/components/terminal/CommandBar";
@@ -48,13 +49,13 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
         <Nav headerTrigger />
         <Link
           href="/dashboard"
-          className="flex min-w-0 items-baseline gap-1 bg-panel px-1 py-2.5 hover:opacity-80 sm:gap-2 sm:px-4"
+          aria-label="IDX Terminal — Beranda"
+          className="flex min-w-0 items-center gap-2 bg-panel px-2 py-2 hover:opacity-80 sm:px-4"
         >
-          <span className="font-display text-base font-bold tracking-[0.12em] text-amber sm:text-lg sm:tracking-[0.16em]">
-            IDX
-          </span>
-          <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink sm:text-micro sm:tracking-[0.2em]">
-            Terminal
+          <IdxMark width={39} height={22} decorative/>
+          <span className="flex min-w-0 items-baseline whitespace-nowrap">
+            <span className="text-sm font-extrabold tracking-tight text-[#ff1722] sm:text-base">IDX</span>
+            <span className="ml-1.5 text-xs font-bold tracking-tight text-ink-hi sm:text-sm">Terminal</span>
           </span>
         </Link>
         </div>

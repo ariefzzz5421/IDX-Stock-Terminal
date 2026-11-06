@@ -583,3 +583,31 @@ and red. Monetary turnover that was not provider-reported retains a visible
 
 This is a **presentation-only update**: data sources, rank order, webhook
 destination, all market sessions and VPS systemd timer remain unchanged.
+
+## IDX Terminal custom branding and Discord cards (November 2026)
+
+Official IDX Terminal brand mark is traced from the **user-provided** white/red
+logo, replacing the older amber bar icon. The browser favicon is now the mark
+alone on a deep navy tile (automatic `app/icon.svg` + explicit site metadata).
+The dashboard header uses the same mark and a red **IDX** / white **Terminal**
+wordmark. The brand also appears in the top-left and bottom-right of premium
+Discord images, including Corporate Action cards.
+
+The dynamic stock PNG renderer (Volume, ARA, ARB, Trending, closing) now uses:
+
+- Oswald Bold for market titles, all seven table column headers, and issuer
+  ticker symbols. Price, percent, market cap, volume and transaction values use
+  a clean, regular bold sans serif.
+- Column header **CHANGE** (formerly PERUBAHAN), **VOL TX** (formerly VALUE
+  (IDR)). The source-based transaction value itself is not modified.
+- Only + or - percentage numbers in real green/red PNG text; no change arrows.
+- No **Dilaporkan** sublabel for reported transaction values. **Estimasi**
+  remains for estimated amounts and **Belum tersedia** for missing values,
+  to avoid misrepresenting provenance.
+- Premium IDX-building illustration, larger layout and padded footer from the
+  prior redesign. No data/ranking/scheduler or webhook changes.
+
+The original `app/favicon.ico` was removed to avoid an outdated competing
+favicon. Some browsers may cache the old icon; open a fresh tab or hard refresh
+after deployment. No VPS update is needed for these branding/presentation
+changes.

@@ -1,7 +1,7 @@
 import "server-only";
 import { ImageResponse } from "next/og";
 import { marketCapText, rupiah } from "./market-rules";
-import { decimalPct, marketCardHeading } from "./card-content";
+import { decimalPct, marketCardHeading, MARKET_CARD_COLUMN_LABELS, marketValueNote } from "./card-content";
 import { IssuerMark, PremiumFrame, issuerLogoData } from "./premium-card-shell";
 import { loadOswaldBold } from "./oswald-font";
 
@@ -13,7 +13,7 @@ export type IssuerCardRow = {
 
 const volume=(v:number)=>new Intl.NumberFormat("id-ID",{notation:"compact",maximumFractionDigits:1}).format(v);
 const money=(v:number|null)=>v===null||!Number.isFinite(v)?"N/D":marketCapText(v);
-const txt={fontSize:23,color:"#f4f7f9",fontWeight:700} as const;
+const txt={fontFamily:"Arial,sans-serif",fontSize:23,color:"#f4f7f9",fontWeight:700} as const;
 const cell=(width:number,more:Record<string,unknown>={})=>({
   display:"flex" as const,alignItems:"center" as const,width,flexShrink:0,
   paddingLeft:12,borderRight:"1px solid #34475a",...more
@@ -32,7 +32,7 @@ export async function renderMarketCard(title:string,rows:IssuerCardRow[]):Promis
   const headingFont=oswald?"Oswald":"Arial,sans-serif";
   const items=[
     {title:"#",width:68},{title:"EMITEN",width:302},{title:"HARGA",width:175},
-    {title:"PERUBAHAN",width:172},{title:"VALUE (IDR)",width:235},
+    {title:MARKET_CARD_COLUMN_LABELS[3],width:172},{title:MARKET_CARD_COLUMN_LABELS[4],width:235},
     {title:"VOLUME SHARES",width:190},{title:"KAPITALISASI PASAR",width:266},
   ];
   const png=new ImageResponse(
@@ -64,19 +64,18 @@ export async function renderMarketCard(title:string,rows:IssuerCardRow[]):Promis
           </div>
           <div style={cell(302)}>
             <IssuerMark ticker={r.code} data={logos[i]} size={48}/>
-            <span style={{fontSize:27,fontWeight:800,color:"#ffffff"}}>{r.code}</span>
+            <span style={{fontSize:27,fontWeight:700,fontFamily:headingFont,color:"#ffffff"}}>{r.code}</span>
           </div>
           <div style={cell(175)}><span style={txt}>{rupiah(r.lastPrice)}</span></div>
           <div style={cell(172)}>
-            <span style={{fontSize:22,fontWeight:700,color:r.changePct<0?"#ff6776":r.changePct>0?"#4ee7b2":"#b8c9d4"}}>
-              {r.changePct<0?"▼ ":r.changePct>0?"▲ ":"• "}{decimalPct(r.changePct)}
+            <span style={{fontFamily:"Arial,sans-serif",fontSize:22,fontWeight:700,color:r.changePct<0?"#ff6776":r.changePct>0?"#4ee7b2":"#b8c9d4"}}>
+              {decimalPct(r.changePct)}
             </span>
           </div>
           <div style={{...cell(235),flexDirection:"column",alignItems:"flex-start",justifyContent:"center"}}>
-            <span style={txt}>{money(r.tradedValue)}</span>
-            <span style={{fontSize:13,color:"#98b0bd"}}>
-              {r.valueSource==="reported"?"Dilaporkan":r.valueSource==="estimated"?"Estimasi":"Belum tersedia"}
-            </span>
+            <span style={{...txt,fontFamily:"Arial,sans-serif"}}>{money(r.tradedValue)}</span>
+            {marketValueNote(r.valueSource)&&
+              <span style={{fontSize:13,color:"#98b0bd"}}>{marketValueNote(r.valueSource)}</span>}
           </div>
           <div style={cell(190)}><span style={txt}>{volume(r.volume)}</span></div>
           <div style={{...cell(266),borderRight:"none"}}>

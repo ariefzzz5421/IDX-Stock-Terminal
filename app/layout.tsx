@@ -22,6 +22,7 @@ export const metadata: Metadata = {
   title: "IDX Terminal",
   description:
     "Terminal riset saham Bursa Efek Indonesia dengan pantauan, grafik, peta bisnis, dan data pasar bersumber.",
+  icons: { icon: [{ url: "/icon.svg", type: "image/svg+xml", sizes: "any" }], shortcut: "/icon.svg" },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

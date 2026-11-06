@@ -55,3 +55,12 @@ export function decimalPct(value:number) {
   return (value >= 0 ? "+" : "") +
     new Intl.NumberFormat("id-ID",{minimumFractionDigits:2,maximumFractionDigits:2}).format(value)+"%";
 }
+/** The exact short labels used on the PNG market cards. */
+export const MARKET_CARD_COLUMN_LABELS = [
+  "#","EMITEN","HARGA","CHANGE","VOL TX","VOLUME SHARES","KAPITALISASI PASAR",
+] as const;
+
+/** No noisy 'Dilaporkan' caption. Keep an explicit estimate warning. */
+export function marketValueNote(source:"reported"|"estimated"|"unavailable"):string|null {
+  return source==="reported"?null:source==="estimated"?"Estimasi":"Belum tersedia";
+}
