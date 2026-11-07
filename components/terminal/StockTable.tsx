@@ -81,11 +81,11 @@ export function StockTable({
   return (
     <div className="@container/stocktable min-w-0 w-full overflow-hidden">
       {/* Mobile/narrow panel: one price column, all market metrics below the issuer. */}
-      <ol className="divide-y divide-rule/70 @min-[48rem]/stocktable:hidden">
+      <ol className="divide-y-2 divide-rule-hi/70 @min-[48rem]/stocktable:hidden">
         {rows.map((row, index) => (
           <li key={row.code} className="group px-3 py-4 transition-colors hover:bg-panel-hi sm:px-4">
             <div className={"grid min-w-0 items-start gap-x-2.5 " + (rank ? "grid-cols-[1.1rem_2.25rem_minmax(0,1fr)_auto]" : "grid-cols-[2.25rem_minmax(0,1fr)_auto]")}>
-              {rank && <span className="pt-1 text-[11px] tabular-nums text-dimmer">{index + 1}</span>}
+              {rank && <span className="pt-1 text-xs font-bold tabular-nums text-ink">{index + 1}</span>}
               <Link href={"/asset/" + row.code} className="mt-0.5 shrink-0" aria-label={"Buka saham " + row.code}>
                 <CompanyLogo code={row.code} logoUrl={row.logoUrl} size="md" />
               </Link>
@@ -130,8 +130,8 @@ export function StockTable({
           </thead>
           <tbody>
             {rows.map((row, index) => (
-              <tr key={row.code} className="group border-b border-rule/50 transition-colors hover:bg-panel-hi">
-                {rank && <td className="p-0 text-right text-xs tabular-nums text-dimmer">
+              <tr key={row.code} className="group border-b-2 border-rule-hi/60 transition-colors hover:bg-panel-hi">
+                {rank && <td className="p-0 text-right text-xs font-bold tabular-nums text-ink">
                   <Link href={"/asset/" + row.code} className="block px-2 py-3">{index + 1}</Link>
                 </td>}
                 <td className="min-w-0 p-0">

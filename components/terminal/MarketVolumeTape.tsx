@@ -5,8 +5,8 @@ import type { TrendingStock } from "@/lib/market-data/trending";
 
 export function MarketVolumeTape({ stocks }: { stocks: TrendingStock[]; demo?: boolean }) {
   if (!stocks.length) return null;
-  return <div className="hidden border-t border-rule md:block">
-    <div className="business-home-tape market-tape-window bg-rule" aria-label="Peringkat volume saham sesi terakhir, bergerak dari kiri ke kanan">
+  return <div className="block border-y border-rule">
+    <div className="market-tape-window flex bg-rule" aria-label="Peringkat volume saham sesi terakhir, bergerak dari kiri ke kanan">
       <div className="market-tape-track">
         <div className="market-tape-group">{stocks.map((stock, index) => <TapeEntry key={stock.code} stock={stock} rank={index + 1} />)}</div>
         <div aria-hidden="true" className="market-tape-group">{stocks.map((stock, index) => <TapeEntry key={stock.code} stock={stock} rank={index + 1} duplicate />)}</div>
