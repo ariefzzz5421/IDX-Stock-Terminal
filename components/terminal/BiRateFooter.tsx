@@ -1,5 +1,6 @@
 const SOURCE = "https://www.bi.go.id/id/statistik/indikator/bi-rate.aspx";
-const LAST_VERIFIED = { rate: 5.75, date: "23 September 2026", fallback: true };
+// Verified against the official BI Rate historical table, 21 October 2026.
+const LAST_VERIFIED = { rate: 5.75, date: "21 Oktober 2026", fallback: true };
 
 async function getBiRate() {
   try {
@@ -20,6 +21,6 @@ async function getBiRate() {
 export async function BiRateFooter() {
   const { rate, date, fallback } = await getBiRate();
   return <a href={SOURCE} target="_blank" rel="noopener noreferrer" title={`${fallback ? "Snapshot terverifikasi" : "Publikasi terbaru"} Bank Indonesia · ${date}`} className="min-w-0 text-dim hover:text-cyan">
-    BI-Rate <span className="text-ink">{rate.toLocaleString("id-ID", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%</span>{fallback && <span className="text-dimmer"> · snapshot</span>}<span className="sr-only"> · publikasi {date}</span>
+    BI-Rate <span className="text-ink">{rate.toLocaleString("id-ID", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%</span><span className="sr-only"> · {fallback ? "snapshot" : "publikasi terbaru"} {date}</span>
   </a>;
 }

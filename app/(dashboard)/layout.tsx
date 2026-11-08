@@ -93,11 +93,11 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
       <div className="flex min-h-0 flex-1 flex-col gap-px">{children}</div>
 
       {/* ---- status bar ---- */}
-      <footer className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 bg-panel-hi px-4 py-2 text-micro uppercase tracking-[0.1em] text-dim sm:flex sm:flex-wrap sm:items-center">
-        <span className="col-start-1 row-start-1">
+      <footer className="flex min-w-0 flex-col items-start gap-1.5 bg-panel-hi px-4 py-3 text-micro uppercase tracking-[0.1em] text-dim">
+        <span title="Jumlah saham dalam katalog BEI bertanggal 12 Oktober 2026, bukan hitungan intraday real-time">
           {language === "id" ? "Emiten" : "Listings"} <span className="text-ink">{codes.length}</span>
         </span>
-        <Suspense fallback={<span className="col-start-2 row-start-1 text-dim">BI-Rate …</span>}><BiRateFooter /></Suspense>
+        <Suspense fallback={<span className="text-dim">BI-Rate …</span>}><BiRateFooter /></Suspense>
         <FooterClock />
       </footer>
     </div>
