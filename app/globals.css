@@ -97,8 +97,7 @@ body {
 .market-tape-group { display: flex; flex: 0 0 auto; gap: 1px; padding-right: 1px; }
 .market-tape-group > a { flex: 0 0 12rem; }
 @keyframes market-tape-drift { from { transform: translate3d(0,0,0); } to { transform: translate3d(-50%,0,0); } }
-@media (hover: hover) { .market-tape-window:hover .market-tape-track { animation-play-state: paused; } }
-.market-tape-window:focus-within .market-tape-track { animation-play-state: paused; }
+@media (hover: hover) { .market-tape-window:hover .market-tape-track, .market-tape-window:focus-within .market-tape-track { animation-play-state: paused; } }
 @media (prefers-reduced-motion: reduce) { .market-tape-track { animation: none; transform: none; will-change: auto; } .market-tape-window { overflow-x: auto; } .market-tape-window .market-tape-group[aria-hidden="true"] { display: none; } }
 .konglo-tape .market-tape-group { gap: .75rem; padding-right: .75rem; }
 .konglo-tape .market-tape-group > a { flex: 0 0 clamp(17rem, 28vw, 24rem); }
