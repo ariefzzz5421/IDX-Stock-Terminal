@@ -136,6 +136,23 @@ body {
   .business-detail { grid-column: auto; }
 }
 @media (max-width: 767px) {
+  /* iOS Safari may paint a blank region in a translated, duplicated marquee.
+     On phones use native swipe with exactly the ten genuine stock entries. */
+  .market-tape-window {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+  .market-tape-window::-webkit-scrollbar { display: none; }
+  .market-tape-track { animation: none; transform: none; will-change: auto; }
+  .market-tape-window .market-tape-group[aria-hidden="true"] { display: none; }
+  .market-tape-window .market-tape-group > a { scroll-snap-align: start; }
   .business-home-tape { display: none; }
   .business-home-company-trigger { display: flex; }
   .business-home-company-sidebar { display: block; position: fixed; inset: 0 auto 0 0; z-index: 1100; width: min(88vw, 22rem); height: 100dvh; overflow-y: auto; visibility: hidden; border-right: 1px solid var(--color-rule-hi); background: var(--color-panel); box-shadow: 10px 0 30px #0009; transform: translateX(-105%); transition: transform .2s ease, visibility .2s ease; }
