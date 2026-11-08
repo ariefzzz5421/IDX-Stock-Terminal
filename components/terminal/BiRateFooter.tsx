@@ -21,6 +21,6 @@ async function getBiRate() {
 export async function BiRateFooter() {
   const { rate, date, fallback } = await getBiRate();
   return <a href={SOURCE} target="_blank" rel="noopener noreferrer" title={`${fallback ? "Snapshot terverifikasi" : "Publikasi terbaru"} Bank Indonesia · ${date}`} className="min-w-0 text-dim hover:text-cyan">
-    BI-Rate <span className="text-ink">{rate.toLocaleString("id-ID", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%</span><span className="sr-only"> · ${fallback ? "snapshot" : "publikasi terbaru"} {date}</span>
+    BI-Rate <span className="text-ink">{rate.toLocaleString("id-ID", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%</span><span className="sr-only"> · {fallback ? "snapshot" : "publikasi terbaru"} {date}</span>
   </a>;
 }
