@@ -49,8 +49,8 @@ export function buildTrendingSignal(input:{
       description:[
         "**Market Tape · peringkat volume saham (lembar)**",
         issuerDescription(top),
-        "**Date**",formattedTradingDate(slot.date),
-        "**Source**","[IDX Terminal]("+IDX_TERMINAL_MARKET_URL+")",
+        "**Date**\n"+formattedTradingDate(slot.date),
+        "**Source**\n[IDX Terminal]("+IDX_TERMINAL_MARKET_URL+")",
       ].join("\n\n").slice(0,4096),
       url:IDX_TERMINAL_MARKET_URL,
       color:0xf59e0b,timestamp:input.now.toISOString(),

@@ -9,21 +9,23 @@ test("Discord format shows ranked ticker, price, percent and the exact metric or
     tradedValue:47.35e9,volume:217.2e6,valueSource:"reported",
   });
   assert.equal(row,[
-    "**#10. DEWA** | **Rp 218** | **-5,22%**",
+    "**#10. DEWA** | **Rp 218** | **-5,22%** 🔴",
     "MCap | **13,09T**",
     "Volume Transaksi | **Rp 47,35 M**",
     "Volume Shares | **217,2 Jt Shares**",
   ].join("\n"));
-  assert.ok(!row.includes("🔴")&&!row.includes("🟢"));
+  assert.ok(row.includes("🔴")&&!row.includes("🟢"));
 });
 
 test("all percentage signs and large/small share volumes remain readable",()=>{
   assert.equal(discordIssuerHeadline(1,"BBCA",4000,4),
-    "**#1. BBCA** | **Rp 4.000** | **+4,00%**");
+    "**#1. BBCA** | **Rp 4.000** | **+4,00%** 🟢");
   assert.equal(discordIssuerHeadline(2,"TAXI",10,-9.09),
-    "**#2. TAXI** | **Rp 10** | **-9,09%**");
+    "**#2. TAXI** | **Rp 10** | **-9,09%** 🔴");
   assert.equal(discordIssuerHeadline(3,"GOTO",25,0),
     "**#3. GOTO** | **Rp 25** | **+0,00%**");
+  assert.equal(discordIssuerHeadline(4,"BBCA",4000,Number.NaN),
+    "**#4. BBCA** | **Rp 4.000** | **N/D**");
   const est=discordIssuerRow({rank:5,code:"BUMI",price:120,changePct:-1.5,
     marketCap:null,tradedValue:120000000,volume:1e9,valueSource:"estimated"});
   assert.match(est,/MCap \| \*\*N\/D\*\*/);

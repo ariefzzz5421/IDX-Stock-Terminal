@@ -58,8 +58,8 @@ export function buildClosingDigest(args:{
     "**Top ARB (indikatif)**",brief(arb),
     "**Top Gainers**",brief(gainers),
     "**Top Losers**",brief(losers),
-    "**Date**",formattedTradingDate(date),
-    "**Source**","[IDX Terminal]("+IDX_TERMINAL_MARKET_URL+") · [BEI Ringkasan Saham](https://www.idx.co.id/id/data-pasar/ringkasan-perdagangan/ringkasan-saham/)",
+    "**Date**\n"+formattedTradingDate(date),
+    "**Source**\n[IDX Terminal]("+IDX_TERMINAL_MARKET_URL+") · [BEI Ringkasan Saham](https://www.idx.co.id/id/data-pasar/ringkasan-perdagangan/ringkasan-saham/)",
     "*ARA/ARB berupa perhitungan indikatif, bukan status resmi yang terkonfirmasi.*"
   ].join("\n\n");
   return {
