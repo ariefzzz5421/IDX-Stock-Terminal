@@ -71,7 +71,9 @@ export function discordIssuerHeadline(rank:number,code:string,price:number|null,
     :"N/D";
   const ticker=code.replace(/[^A-Z0-9]/g,"").slice(0,6)||"N/D";
   const displayPrice=rupiah(price).replace(/^Rp/,"Rp ");
-  return "**#"+rank+". "+ticker+"** | **"+displayPrice+"** | **"+change+"**";
+  // Show direction only for a genuine positive/negative change; flat/N/D has no marker.
+  const marker=Number.isFinite(changePct) ? (changePct>0?" 🟢":changePct<0?" 🔴":"") : "";
+  return "**#"+rank+". "+ticker+"** | **"+displayPrice+"** | **"+change+"**"+marker;
 }
 export function discordIssuerRow(input:{
   rank:number;code:string;price:number|null;changePct:number;
