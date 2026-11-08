@@ -92,12 +92,14 @@ body {
 .business-sidebar-close, .business-sidebar-trigger, .business-sidebar-backdrop { display: none; }
 .business-home-tape { display: flex; scrollbar-width: thin; scrollbar-color: var(--color-amber-dim) var(--color-panel-hi); }
 .business-home-tape > a { flex: 0 0 12rem; }
-.market-tape-window { overflow: hidden; }
-.market-tape-track { display: flex; width: max-content; animation: market-tape-drift 55s linear infinite; will-change: transform; }
+.market-tape-window { overflow: hidden; position: relative; isolation: isolate; }
+.market-tape-track { display: flex; width: max-content; animation: market-tape-drift 75s linear infinite; will-change: transform; }
 .market-tape-group { display: flex; flex: 0 0 auto; gap: 1px; padding-right: 1px; }
 .market-tape-group > a { flex: 0 0 12rem; }
-@keyframes market-tape-drift { from { transform: translateX(-50%); } to { transform: translateX(0); } }
-@media (prefers-reduced-motion: reduce) { .market-tape-track { animation: none; } .market-tape-window { overflow-x: auto; } }
+@keyframes market-tape-drift { from { transform: translate3d(0,0,0); } to { transform: translate3d(-50%,0,0); } }
+@media (hover: hover) { .market-tape-window:hover .market-tape-track { animation-play-state: paused; } }
+.market-tape-window:focus-within .market-tape-track { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .market-tape-track { animation: none; transform: none; will-change: auto; } .market-tape-window { overflow-x: auto; } .market-tape-window .market-tape-group[aria-hidden="true"] { display: none; } }
 .konglo-tape .market-tape-group { gap: .75rem; padding-right: .75rem; }
 .konglo-tape .market-tape-group > a { flex: 0 0 clamp(17rem, 28vw, 24rem); }
 .konglo-tape .market-tape-track { animation-duration: 42s; }
@@ -136,23 +138,21 @@ body {
   .business-detail { grid-column: auto; }
 }
 @media (max-width: 767px) {
-  /* iOS Safari may paint a blank region in a translated, duplicated marquee.
-     On phones use native swipe with exactly the ten genuine stock entries. */
+  /* Auto-scrolling marquee on iPhone too: duplicated groups make the loop seamless.
+     Hide overflow instead of preserving old swipe position near #10. */
   .market-tape-window {
     width: 100%;
-    max-width: 100%;
     min-width: 0;
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+    overflow: hidden;
     overscroll-behavior-x: contain;
-    scroll-snap-type: x proximity;
-    scrollbar-width: none;
+    touch-action: pan-y;
   }
-  .market-tape-window::-webkit-scrollbar { display: none; }
-  .market-tape-track { animation: none; transform: none; will-change: auto; }
-  .market-tape-window .market-tape-group[aria-hidden="true"] { display: none; }
-  .market-tape-window .market-tape-group > a { scroll-snap-align: start; }
+  .market-tape-track {
+    animation: market-tape-drift 75s linear infinite;
+    transform: translate3d(0,0,0);
+    will-change: transform;
+  }
   .business-home-tape { display: none; }
   .business-home-company-trigger { display: flex; }
   .business-home-company-sidebar { display: block; position: fixed; inset: 0 auto 0 0; z-index: 1100; width: min(88vw, 22rem); height: 100dvh; overflow-y: auto; visibility: hidden; border-right: 1px solid var(--color-rule-hi); background: var(--color-panel); box-shadow: 10px 0 30px #0009; transform: translateX(-105%); transition: transform .2s ease, visibility .2s ease; }
