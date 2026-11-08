@@ -173,3 +173,11 @@ body {
   .business-sheet-close { display: block; }
 }
 @media (prefers-reduced-motion: reduce) { .business-detail, .business-sidebar, .business-home-company-sidebar { transition: none; } }
+
+/* Honor motion accessibility on mobile even though the mobile breakpoint is
+   declared after the general reduced-motion block. */
+@media (prefers-reduced-motion: reduce) {
+  .market-tape-window .market-tape-track { animation: none; transform: none; will-change: auto; }
+  .market-tape-window { overflow-x: auto; touch-action: pan-x pan-y; }
+  .market-tape-window .market-tape-group[aria-hidden="true"] { display: none; }
+}
