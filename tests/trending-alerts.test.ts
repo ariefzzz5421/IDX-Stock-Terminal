@@ -49,6 +49,10 @@ test("Trending uses exact Market Tape ranking, not reordered by turnover",()=>{
   assert.equal(a.embed._marketRows[1].code,"A001");
   assert.match(a.embed.description,/Market Tape/);
   assert.match(a.embed.description,/Volume Shares/);
+  assert.match(a.embed.description,/\*\*Date\*\*\n5 November 2026\n\n\*\*Source\*\*\n\[IDX Terminal\]/);
+  assert.doesNotMatch(a.embed.description,/\*\*Date\*\*\n\n|\*\*Source\*\*\n\n/);
+  assert.match(a.embed.description,/\*\*\+4,00%\*\* 🟢/);
+  assert.match(a.embed.description,/\*\*-2,00%\*\* 🔴/);
   const repeat=buildTrendingSignal({now:d("2026-11-05T03:31:00Z"),
     fetchedAt:"2026-11-05T03:31:00Z",stocks:stock});
   assert.equal(repeat?.key,a.key);
