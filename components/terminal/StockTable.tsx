@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { UiLanguage } from "@/lib/ui-language";
 import { CompanyLogo } from "./CompanyLogo";
+import { wasInSuspensionArchive, SUSPENSION_ARCHIVE_AS_OF } from "@/lib/market-data/suspension-archive";
 import {
   directionClass,
   formatCompactMarketCap,
@@ -37,11 +38,19 @@ function ValueLabel({ row }: { row: StockRow }) {
 }
 
 function StatusLabel({ row }: { row: StockRow }) {
-  if (!row.marketStatus) return null;
-  return <span
-    title={row.marketStatus === "SUSPEND_CONFIRMED" ? "Suspensi terkonfirmasi dari BEI" : "Indikasi harga pada batas auto rejection dari snapshot pasar; cek status resmi di BEI atau broker"}
-    className={"rounded-sm border px-1 py-0.5 text-[9px] font-semibold leading-none tracking-normal " + (row.marketStatus === "ARA_INDICATIVE" ? "border-up/50 text-up" : "border-down/50 text-down")}
-  >{row.marketStatus === "ARA_INDICATIVE" ? "ARA" : row.marketStatus === "ARB_INDICATIVE" ? "ARB" : "SUSPEND"}</span>;
+  // A dated >6-month archive is historical evidence, not an active trade halt.
+  const archived = wasInSuspensionArchive(row.code);
+  if (!row.marketStatus && !archived) return null;
+  return <>
+    {row.marketStatus && <span
+      title={row.marketStatus === "SUSPEND_CONFIRMED" ? "Suspensi terkonfirmasi dari BEI" : "Indikasi harga pada batas auto rejection dari snapshot pasar; cek status resmi di BEI atau broker"}
+      className={"rounded-sm border px-1 py-0.5 text-[9px] font-semibold leading-none tracking-normal " + (row.marketStatus === "ARA_INDICATIVE" ? "border-up/50 text-up" : "border-down/50 text-down")}
+    >{row.marketStatus === "ARA_INDICATIVE" ? "ARA" : row.marketStatus === "ARB_INDICATIVE" ? "ARB" : "SUSPEND"}</span>}
+    {archived && <span
+      title={"Riwayat suspensi lebih dari enam bulan menurut BEI per " + SUSPENSION_ARCHIVE_AS_OF + ". Bukan konfirmasi masih suspend hari ini; cek pengumuman unsuspend terbaru."}
+      className="rounded-sm border border-amber-dim/60 px-1 py-0.5 text-[9px] font-semibold leading-none tracking-normal text-amber-dim"
+    >ARSIP SUSP.</span>}
+  </>;
 }
 
 function MobileMetric({ label, children }: { label: string; children: React.ReactNode }) {

@@ -1,4 +1,4 @@
-import { BrainCircuit, Flame, Globe2, LayoutDashboard, ListOrdered, MapPinned, Star, TrendingUp, UserRound, Layers3, UsersRound, Network, ChartNoAxesCombined, Puzzle, BookOpenText, MessageSquareText, Building2, CircleHelp, BellRing, type LucideIcon } from "lucide-react";
+import { BrainCircuit, Flame, Globe2, LayoutDashboard, ListOrdered, MapPinned, Star, TrendingUp, UserRound, Layers3, UsersRound, Network, ChartNoAxesCombined, Puzzle, BookOpenText, MessageSquareText, Building2, PauseCircle, CircleHelp, BellRing, type LucideIcon } from "lucide-react";
 
 export type NavItem = { href: string; label: string; shortLabel?: string; icon: LucideIcon };
 
@@ -18,6 +18,7 @@ export const NAV_ITEMS: NavItem[] = [
   { href: "/alert", label: "Alert", icon: BellRing },
   { href: "/extension", label: "Extension", shortLabel: "Ext", icon: Puzzle },
   { href: "/bei", label: "BEI", icon: Building2 },
+  { href: "/suspensi", label: "Suspension", shortLabel: "Suspend", icon: PauseCircle },
   { href: "/panduan", label: "Panduan", icon: CircleHelp },
   { href: "/research", label: "Research", shortLabel: "Riset", icon: BookOpenText },
   { href: "/stream", label: "Stream", icon: MessageSquareText },
