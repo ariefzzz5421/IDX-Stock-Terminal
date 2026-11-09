@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CompanyLogo } from "@/components/terminal/CompanyLogo";
 import { COMPANY_CATALOG } from "@/lib/company-catalog";
-import { getLongSuspensions } from "@/lib/market-data/suspension-reference";
+import { getReconciledSuspensions } from "@/lib/market-data/suspension-reference";
 import {
   SUSPENSION_ARCHIVE_SOURCE,
   SUSPENSION_ANNOUNCEMENTS_SOURCE,
@@ -27,7 +27,7 @@ export default async function SuspensionPage({
 }: {
   searchParams: Promise<{ q?: string; page?: string }>;
 }) {
-  const [params, source] = await Promise.all([searchParams, getLongSuspensions()]);
+  const [params, source] = await Promise.all([searchParams, getReconciledSuspensions()]);
   const q = (params.q ?? "").trim().slice(0, 40);
   const filtered = source.rows.filter(r => {
     const company = companyByCode.get(r.code);
@@ -47,9 +47,7 @@ export default async function SuspensionPage({
       <p className="text-micro font-semibold uppercase tracking-widest text-amber">BEI / Status perdagangan</p>
       <h1 className="mt-1 font-display text-2xl font-bold uppercase text-ink-hi">Saham Suspensi</h1>
       <p className="mt-3 max-w-4xl text-sm leading-6 text-ink">
-        Daftar resmi perusahaan yang <strong>tercatat mengalami suspensi lebih dari 6 bulan</strong>,
-        berdasarkan snapshot BEI per <strong>{asOf}</strong>. Data ini merupakan arsip bertanggal,
-        bukan daftar semua saham yang masih disuspend pada saat ini.
+        Daftar saham dari arsip suspensi BEI per <strong>{asOf}</strong>, diselaraskan dengan pengumuman suspend / unsuspend BEI yang berhasil diperiksa. Badge <strong>SUSPEND</strong> tidak muncul lagi ketika ada pengumuman unsuspend yang lebih baru. Ini bukan feed status real-time.
       </p>
       <div className="mt-4 flex flex-wrap items-center gap-3 text-xs">
         <a href={SUSPENSION_ARCHIVE_SOURCE} target="_blank" rel="noopener noreferrer" className="text-cyan underline-offset-4 hover:underline">Daftar suspensi BEI ↗</a>
@@ -60,7 +58,7 @@ export default async function SuspensionPage({
 
     <section className="grid grid-cols-2 gap-px bg-rule">
       <div className="bg-panel-hi px-4 py-3 sm:px-6">
-        <span className="block text-micro uppercase tracking-wide text-dim">Tercatat dalam snapshot</span>
+        <span className="block text-micro uppercase tracking-wide text-dim">Saham pada daftar</span>
         <strong className="mt-1 block font-display text-xl font-bold tabular-nums text-ink-hi">{source.rows.length.toLocaleString("id-ID")}</strong>
       </div>
       <div className="bg-panel-hi px-4 py-3 sm:px-6">
@@ -70,14 +68,8 @@ export default async function SuspensionPage({
     </section>
 
     <div className="border-b border-rule px-4 py-3 text-xs leading-5 text-dim sm:px-6">
-      <strong className="text-amber">Penting:</strong> kode di sini juga bisa sudah di-unsuspend
-      setelah tanggal snapshot. Badge <strong>ARSIP SUSP.</strong> pada tabel saham menandakan
-      riwayat, <strong>bukan konfirmasi suspensi aktif</strong>. Saham tidak masuk scanner harga,
-      ARB, atau volume nol saja tidak membuktikan status suspensi.
-      {source.origin === "dated built-in archive" && <span className="block pt-2">
-        Situs BEI belum berhasil memberikan tabel terbaru yang dapat diverifikasi.
-        Menampilkan arsip resmi tertanggal {asOf}, bukan mengarang status baru.
-      </span>}
+      <strong className="text-amber">Status data:</strong> {source.note}
+      <span className="block pt-2">Emiten yang tidak diperdagangkan atau terkena ARB belum tentu suspend. Selalu cocokkan kondisi terkini di pengumuman BEI.</span>
     </div>
 
     <form action="/suspensi" method="get" className="flex gap-2 border-b border-rule px-4 py-4 sm:px-6">
@@ -96,10 +88,9 @@ export default async function SuspensionPage({
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <Link href={"/asset/" + item.code} className="font-display text-base font-bold text-ink-hi hover:text-amber">{item.code}</Link>
-              <span className="rounded-sm border border-amber-dim/60 px-1.5 py-0.5 text-[10px] font-bold text-amber">ARSIP SUSP.</span>
+              <span title={"Berdasarkan " + (item.basis === "new-announcement" ? "pengumuman terbaru" : "arsip suspensi 6 bulan") + " BEI per " + item.asOf + ". Cek status perdagangan terkini."} className="rounded-sm border border-amber/70 px-1.5 py-0.5 text-[10px] font-bold text-amber">SUSPEND</span>
             </div>
             <p className="mt-1 text-xs leading-5 text-ink">{company?.name ?? "Nama tidak tersedia dalam katalog situs"}</p>
-            <p className="mt-1 text-xs text-dim">Tanggal awal suspensi pada daftar: <span className="font-semibold text-ink">{item.since}</span></p>
           </div>
         </li>;
       })}
@@ -113,8 +104,8 @@ export default async function SuspensionPage({
       </div>
     </nav>
     <footer className="border-t border-rule px-4 py-4 text-micro leading-5 text-dim sm:px-6">
-      Sumber: Bursa Efek Indonesia · daftar suspensi lebih dari enam bulan · diperbarui berkala oleh BEI.
-      Harap cocokkan semua status perdagangan dengan pengumuman resmi suspend/unsuspend yang lebih baru.
+      Sumber: Bursa Efek Indonesia · arsip suspensi lebih dari enam bulan + pengumuman terbaru yang dapat dibaca.
+      Keputusan investasi memerlukan konfirmasi bursa terkini; daftar ini tidak dijamin selalu lengkap.
     </footer>
   </main>;
 }

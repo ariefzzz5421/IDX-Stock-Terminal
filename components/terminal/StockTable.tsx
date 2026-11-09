@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { UiLanguage } from "@/lib/ui-language";
 import { CompanyLogo } from "./CompanyLogo";
-import { wasInSuspensionArchive, SUSPENSION_ARCHIVE_AS_OF } from "@/lib/market-data/suspension-archive";
 import {
   directionClass,
   formatCompactMarketCap,
@@ -38,19 +37,15 @@ function ValueLabel({ row }: { row: StockRow }) {
 }
 
 function StatusLabel({ row }: { row: StockRow }) {
-  // A dated >6-month archive is historical evidence, not an active trade halt.
-  const archived = wasInSuspensionArchive(row.code);
-  if (!row.marketStatus && !archived) return null;
-  return <>
-    {row.marketStatus && <span
-      title={row.marketStatus === "SUSPEND_CONFIRMED" ? "Suspensi terkonfirmasi dari BEI" : "Indikasi harga pada batas auto rejection dari snapshot pasar; cek status resmi di BEI atau broker"}
-      className={"rounded-sm border px-1 py-0.5 text-[9px] font-semibold leading-none tracking-normal " + (row.marketStatus === "ARA_INDICATIVE" ? "border-up/50 text-up" : "border-down/50 text-down")}
-    >{row.marketStatus === "ARA_INDICATIVE" ? "ARA" : row.marketStatus === "ARB_INDICATIVE" ? "ARB" : "SUSPEND"}</span>}
-    {archived && <span
-      title={"Riwayat suspensi lebih dari enam bulan menurut BEI per " + SUSPENSION_ARCHIVE_AS_OF + ". Bukan konfirmasi masih suspend hari ini; cek pengumuman unsuspend terbaru."}
-      className="rounded-sm border border-amber-dim/60 px-1 py-0.5 text-[9px] font-semibold leading-none tracking-normal text-amber-dim"
-    >ARSIP SUSP.</span>}
-  </>;
+  // Show SUSPEND only with a confirmed, current event status.
+  // An old six-month archive entry is NOT proof of an active trading halt.
+  if (!row.marketStatus) return null;
+  const isSuspended=row.marketStatus==="SUSPEND_CONFIRMED";
+  return <span
+    title={isSuspended ? "Status suspend yang dikonfirmasi melalui data BEI; periksa pengumuman pembukaan kembali terkini." : "ARA/ARB indikatif berdasarkan snapshot harga, bukan kepastian status perdagangan dari BEI."}
+    className={"rounded-sm border px-1.5 py-0.5 text-[9px] font-bold leading-none tracking-normal " +
+      (isSuspended ? "border-amber text-amber" : row.marketStatus==="ARA_INDICATIVE" ? "border-up/50 text-up" : "border-down/50 text-down")}
+  >{isSuspended ? "SUSPEND" : row.marketStatus==="ARA_INDICATIVE" ? "ARA" : "ARB"}</span>;
 }
 
 function MobileMetric({ label, children }: { label: string; children: React.ReactNode }) {

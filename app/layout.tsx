@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { JetBrains_Mono, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import "leaflet/dist/leaflet.css";
+import { OpeningSplash } from "@/components/branding/OpeningSplash";
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
@@ -33,7 +34,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${jetbrainsMono.variable} ${plexMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <script dangerouslySetInnerHTML={{ __html: "try{var t=localStorage.getItem('idx-theme');document.documentElement.dataset.theme=t==='light'?'light':'dark';document.documentElement.style.colorScheme=t==='light'?'light':'dark';document.documentElement.lang=localStorage.getItem('idx-language')==='en'?'en':'id'}catch(e){}" }} />
+        <script dangerouslySetInnerHTML={{ __html: "try{var t=localStorage.getItem('idx-theme');document.documentElement.dataset.theme=t==='light'?'light':'dark';document.documentElement.style.colorScheme=t==='light'?'light':'dark';document.documentElement.lang=localStorage.getItem('idx-language')==='en'?'en':'id';if(sessionStorage.getItem('idx-opening-seen-v1')==='1')document.documentElement.dataset.idxSplash='skip'}catch(e){}" }} />
+        <OpeningSplash />
         {children}
       </body>
     </html>
