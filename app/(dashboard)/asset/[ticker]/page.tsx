@@ -13,7 +13,6 @@ import { requireUser } from "@/lib/auth/session";
 import { marketData } from "@/lib/market-data";
 import { getCompanyDetails } from "@/lib/market-data/company-details";
 import { selectDailyTrading } from "@/lib/market-data/daily-trading";
-import { quoteFreshness } from "@/lib/market-data/reliability";
 import { companySummaryId } from "@/lib/company-summary-id";
 import { Panel } from "@/components/terminal/Panel";
 import { ResizableSplit } from "@/components/terminal/ResizableSplit";
@@ -78,9 +77,6 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
   ]);
   const namedShareholders = shareholdersFor(code);
   const dailyTrading = selectDailyTrading(details?.dailyTrading, quote, quote?.source ?? marketData.name);
-  const dailyDate = dailyTrading.date ? new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeZone: "Asia/Jakarta" }).format(new Date(`${dailyTrading.date}T12:00:00+07:00`)) : "N/D";
-  const dailySourceHref = dailyTrading.source.startsWith("BEI") ? "https://www.idx.co.id/id/data-pasar/ringkasan-perdagangan/ringkasan-saham/" : dailyTrading.source === "Yahoo Finance" ? `https://finance.yahoo.com/quote/${code}.JK/` : null;
-
   const fresh = quote ? {
     ...stock,
     lastPrice: quote.price,
@@ -94,14 +90,7 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
     fresh.lastPrice != null && fresh.prevClose != null
       ? fresh.lastPrice - fresh.prevClose
       : null;
-  const tradingDate = new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeZone: "Asia/Jakarta" }).format(fresh.updatedAt);
-  const tradingTime = new Intl.DateTimeFormat("id-ID", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Jakarta" }).format(fresh.updatedAt);
-  const sourceLabel = quote ? ({ yahoo: "Yahoo Finance", goapi: "GoAPI", itick: "iTick", invezgo: "Invezgo", mock: "MOCK / DEMO" } as Record<string, string>)[quote.source ?? ""] ?? quote.source ?? marketData.name : "Database (harga terakhir tersimpan)";
-  const priceStatus = quote
-    ? quoteFreshness(quote) === "stale" ? "Stale · periksa tanggal transaksi"
-      : quoteFreshness(quote) === "timestamp-unverified" ? "Waktu perdagangan belum terverifikasi"
-      : "Delayed · satu sumber, belum diverifikasi silang"
-    : fresh.lastPrice == null ? "Harga tidak tersedia" : "Stored · bukan harga live";
+
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-px">
@@ -129,8 +118,6 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
               <div className={`mt-1.5 text-sm font-medium ${directionClass(change)}`}>
                 <span className="text-micro text-dim">1D</span> &nbsp; {formatChange(change)} &nbsp; {formatPct(fresh.lastChangePct)}
               </div>
-              <p className="mt-1 text-micro text-dim">{quote?.timestampVerified === false ? "Waktu pengambilan" : quote ? "Timestamp provider" : "Terakhir tersimpan"}: {tradingDate} · penutupan sebelumnya {formatPrice(fresh.prevClose)}</p>
-              <p className="mt-1 text-micro text-amber">Sumber: {sourceLabel} · {priceStatus}</p>
             </div>
           </div>
           <div className="flex justify-end sm:justify-self-end">
@@ -138,14 +125,12 @@ export default async function StockPage({ params }: PageProps<"/asset/[ticker]">
           </div>
         </div>
 
-        <dl className="mt-5 grid min-w-0 grid-cols-2 gap-x-5 gap-y-3 border-t border-rule pt-4 sm:grid-cols-3 lg:grid-cols-5">
+        <dl className="mt-5 grid min-w-0 grid-cols-2 gap-x-5 gap-y-3 border-t border-rule pt-4 sm:grid-cols-4">
           <Stat k="Penutupan lalu" v={formatPrice(fresh.prevClose)} />
           <Stat k="Volume · sesi harian" v={dailyTrading.volume === null ? "N/D" : `${new Intl.NumberFormat("id-ID").format(dailyTrading.volume)} lembar`} />
-          <Stat k={dailyTrading.estimatedValue ? "Estimasi nilai transaksi · harian" : "Nilai transaksi · harian"} v={dailyTrading.value === null ? "N/D" : formatValue(dailyTrading.value)} />
+          <Stat k={dailyTrading.estimatedValue ? "Nilai transaksi · estimasi" : "Nilai transaksi · harian"} v={dailyTrading.value === null ? "N/D" : formatValue(dailyTrading.value)} />
           <Stat k="Kapitalisasi pasar" v={formatValue(fresh.marketCap)} />
-          <Stat k={quote?.timestampVerified === false ? "Waktu pengambilan (bukan waktu transaksi)" : quote ? "Timestamp harga (tertunda)" : "Waktu terakhir tersimpan"} v={`${fresh.lastPrice == null ? "N/D" : `${tradingDate} · ${tradingTime} WIB`}`} />
         </dl>
-        <p className="mt-4 text-micro leading-relaxed text-dim">Volume dan nilai: {dailySourceHref ? <a href={dailySourceHref} target="_blank" rel="noopener noreferrer" className="text-cyan hover:underline">{dailyTrading.source} ↗</a> : dailyTrading.source} · sesi {dailyDate}{dailyTrading.estimatedValue ? " · nilai ≈ volume × harga terakhir, bukan total transaksi resmi" : ""}. Data dapat tertunda.</p>
       </section>
       <StockDailyFlow code={code} />
       <Panel title="Corporate Intelligence" meta="pengumuman perusahaan"><div className="p-4 text-xs text-ink">{intelligence ? <><p className="font-bold text-ink-hi">{intelligence.title}</p><p className="mt-1 text-dim">{intelligence.category.replaceAll("_", " ")} · {intelligence.priority} · {intelligence.status} · {intelligence.publishedAt ? new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeZone: "Asia/Jakarta" }).format(intelligence.publishedAt) : "N/D"}</p><Link href={`/ai-analyst/research/${intelligence.id}`} className="mt-2 inline-block text-cyan hover:underline">Baca riset lengkap →</Link></> : "Belum ada peristiwa material terverifikasi untuk saham ini."}</div></Panel>
@@ -382,7 +367,7 @@ function Fact({
 function Stat({ k, v }: { k: string; v: string }) {
   return (
     <div className="flex min-w-0 flex-col gap-0.5">
-      <dt className="text-micro uppercase tracking-[0.12em] text-dim">{k}</dt>
+      <dt className="text-micro font-bold uppercase tracking-[0.08em] text-ink">{k}</dt>
       <dd className="break-words text-sm text-ink">{v}</dd>
     </div>
   );

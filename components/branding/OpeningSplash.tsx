@@ -36,7 +36,7 @@ export function OpeningSplash() {
         <IdxMark width={310} height={134} className="h-auto w-full" decorative />
       </div>
       <div className="idx-opening-wordmark">
-        <span>IDX</span><strong>Terminal</strong>
+        <strong>Terminal</strong>
       </div>
       <div className="idx-opening-rule"><span/></div>
     </div>
