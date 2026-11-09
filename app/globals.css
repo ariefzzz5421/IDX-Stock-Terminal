@@ -180,3 +180,123 @@ body {
   .market-tape-window { overflow-x: auto; touch-action: pan-x pan-y; }
   .market-tape-window .market-tape-group[aria-hidden="true"] { display: none; }
 }
+
+
+/* IDX Terminal splash: SVG logo + compositor-only transforms/opacity.
+   The original logo's white/red symbol stays intact in dark and light themes.
+   No video or GIF is loaded during the critical page transition. */
+html[data-idx-splash="skip"] .idx-opening { display: none; }
+.idx-opening {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  isolation: isolate;
+  background: #02050b;
+  pointer-events: auto;
+  animation: idx-opening-dismiss 2.25s ease-in-out both;
+}
+.idx-opening-grid {
+  position: absolute;
+  inset: 0;
+  opacity: .16;
+  background: linear-gradient(#13283d 1px,transparent 1px),
+              linear-gradient(90deg,#13283d 1px,transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 75% 85% at 50% 50%,#000,transparent);
+}
+.idx-opening-halo {
+  position: absolute;
+  width: min(80vw,560px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle,rgba(18,102,154,.18),transparent 67%);
+  opacity: 0;
+  animation: idx-opening-halo 2s ease-out both;
+}
+.idx-opening-brand {
+  position: relative;
+  width: min(78vw,460px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  filter: drop-shadow(0 10px 26px rgba(0,0,0,.7));
+  animation: idx-opening-enter 1.15s cubic-bezier(.18,.75,.23,1) both;
+}
+.idx-opening-mark {
+  position: relative;
+  width: 66%;
+  overflow: hidden;
+}
+.idx-opening-mark svg {
+  height: auto;
+  width: 100%;
+  display: block;
+}
+.idx-opening-mark svg path:first-of-type,
+.idx-opening-mark svg path:last-of-type { fill: #fafbff; }
+.idx-opening-mark::after {
+  content: "";
+  position: absolute;
+  inset: -25%;
+  pointer-events: none;
+  background: linear-gradient(105deg,transparent 40%,rgba(255,255,255,.0) 47%,rgba(255,255,255,.34) 51%,transparent 57%);
+  transform: translateX(-120%);
+  animation: idx-opening-shine 1.25s ease-in-out .5s both;
+}
+.idx-opening-wordmark {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(5px,1.3vw,13px);
+  margin-top: -6px;
+  white-space: nowrap;
+  font-family: Arial,Helvetica,sans-serif;
+  font-size: clamp(25px,5.7vw,54px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -.055em;
+}
+.idx-opening-wordmark span { color: #ff0a12; font-weight: 900; }
+.idx-opening-wordmark strong { color: #fafbff; font-weight: 800; }
+.idx-opening-rule {
+  width: 56%;
+  height: 2px;
+  margin-top: 28px;
+  overflow: hidden;
+  background: rgba(29,75,108,.48);
+}
+.idx-opening-rule span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,#8d111b,#ff1925,#67c7ff);
+  transform-origin: left;
+  animation: idx-opening-progress 1.75s .24s ease-in-out both;
+}
+@keyframes idx-opening-enter {
+  from { opacity: 0; transform: translate3d(0,14px,0) scale(.975); }
+  to { opacity: 1; transform: translate3d(0,0,0) scale(1); }
+}
+@keyframes idx-opening-shine {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(120%); }
+}
+@keyframes idx-opening-progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+@keyframes idx-opening-halo {
+  0% { opacity: 0; transform: scale(.86); }
+  35% { opacity: 1; }
+  100% { opacity: .5; transform: scale(1.08); }
+}
+@keyframes idx-opening-dismiss {
+  0%,75% { opacity: 1; visibility: visible; }
+  100% { opacity: 0; visibility: hidden; pointer-events: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .idx-opening { animation: none; opacity: 0; visibility: hidden; pointer-events: none; }
+  .idx-opening-brand,.idx-opening-halo,.idx-opening-rule span,.idx-opening-mark::after { animation: none; }
+}
