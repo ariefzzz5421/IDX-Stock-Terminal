@@ -1,6 +1,7 @@
 import "server-only";
 
 import * as cheerio from "cheerio";
+import { parseSuspensionNotice, reconcileSuspensions, type SuspendedRecord, type SuspensionNotice } from "./suspension-status";
 import {
   SUSPENSION_ARCHIVE, SUSPENSION_ARCHIVE_AS_OF, SUSPENSION_ARCHIVE_SOURCE,
   type LongSuspensionRecord,
@@ -66,5 +67,52 @@ export async function getLongSuspensions(): Promise<SuspensionReference> {
     asOf: SUSPENSION_ARCHIVE_AS_OF,
     rows: [...SUSPENSION_ARCHIVE],
     origin: "dated built-in archive",
+  };
+}
+
+
+export type ReconciledSuspensionReference={
+  asOf:string;
+  rows:SuspendedRecord[];
+  origin:SuspensionReference["origin"];
+  announcementsFetched:boolean;
+  note:string;
+};
+
+/** The public announcement table often returns only its first page and may
+ * reject automated access. All notices are signed off by the official IDX URL,
+ * and only fully parsed rows can change the current displayed list.
+ */
+async function recentSuspensionNotices():Promise<SuspensionNotice[]|null>{
+  try{
+    const response=await fetch("https://www.idx.co.id/id/berita/suspensi",{
+      next:{revalidate:60*60},
+      signal:AbortSignal.timeout(5500),
+      headers:{Accept:"text/html"},
+    });
+    if(!response.ok)return null;
+    const $=cheerio.load(await response.text());
+    const notices:SuspensionNotice[]=[];
+    $("table tbody tr").each((_,row)=>{
+      const td=$(row).find("td");
+      if(td.length<2)return;
+      const date=td.eq(0).text().replace(/\s+/g," ").trim();
+      const title=td.eq(1).text().replace(/\s+/g," ").trim();
+      const result=parseSuspensionNotice(date,title);
+      if(result)notices.push(result);
+    });
+    return notices.length ? notices : null;
+  }catch{return null;}
+}
+
+export async function getReconciledSuspensions():Promise<ReconciledSuspensionReference>{
+  const [archive,notices]=await Promise.all([getLongSuspensions(),recentSuspensionNotices()]);
+  return {
+    ...archive,
+    rows:reconcileSuspensions(archive.rows,archive.asOf,notices??[]),
+    announcementsFetched:notices!==null,
+    note:notices===null?
+      "Arsip resmi dan koreksi unsuspend yang telah diverifikasi; pengumuman terbaru tidak berhasil dimuat. Status live belum dapat dipastikan.":
+      "Arsip resmi digabung dengan pengumuman BEI terbaru yang dapat dibaca. Halaman publik BEI dapat membatasi riwayat; status bukan jaminan live.",
   };
 }
