@@ -258,7 +258,6 @@ html[data-idx-splash="skip"] .idx-opening { display: none; }
   line-height: 1.05;
   letter-spacing: -.055em;
 }
-.idx-opening-wordmark span { color: #ff0a12; font-weight: 900; }
 .idx-opening-wordmark strong { color: #fafbff; font-weight: 800; }
 .idx-opening-rule {
   width: 56%;
