@@ -25,3 +25,5 @@ jobs:
         with:
           name: idx-stock-terminal-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
+
+# trigger build
