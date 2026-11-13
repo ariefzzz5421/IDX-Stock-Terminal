@@ -10,14 +10,17 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
-      - run: npm ci
-      - run: npx cap sync android
-      - run: cd android && chmod +x gradlew && ./gradlew assembleDebug
+      - name: Install Capacitor Only
+        run: npm install --no-save @capacitor/core @capacitor/cli @capacitor/android
+      - name: Sync Capacitor
+        run: npx cap sync android
+      - name: Build Debug APK
+        run: cd android && chmod +x gradlew && ./gradlew assembleDebug
       - uses: actions/upload-artifact@v4
         with:
           name: idx-stock-terminal-apk
