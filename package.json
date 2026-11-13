@@ -25,6 +25,9 @@
     "test:alerts": "node --import tsx --test tests/discord-alerts.test.ts tests/market-alerts.test.ts tests/intraday-alerts.test.ts tests/premium-card.test.ts tests/closing-alerts.test.ts tests/trending-alerts.test.ts tests/market-news-alerts.test.ts tests/discord-issuer-format.test.ts"
   },
   "dependencies": {
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/cli": "^8.6.2",
+    "@capacitor/core": "^8.6.2",
     "@prisma/adapter-better-sqlite3": "7.10.0",
     "@prisma/adapter-pg": "7.10.0",
     "@prisma/client": "7.10.0",
